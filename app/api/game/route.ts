@@ -1,5 +1,6 @@
 import { env } from "cloudflare:workers";
 import {act,botMove,player,room,start,view,capacity,type Game} from "../../../lib/game";
+import {avatarImage,updateProfile,sendChat} from "../../../lib/social";
 export const dynamic="force-dynamic";
 function reply(x:unknown,status=200){return Response.json(x,{status,headers:{"Cache-Control":"no-store"}});}
 async function deviceKey(secret:unknown){
@@ -19,7 +20,7 @@ export async function POST(req:Request){try{
  }
  if(b.action==="create"){
   const size=Number(b.size||3);if(![2,3,4].includes(size))throw Error("2·3·4인 중 선택해 주세요.");
-  const p=player(String(b.name||"플레이어"));if(profile)p.profile=profile;
+  const p=player(String(b.name||"플레이어"));p.avatar=avatarImage(b.avatar);if(profile)p.profile=profile;
   for(let k=0;k<5;k++){
    const code=crypto.randomUUID().replaceAll("-","").slice(0,6).toUpperCase();const g=room(code,p,!!b.practice,size);
    if(b.practice){for(let i=1;i<size;i++)g.players.push(player(["달빛","해솔","별하"][i-1],true));start(g);}
@@ -35,12 +36,14 @@ export async function POST(req:Request){try{
   if(b.action==="join"){
    const existing=g.players.find(p=>p.token===token);
    if(!existing){if(g.phase!=="lobby"||g.players.length>=capacity(g))throw Error("이미 시작했거나 정원이 찬 방이에요.");
-    const p=player(String(b.name||"플레이어"));if(profile)p.profile=profile;g.players.push(p);token=p.token;changed=true;}
+    const p=player(String(b.name||"플레이어"));p.avatar=avatarImage(b.avatar);if(profile)p.profile=profile;g.players.push(p);token=p.token;changed=true;}
   }else{
    const me=g.players.findIndex(p=>p.token===token);if(me<0)return reply({error:"입장 정보가 없어요."},403);
    if(b.action==="state")return reply({game:view(g,token),revision:row.revision});
-   if(b.revision!==row.revision)return reply({error:"화면을 최신 상태로 맞췄어요. 다시 선택해 주세요.",game:view(g,token),revision:row.revision},409);
-   if(b.action==="start"){if(me!==0)throw Error("방장만 시작할 수 있어요.");if(g.phase==="playing")throw Error("이미 진행 중이에요.");start(g);}
+   if(!["chat","profile"].includes(b.action)&&b.revision!==row.revision&&(!b.eventId||b.eventId!==g.lastEvent?.id))return reply({error:"화면을 최신 상태로 맞췄어요. 다시 선택해 주세요.",game:view(g,token),revision:row.revision},409);
+   if(b.action==="chat"){if(g.practice)throw Error("채팅은 친구 대전에서 이용해 주세요.");sendChat(g,me,b.text,Date.now(),typeof b.messageId==="string"&&/^[a-f0-9-]{36}$/i.test(b.messageId)?b.messageId:crypto.randomUUID());}
+   else if(b.action==="profile")updateProfile(g.players[me],b.name,b.avatar);
+   else if(b.action==="start"){if(me!==0)throw Error("방장만 시작할 수 있어요.");if(g.phase==="playing")throw Error("이미 진행 중이에요.");start(g);}
    else if(b.action==="bot"){if(!g.practice)throw Error("친구 대전에서는 사용할 수 없어요.");botMove(g);}
    else act(g,me,b.action,Array.isArray(b.ids)?b.ids:[],b.index);
    changed=true;

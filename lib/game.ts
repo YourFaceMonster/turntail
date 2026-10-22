@@ -1,8 +1,9 @@
 export type Tile = {id:number,n:number,s:number};
-export type Player = {id:string,token:string,name:string,hand:Tile[],wins:number,bot?:boolean,points?:number,losses?:number,games?:number,profile?:string};
+export type Player = {id:string,token:string,name:string,hand:Tile[],wins:number,bot?:boolean,points?:number,losses?:number,games?:number,profile?:string,avatar?:string};
 export type RoundResult = {id:string,at:number,round:number,players:{id:string,name:string,count:number,place:number,delta:number,total:number,winner:boolean}[],transfers:{from:number,to:number,points:number}[]};
 export type GameEvent = {id:string,type:string,who:number,index?:number,tiles?:Tile[],label?:string};
-export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent};
+export type ChatMessage={id:string,who:number,name:string,text:string,at:number};
+export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile}};
 export function uid(){if(typeof crypto.randomUUID==="function")return crypto.randomUUID();const a=new Uint8Array(16);crypto.getRandomValues(a);a[6]=(a[6]&15)|64;a[8]=(a[8]&63)|128;const h=Array.from(a,n=>n.toString(16).padStart(2,"0")).join("");return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;}
 export const suits = ["구름","별","달","해"];
 export const symbols = ["☁","✦","☾","☀"];
@@ -41,6 +42,11 @@ export function room(code:string,p:Player,practice=false,size=3):Game{
  if(![2,3,4].includes(size))throw Error("2·3·4인 중 선택해 주세요.");
  return {code,phase:"lobby",players:[p],stacks:[],turn:0,lastBy:null,trick:[],log:[],winner:null,round:0,practice,capacity:size,result:null};
 }
+export function lowestHandLead(players:Player[]){
+ const candidates=players.flatMap((p,who)=>p.hand.map(tile=>({who,tile})));
+ if(!candidates.length)throw Error("선 결정에 필요한 손패가 없어요.");
+ return candidates.reduce((best,t)=>rank(t.tile)*4+suitRank(t.tile.s)<rank(best.tile)*4+suitRank(best.tile.s)?t:best);
+}
 export function start(g:Game){
  if(g.players.length!==capacity(g))throw Error(`${capacity(g)}명이 모이면 시작할 수 있어요.`);
  const deck:Tile[]=[];for(let n=1;n<=15;n++)for(let s=0;s<4;s++)deck.push({id:(n-1)*4+s,n,s});
@@ -48,8 +54,8 @@ export function start(g:Game){
  for(const p of g.players)p.hand=sorted(deck.splice(0,12));
  const stacks=deck.length/2;g.stacks=Array.from({length:stacks},()=>[deck.shift()!,deck.shift()!]);
  g.cols=capacity(g)===2?6:capacity(g)===4?3:4;g.rows=Math.ceil(stacks/g.cols);
- const weakest=g.players.map(p=>sorted(p.hand)[0]);g.turn=weakest.reduce((best,t,i)=>rank(t)*4+suitRank(t.s)<rank(weakest[best])*4+suitRank(weakest[best].s)?i:best,0);
- g.phase="playing";g.trick=[];g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · ${g.players[g.turn].name}부터 시작합니다.`];
+ g.opening=lowestHandLead(g.players);g.turn=g.opening.who;
+ g.phase="playing";g.trick=[];g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
  g.lastEvent={id:uid(),type:"deal",who:g.turn};
 }
 function note(g:Game,s:string){g.log=[s,...g.log].slice(0,40);}
@@ -88,8 +94,8 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1){
 }
 export function view(g:Game,token:string){
  const me=g.players.findIndex(p=>p.token===token);if(me<0)throw Error("입장 정보가 없어요. 방 코드로 다시 입장해 주세요.");
- return {code:g.code,phase:g.phase,capacity:capacity(g),...dimensions(g),turn:g.turn,lastBy:g.lastBy,trick:g.trick,log:g.log,winner:g.winner,round:g.round,practice:g.practice,result:g.result||null,lastEvent:g.lastEvent,me,
- players:g.players.map((p,i)=>({id:p.id,name:p.name,count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,hand:i===me||g.phase==="ended"?p.hand:undefined})),
+ return {code:g.code,phase:g.phase,capacity:capacity(g),...dimensions(g),turn:g.turn,lastBy:g.lastBy,trick:g.trick,log:g.log,winner:g.winner,round:g.round,practice:g.practice,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent:g.lastEvent,me,
+ players:g.players.map((p,i)=>({id:p.id,name:p.name,avatar:p.avatar||"",count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,hand:i===me||g.phase==="ended"?p.hand:undefined})),
  stacks:g.stacks.map((s,i)=>({lower:s[1]?null:s[0],lowerPresent:!!s[0],upper:!!s[1],available:accessible(g,i)}))};
 }
 export function findMove(hand:Tile[],trick:Tile[]):Tile[]|null{
