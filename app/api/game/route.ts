@@ -1,6 +1,7 @@
 import { env } from "cloudflare:workers";
 import {act,botMove,player,room,start,view,capacity,type Game} from "../../../lib/game";
 import {avatarImage,updateProfile,sendChat} from "../../../lib/social";
+import {LINEUP_SUMMARY_SQL,LINEUP_PLAYERS_SQL} from "../../../lib/history";
 export const dynamic="force-dynamic";
 function reply(x:unknown,status=200){return Response.json(x,{status,headers:{"Cache-Control":"no-store"}});}
 async function deviceKey(secret:unknown){
@@ -16,7 +17,9 @@ export async function POST(req:Request){try{
   if(!profile)return reply({error:"기기 기록을 확인하지 못했어요."},400);
   const summary=await db.prepare("SELECT COUNT(*) AS games,COALESCE(SUM(win),0) AS wins,COALESCE(SUM(points),0) AS points FROM match_records WHERE device=?").bind(profile).first();
   const records=await db.prepare("SELECT id,at,win,points,size,result FROM match_records WHERE device=? ORDER BY at DESC LIMIT 40").bind(profile).all();
-  return reply({summary,records:records.results.map((r:any)=>({...r,result:JSON.parse(r.result)}))});
+  const [lineups,participants]=await Promise.all([db.prepare(LINEUP_SUMMARY_SQL).bind(profile).all(),db.prepare(LINEUP_PLAYERS_SQL).bind(profile).all()]);
+  const groups=lineups.results.map((g:any)=>({key:g.lineup,names:JSON.parse(g.lineup),size:g.size,games:g.games,wins:g.wins,points:g.points,lastAt:g.lastAt,players:participants.results.filter((p:any)=>p.lineup===g.lineup&&p.size===g.size).map((p:any)=>({name:p.name,occurrence:p.occurrence,games:p.games,wins:p.wins,losses:p.losses,points:p.points}))}));
+  return reply({summary,groups,records:records.results.map((r:any)=>({...r,result:JSON.parse(r.result)}))});
  }
  if(b.action==="create"){
   const size=Number(b.size||3);if(![2,3,4].includes(size))throw Error("2·3·4인 중 선택해 주세요.");

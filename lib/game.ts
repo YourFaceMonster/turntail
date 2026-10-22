@@ -31,7 +31,7 @@ export function combo(ts:Tile[]):{label:string,key:number[]}|null {
 }
 export function beats(ts:Tile[],old:Tile[]){const a=combo(ts),b=combo(old);return !!a&&(!old.length||(ts.length===old.length&&!!b&&cmp(a.key,b.key)>0));}
 export function capacity(g:Game){return g.capacity||3;}
-export function dimensions(g:Game){const cols=g.cols||(capacity(g)===2?6:capacity(g)===4?3:4);return {cols,rows:g.rows||Math.ceil(g.stacks.length/cols)};}
+export function dimensions(g:Game){const cols=g.cols||(capacity(g)===2?6:capacity(g)===4?3:g.stacks.length===15?5:4);return {cols,rows:g.rows||Math.ceil(g.stacks.length/cols)};}
 export function accessible(g:Game,i:number){
  const st=g.stacks[i];if(!st||(!st[0]&&!st[1]))return false;
  const {cols,rows}=dimensions(g),z=st[1]?1:0,r=Math.floor(i/cols),c=i%cols;
@@ -47,13 +47,14 @@ export function lowestHandLead(players:Player[]){
  if(!candidates.length)throw Error("선 결정에 필요한 손패가 없어요.");
  return candidates.reduce((best,t)=>rank(t.tile)*4+suitRank(t.tile.s)<rank(best.tile)*4+suitRank(best.tile.s)?t:best);
 }
+export function startingHandSize(size:number){return size===3?10:12;}
 export function start(g:Game){
  if(g.players.length!==capacity(g))throw Error(`${capacity(g)}명이 모이면 시작할 수 있어요.`);
  const deck:Tile[]=[];for(let n=1;n<=15;n++)for(let s=0;s<4;s++)deck.push({id:(n-1)*4+s,n,s});
  for(let i=deck.length-1;i>0;i--){let x=new Uint32Array(1);crypto.getRandomValues(x);const j=x[0]%(i+1);[deck[i],deck[j]]=[deck[j],deck[i]];}
- for(const p of g.players)p.hand=sorted(deck.splice(0,12));
+ for(const p of g.players)p.hand=sorted(deck.splice(0,startingHandSize(capacity(g))));
  const stacks=deck.length/2;g.stacks=Array.from({length:stacks},()=>[deck.shift()!,deck.shift()!]);
- g.cols=capacity(g)===2?6:capacity(g)===4?3:4;g.rows=Math.ceil(stacks/g.cols);
+ g.cols=capacity(g)===2?6:capacity(g)===4?3:5;g.rows=Math.ceil(stacks/g.cols);
  g.opening=lowestHandLead(g.players);g.turn=g.opening.who;
  g.phase="playing";g.trick=[];g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
  g.lastEvent={id:uid(),type:"deal",who:g.turn};

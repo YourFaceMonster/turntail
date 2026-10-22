@@ -3,7 +3,7 @@ import {act,accessible,botMove,capacity,dimensions,player,room,settle,start,view
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 function make(n:number){const g=room('SIZE'+n,player('나'),true,n);for(let i=1;i<n;i++)g.players.push(player('AI'+i,true));start(g);return g;}
 for(const n of [2,3,4]){
- const g=make(n),floor=60-n*12;assert.equal(capacity(g),n);assert.equal(g.stacks.length*2,floor);assert.equal(dimensions(g).cols,n===2?6:n===3?4:3);assert.equal(g.players.flatMap(p=>p.hand).length,n*12);
+ const g=make(n),floor=n===3?30:60-n*12;assert.equal(capacity(g),n);assert.equal(g.stacks.length*2,floor);assert.equal(dimensions(g).cols,n===2?6:n===3?5:3);assert.equal(g.players.flatMap(p=>p.hand).length,n*(n===3?10:12));
  assert.equal(new Set([...g.players.flatMap(p=>p.hand),...g.stacks.flat()].map(t=>t!.id)).size,60);
  g.turn=n-1;act(g,n-1,'draw',[],0);assert.equal(g.turn,0);
  const projected=view(g,g.players[0].token);assert.equal(projected.capacity,n);assert.equal(projected.players.filter(p=>p.hand!==undefined).length,1);assert.equal(JSON.stringify(projected).includes(g.players[1].token),false);
@@ -16,5 +16,5 @@ for(const n of [2,3,4])for(let round=0;round<70;round++){
  const count=g.players.reduce((a,p)=>a+(p.games||0),0);assert.equal(count,n);start(g);assert.equal(g.result,null);assert.ok(g.players.every(p=>p.games===1));
 }
 // An older stored 3-player room keeps working without new optional fields.
-const legacy=make(3);delete legacy.capacity;delete legacy.cols;delete legacy.rows;assert.equal(capacity(legacy),3);assert.equal(view(legacy,legacy.players[0].token).cols,4);
+const legacy=make(3);legacy.stacks=legacy.stacks.slice(0,12);delete legacy.capacity;delete legacy.cols;delete legacy.rows;assert.equal(capacity(legacy),3);assert.equal(view(legacy,legacy.players[0].token).cols,4);
 console.log('PASS: 2/3/4 player layouts, all 60 tiles, wrapping turns, privacy, zero-sum scoring, ties, idempotent settlement, legacy rooms, 210 full games.');
