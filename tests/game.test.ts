@@ -5,7 +5,7 @@ const fresh=()=>{const g=room('ABC123',player('A'));g.players.push(player('B'),p
 let g=fresh();assert.deepEqual(g.players.map(p=>p.hand.length),[10,10,10]);assert.equal(g.stacks.flat().length,30);assert.equal(new Set([...g.players.flatMap(p=>p.hand),...g.stacks.flat()].map(x=>x!.id)).size,60);
 assert.equal(accessible(g,6),false);assert.equal(accessible(g,7),false);assert.equal(accessible(g,0),true);g.stacks[1][1]=null;assert.equal(accessible(g,6),true);g.stacks[6][1]=null;assert.equal(accessible(g,6),false);g.stacks[1][0]=null;assert.equal(accessible(g,6),true);
 g=fresh();const v=view(g,g.players[0].token);assert.ok(v.players[0].hand);assert.equal(v.players[1].hand,undefined);assert.ok(v.stacks.every(s=>typeof s.upper==='boolean'));assert.equal(JSON.stringify(v).includes(g.players[1].token),false);
-const old=g.turn,count=g.players[old].hand.length;act(g,old,'draw',[],0);assert.equal(g.players[old].hand.length,count+1);assert.equal(g.turn,(old+1)%3);assert.throws(()=>act(g,old,'play',[g.players[old].hand[0].id]));
+act(g,g.turn,'play',[g.players[g.turn].hand[0].id]);const old=g.turn,count=g.players[old].hand.length;act(g,old,'draw',[],0);assert.equal(g.players[old].hand.length,count+1);assert.equal(g.turn,(old+1)%3);assert.throws(()=>act(g,old,'play',[g.players[old].hand[0].id]));
 assert.throws(()=>act(g,g.turn,'draw',[],6));assert.throws(()=>act(g,g.turn,'pass'));
 assert.equal(combo([t(3),t(3,1)])?.label,'페어');assert.equal(combo([t(3),t(4)]),null);assert.equal(combo([t(5),t(5,1),t(5,2),t(5,3)]),null);
 assert.equal(beats([t(2)],[t(1,3)]),true);assert.equal(beats([t(3,3)],[t(3,2)]),true);

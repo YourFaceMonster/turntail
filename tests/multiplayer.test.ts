@@ -5,7 +5,7 @@ function make(n:number){const g=room('SIZE'+n,player('나'),true,n);for(let i=1;
 for(const n of [2,3,4]){
  const g=make(n),floor=60-n*startingHandSize(n);assert.equal(capacity(g),n);assert.equal(g.stacks.length*2,floor);assert.equal(dimensions(g).cols,n===2?6:n===3?5:4);assert.equal(g.players.flatMap(p=>p.hand).length,n*startingHandSize(n));
  assert.equal(new Set([...g.players.flatMap(p=>p.hand),...g.stacks.flat()].map(t=>t!.id)).size,60);
- g.turn=n-1;act(g,n-1,'draw',[],0);assert.equal(g.turn,0);
+ g.turn=n-1;g.trick=[tile(3)];g.lastBy=0;act(g,n-1,'draw',[],0);assert.equal(g.turn,0);
  const projected=view(g,g.players[0].token);assert.equal(projected.capacity,n);assert.equal(projected.players.filter(p=>p.hand!==undefined).length,1);assert.equal(JSON.stringify(projected).includes(g.players[1].token),false);
  const d=dimensions(g);for(let i=0;i<g.stacks.length;i++){const y=Math.floor(i/d.cols),x=i%d.cols;if(y===0||x===0||y===d.rows-1||x===d.cols-1)assert.equal(accessible(g,i),true);}
 }

@@ -1,5 +1,5 @@
 import { env } from "cloudflare:workers";
-import {act,assertTurnReady,botMove,player,room,start,view,capacity,advanceRoom,hostSeat,type Game} from "../../../lib/game";
+import {act,assertTurnReady,botMove,player,room,start,view,capacity,advanceRoom,hostSeat,restartMatch,type Game} from "../../../lib/game";
 import {avatarImage,updateProfile,sendChat} from "../../../lib/social";
 import {LINEUP_SUMMARY_SQL,LINEUP_PLAYERS_SQL} from "../../../lib/history";
 export const dynamic="force-dynamic";
@@ -25,7 +25,7 @@ export async function POST(req:Request){try{
   const size=Number(b.size||3);if(![2,3,4].includes(size))throw Error("2·3·4인 중 선택해 주세요.");
   const p=player(String(b.name||"플레이어"));p.avatar=avatarImage(b.avatar);if(profile)p.profile=profile;
   for(let k=0;k<5;k++){
-   const code=crypto.randomUUID().replaceAll("-","").slice(0,6).toUpperCase();const g=room(code,p,!!b.practice,size);
+   const code=crypto.randomUUID().replaceAll("-","").slice(0,6).toUpperCase();const g=room(code,p,!!b.practice,size,{matchMode:b.matchMode,targetScore:b.targetScore});
    if(b.practice){for(let i=1;i<size;i++)g.players.push(player(["달빛","해솔","별하"][i-1],true));start(g);}
    const r=await db.prepare("INSERT OR IGNORE INTO rooms (code,revision,state,updated) VALUES (?,0,?,?)").bind(code,JSON.stringify(g),Date.now()).run();
    if(r.meta.changes)return reply({token:p.token,game:view(g,p.token),revision:0});
@@ -50,6 +50,7 @@ export async function POST(req:Request){try{
    else if(b.action==="chat"){if(g.practice)throw Error("채팅은 친구 대전에서 이용해 주세요.");sendChat(g,me,b.text,Date.now(),typeof b.messageId==="string"&&/^[a-f0-9-]{36}$/i.test(b.messageId)?b.messageId:crypto.randomUUID());}
    else if(b.action==="profile")updateProfile(g.players[me],b.name,b.avatar);
    else if(b.action==="start"){if(me!==hostSeat(g))throw Error("방장만 시작할 수 있어요.");if(g.phase==="playing")throw Error("이미 진행 중이에요.");start(g);}
+   else if(b.action==="restart"){if(me!==hostSeat(g))throw Error("방장만 새 매치를 시작할 수 있어요.");restartMatch(g);}
    else if(b.action==="bot"){assertTurnReady(g);if(!g.practice)throw Error("AI 차례는 자동으로 진행됩니다.");botMove(g);}
    else {assertTurnReady(g);act(g,me,b.action,Array.isArray(b.ids)?b.ids:[],b.index);}
    changed=true;

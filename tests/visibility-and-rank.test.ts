@@ -15,7 +15,7 @@ for(const size of [2,3,4]){
   assert.ok(projected.stacks.every(s=>s.upper&&s.lowerPresent&&s.lower===null));
   assert.equal(projected.stacks.reduce((n,s)=>n+Number(s.upper)+Number(s.lowerPresent),0),total);
  }
- act(g,g.turn,'draw',[],0);
+ g.trick=[tile(3)];g.lastBy=g.turn;act(g,g.turn,'draw',[],0);
  for(const p of g.players){
   const projected=view(g,p.token);
   assert.deepEqual(projected.stacks[0].lower,lower);
@@ -24,7 +24,7 @@ for(const size of [2,3,4]){
   assert.ok(projected.stacks.slice(1).every(s=>s.lower===null));
   assert.equal(projected.stacks.reduce((n,s)=>n+Number(s.upper)+Number(s.lowerPresent),0),total-1);
  }
- act(g,g.turn,'draw',[],0);
+ g.trick=[tile(3)];g.lastBy=g.turn;act(g,g.turn,'draw',[],0);
  const empty=view(g,g.players[0].token).stacks[0];
  assert.equal(empty.lowerPresent,false);assert.equal(empty.lower,null);assert.equal(empty.available,false);
 }

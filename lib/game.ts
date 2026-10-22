@@ -3,7 +3,7 @@ export type Player = {id:string,token:string,name:string,hand:Tile[],wins:number
 export type RoundResult = {id:string,at:number,round:number,players:{id:string,name:string,count:number,place:number,delta:number,total:number,winner:boolean}[],transfers:{from:number,to:number,points:number}[],voided?:boolean,voidReason?:string};
 export type GameEvent = {id:string,type:string,who:number,index?:number,tiles?:Tile[],label?:string,at?:number,rally?:number,concealed?:boolean};
 export type ChatMessage={id:string,who:number,name:string,text:string,at:number};
-export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number,playedTiles?:Tile[],publicDraws?:Record<string,Tile[]>,turnDeadline?:number,turnStartedAt?:number,aiAssisted?:boolean};
+export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number,playedTiles?:Tile[],publicDraws?:Record<string,Tile[]>,turnDeadline?:number,turnStartedAt?:number,aiAssisted?:boolean,matchMode?:"unlimited"|"target",targetScore?:number,matchWinner?:number|null,matchNo?:number,matchRoundOffset?:number,turnRuleVersion?:number};
 export function uid(){if(typeof crypto.randomUUID==="function")return crypto.randomUUID();const a=new Uint8Array(16);crypto.getRandomValues(a);a[6]=(a[6]&15)|64;a[8]=(a[8]&63)|128;const h=Array.from(a,n=>n.toString(16).padStart(2,"0")).join("");return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;}
 export const suits = ["구름","별","달","해"];
 export const symbols = ["☁","✦","☾","☀"];
@@ -38,9 +38,14 @@ export function accessible(g:Game,i:number){
  return [[r-1,c],[r+1,c],[r,c-1],[r,c+1]].some(([y,x])=>y<0||y>=rows||x<0||x>=cols||!g.stacks[y*cols+x]?.[z]);
 }
 export function player(name:string,bot=false):Player{return {id:uid(),token:uid(),name:name.trim().slice(0,12)||"플레이어",hand:[],wins:0,losses:0,games:0,points:0,bot};}
-export function room(code:string,p:Player,practice=false,size=3):Game{
+export function matchRules(mode:unknown="unlimited",target:unknown=100){
+ if(mode!=="unlimited"&&mode!=="target")throw Error("목표 점수 또는 무제한 모드를 선택해 주세요.");
+ const score=Number(target);if(mode==="target"&&(!Number.isInteger(score)||score<1||score>10000))throw Error("목표 점수는 1~10,000 사이 정수로 정해 주세요.");
+ return {matchMode:mode,targetScore:mode==="target"?score:0} as const;
+}
+export function room(code:string,p:Player,practice=false,size=3,rules:{matchMode?:unknown,targetScore?:unknown}={}):Game{
  if(![2,3,4].includes(size))throw Error("2·3·4인 중 선택해 주세요.");
- return {code,phase:"lobby",players:[p],stacks:[],turn:0,lastBy:null,trick:[],log:[],winner:null,round:0,practice,capacity:size,result:null};
+ return {code,phase:"lobby",players:[p],stacks:[],turn:0,lastBy:null,trick:[],log:[],winner:null,round:0,practice,capacity:size,result:null,...matchRules(rules.matchMode,rules.targetScore),matchWinner:null,matchNo:1};
 }
 export function lowestHandLead(players:Player[]){
  const candidates=players.flatMap((p,who)=>p.hand.map(tile=>({who,tile})));
@@ -48,20 +53,21 @@ export function lowestHandLead(players:Player[]){
  return candidates.reduce((best,t)=>rank(t.tile)*4+suitRank(t.tile.s)<rank(best.tile)*4+suitRank(best.tile.s)?t:best);
 }
 export const REVIEW_MS=1000;
-export const DEAL_REVIEW_MS=2000;
+export const DEAL_REVIEW_MS=3000;
 export const PLAY_REVIEW_MS=1600; // Flight + one second to read the play.
 export const DRAW_TRAVEL_MS=1500; // Public lower draw: centre review, collect. Hidden upper stays face-down.
-export const TURN_MS=15000,FINAL_TURN_MS=30000;
+export const TURN_MS=30000,FINAL_TURN_MS=60000;
 export const automated=(p:Player)=>!!(p.bot||p.replaced);
 export function hostSeat(g:Game){const at=g.players.findIndex(p=>!automated(p));return at<0?0:at;}
 export function scheduleTurn(g:Game,now=Date.now()){
- g.turnStartedAt=Math.max(now,g.turnReadyAt||0);
+ g.turnRuleVersion=2;g.turnStartedAt=Math.max(now,g.turnReadyAt||0);
  g.turnDeadline=g.practice||g.phase!=="playing"||automated(g.players[g.turn])?0:g.turnStartedAt+((g.players[g.turn].timeouts||0)>=2?FINAL_TURN_MS:TURN_MS);
 }
 /** One authoritative transition per request; compare-and-swap persistence prevents double actions. */
 export function advanceRoom(g:Game,now=Date.now()){
  if(g.phase!=="playing"||g.practice)return false;
  const p=g.players[g.turn];
+ if(!automated(p)&&g.turnRuleVersion!==2){scheduleTurn(g,now);return true;}
  if(automated(p)){if(now<Math.max(g.turnReadyAt||0,g.turnStartedAt||0)+450)return false;g.aiAssisted=true;botMove(g,now);return true;}
  if(!g.turnDeadline){scheduleTurn(g,now);return true;} // Safely start clocks for rooms created by older versions.
  if(now<g.turnDeadline)return false;
@@ -77,6 +83,7 @@ export function assertTurnReady(g:Game,now=Date.now()){if(now<(g.turnReadyAt||0)
 export function isRedTwoSingle(ts:Tile[]){return ts.length===1&&ts[0].n===2&&ts[0].s===3;}
 export function startingHandSize(size:number){return size===3?10:size===4?9:12;}
 export function start(g:Game,now=Date.now()){
+ if(g.matchWinner!==null&&g.matchWinner!==undefined)throw Error("목표 점수에 도달해 매치가 끝났어요. 새 매치를 시작해 주세요.");
  if(g.players.length!==capacity(g))throw Error(`${capacity(g)}명이 모이면 시작할 수 있어요.`);
  const deck:Tile[]=[];for(let n=1;n<=15;n++)for(let s=0;s<4;s++)deck.push({id:(n-1)*4+s,n,s});
  for(let i=deck.length-1;i>0;i--){let x=new Uint32Array(1);crypto.getRandomValues(x);const j=x[0]%(i+1);[deck[i],deck[j]]=[deck[j],deck[i]];}
@@ -86,6 +93,11 @@ export function start(g:Game,now=Date.now()){
  g.opening=lowestHandLead(g.players);g.turn=g.opening.who;
  g.turnReadyAt=now+DEAL_REVIEW_MS;g.aiAssisted=!g.practice&&g.players.some(automated);g.rally=0;g.playedTiles=[];g.publicDraws={};g.phase="playing";g.trick=[];g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
  g.lastEvent={id:uid(),type:"deal",who:g.turn,at:now};scheduleTurn(g,now);
+}
+export function restartMatch(g:Game,now=Date.now()){
+ if(g.phase!=="ended"||g.matchWinner===null||g.matchWinner===undefined)throw Error("목표 점수 매치가 끝난 뒤 새 매치를 시작할 수 있어요.");
+ for(const p of g.players){p.points=0;p.wins=0;p.losses=0;p.games=0;}
+ g.matchWinner=null;g.matchNo=(g.matchNo||1)+1;g.matchRoundOffset=g.round;start(g,now);
 }
 function note(g:Game,s:string){g.log=[s,...g.log].slice(0,40);}
 export function settle(g:Game):RoundResult{
@@ -99,6 +111,10 @@ export function settle(g:Game):RoundResult{
  }
  const players=g.players.map((p,i)=>{p.points=(p.points||0)+delta[i];if(!voided){p.games=(p.games||0)+1;if(i===g.winner)p.wins++;else p.losses=(p.losses||0)+1;}
  return {id:p.id,name:p.name,count:counts[i],place:1+counts.filter(c=>c<counts[i]).length,delta:delta[i],total:p.points,winner:i===g.winner};});
+ if(!voided&&g.matchMode==="target"){
+  const reached=g.players.map((p,i)=>({i,points:p.points||0,count:p.hand.length})).filter(p=>p.points>=(g.targetScore||100)).sort((a,b)=>b.points-a.points||a.count-b.count||a.i-b.i);
+  g.matchWinner=reached[0]?.i??null;
+ }
  g.result={id:`${g.code}:${g.round}`,at:Date.now(),round:g.round,players,transfers,voided,voidReason:voided?"AI가 대신 진행한 참가자가 있어 전적과 점수를 반영하지 않아요.":undefined};return g.result;
 }
 export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now=Date.now(),automatic=false){
@@ -114,6 +130,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   note(g,`${p.name} · ${combo(tiles)!.label} ${tiles.length}개 제출`);
   if(!p.hand.length){g.phase="ended";g.turnDeadline=0;g.winner=who;if(!automatic)p.timeouts=0;settle(g);note(g,g.result?.voided?`${p.name} 손패 소진 · AI 대체로 무효 경기입니다.`:`${p.name} 승리! 손패를 모두 냈습니다.`);return;}
  }else if(action==="draw"){
+  if(!g.trick.length)throw Error("선을 잡은 차례에는 패를 반드시 내야 해요.");
   if(!Number.isInteger(index)||!accessible(g,index))throw Error("밝게 표시된 외곽 타일만 가져올 수 있어요.");
   const z=g.stacks[index][1]?1:0,t=g.stacks[index][z]!;g.stacks[index][z]=null;p.hand=sorted([...p.hand,t]);
   g.publicDraws=g.publicDraws||{};if(z===0)g.publicDraws[p.id]=[...(g.publicDraws[p.id]||[]),t];
@@ -130,9 +147,9 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
 export function view(g:Game,token:string){
  const me=g.players.findIndex(p=>p.token===token);if(me<0)throw Error("입장 정보가 없어요. 방 코드로 다시 입장해 주세요.");
  const event=g.lastEvent;const lastEvent=event?.type==="draw"&&event.concealed&&event.who!==me?{...event,tiles:undefined}:event;
- return {code:g.code,phase:g.phase,capacity:capacity(g),...dimensions(g),turn:g.turn,turnDeadline:g.turnDeadline||0,turnStartedAt:g.turnStartedAt||0,host:hostSeat(g),turnReadyAt:g.turnReadyAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,log:g.log,winner:g.winner,round:g.round,practice:g.practice,played:g.playedTiles||g.trick,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent,me,
+ return {code:g.code,phase:g.phase,matchMode:g.matchMode||"unlimited",targetScore:g.targetScore||0,matchWinner:g.matchWinner??null,matchNo:g.matchNo||1,displayRound:g.round-(g.matchRoundOffset||0),capacity:capacity(g),...dimensions(g),turn:g.turn,turnDeadline:g.turnDeadline||0,turnStartedAt:g.turnStartedAt||0,host:hostSeat(g),turnReadyAt:g.turnReadyAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,log:g.log,winner:g.winner,round:g.round,practice:g.practice,played:g.playedTiles||g.trick,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent,me,
  players:g.players.map((p,i)=>({id:p.id,name:p.name,avatar:p.avatar||"",count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,replaced:!!p.replaced,timeouts:p.timeouts||0,known:g.publicDraws?.[p.id]||[],hand:i===me||(g.practice&&g.phase==="ended")?p.hand:undefined})),
- stacks:g.stacks.map((s,i)=>({lower:s[1]?null:s[0],lowerPresent:!!s[0],upper:!!s[1],available:accessible(g,i)}))};
+ stacks:g.stacks.map((s,i)=>({lower:s[1]?null:s[0],lowerPresent:!!s[0],upper:!!s[1],available:!!g.trick.length&&accessible(g,i)}))};
 }
 export function findMove(hand:Tile[],trick:Tile[]):Tile[]|null{
  const h=sorted(hand),counts=trick.length?[trick.length]:[5,3,2,1];
@@ -220,7 +237,7 @@ export function chooseBotAction(position:BotPosition):BotAction{
  }
  // A known lower tile can complete a five-tile combination and save more turns than
  // the current small play. Hidden upper tiles are never evaluated for their identity.
- if(best&&!urgent&&minCount>=3&&best.tiles.length<=2&&draw?.s.lower&&drawPlan+1<bestAfter&&drawPlan<before)return {type:'draw',index:draw.index};
+ if(best&&position.trick.length>0&&!urgent&&minCount>=3&&best.tiles.length<=2&&draw?.s.lower&&drawPlan+1<bestAfter&&drawPlan<before)return {type:'draw',index:draw.index};
  if(best)return {type:'play',tiles:best.tiles};
  return draw?{type:'draw',index:draw.index}:{type:'pass'};
 }
