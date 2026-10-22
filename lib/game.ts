@@ -3,7 +3,7 @@ export type Player = {id:string,token:string,name:string,hand:Tile[],wins:number
 export type RoundResult = {id:string,at:number,round:number,players:{id:string,name:string,count:number,place:number,delta:number,total:number,winner:boolean}[],transfers:{from:number,to:number,points:number}[]};
 export type GameEvent = {id:string,type:string,who:number,index?:number,tiles?:Tile[],label?:string,at?:number,rally?:number};
 export type ChatMessage={id:string,who:number,name:string,text:string,at:number};
-export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number};
+export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number,playedTiles?:Tile[],publicDraws?:Record<string,Tile[]>};
 export function uid(){if(typeof crypto.randomUUID==="function")return crypto.randomUUID();const a=new Uint8Array(16);crypto.getRandomValues(a);a[6]=(a[6]&15)|64;a[8]=(a[8]&63)|128;const h=Array.from(a,n=>n.toString(16).padStart(2,"0")).join("");return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;}
 export const suits = ["구름","별","달","해"];
 export const symbols = ["☁","✦","☾","☀"];
@@ -47,8 +47,9 @@ export function lowestHandLead(players:Player[]){
  if(!candidates.length)throw Error("선 결정에 필요한 손패가 없어요.");
  return candidates.reduce((best,t)=>rank(t.tile)*4+suitRank(t.tile.s)<rank(best.tile)*4+suitRank(best.tile.s)?t:best);
 }
-export const PLAY_REVIEW_MS=2500; // 500ms flight followed by 2 seconds to read the play.
-export const DRAW_TRAVEL_MS=850;
+export const REVIEW_MS=1000;
+export const PLAY_REVIEW_MS=1600; // Flight + one second to read the play.
+export const DRAW_TRAVEL_MS=2000; // Travel to centre, one-second reveal, collect.
 export function assertTurnReady(g:Game,now=Date.now()){if(now<(g.turnReadyAt||0))throw Error("낸 패를 확인하는 중이에요. 잠시 뒤 다음 차례가 시작돼요.");}
 export function isRedTwoSingle(ts:Tile[]){return ts.length===1&&ts[0].n===2&&ts[0].s===3;}
 export function startingHandSize(size:number){return size===3?10:12;}
@@ -60,7 +61,7 @@ export function start(g:Game){
  const stacks=deck.length/2;g.stacks=Array.from({length:stacks},()=>[deck.shift()!,deck.shift()!]);
  g.cols=capacity(g)===2?6:capacity(g)===4?3:5;g.rows=Math.ceil(stacks/g.cols);
  g.opening=lowestHandLead(g.players);g.turn=g.opening.who;
- g.turnReadyAt=0;g.rally=0;g.phase="playing";g.trick=[];g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
+ g.turnReadyAt=0;g.rally=0;g.playedTiles=[];g.publicDraws={};g.phase="playing";g.trick=[];g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
  g.lastEvent={id:uid(),type:"deal",who:g.turn};
 }
 function note(g:Game,s:string){g.log=[s,...g.log].slice(0,40);}
@@ -82,7 +83,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1){
   if(!ids.length||new Set(ids).size!==ids.length)throw Error("낼 타일을 선택해 주세요.");
   const ts=ids.map(id=>p.hand.find(t=>t.id===id));if(ts.some(t=>!t))throw Error("손패를 다시 확인해 주세요.");
   const tiles=ts as Tile[];if(!beats(tiles,g.trick))throw Error("같은 개수의 더 높은 조합을 내야 해요.");
-  p.hand=p.hand.filter(t=>!ids.includes(t.id));g.trick=tiles;g.lastBy=who;
+  p.hand=p.hand.filter(t=>!ids.includes(t.id));g.playedTiles=[...(g.playedTiles||[]),...tiles];if(g.publicDraws?.[p.id])g.publicDraws[p.id]=g.publicDraws[p.id].filter(t=>!ids.includes(t.id));g.trick=tiles;g.lastBy=who;
   g.rally=(g.rally||0)+1;g.turnReadyAt=Date.now()+PLAY_REVIEW_MS;
   g.lastEvent={id:uid(),type:"play",who,tiles,label:combo(tiles)!.label,at:Date.now(),rally:g.rally};
   note(g,`${p.name} · ${combo(tiles)!.label} ${tiles.length}개 제출`);
@@ -90,7 +91,8 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1){
  }else if(action==="draw"){
   if(!Number.isInteger(index)||!accessible(g,index))throw Error("밝게 표시된 외곽 타일만 가져올 수 있어요.");
   const z=g.stacks[index][1]?1:0,t=g.stacks[index][z]!;g.stacks[index][z]=null;p.hand=sorted([...p.hand,t]);
-  g.turnReadyAt=Date.now()+DRAW_TRAVEL_MS;g.lastEvent={id:uid(),type:"draw",who,index,at:Date.now()};note(g,`${p.name} · ${z===1?"위층 비공개":"아래층 공개"} 패 1개 가져오기`);
+  g.publicDraws=g.publicDraws||{};g.publicDraws[p.id]=[...(g.publicDraws[p.id]||[]),t];
+  g.turnReadyAt=Date.now()+DRAW_TRAVEL_MS;g.lastEvent={id:uid(),type:"draw",who,index,tiles:[t],at:Date.now()};note(g,`${p.name} · ${z===1?"위층 비공개":"아래층 공개"} 패 1개 가져오기`);
  }else if(action==="pass"){
   if(g.stacks.some(s=>s[0]||s[1]))throw Error("바닥 패가 남아 있으면 내거나 가져와야 해요.");
   if(!g.trick.length)throw Error("새 선에서는 타일을 내야 해요.");g.turnReadyAt=0;g.lastEvent={id:uid(),type:"pass",who,at:Date.now()};note(g,`${p.name} · 패스`);
@@ -100,8 +102,8 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1){
 }
 export function view(g:Game,token:string){
  const me=g.players.findIndex(p=>p.token===token);if(me<0)throw Error("입장 정보가 없어요. 방 코드로 다시 입장해 주세요.");
- return {code:g.code,phase:g.phase,capacity:capacity(g),...dimensions(g),turn:g.turn,turnReadyAt:g.turnReadyAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,log:g.log,winner:g.winner,round:g.round,practice:g.practice,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent:g.lastEvent,me,
- players:g.players.map((p,i)=>({id:p.id,name:p.name,avatar:p.avatar||"",count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,hand:i===me||g.phase==="ended"?p.hand:undefined})),
+ return {code:g.code,phase:g.phase,capacity:capacity(g),...dimensions(g),turn:g.turn,turnReadyAt:g.turnReadyAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,log:g.log,winner:g.winner,round:g.round,practice:g.practice,played:g.playedTiles||g.trick,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent:g.lastEvent,me,
+ players:g.players.map((p,i)=>({id:p.id,name:p.name,avatar:p.avatar||"",count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,known:g.publicDraws?.[p.id]||[],hand:i===me||g.phase==="ended"?p.hand:undefined})),
  stacks:g.stacks.map((s,i)=>({lower:s[1]?null:s[0],lowerPresent:!!s[0],upper:!!s[1],available:accessible(g,i)}))};
 }
 export function findMove(hand:Tile[],trick:Tile[]):Tile[]|null{
@@ -113,12 +115,11 @@ export function findMove(hand:Tile[],trick:Tile[]):Tile[]|null{
  }return null;
 }
 export function botMove(g:Game){
- const who=g.turn,p=g.players[who];if(!p.bot||g.phase!=="playing")return;
- const choice=findMove(p.hand,g.trick);if(choice)act(g,who,"play",choice.map(t=>t.id));
- else {const visible=view(g,p.token),available=visible.stacks.map((_,i)=>i).filter(i=>visible.stacks[i].available);
- // Draw choices use the same revealed floor information that human players receive.
- let best=available[0];for(const i of available){const lower=visible.stacks[i].lower;if(lower&&p.hand.some(t=>t.n===lower.n)){best=i;break;}}
- if(best!==undefined)act(g,who,"draw",[],best);else act(g,who,"pass");}
+ const p=g.players[g.turn];if(!p?.bot||g.phase!=="playing")return;
+ const decision=chooseBotAction(view(g,p.token));
+ if(decision.type==="play")act(g,g.turn,"play",decision.tiles.map(t=>t.id));
+ else if(decision.type==="draw")act(g,g.turn,"draw",[],decision.index);
+ else act(g,g.turn,"pass");
 }
 
 export type LegalOption={id:string,label:string,tiles:Tile[],key:number[]};
@@ -143,4 +144,72 @@ export function legalOptions(hand:Tile[],trick:Tile[]):LegalOption[]{
   }
  }
  return out.sort((a,b)=>a.tiles.length-b.tiles.length||cmp(a.key,b.key)||a.id.localeCompare(b.id));
+}
+
+export type BotPosition=ReturnType<typeof view>;
+export type BotAction={type:'play',tiles:Tile[]}|{type:'draw',index:number}|{type:'pass'};
+const strength=(t:Tile)=>rank(t)*4+suitRank(t.s);
+/** Only the bot's hand and information already public at the table enter this policy. */
+export function chooseBotAction(position:BotPosition):BotAction{
+ const hand=position.players[position.me]?.hand||[],others=position.players.filter((_,i)=>i!==position.me);
+ const options=legalOptions(hand,position.trick),all=position.trick.length?legalOptions(hand,[]):options;
+ const winning=options.find(o=>o.tiles.length===hand.length);if(winning)return {type:'play',tiles:winning.tiles};
+ // Secure first place when an unanswerable play leaves one complete final combination.
+ const forced=options.find(o=>{const ids=new Set(o.tiles.map(t=>t.id)),left=hand.filter(t=>!ids.has(t.id)),c=combo(o.tiles)!;if(!combo(left))return false;
+ const absolute=o.tiles.length<5?c.key[1]===16&&c.key[2]===3:c.key[0]===5&&c.key[1]===17&&c.key[2]===3;
+ return absolute||others.every(p=>p.count<o.tiles.length||(p.known.length===p.count&&!legalOptions(p.known,o.tiles).length));});
+ if(forced)return {type:'play',tiles:forced.tiles};
+
+ const minCount=Math.min(...others.map(p=>p.count)),urgent=minCount===1||(minCount===2&&position.trick.length!==1);
+ if(!urgent){const opening=findMove(hand,position.trick);if(opening)return {type:'play',tiles:opening};const available=position.stacks.map((s,index)=>({s,index})).filter(x=>x.s.available),draw=available.find(x=>x.s.lower&&hand.some(t=>t.n===x.s.lower!.n))||available[0];return draw?{type:'draw',index:draw.index}:{type:'pass'};}
+
+ const plan=handPlan(hand,all),before=plan(hand),used=new Set([...hand,...position.played,...position.stacks.flatMap(s=>s.lower?[s.lower]:[]),...others.flatMap(p=>p.known)].map(t=>t.id));
+ const pool:Tile[]=[];for(let n=1;n<=15;n++)for(let s=0;s<4;s++){const t={id:(n-1)*4+s,n,s};if(!used.has(t.id))pool.push(t);}
+ let best:LegalOption|undefined,bestScore=-Infinity;
+ for(const o of options){
+  const ids=new Set(o.tiles.map(t=>t.id)),remaining=hand.filter(t=>!ids.has(t.id)),after=plan(remaining);
+  const risks=others.map(p=>({p,beat:counterChance(o.tiles,p.count,p.known,pool)}));
+  const control=risks.reduce((v,r)=>v*(1-r.beat),1),otherTotal=others.reduce((v,p)=>v+p.count,0),settlementRisk=risks.reduce((v,r)=>v+(r.p.count===o.tiles.length?r.beat*Math.max(0,remaining.length*others.length-(otherTotal-r.p.count)):0),0);
+  const blocksLeader=others.some(p=>p.count===minCount&&p.count<o.tiles.length);
+  const consumed=o.tiles.reduce((v,t)=>v+strength(t),0)/4;
+  // Settlement is pairwise remaining-count differences: every shed tile saves points.
+  // Under threat prefer batches the leader cannot answer, and high singles to hold the lead.
+  const score=o.tiles.length*32+(before-after)*9+control*18
+   +(blocksLeader?20:0)-settlementRisk*2.5-consumed*.04-after;
+
+  if(score>bestScore+1e-8){best=o;bestScore=score;}
+ }
+ const available=position.stacks.map((s,index)=>({s,index})).filter(x=>x.s.available);
+ let draw=available[0],drawValue=-Infinity;
+ for(const candidate of available){const t=candidate.s.lower;let value=0;if(t){const matches=hand.filter(x=>x.n===t.n).length;value=matches*8+(rank(t)>=15?4:0);if(hand.length<=14)value+=(before-handPlan([...hand,t],legalOptions([...hand,t],[]))([...hand,t]))*12;}if(value>drawValue){draw=candidate;drawValue=value;}}
+ if(best)return {type:'play',tiles:best.tiles};
+ return draw?{type:'draw',index:draw.index}:{type:'pass'};
+}
+function handPlan(hand:Tile[],all:LegalOption[]){
+ const index=new Map(hand.map((t,i)=>[t.id,i])),cache=new Map<number,number>([[0,0]]);let budget=6000;
+ const rough=(ts:Tile[])=>{const groups=new Map<number,number>();for(const t of ts)groups.set(t.n,(groups.get(t.n)||0)+1);return [...groups.values()].reduce((n,k)=>n+Math.ceil(k/3),0);};
+ if(hand.length>16)return rough;
+ const groups=Array.from({length:hand.length},()=>[] as {mask:number,count:number}[]);
+ for(const o of all){const mask=o.tiles.reduce((m,t)=>m|(1<<index.get(t.id)!),0);for(const t of o.tiles)groups[index.get(t.id)!].push({mask,count:o.tiles.length});}
+ groups.forEach(xs=>xs.sort((a,b)=>b.count-a.count));
+ const visit=(mask:number):number=>{const cached=cache.get(mask);if(cached!==undefined)return cached;const count=bitCount(mask);if(--budget<0)return Math.ceil(count/3)+.5;const first=31-Math.clz32(mask&-mask);let value=count;
+ for(const g of groups[first])if((mask&g.mask)===g.mask){value=Math.min(value,1+visit(mask^g.mask));if(value<=Math.ceil(count/5))break;}
+ cache.set(mask,value);return value;};
+ return (ts:Tile[])=>visit(ts.reduce((m,t)=>m|(1<<index.get(t.id)!),0));
+}
+function bitCount(mask:number){let n=0;while(mask){mask&=mask-1;n++;}return n;}
+function chooseCount(n:number,k:number){if(k<0||k>n)return 0;let v=1;for(let i=1;i<=Math.min(k,n-k);i++)v=v*(n-i+1)/i;return v;}
+function atLeast(n:number,good:number,k:number,needed:number){if(needed<=0)return 1;if(k<needed||good<needed||!n)return 0;const total=chooseCount(n,k);if(!total)return 0;let value=0;for(let i=needed;i<=Math.min(k,good);i++)value+=chooseCount(good,i)*chooseCount(n-good,k-i)/total;return Math.min(1,value);}
+function counterChance(tiles:Tile[],count:number,known:Tile[],pool:Tile[]){
+ const size=tiles.length;if(count<size)return 0;if(known.length===count)return legalOptions(known,tiles).length?1:0;
+ const hidden=Math.max(0,count-known.length),c=combo(tiles)!;
+ if(size===1){if(known.some(t=>beats([t],tiles)))return 1;return atLeast(pool.length,pool.filter(t=>beats([t],tiles)).length,hidden,1);}
+ if(size===2||size===3){let chance=0;const power=c.key[1],suit=c.key[2],total=chooseCount(pool.length,hidden);for(let n=1;n<=15;n++){const r=rank({id:0,n,s:0});if(r<power)continue;const visible=known.filter(t=>t.n===n),unknown=pool.filter(t=>t.n===n);
+ if(visible.length>=size&&(r>power||visible.some(t=>suitRank(t.s)>suit)))return 1;
+ if(!total)continue;
+ for(let mask=0;mask<(1<<unknown.length);mask++){const subset=unknown.filter((_,i)=>mask&(1<<i));if(visible.length+subset.length<size)continue;if(r===power&&![...visible,...subset].some(t=>suitRank(t.s)>suit))continue;chance+=chooseCount(pool.length-unknown.length,hidden-subset.length)/total;}}
+ return Math.min(.98,chance);}
+
+ // Unknown five-tile counters are estimated by family strength; exact known hands use rules above.
+ return Math.min(.9,([.45,.34,.22,.10,.025,0][c.key[0]]||.01)*Math.max(.4,(count-3)/5));
 }

@@ -10,3 +10,30 @@ export function selectableTileIds(selected:number[],options:LegalOption[],wanted
  const candidates=wanted===1?options:options.filter(o=>o.tiles.length>selected.length&&selected.every(id=>o.tiles.some(t=>t.id===id)));
  return new Set([...selected,...candidates.flatMap(o=>o.tiles.map(t=>t.id))]);
 }
+
+/** One tap selects a whole pair/triple; five-tile patterns retain manual control. */
+export function tapTileSelection(selected:number[],id:number,options:LegalOption[],wanted:number,mode=0):number[]{
+ const count=wanted||mode;
+ if(count===5){
+  const old=options.find(o=>o.id===[...selected].sort((a,b)=>a-b).join(','));
+  if(old?.label==='포카드'&&!selected.includes(id)){
+   const numbers=new Map<number,number>();for(const t of old.tiles)numbers.set(t.n,(numbers.get(t.n)||0)+1);
+   const four=old.tiles.filter(t=>numbers.get(t.n)===4).map(t=>t.id),replacement=[...four,id];
+   if(options.some(o=>o.tiles.length===5&&replacement.every(x=>o.tiles.some(t=>t.id===x))))return replacement;
+  }
+  return toggleTileSelection(selected,id,options,5);
+ }
+ if(count===1)return toggleTileSelection(selected,id,options,1);
+ if(selected.includes(id))return [];
+ const choices=options.filter(o=>o.tiles.some(t=>t.id===id)&&(count?o.tiles.length===count:o.tiles.length<=3));
+ choices.sort((a,b)=>count?0:b.tiles.length-a.tiles.length);
+ return choices[0]?.tiles.map(t=>t.id)||selected;
+}
+export function tapSelectableTileIds(selected:number[],options:LegalOption[],wanted:number,mode=0){
+ const count=wanted||mode;
+ if(count===5){const old=options.find(o=>o.id===[...selected].sort((a,b)=>a-b).join(','));
+  if(old?.label==='포카드'){const numbers=new Map<number,number>();for(const t of old.tiles)numbers.set(t.n,(numbers.get(t.n)||0)+1);const four=old.tiles.filter(t=>numbers.get(t.n)===4).map(t=>t.id);return new Set(options.filter(o=>four.every(id=>o.tiles.some(t=>t.id===id))).flatMap(o=>o.tiles.map(t=>t.id)));}
+  return selectableTileIds(selected,options,5);
+ }
+ return new Set(options.filter(o=>count?o.tiles.length===count:o.tiles.length<=3).flatMap(o=>o.tiles.map(t=>t.id)));
+}
