@@ -41,16 +41,16 @@ function SpecialMotif({s,n}:{s:number,n:number}){
  </>;
 }
 /** The exact same art and body render in hand, flight and table. */
-export default function TileFace({tile:t,small=false,flat=false}:{tile:Tile,small?:boolean,flat?:boolean}){
+export default function TileFace({tile:t,small=false}:{tile:Tile,small?:boolean}){
  const special=t.n===2,ink=colors[t.s];
  return <span data-tile-id={t.id} data-number={t.n} data-suit={t.s} className={`tile face suit${t.s} ${small?'small':''} ${special?`special-${t.n===1?'one':'two'}`:''}`} style={{color:ink}}>
- <svg className="tile-art" viewBox={flat?"0 0 100 100":"0 0 100 132"} aria-hidden="true" focusable="false" fill={ink}>
+ <svg className="tile-art" viewBox="0 0 100 132" aria-hidden="true" focusable="false" fill={ink}>
  {special?<>
-  <text className="special-number" x="10" y="31" fontFamily="Arial,sans-serif" fontWeight="800" fontSize="28">{t.n}</text>
-  <g className="special-motif" data-motif={`${t.s}:${t.n}`} transform={`translate(50 ${flat?62:t.s===2?76:78}) scale(${flat?.58:t.s===2?.79:.87})`}><SpecialMotif s={t.s} n={t.n}/></g>
+  <text className="special-number" x="8" y="43" fontFamily="Arial,sans-serif" fontWeight="800" fontSize="44">{t.n}</text>
+  <g className="special-motif" data-motif={`${t.s}:${t.n}`} transform={`translate(50 ${t.s===2?88:90}) scale(${t.s===2?.66:.72})`}><SpecialMotif s={t.s} n={t.n}/></g>
  </>:<>
-  <text className="tile-number" x="49" y={flat?72:79} textAnchor="middle" fontFamily="Arial,sans-serif" fontWeight="900" fontSize={flat?(t.n>9?76:86):(t.n>9?66:78)} letterSpacing="-4">{t.n}</text>
-  <g transform={flat?"translate(50 89) scale(.23)":"translate(50 108) scale(.37)"}><Motif s={t.s}/></g>
+  <text className="tile-number" x="49" y="79" textAnchor="middle" fontFamily="Arial,sans-serif" fontWeight="900" fontSize={t.n>9?66:78} letterSpacing="-4">{t.n}</text>
+  <g transform="translate(50 108) scale(.37)"><Motif s={t.s}/></g>
  </>}
  </svg></span>;
 }
