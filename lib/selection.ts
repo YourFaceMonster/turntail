@@ -24,10 +24,13 @@ export function tapTileSelection(selected:number[],id:number,options:LegalOption
   return toggleTileSelection(selected,id,options,5);
  }
  if(count===1)return toggleTileSelection(selected,id,options,1);
- if(selected.includes(id))return [];
+ if(selected.includes(id))return selected.filter(x=>x!==id);
  const choices=options.filter(o=>o.tiles.some(t=>t.id===id)&&(count?o.tiles.length===count:o.tiles.length<=3));
  choices.sort((a,b)=>count?0:b.tiles.length-a.tiles.length);
- return choices[0]?.tiles.map(t=>t.id)||selected;
+ const size=count||choices[0]?.tiles.length;
+ const keep=selected.length>=size?selected.slice(1):selected;
+ const preferred=choices.find(o=>o.tiles.length===size&&keep.every(x=>o.tiles.some(t=>t.id===x)));
+ return (preferred||choices[0])?.tiles.map(t=>t.id)||selected;
 }
 export function tapSelectableTileIds(selected:number[],options:LegalOption[],wanted:number,mode=0){
  const count=wanted||mode;

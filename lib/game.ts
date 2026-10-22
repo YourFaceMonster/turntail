@@ -1,9 +1,9 @@
 export type Tile = {id:number,n:number,s:number};
 export type Player = {id:string,token:string,name:string,hand:Tile[],wins:number,bot?:boolean,points?:number,losses?:number,games?:number,profile?:string,avatar?:string,timeouts?:number,replaced?:boolean};
-export type RoundResult = {id:string,at:number,round:number,players:{id:string,name:string,count:number,place:number,delta:number,total:number,winner:boolean}[],transfers:{from:number,to:number,points:number}[]};
+export type RoundResult = {id:string,at:number,round:number,players:{id:string,name:string,count:number,place:number,delta:number,total:number,winner:boolean}[],transfers:{from:number,to:number,points:number}[],voided?:boolean,voidReason?:string};
 export type GameEvent = {id:string,type:string,who:number,index?:number,tiles?:Tile[],label?:string,at?:number,rally?:number,concealed?:boolean};
 export type ChatMessage={id:string,who:number,name:string,text:string,at:number};
-export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number,playedTiles?:Tile[],publicDraws?:Record<string,Tile[]>,turnDeadline?:number,turnStartedAt?:number};
+export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number,playedTiles?:Tile[],publicDraws?:Record<string,Tile[]>,turnDeadline?:number,turnStartedAt?:number,aiAssisted?:boolean};
 export function uid(){if(typeof crypto.randomUUID==="function")return crypto.randomUUID();const a=new Uint8Array(16);crypto.getRandomValues(a);a[6]=(a[6]&15)|64;a[8]=(a[8]&63)|128;const h=Array.from(a,n=>n.toString(16).padStart(2,"0")).join("");return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;}
 export const suits = ["구름","별","달","해"];
 export const symbols = ["☁","✦","☾","☀"];
@@ -31,7 +31,7 @@ export function combo(ts:Tile[]):{label:string,key:number[]}|null {
 }
 export function beats(ts:Tile[],old:Tile[]){const a=combo(ts),b=combo(old);return !!a&&(!old.length||(ts.length===old.length&&!!b&&cmp(a.key,b.key)>0));}
 export function capacity(g:Game){return g.capacity||3;}
-export function dimensions(g:Game){const cols=g.cols||(capacity(g)===2?6:capacity(g)===4?3:g.stacks.length===15?5:4);return {cols,rows:g.rows||Math.ceil(g.stacks.length/cols)};}
+export function dimensions(g:Game){const cols=g.cols||(capacity(g)===2?6:capacity(g)===4?(g.stacks.length===12?4:3):g.stacks.length===15?5:4);return {cols,rows:g.rows||Math.ceil(g.stacks.length/cols)};}
 export function accessible(g:Game,i:number){
  const st=g.stacks[i];if(!st||(!st[0]&&!st[1]))return false;
  const {cols,rows}=dimensions(g),z=st[1]?1:0,r=Math.floor(i/cols),c=i%cols;
@@ -48,8 +48,9 @@ export function lowestHandLead(players:Player[]){
  return candidates.reduce((best,t)=>rank(t.tile)*4+suitRank(t.tile.s)<rank(best.tile)*4+suitRank(best.tile.s)?t:best);
 }
 export const REVIEW_MS=1000;
+export const DEAL_REVIEW_MS=2000;
 export const PLAY_REVIEW_MS=1600; // Flight + one second to read the play.
-export const DRAW_TRAVEL_MS=2000; // Public lower draw: centre review, collect. Hidden upper stays face-down.
+export const DRAW_TRAVEL_MS=1500; // Public lower draw: centre review, collect. Hidden upper stays face-down.
 export const TURN_MS=15000,FINAL_TURN_MS=30000;
 export const automated=(p:Player)=>!!(p.bot||p.replaced);
 export function hostSeat(g:Game){const at=g.players.findIndex(p=>!automated(p));return at<0?0:at;}
@@ -61,10 +62,10 @@ export function scheduleTurn(g:Game,now=Date.now()){
 export function advanceRoom(g:Game,now=Date.now()){
  if(g.phase!=="playing"||g.practice)return false;
  const p=g.players[g.turn];
- if(automated(p)){if(now<Math.max(g.turnReadyAt||0,g.turnStartedAt||0)+450)return false;botMove(g,now);return true;}
+ if(automated(p)){if(now<Math.max(g.turnReadyAt||0,g.turnStartedAt||0)+450)return false;g.aiAssisted=true;botMove(g,now);return true;}
  if(!g.turnDeadline){scheduleTurn(g,now);return true;} // Safely start clocks for rooms created by older versions.
  if(now<g.turnDeadline)return false;
- p.timeouts=(p.timeouts||0)+1;if(p.timeouts>=3)p.replaced=true;
+ g.aiAssisted=true;p.timeouts=(p.timeouts||0)+1;if(p.timeouts>=3)p.replaced=true;
  const who=g.turn,decision=chooseBotAction(view(g,p.token));
  if(decision.type==="play")act(g,who,"play",decision.tiles.map(t=>t.id),-1,now,true);
  else if(decision.type==="draw")act(g,who,"draw",[],decision.index,now,true);
@@ -74,30 +75,31 @@ export function advanceRoom(g:Game,now=Date.now()){
 }
 export function assertTurnReady(g:Game,now=Date.now()){if(now<(g.turnReadyAt||0))throw Error("낸 패를 확인하는 중이에요. 잠시 뒤 다음 차례가 시작돼요.");}
 export function isRedTwoSingle(ts:Tile[]){return ts.length===1&&ts[0].n===2&&ts[0].s===3;}
-export function startingHandSize(size:number){return size===3?10:12;}
+export function startingHandSize(size:number){return size===3?10:size===4?9:12;}
 export function start(g:Game,now=Date.now()){
  if(g.players.length!==capacity(g))throw Error(`${capacity(g)}명이 모이면 시작할 수 있어요.`);
  const deck:Tile[]=[];for(let n=1;n<=15;n++)for(let s=0;s<4;s++)deck.push({id:(n-1)*4+s,n,s});
  for(let i=deck.length-1;i>0;i--){let x=new Uint32Array(1);crypto.getRandomValues(x);const j=x[0]%(i+1);[deck[i],deck[j]]=[deck[j],deck[i]];}
  for(const p of g.players){p.hand=sorted(deck.splice(0,startingHandSize(capacity(g))));p.timeouts=0;}
  const stacks=deck.length/2;g.stacks=Array.from({length:stacks},()=>[deck.shift()!,deck.shift()!]);
- g.cols=capacity(g)===2?6:capacity(g)===4?3:5;g.rows=Math.ceil(stacks/g.cols);
+ g.cols=capacity(g)===2?6:capacity(g)===4?4:5;g.rows=Math.ceil(stacks/g.cols);
  g.opening=lowestHandLead(g.players);g.turn=g.opening.who;
- g.turnReadyAt=0;g.rally=0;g.playedTiles=[];g.publicDraws={};g.phase="playing";g.trick=[];g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
- g.lastEvent={id:uid(),type:"deal",who:g.turn};scheduleTurn(g,now);
+ g.turnReadyAt=now+DEAL_REVIEW_MS;g.aiAssisted=!g.practice&&g.players.some(automated);g.rally=0;g.playedTiles=[];g.publicDraws={};g.phase="playing";g.trick=[];g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
+ g.lastEvent={id:uid(),type:"deal",who:g.turn,at:now};scheduleTurn(g,now);
 }
 function note(g:Game,s:string){g.log=[s,...g.log].slice(0,40);}
 export function settle(g:Game):RoundResult{
  if(g.result)return g.result;
  if(g.phase!=="ended"||g.winner===null)throw Error("라운드가 끝난 뒤 정산합니다.");
+ const voided=!g.practice&&!!g.aiAssisted;
  const counts=g.players.map(p=>p.hand.length),delta=counts.map(()=>0),transfers:RoundResult["transfers"]=[];
  for(let i=0;i<counts.length;i++)for(let j=i+1;j<counts.length;j++){
-  const diff=counts[j]-counts[i];delta[i]+=diff;delta[j]-=diff;
+  const diff=voided?0:counts[j]-counts[i];delta[i]+=diff;delta[j]-=diff;
   if(diff)transfers.push({from:diff>0?j:i,to:diff>0?i:j,points:Math.abs(diff)});
  }
- const players=g.players.map((p,i)=>{p.points=(p.points||0)+delta[i];p.games=(p.games||0)+1;if(i===g.winner)p.wins++;else p.losses=(p.losses||0)+1;
+ const players=g.players.map((p,i)=>{p.points=(p.points||0)+delta[i];if(!voided){p.games=(p.games||0)+1;if(i===g.winner)p.wins++;else p.losses=(p.losses||0)+1;}
  return {id:p.id,name:p.name,count:counts[i],place:1+counts.filter(c=>c<counts[i]).length,delta:delta[i],total:p.points,winner:i===g.winner};});
- g.result={id:`${g.code}:${g.round}`,at:Date.now(),round:g.round,players,transfers};return g.result;
+ g.result={id:`${g.code}:${g.round}`,at:Date.now(),round:g.round,players,transfers,voided,voidReason:voided?"AI가 대신 진행한 참가자가 있어 전적과 점수를 반영하지 않아요.":undefined};return g.result;
 }
 export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now=Date.now(),automatic=false){
  if(g.phase!=="playing"||g.turn!==who)throw Error("지금은 내 차례가 아니에요.");const p=g.players[who];
@@ -110,7 +112,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   g.rally=(g.rally||0)+1;g.turnReadyAt=now+PLAY_REVIEW_MS;
   g.lastEvent={id:uid(),type:"play",who,tiles,label:combo(tiles)!.label,at:now,rally:g.rally};
   note(g,`${p.name} · ${combo(tiles)!.label} ${tiles.length}개 제출`);
-  if(!p.hand.length){g.phase="ended";g.turnDeadline=0;g.winner=who;if(!automatic)p.timeouts=0;settle(g);note(g,`${p.name} 승리! 손패를 모두 냈습니다.`);return;}
+  if(!p.hand.length){g.phase="ended";g.turnDeadline=0;g.winner=who;if(!automatic)p.timeouts=0;settle(g);note(g,g.result?.voided?`${p.name} 손패 소진 · AI 대체로 무효 경기입니다.`:`${p.name} 승리! 손패를 모두 냈습니다.`);return;}
  }else if(action==="draw"){
   if(!Number.isInteger(index)||!accessible(g,index))throw Error("밝게 표시된 외곽 타일만 가져올 수 있어요.");
   const z=g.stacks[index][1]?1:0,t=g.stacks[index][z]!;g.stacks[index][z]=null;p.hand=sorted([...p.hand,t]);
@@ -129,7 +131,7 @@ export function view(g:Game,token:string){
  const me=g.players.findIndex(p=>p.token===token);if(me<0)throw Error("입장 정보가 없어요. 방 코드로 다시 입장해 주세요.");
  const event=g.lastEvent;const lastEvent=event?.type==="draw"&&event.concealed&&event.who!==me?{...event,tiles:undefined}:event;
  return {code:g.code,phase:g.phase,capacity:capacity(g),...dimensions(g),turn:g.turn,turnDeadline:g.turnDeadline||0,turnStartedAt:g.turnStartedAt||0,host:hostSeat(g),turnReadyAt:g.turnReadyAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,log:g.log,winner:g.winner,round:g.round,practice:g.practice,played:g.playedTiles||g.trick,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent,me,
- players:g.players.map((p,i)=>({id:p.id,name:p.name,avatar:p.avatar||"",count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,replaced:!!p.replaced,timeouts:p.timeouts||0,known:g.publicDraws?.[p.id]||[],hand:i===me||g.phase==="ended"?p.hand:undefined})),
+ players:g.players.map((p,i)=>({id:p.id,name:p.name,avatar:p.avatar||"",count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,replaced:!!p.replaced,timeouts:p.timeouts||0,known:g.publicDraws?.[p.id]||[],hand:i===me||(g.practice&&g.phase==="ended")?p.hand:undefined})),
  stacks:g.stacks.map((s,i)=>({lower:s[1]?null:s[0],lowerPresent:!!s[0],upper:!!s[1],available:accessible(g,i)}))};
 }
 export function findMove(hand:Tile[],trick:Tile[]):Tile[]|null{
@@ -142,6 +144,7 @@ export function findMove(hand:Tile[],trick:Tile[]):Tile[]|null{
 }
 export function botMove(g:Game,now=Date.now()){
  const p=g.players[g.turn];if(!p||!automated(p)||g.phase!=="playing")return;
+ if(!g.practice)g.aiAssisted=true;
  const decision=chooseBotAction(view(g,p.token));
  if(decision.type==="play")act(g,g.turn,"play",decision.tiles.map(t=>t.id),-1,now,true);
  else if(decision.type==="draw")act(g,g.turn,"draw",[],decision.index,now,true);
@@ -187,11 +190,9 @@ export function chooseBotAction(position:BotPosition):BotAction{
  if(forced)return {type:'play',tiles:forced.tiles};
 
  const minCount=Math.min(...others.map(p=>p.count)),urgent=minCount===1||(minCount===2&&position.trick.length!==1);
- if(!urgent){const opening=findMove(hand,position.trick);if(opening)return {type:'play',tiles:opening};const available=position.stacks.map((s,index)=>({s,index})).filter(x=>x.s.available),draw=available.find(x=>x.s.lower&&hand.some(t=>t.n===x.s.lower!.n))||available[0];return draw?{type:'draw',index:draw.index}:{type:'pass'};}
-
  const plan=handPlan(hand,all),before=plan(hand),used=new Set([...hand,...position.played,...position.stacks.flatMap(s=>s.lower?[s.lower]:[]),...others.flatMap(p=>p.known)].map(t=>t.id));
  const pool:Tile[]=[];for(let n=1;n<=15;n++)for(let s=0;s<4;s++){const t={id:(n-1)*4+s,n,s};if(!used.has(t.id))pool.push(t);}
- let best:LegalOption|undefined,bestScore=-Infinity;
+ let best:LegalOption|undefined,bestScore=-Infinity,bestAfter=Infinity;
  for(const o of options){
   const ids=new Set(o.tiles.map(t=>t.id)),remaining=hand.filter(t=>!ids.has(t.id)),after=plan(remaining);
   const risks=others.map(p=>({p,beat:counterChance(o.tiles,p.count,p.known,pool)}));
@@ -200,14 +201,26 @@ export function chooseBotAction(position:BotPosition):BotAction{
   const consumed=o.tiles.reduce((v,t)=>v+strength(t),0)/4;
   // Settlement is pairwise remaining-count differences: every shed tile saves points.
   // Under threat prefer batches the leader cannot answer, and high singles to hold the lead.
-  const score=o.tiles.length*32+(before-after)*9+control*18
-   +(blocksLeader?20:0)-settlementRisk*2.5-consumed*.04-after;
+  const twos=o.tiles.filter(t=>t.n===2).length,finishingCombo=!!combo(remaining);
+  const twoCost=twos*(finishingCombo?7:o.tiles.length===5?14:30)+(twos&&!finishingCombo&&control>.98?12:0);
+  const score=urgent?o.tiles.length*32+(before-after)*9+control*18
+   +(blocksLeader?20:0)-settlementRisk*2.5-consumed*.04-after:
+   o.tiles.length*32+(before-after)*9-twoCost-consumed*.12-after;
 
-  if(score>bestScore+1e-8){best=o;bestScore=score;}
+  if(score>bestScore+1e-8){best=o;bestScore=score;bestAfter=after;}
  }
  const available=position.stacks.map((s,index)=>({s,index})).filter(x=>x.s.available);
- let draw=available[0],drawValue=-Infinity;
- for(const candidate of available){const t=candidate.s.lower;let value=0;if(t){const matches=hand.filter(x=>x.n===t.n).length;value=matches*8+(rank(t)>=15?4:0);if(hand.length<=14)value+=(before-handPlan([...hand,t],legalOptions([...hand,t],[]))([...hand,t]))*12;}if(value>drawValue){draw=candidate;drawValue=value;}}
+ let draw=available[0],drawValue=-Infinity,drawPlan=Infinity;
+ for(const candidate of available){const t=candidate.s.lower;let value=-5,nextPlan=Infinity;
+  if(t){const matches=hand.filter(x=>x.n===t.n).length,augmented=[...hand,t],future=legalOptions(augmented,[]);nextPlan=handPlan(augmented,future)(augmented);
+   const linked=future.filter(o=>o.tiles.length>=3&&o.tiles.some(x=>x.id===t.id));
+   value=(before-nextPlan)*30+matches*6+(linked.some(o=>o.tiles.length===5)?12:0)+(rank(t)>=15?3:0);
+  }
+  if(value>drawValue){draw=candidate;drawValue=value;drawPlan=nextPlan;}
+ }
+ // A known lower tile can complete a five-tile combination and save more turns than
+ // the current small play. Hidden upper tiles are never evaluated for their identity.
+ if(best&&!urgent&&minCount>=3&&best.tiles.length<=2&&draw?.s.lower&&drawPlan+1<bestAfter&&drawPlan<before)return {type:'draw',index:draw.index};
  if(best)return {type:'play',tiles:best.tiles};
  return draw?{type:'draw',index:draw.index}:{type:'pass'};
 }

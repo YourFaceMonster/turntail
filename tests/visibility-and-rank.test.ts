@@ -9,7 +9,7 @@ const make=(size:number)=>{
 };
 
 for(const size of [2,3,4]){
- const g=make(size),total=size===3?30:60-size*12,lower=g.stacks[0][0];
+ const g=make(size),total=size===3?30:size===4?24:36,lower=g.stacks[0][0];
  for(const p of g.players){
   const projected=view(g,p.token);
   assert.ok(projected.stacks.every(s=>s.upper&&s.lowerPresent&&s.lower===null));

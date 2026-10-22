@@ -57,7 +57,7 @@ export async function POST(req:Request){try{
   if(!changed)return reply({token,game:view(g,token),revision:row.revision});
   const eventId=g.lastEvent?.id||crypto.randomUUID(),now=Date.now();
   const statements=[db.prepare("UPDATE rooms SET state=?,revision=revision+1,updated=? WHERE code=? AND revision=?").bind(JSON.stringify(g),now,code,row.revision)];
-  if(!wasEnded&&g.phase==="ended"&&g.result&&!g.practice){
+  if(!wasEnded&&g.phase==="ended"&&g.result&&!g.result.voided&&!g.practice){
    for(let i=0;i<g.players.length;i++){
     const p=g.players[i],r=g.result.players[i];if(!p.profile||p.bot)continue;
     statements.push(db.prepare("INSERT OR IGNORE INTO match_records (id,device,name,at,win,points,size,result) SELECT ?,?,?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM rooms WHERE code=? AND revision=? AND json_extract(state,'$.lastEvent.id')=?)").bind(`${g.code}:${g.round}:${p.id}`,p.profile,p.name,g.result.at,Number(r.winner),r.delta,capacity(g),JSON.stringify(g.result),code,row.revision+1,eventId));
