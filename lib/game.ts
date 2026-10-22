@@ -1,9 +1,9 @@
 export type Tile = {id:number,n:number,s:number};
 export type Player = {id:string,token:string,name:string,hand:Tile[],wins:number,bot?:boolean,points?:number,losses?:number,games?:number,profile?:string,avatar?:string};
 export type RoundResult = {id:string,at:number,round:number,players:{id:string,name:string,count:number,place:number,delta:number,total:number,winner:boolean}[],transfers:{from:number,to:number,points:number}[]};
-export type GameEvent = {id:string,type:string,who:number,index?:number,tiles?:Tile[],label?:string};
+export type GameEvent = {id:string,type:string,who:number,index?:number,tiles?:Tile[],label?:string,at?:number,rally?:number};
 export type ChatMessage={id:string,who:number,name:string,text:string,at:number};
-export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile}};
+export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number};
 export function uid(){if(typeof crypto.randomUUID==="function")return crypto.randomUUID();const a=new Uint8Array(16);crypto.getRandomValues(a);a[6]=(a[6]&15)|64;a[8]=(a[8]&63)|128;const h=Array.from(a,n=>n.toString(16).padStart(2,"0")).join("");return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;}
 export const suits = ["구름","별","달","해"];
 export const symbols = ["☁","✦","☾","☀"];
@@ -47,6 +47,10 @@ export function lowestHandLead(players:Player[]){
  if(!candidates.length)throw Error("선 결정에 필요한 손패가 없어요.");
  return candidates.reduce((best,t)=>rank(t.tile)*4+suitRank(t.tile.s)<rank(best.tile)*4+suitRank(best.tile.s)?t:best);
 }
+export const PLAY_REVIEW_MS=2500; // 500ms flight followed by 2 seconds to read the play.
+export const DRAW_TRAVEL_MS=850;
+export function assertTurnReady(g:Game,now=Date.now()){if(now<(g.turnReadyAt||0))throw Error("낸 패를 확인하는 중이에요. 잠시 뒤 다음 차례가 시작돼요.");}
+export function isRedTwoSingle(ts:Tile[]){return ts.length===1&&ts[0].n===2&&ts[0].s===3;}
 export function startingHandSize(size:number){return size===3?10:12;}
 export function start(g:Game){
  if(g.players.length!==capacity(g))throw Error(`${capacity(g)}명이 모이면 시작할 수 있어요.`);
@@ -56,7 +60,7 @@ export function start(g:Game){
  const stacks=deck.length/2;g.stacks=Array.from({length:stacks},()=>[deck.shift()!,deck.shift()!]);
  g.cols=capacity(g)===2?6:capacity(g)===4?3:5;g.rows=Math.ceil(stacks/g.cols);
  g.opening=lowestHandLead(g.players);g.turn=g.opening.who;
- g.phase="playing";g.trick=[];g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
+ g.turnReadyAt=0;g.rally=0;g.phase="playing";g.trick=[];g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
  g.lastEvent={id:uid(),type:"deal",who:g.turn};
 }
 function note(g:Game,s:string){g.log=[s,...g.log].slice(0,40);}
@@ -79,23 +83,24 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1){
   const ts=ids.map(id=>p.hand.find(t=>t.id===id));if(ts.some(t=>!t))throw Error("손패를 다시 확인해 주세요.");
   const tiles=ts as Tile[];if(!beats(tiles,g.trick))throw Error("같은 개수의 더 높은 조합을 내야 해요.");
   p.hand=p.hand.filter(t=>!ids.includes(t.id));g.trick=tiles;g.lastBy=who;
-  g.lastEvent={id:uid(),type:"play",who,tiles,label:combo(tiles)!.label};
+  g.rally=(g.rally||0)+1;g.turnReadyAt=Date.now()+PLAY_REVIEW_MS;
+  g.lastEvent={id:uid(),type:"play",who,tiles,label:combo(tiles)!.label,at:Date.now(),rally:g.rally};
   note(g,`${p.name} · ${combo(tiles)!.label} ${tiles.length}개 제출`);
   if(!p.hand.length){g.phase="ended";g.winner=who;settle(g);note(g,`${p.name} 승리! 손패를 모두 냈습니다.`);return;}
  }else if(action==="draw"){
   if(!Number.isInteger(index)||!accessible(g,index))throw Error("밝게 표시된 외곽 타일만 가져올 수 있어요.");
   const z=g.stacks[index][1]?1:0,t=g.stacks[index][z]!;g.stacks[index][z]=null;p.hand=sorted([...p.hand,t]);
-  g.lastEvent={id:uid(),type:"draw",who,index};note(g,`${p.name} · ${z===1?"위층 비공개":"아래층 공개"} 패 1개 가져오기`);
+  g.turnReadyAt=Date.now()+DRAW_TRAVEL_MS;g.lastEvent={id:uid(),type:"draw",who,index,at:Date.now()};note(g,`${p.name} · ${z===1?"위층 비공개":"아래층 공개"} 패 1개 가져오기`);
  }else if(action==="pass"){
   if(g.stacks.some(s=>s[0]||s[1]))throw Error("바닥 패가 남아 있으면 내거나 가져와야 해요.");
-  if(!g.trick.length)throw Error("새 선에서는 타일을 내야 해요.");g.lastEvent={id:uid(),type:"pass",who};note(g,`${p.name} · 패스`);
+  if(!g.trick.length)throw Error("새 선에서는 타일을 내야 해요.");g.turnReadyAt=0;g.lastEvent={id:uid(),type:"pass",who,at:Date.now()};note(g,`${p.name} · 패스`);
  }else throw Error("지원하지 않는 동작이에요.");
  g.turn=(who+1)%g.players.length;
- if(g.lastBy===g.turn){g.trick=[];g.lastBy=null;note(g,`${g.players[g.turn].name}이 선을 잡았습니다.`);}
+ if(g.lastBy===g.turn){g.rally=0;g.trick=[];g.lastBy=null;note(g,`${g.players[g.turn].name}이 선을 잡았습니다.`);}
 }
 export function view(g:Game,token:string){
  const me=g.players.findIndex(p=>p.token===token);if(me<0)throw Error("입장 정보가 없어요. 방 코드로 다시 입장해 주세요.");
- return {code:g.code,phase:g.phase,capacity:capacity(g),...dimensions(g),turn:g.turn,lastBy:g.lastBy,trick:g.trick,log:g.log,winner:g.winner,round:g.round,practice:g.practice,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent:g.lastEvent,me,
+ return {code:g.code,phase:g.phase,capacity:capacity(g),...dimensions(g),turn:g.turn,turnReadyAt:g.turnReadyAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,log:g.log,winner:g.winner,round:g.round,practice:g.practice,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent:g.lastEvent,me,
  players:g.players.map((p,i)=>({id:p.id,name:p.name,avatar:p.avatar||"",count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,hand:i===me||g.phase==="ended"?p.hand:undefined})),
  stacks:g.stacks.map((s,i)=>({lower:s[1]?null:s[0],lowerPresent:!!s[0],upper:!!s[1],available:accessible(g,i)}))};
 }

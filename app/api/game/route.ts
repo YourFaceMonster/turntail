@@ -1,5 +1,5 @@
 import { env } from "cloudflare:workers";
-import {act,botMove,player,room,start,view,capacity,type Game} from "../../../lib/game";
+import {act,assertTurnReady,botMove,player,room,start,view,capacity,type Game} from "../../../lib/game";
 import {avatarImage,updateProfile,sendChat} from "../../../lib/social";
 import {LINEUP_SUMMARY_SQL,LINEUP_PLAYERS_SQL} from "../../../lib/history";
 export const dynamic="force-dynamic";
@@ -47,8 +47,8 @@ export async function POST(req:Request){try{
    if(b.action==="chat"){if(g.practice)throw Error("채팅은 친구 대전에서 이용해 주세요.");sendChat(g,me,b.text,Date.now(),typeof b.messageId==="string"&&/^[a-f0-9-]{36}$/i.test(b.messageId)?b.messageId:crypto.randomUUID());}
    else if(b.action==="profile")updateProfile(g.players[me],b.name,b.avatar);
    else if(b.action==="start"){if(me!==0)throw Error("방장만 시작할 수 있어요.");if(g.phase==="playing")throw Error("이미 진행 중이에요.");start(g);}
-   else if(b.action==="bot"){if(!g.practice)throw Error("친구 대전에서는 사용할 수 없어요.");botMove(g);}
-   else act(g,me,b.action,Array.isArray(b.ids)?b.ids:[],b.index);
+   else if(b.action==="bot"){assertTurnReady(g);if(!g.practice)throw Error("친구 대전에서는 사용할 수 없어요.");botMove(g);}
+   else {assertTurnReady(g);act(g,me,b.action,Array.isArray(b.ids)?b.ids:[],b.index);}
    changed=true;
   }
   if(!changed)return reply({token,game:view(g,token),revision:row.revision});
