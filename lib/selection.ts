@@ -13,7 +13,7 @@ export function selectableTileIds(selected:number[],options:LegalOption[],wanted
 
 /** One tap selects a whole pair/triple; five-tile patterns retain manual control. */
 export function tapTileSelection(selected:number[],id:number,options:LegalOption[],wanted:number,mode=0):number[]{
- const count=wanted||mode;
+ const count=wanted||(mode===5?5:0);
  if(count===5){
   const old=options.find(o=>o.id===[...selected].sort((a,b)=>a-b).join(','));
   if(old?.label==='포카드'&&!selected.includes(id)){
@@ -25,18 +25,23 @@ export function tapTileSelection(selected:number[],id:number,options:LegalOption
  }
  if(count===1)return toggleTileSelection(selected,id,options,1);
  if(selected.includes(id))return selected.filter(x=>x!==id);
- const choices=options.filter(o=>o.tiles.some(t=>t.id===id)&&(count?o.tiles.length===count:o.tiles.length<=3));
- choices.sort((a,b)=>count?0:b.tiles.length-a.tiles.length);
- const size=count||choices[0]?.tiles.length;
- const keep=selected.length>=size?selected.slice(1):selected;
- const preferred=choices.find(o=>o.tiles.length===size&&keep.every(x=>o.tiles.some(t=>t.id===x)));
+ if(!count){
+  const next=[...selected,id];
+  if(options.some(o=>next.every(x=>o.tiles.some(t=>t.id===x))))return next;
+  return options.some(o=>o.tiles.length===1&&o.tiles[0].id===id)?[id]:selected;
+ }
+ const choices=options.filter(o=>o.tiles.length===count&&o.tiles.some(t=>t.id===id));
+ if(!selected.length){const number=choices[0]?.tiles.find(t=>t.id===id)?.n;return (options.find(o=>o.tiles.length===count&&o.tiles.every(t=>t.n===number))||choices[0])?.tiles.map(t=>t.id)||selected;}
+ const keep=selected.length>=count?selected.slice(1):selected;
+ const preferred=choices.find(o=>keep.every(x=>o.tiles.some(t=>t.id===x)));
  return (preferred||choices[0])?.tiles.map(t=>t.id)||selected;
 }
+
 export function tapSelectableTileIds(selected:number[],options:LegalOption[],wanted:number,mode=0){
- const count=wanted||mode;
+ const count=wanted||(mode===5?5:0);
  if(count===5){const old=options.find(o=>o.id===[...selected].sort((a,b)=>a-b).join(','));
   if(old?.label==='포카드'){const numbers=new Map<number,number>();for(const t of old.tiles)numbers.set(t.n,(numbers.get(t.n)||0)+1);const four=old.tiles.filter(t=>numbers.get(t.n)===4).map(t=>t.id);return new Set(options.filter(o=>four.every(id=>o.tiles.some(t=>t.id===id))).flatMap(o=>o.tiles.map(t=>t.id)));}
   return selectableTileIds(selected,options,5);
  }
- return new Set(options.filter(o=>count?o.tiles.length===count:o.tiles.length<=3).flatMap(o=>o.tiles.map(t=>t.id)));
+ return new Set(options.filter(o=>count?o.tiles.length===count:true).flatMap(o=>o.tiles.map(t=>t.id)));
 }

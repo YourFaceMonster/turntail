@@ -1,6 +1,7 @@
 import { env } from "cloudflare:workers";
-import {act,assertTurnReady,botMove,player,room,start,view,capacity,advanceRoom,hostSeat,restartMatch,type Game} from "../../../lib/game";
+import {act,assertTurnReady,botMove,player,room,start,view,capacity,advanceRoom,hostSeat,restartMatch,revealHand,resetChallenge,type Game} from "../../../lib/game";
 import {avatarImage,updateProfile,sendChat} from "../../../lib/social";
+import {scoreEntries,mergeScores,type HighScore} from "../../../lib/challenge";
 import {LINEUP_SUMMARY_SQL,LINEUP_PLAYERS_SQL} from "../../../lib/history";
 export const dynamic="force-dynamic";
 function reply(x:unknown,status=200){return Response.json(x,{status,headers:{"Cache-Control":"no-store"}});}
@@ -13,6 +14,13 @@ export async function POST(req:Request){try{
  const origin=req.headers.get("origin");if(origin&&origin!==new URL(req.url).origin)return reply({error:"접속 주소를 확인해 주세요."},403);
  const b=await req.json() as any;const db=env.DB;if(!db)throw Error("게임 저장소에 연결하지 못했어요.");
  const profile=await deviceKey(b.profileToken);
+ if(b.action==="highscores"){
+  if(!profile)return reply({error:"기기 기록을 확인하지 못했어요."},400);
+  let scores:HighScore[]=[];
+  const rows=await db.prepare("SELECT id,size,result FROM match_records WHERE device=? AND json_extract(result,'$.challenge') IS NOT NULL ORDER BY at ASC").bind(profile).all();
+  for(const row of rows.results as any[]){const result=JSON.parse(row.result),me=result.players.findIndex((p:any)=>row.id===result.id+':'+p.id);if(me>=0)scores=mergeScores(scores,scoreEntries(result,me,'multi',row.size));}
+  return reply({scores});
+ }
  if(b.action==="history"){
   if(!profile)return reply({error:"기기 기록을 확인하지 못했어요."},400);
   const summary=await db.prepare("SELECT COUNT(*) AS games,COALESCE(SUM(win),0) AS wins,COALESCE(SUM(points),0) AS points FROM match_records WHERE device=?").bind(profile).first();
@@ -25,7 +33,7 @@ export async function POST(req:Request){try{
   const size=Number(b.size||3);if(![2,3,4].includes(size))throw Error("2·3·4인 중 선택해 주세요.");
   const p=player(String(b.name||"플레이어"));p.avatar=avatarImage(b.avatar);if(profile)p.profile=profile;
   for(let k=0;k<5;k++){
-   const code=crypto.randomUUID().replaceAll("-","").slice(0,6).toUpperCase();const g=room(code,p,!!b.practice,size,{matchMode:b.matchMode,targetScore:b.targetScore});
+   const code=crypto.randomUUID().replaceAll("-","").slice(0,6).toUpperCase();const g=room(code,p,!!b.practice,size,{matchMode:b.challenge?"unlimited":b.matchMode,targetScore:b.targetScore,challenge:!!b.challenge});
    if(b.practice){for(let i=1;i<size;i++)g.players.push(player(["달빛","해솔","별하"][i-1],true));start(g);}
    const r=await db.prepare("INSERT OR IGNORE INTO rooms (code,revision,state,updated) VALUES (?,0,?,?)").bind(code,JSON.stringify(g),Date.now()).run();
    if(r.meta.changes)return reply({token:p.token,game:view(g,p.token),revision:0});
@@ -44,10 +52,13 @@ export async function POST(req:Request){try{
    const me=g.players.findIndex(p=>p.token===token);if(me<0)return reply({error:"입장 정보가 없어요."},403);
    changed=advanceRoom(g,Date.now());
    if(b.action==="state"&&!changed)return reply({game:view(g,token),revision:row.revision});
-   skipped=changed&&!["state","chat","profile"].includes(b.action);
-   if(!changed&&!["state","chat","profile"].includes(b.action)&&b.revision!==row.revision&&(!b.eventId||b.eventId!==g.lastEvent?.id))return reply({error:"화면을 최신 상태로 맞췄어요. 다시 선택해 주세요.",game:view(g,token),revision:row.revision},409);
+   skipped=changed&&!["state","chat","profile","reveal","abandon"].includes(b.action);
+   if(!changed&&!["state","chat","profile","reveal","abandon"].includes(b.action)&&b.revision!==row.revision&&(!b.eventId||b.eventId!==g.lastEvent?.id))return reply({error:"화면을 최신 상태로 맞췄어요. 다시 선택해 주세요.",game:view(g,token),revision:row.revision},409);
    if(b.action==="state"||skipped){}
    else if(b.action==="chat"){if(g.practice)throw Error("채팅은 친구 대전에서 이용해 주세요.");sendChat(g,me,b.text,Date.now(),typeof b.messageId==="string"&&/^[a-f0-9-]{36}$/i.test(b.messageId)?b.messageId:crypto.randomUUID());}
+   else if(b.action==="reveal")revealHand(g,me,!!b.show);
+   else if(b.action==="abandon"){if(g.challenge&&!g.challenge.complete)g.challenge.abandoned=true;}
+   else if(b.action==="newChallenge"){if(me!==hostSeat(g))throw Error("방장만 시작할 수 있어요.");resetChallenge(g);}
    else if(b.action==="profile")updateProfile(g.players[me],b.name,b.avatar);
    else if(b.action==="start"){if(me!==hostSeat(g))throw Error("방장만 시작할 수 있어요.");if(g.phase==="playing")throw Error("이미 진행 중이에요.");start(g);}
    else if(b.action==="restart"){if(me!==hostSeat(g))throw Error("방장만 새 매치를 시작할 수 있어요.");restartMatch(g);}

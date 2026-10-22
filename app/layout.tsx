@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-export const metadata:Metadata={title:"렉시오 장성 | 친구들과 한 판",description:"패를 내거나, 길을 열거나. 2·3·4인 장성룰 타일 게임."};
+export const metadata:Metadata={title:"턴테일 TURNTALE | 한 장의 선택, 새로운 이야기",description:"네 가지 색의 패로 펼치는 전략 게임. AI 대전, 친구 대전, 10판 도전과 개인 하이스코어."};
 export const viewport:Viewport={width:"device-width",initialScale:1,viewportFit:"cover",themeColor:"#101c19"};
 export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="ko"><body>{children}</body></html>;}

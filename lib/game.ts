@@ -1,9 +1,10 @@
+import {newChallenge,advanceChallenge,type Challenge} from './challenge.ts';
 export type Tile = {id:number,n:number,s:number};
 export type Player = {id:string,token:string,name:string,hand:Tile[],wins:number,bot?:boolean,points?:number,losses?:number,games?:number,profile?:string,avatar?:string,timeouts?:number,replaced?:boolean};
-export type RoundResult = {id:string,at:number,round:number,players:{id:string,name:string,count:number,place:number,delta:number,total:number,winner:boolean}[],transfers:{from:number,to:number,points:number}[],voided?:boolean,voidReason?:string};
+export type RoundResult = {id:string,at:number,round:number,players:{id:string,name:string,count:number,place:number,delta:number,total:number,winner:boolean}[],transfers:{from:number,to:number,points:number}[],voided?:boolean,voidReason?:string,challenge?:Challenge|null};
 export type GameEvent = {id:string,type:string,who:number,index?:number,tiles?:Tile[],label?:string,at?:number,rally?:number,concealed?:boolean};
 export type ChatMessage={id:string,who:number,name:string,text:string,at:number};
-export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number,playedTiles?:Tile[],publicDraws?:Record<string,Tile[]>,turnDeadline?:number,turnStartedAt?:number,aiAssisted?:boolean,matchMode?:"unlimited"|"target",targetScore?:number,matchWinner?:number|null,matchNo?:number,matchRoundOffset?:number,turnRuleVersion?:number};
+export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number,playedTiles?:Tile[],publicDraws?:Record<string,Tile[]>,turnDeadline?:number,turnStartedAt?:number,aiAssisted?:boolean,matchMode?:"unlimited"|"target",targetScore?:number,matchWinner?:number|null,matchNo?:number,matchRoundOffset?:number,turnRuleVersion?:number,challenge?:Challenge|null,revealedHands?:string[]};
 export function uid(){if(typeof crypto.randomUUID==="function")return crypto.randomUUID();const a=new Uint8Array(16);crypto.getRandomValues(a);a[6]=(a[6]&15)|64;a[8]=(a[8]&63)|128;const h=Array.from(a,n=>n.toString(16).padStart(2,"0")).join("");return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;}
 export const suits = ["구름","별","달","해"];
 export const symbols = ["☁","✦","☾","☀"];
@@ -43,9 +44,9 @@ export function matchRules(mode:unknown="unlimited",target:unknown=100){
  const score=Number(target);if(mode==="target"&&(!Number.isInteger(score)||score<1||score>10000))throw Error("목표 점수는 1~10,000 사이 정수로 정해 주세요.");
  return {matchMode:mode,targetScore:mode==="target"?score:0} as const;
 }
-export function room(code:string,p:Player,practice=false,size=3,rules:{matchMode?:unknown,targetScore?:unknown}={}):Game{
+export function room(code:string,p:Player,practice=false,size=3,rules:{matchMode?:unknown,targetScore?:unknown,challenge?:boolean}={}):Game{
  if(![2,3,4].includes(size))throw Error("2·3·4인 중 선택해 주세요.");
- return {code,phase:"lobby",players:[p],stacks:[],turn:0,lastBy:null,trick:[],log:[],winner:null,round:0,practice,capacity:size,result:null,...matchRules(rules.matchMode,rules.targetScore),matchWinner:null,matchNo:1};
+ return {code,phase:"lobby",players:[p],stacks:[],turn:0,lastBy:null,trick:[],log:[],winner:null,round:0,practice,capacity:size,result:null,...matchRules(rules.matchMode,rules.targetScore),matchWinner:null,matchNo:1,challenge:rules.challenge?newChallenge(uid(),size):null};
 }
 export function lowestHandLead(players:Player[]){
  const candidates=players.flatMap((p,who)=>p.hand.map(tile=>({who,tile})));
@@ -83,6 +84,7 @@ export function assertTurnReady(g:Game,now=Date.now()){if(now<(g.turnReadyAt||0)
 export function isRedTwoSingle(ts:Tile[]){return ts.length===1&&ts[0].n===2&&ts[0].s===3;}
 export function startingHandSize(size:number){return size===3?10:size===4?9:12;}
 export function start(g:Game,now=Date.now()){
+ if(g.challenge?.complete)throw Error("10판 도전이 끝났어요. 새 도전을 시작해 주세요.");
  if(g.matchWinner!==null&&g.matchWinner!==undefined)throw Error("목표 점수에 도달해 매치가 끝났어요. 새 매치를 시작해 주세요.");
  if(g.players.length!==capacity(g))throw Error(`${capacity(g)}명이 모이면 시작할 수 있어요.`);
  const deck:Tile[]=[];for(let n=1;n<=15;n++)for(let s=0;s<4;s++)deck.push({id:(n-1)*4+s,n,s});
@@ -92,7 +94,7 @@ export function start(g:Game,now=Date.now()){
  g.cols=capacity(g)===2?6:capacity(g)===4?4:5;g.rows=Math.ceil(stacks/g.cols);
  g.opening=lowestHandLead(g.players);g.turn=g.opening.who;
  g.turnReadyAt=now+DEAL_REVIEW_MS;g.aiAssisted=!g.practice&&g.players.some(automated);g.rally=0;g.playedTiles=[];g.publicDraws={};g.phase="playing";g.trick=[];g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
- g.lastEvent={id:uid(),type:"deal",who:g.turn,at:now};scheduleTurn(g,now);
+ g.revealedHands=[];g.lastEvent={id:uid(),type:"deal",who:g.turn,at:now};scheduleTurn(g,now);
 }
 export function restartMatch(g:Game,now=Date.now()){
  if(g.phase!=="ended"||g.matchWinner===null||g.matchWinner===undefined)throw Error("목표 점수 매치가 끝난 뒤 새 매치를 시작할 수 있어요.");
@@ -115,7 +117,7 @@ export function settle(g:Game):RoundResult{
   const reached=g.players.map((p,i)=>({i,points:p.points||0,count:p.hand.length})).filter(p=>p.points>=(g.targetScore||100)).sort((a,b)=>b.points-a.points||a.count-b.count||a.i-b.i);
   g.matchWinner=reached[0]?.i??null;
  }
- g.result={id:`${g.code}:${g.round}`,at:Date.now(),round:g.round,players,transfers,voided,voidReason:voided?"AI가 대신 진행한 참가자가 있어 전적과 점수를 반영하지 않아요.":undefined};return g.result;
+ g.result={id:`${g.code}:${g.round}`,at:Date.now(),round:g.round,players,transfers,voided,voidReason:voided?"AI가 대신 진행한 참가자가 있어 전적과 점수를 반영하지 않아요.":undefined};if(g.challenge){g.challenge=advanceChallenge(g.challenge,g.result);g.result.challenge=structuredClone(g.challenge);}return g.result;
 }
 export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now=Date.now(),automatic=false){
  if(g.phase!=="playing"||g.turn!==who)throw Error("지금은 내 차례가 아니에요.");const p=g.players[who];
@@ -147,8 +149,8 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
 export function view(g:Game,token:string){
  const me=g.players.findIndex(p=>p.token===token);if(me<0)throw Error("입장 정보가 없어요. 방 코드로 다시 입장해 주세요.");
  const event=g.lastEvent;const lastEvent=event?.type==="draw"&&event.concealed&&event.who!==me?{...event,tiles:undefined}:event;
- return {code:g.code,phase:g.phase,matchMode:g.matchMode||"unlimited",targetScore:g.targetScore||0,matchWinner:g.matchWinner??null,matchNo:g.matchNo||1,displayRound:g.round-(g.matchRoundOffset||0),capacity:capacity(g),...dimensions(g),turn:g.turn,turnDeadline:g.turnDeadline||0,turnStartedAt:g.turnStartedAt||0,host:hostSeat(g),turnReadyAt:g.turnReadyAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,log:g.log,winner:g.winner,round:g.round,practice:g.practice,played:g.playedTiles||g.trick,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent,me,
- players:g.players.map((p,i)=>({id:p.id,name:p.name,avatar:p.avatar||"",count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,replaced:!!p.replaced,timeouts:p.timeouts||0,known:g.publicDraws?.[p.id]||[],hand:i===me||(g.practice&&g.phase==="ended")?p.hand:undefined})),
+ return {code:g.code,phase:g.phase,matchMode:g.matchMode||"unlimited",targetScore:g.targetScore||0,matchWinner:g.matchWinner??null,matchNo:g.matchNo||1,displayRound:g.round-(g.matchRoundOffset||0),capacity:capacity(g),...dimensions(g),turn:g.turn,turnDeadline:g.turnDeadline||0,turnStartedAt:g.turnStartedAt||0,host:hostSeat(g),turnReadyAt:g.turnReadyAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,log:g.log,winner:g.winner,round:g.round,practice:g.practice,challenge:g.challenge||null,revealedHands:g.revealedHands||[],played:g.playedTiles||g.trick,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent,me,
+ players:g.players.map((p,i)=>({id:p.id,name:p.name,avatar:p.avatar||"",count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,replaced:!!p.replaced,timeouts:p.timeouts||0,known:g.publicDraws?.[p.id]||[],hand:i===me||(g.phase==="ended"&&(g.practice||!!g.revealedHands?.includes(p.id)))?p.hand:undefined})),
  stacks:g.stacks.map((s,i)=>({lower:s[1]?null:s[0],lowerPresent:!!s[0],upper:!!s[1],available:!!g.trick.length&&accessible(g,i)}))};
 }
 export function findMove(hand:Tile[],trick:Tile[]):Tile[]|null{
@@ -201,9 +203,7 @@ export function chooseBotAction(position:BotPosition):BotAction{
  const options=legalOptions(hand,position.trick),all=position.trick.length?legalOptions(hand,[]):options;
  const winning=options.find(o=>o.tiles.length===hand.length);if(winning)return {type:'play',tiles:winning.tiles};
  // Secure first place when an unanswerable play leaves one complete final combination.
- const forced=options.find(o=>{const ids=new Set(o.tiles.map(t=>t.id)),left=hand.filter(t=>!ids.has(t.id)),c=combo(o.tiles)!;if(!combo(left))return false;
- const absolute=o.tiles.length<5?c.key[1]===16&&c.key[2]===3:c.key[0]===5&&c.key[1]===17&&c.key[2]===3;
- return absolute||others.every(p=>p.count<o.tiles.length||(p.known.length===p.count&&!legalOptions(p.known,o.tiles).length));});
+ const forced=secureFinish(position,hand,options);
  if(forced)return {type:'play',tiles:forced.tiles};
 
  const minCount=Math.min(...others.map(p=>p.count)),urgent=minCount===1||(minCount===2&&position.trick.length!==1);
@@ -269,3 +269,18 @@ function counterChance(tiles:Tile[],count:number,known:Tile[],pool:Tile[]){
  // Unknown five-tile counters are estimated by family strength; exact known hands use rules above.
  return Math.min(.9,([.45,.34,.22,.10,.025,0][c.key[0]]||.01)*Math.max(.4,(count-3)/5));
 }
+
+/** Search two control plays plus the finish; only use public information. */
+function secureFinish(position:BotPosition,hand:Tile[],options:LegalOption[]):LegalOption|undefined{
+ const others=position.players.filter((_,i)=>i!==position.me),floor=position.stacks.reduce((n,s)=>n+Number(s.upper)+Number(s.lowerPresent),0);
+ let budget=350;const guaranteed=(o:LegalOption)=>{const c=combo(o.tiles)!;return (o.tiles.length<5?c.key[1]===16&&c.key[2]===3:c.key[0]===5&&c.key[1]===17&&c.key[2]===3)||others.every(p=>p.count<o.tiles.length||(p.known.length===p.count&&!legalOptions(p.known,o.tiles).length));};
+ const search=(ts:Tile[],moves:LegalOption[],depth:number):{move:LegalOption,gain:number}|null=>{let best:{move:LegalOption,gain:number}|null=null;
+ for(const o of moves){if(--budget<0)break;if(!guaranteed(o))continue;const ids=new Set(o.tiles.map(t=>t.id)),left=ts.filter(t=>!ids.has(t.id));if(!left.length)continue;
+ const drawGain=Math.min(floor,others.length),finishes=!!combo(left);let gain=finishes?drawGain:-Infinity;
+ // Additional guaranteed controls are safe only if the hand already has a certain finish.
+ if(finishes&&depth>0&&left.length<=8&&floor>drawGain){const follow=search(left,legalOptions(left,[]),depth-1);if(follow)gain=Math.max(gain,drawGain+follow.gain);}
+ if(Number.isFinite(gain)&&(!best||gain>best.gain))best={move:o,gain};
+ }return best;};return search(hand,options,1)?.move;
+}
+export function revealHand(g:Game,who:number,show:boolean){if(g.practice||g.phase!=='ended'||g.winner===who)throw Error('멀티 종료 후 패배한 참가자만 자신의 패를 공개할 수 있어요.');g.revealedHands=(g.revealedHands||[]).filter(id=>id!==g.players[who].id);if(show)g.revealedHands.push(g.players[who].id);}
+export function resetChallenge(g:Game){if(g.phase!=='ended'||!g.challenge?.complete)throw Error('10판 완료 후 새 도전을 시작해 주세요.');g.challenge=newChallenge(uid(),capacity(g));g.players.forEach(p=>p.points=0);g.matchWinner=null;start(g);}
