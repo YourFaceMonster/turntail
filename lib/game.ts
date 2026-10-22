@@ -6,24 +6,25 @@ export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[]
 export function uid(){if(typeof crypto.randomUUID==="function")return crypto.randomUUID();const a=new Uint8Array(16);crypto.getRandomValues(a);a[6]=(a[6]&15)|64;a[8]=(a[8]&63)|128;const h=Array.from(a,n=>n.toString(16).padStart(2,"0")).join("");return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;}
 export const suits = ["구름","별","달","해"];
 export const symbols = ["☁","✦","☾","☀"];
+export function suitRank(s:number){return [0,2,1,3][s];}
 export function rank(t:Tile){return t.n===2?16:t.n===1?15:t.n-1;}
-export function sorted(ts:Tile[]){return [...ts].sort((a,b)=>rank(a)-rank(b)||a.s-b.s);}
+export function sorted(ts:Tile[]){return [...ts].sort((a,b)=>rank(a)-rank(b)||suitRank(a.s)-suitRank(b.s));}
 function cmp(a:number[],b:number[]){for(let i=0;i<Math.max(a.length,b.length);i++){let d=(a[i]||0)-(b[i]||0);if(d)return d;}return 0;}
 export function combo(ts:Tile[]):{label:string,key:number[]}|null {
  if(![1,2,3,5].includes(ts.length)||new Set(ts.map(t=>t.id)).size!==ts.length)return null;
  const ss=sorted(ts),max=ss[ss.length-1];
- if(ts.length===1)return {label:"싱글",key:[0,rank(max),max.s]};
+ if(ts.length===1)return {label:"싱글",key:[0,rank(max),suitRank(max.s)]};
  const groups=new Map<number,Tile[]>();for(const t of ts)groups.set(t.n,[...(groups.get(t.n)||[]),t]);
- if(ts.length<5)return groups.size===1?{label:ts.length===2?"페어":"트리플",key:[0,rank(max),max.s]}:null;
+ if(ts.length<5)return groups.size===1?{label:ts.length===2?"페어":"트리플",key:[0,rank(max),suitRank(max.s)]}:null;
  const nums=[...groups.keys()].sort((a,b)=>a-b),flush=ts.every(t=>t.s===ts[0].s);
  let straight=nums.length===5&&nums.every((n,i)=>i===0||n===nums[i-1]+1);
  if(nums.join(",")==="1,12,13,14,15")straight=true;
- const straightKey=[nums.join(",")==="1,2,3,4,5"?17:rank(max),max.s];
+ const straightKey=[nums.join(",")==="1,2,3,4,5"?17:rank(max),suitRank(max.s)];
  if(straight&&flush)return {label:"스트레이트 플러시",key:[5,...straightKey]};
  const four=[...groups.values()].find(g=>g.length===4),three=[...groups.values()].find(g=>g.length===3);
  if(four)return {label:"포카드",key:[4,rank(four[0])]};
  if(three&&groups.size===2)return {label:"풀하우스",key:[3,rank(three[0])]};
- if(flush)return {label:"플러시",key:[2,...[...ss].reverse().map(rank),max.s]};
+ if(flush)return {label:"플러시",key:[2,...[...ss].reverse().map(rank),suitRank(max.s)]};
  if(straight)return {label:"스트레이트",key:[1,...straightKey]};
  return null;
 }
@@ -47,7 +48,7 @@ export function start(g:Game){
  for(const p of g.players)p.hand=sorted(deck.splice(0,12));
  const stacks=deck.length/2;g.stacks=Array.from({length:stacks},()=>[deck.shift()!,deck.shift()!]);
  g.cols=capacity(g)===2?6:capacity(g)===4?3:4;g.rows=Math.ceil(stacks/g.cols);
- const weakest=g.players.map(p=>sorted(p.hand)[0]);g.turn=weakest.reduce((best,t,i)=>rank(t)*4+t.s<rank(weakest[best])*4+weakest[best].s?i:best,0);
+ const weakest=g.players.map(p=>sorted(p.hand)[0]);g.turn=weakest.reduce((best,t,i)=>rank(t)*4+suitRank(t.s)<rank(weakest[best])*4+suitRank(weakest[best].s)?i:best,0);
  g.phase="playing";g.trick=[];g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · ${g.players[g.turn].name}부터 시작합니다.`];
  g.lastEvent={id:uid(),type:"deal",who:g.turn};
 }
@@ -89,7 +90,7 @@ export function view(g:Game,token:string){
  const me=g.players.findIndex(p=>p.token===token);if(me<0)throw Error("입장 정보가 없어요. 방 코드로 다시 입장해 주세요.");
  return {code:g.code,phase:g.phase,capacity:capacity(g),...dimensions(g),turn:g.turn,lastBy:g.lastBy,trick:g.trick,log:g.log,winner:g.winner,round:g.round,practice:g.practice,result:g.result||null,lastEvent:g.lastEvent,me,
  players:g.players.map((p,i)=>({id:p.id,name:p.name,count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,hand:i===me||g.phase==="ended"?p.hand:undefined})),
- stacks:g.stacks.map((s,i)=>({lower:s[0],upper:!!s[1],available:accessible(g,i)}))};
+ stacks:g.stacks.map((s,i)=>({lower:s[1]?null:s[0],lowerPresent:!!s[0],upper:!!s[1],available:accessible(g,i)}))};
 }
 export function findMove(hand:Tile[],trick:Tile[]):Tile[]|null{
  const h=sorted(hand),counts=trick.length?[trick.length]:[5,3,2,1];
@@ -102,8 +103,32 @@ export function findMove(hand:Tile[],trick:Tile[]):Tile[]|null{
 export function botMove(g:Game){
  const who=g.turn,p=g.players[who];if(!p.bot||g.phase!=="playing")return;
  const choice=findMove(p.hand,g.trick);if(choice)act(g,who,"play",choice.map(t=>t.id));
- else {const available=g.stacks.map((_,i)=>i).filter(i=>accessible(g,i));
- // Known lower-layer tiles are preferred when they form pairs; hidden tops stay hidden to the AI.
- let best=available[0];for(const i of available){const st=g.stacks[i];if(!st[1]&&st[0]&&p.hand.some(t=>t.n===st[0]!.n)){best=i;break;}}
+ else {const visible=view(g,p.token),available=visible.stacks.map((_,i)=>i).filter(i=>visible.stacks[i].available);
+ // Draw choices use the same revealed floor information that human players receive.
+ let best=available[0];for(const i of available){const lower=visible.stacks[i].lower;if(lower&&p.hand.some(t=>t.n===lower.n)){best=i;break;}}
  if(best!==undefined)act(g,who,"draw",[],best);else act(g,who,"pass");}
+}
+
+export type LegalOption={id:string,label:string,tiles:Tile[],key:number[]};
+/** Enumerate valid patterns directly so large hands do not scan every invalid five-tile set. */
+export function legalOptions(hand:Tile[],trick:Tile[]):LegalOption[]{
+ const h=sorted(hand),wanted=trick.length,byNum=new Map<number,Tile[]>(),bySuit=new Map<number,Tile[]>(),out:LegalOption[]=[],seen=new Set<string>();
+ for(const t of h){byNum.set(t.n,[...(byNum.get(t.n)||[]),t]);bySuit.set(t.s,[...(bySuit.get(t.s)||[]),t]);}
+ const add=(tiles:Tile[])=>{const id=tiles.map(t=>t.id).sort((a,b)=>a-b).join(',');if(seen.has(id))return;seen.add(id);const c=combo(tiles);if(c&&beats(tiles,trick))out.push({id,label:c.label,tiles:sorted(tiles),key:c.key});};
+ const choose=(xs:Tile[],n:number,fn:(ts:Tile[])=>void)=>{function visit(at:number,ts:Tile[]){if(ts.length===n){fn(ts);return;}for(let i=at;i<=xs.length-(n-ts.length);i++)visit(i+1,[...ts,xs[i]]);}if(xs.length>=n)visit(0,[]);};
+ if(!wanted||wanted===1)h.forEach(t=>add([t]));
+ for(const n of [2,3])if(!wanted||wanted===n)for(const xs of byNum.values())choose(xs,n,add);
+ if(!wanted||wanted===5){
+  for(const xs of bySuit.values())choose(xs,5,add);
+  for(let first=1;first<=12;first++){
+   const ns=first===12?[12,13,14,15,1]:Array.from({length:5},(_,i)=>first+i);
+   if(!ns.every(n=>byNum.has(n)))continue;
+   function product(at:number,ts:Tile[]){if(at===5){add(ts);return;}for(const t of byNum.get(ns[at])!)product(at+1,[...ts,t]);}product(0,[]);
+  }
+  for(const [n,xs] of byNum){
+   if(xs.length===4)for(const other of h)if(other.n!==n)add([...xs,other]);
+   choose(xs,3,three=>{for(const [m,ys] of byNum)if(m!==n)choose(ys,2,two=>add([...three,...two]));});
+  }
+ }
+ return out.sort((a,b)=>a.tiles.length-b.tiles.length||cmp(a.key,b.key)||a.id.localeCompare(b.id));
 }
