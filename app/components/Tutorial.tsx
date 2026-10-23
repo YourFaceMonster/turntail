@@ -4,7 +4,7 @@ import TileFace from './TileFace';
 import {combo,beats,suits,suitRank,type Tile} from '../../lib/game';
 const t=(n:number,s:number):Tile=>({id:(n-1)*4+s,n,s});
 const lessons=[
- {title:'색깔에도 순서가 있어요',text:'같은 숫자는 빨강 해 > 초록 별 > 노랑 달 > 검정 구름 순서예요. 가장 강한 빨간 해 패를 눌러보세요.',hand:[t(7,0),t(7,2),t(7,1),t(7,3)],target:[] as Tile[],kind:'color'},
+ {title:'색깔에도 순서가 있어요',text:'같은 숫자는 빨강 해 > 초록 별 > 주황 달 > 검정 구름 순서예요. 가장 강한 빨간 해 패를 눌러보세요.',hand:[t(7,0),t(7,2),t(7,1),t(7,3)],target:[] as Tile[],kind:'color'},
  {title:'숫자 2가 가장 강해요',text:'숫자는 2 > 1 > 15 > … > 3 순서예요. 아래에서 가장 강한 패를 골라보세요.',hand:[t(3,0),t(15,0),t(1,0),t(2,0)],target:[],kind:'number'},
  {title:'같은 장수로 이겨요',text:'상대가 구름 6 한 장을 냈어요. 6을 이기는 패 한 장을 선택하고 내기를 누르세요.',hand:[t(3,0),t(6,2),t(8,1)],target:[t(6,0)],kind:'single'},
  {title:'같은 숫자 두 장은 페어',text:'상대가 5 페어를 냈어요. 숫자 7 두 장을 직접 선택한 뒤 내보세요. 페어에는 페어로만 대응해요.',hand:[t(7,0),t(7,2),t(9,3)],target:[t(5,0),t(5,1)],kind:'pair'},

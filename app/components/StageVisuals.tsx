@@ -1,5 +1,6 @@
 "use client";
 import {createContext,useContext,useId,type ReactNode} from 'react';
+import TileWear from './TileWear';
 export const StageVisualContext=createContext<number|undefined>(undefined);
 export const useStageVisual=()=>useContext(StageVisualContext);
 export function StageVisuals({stage,children}:{stage?:number,children:ReactNode}){return <StageVisualContext.Provider value={stage}>{children}</StageVisualContext.Provider>;}
@@ -19,7 +20,7 @@ export function StageMaterial({stage,id,seed=0}:{stage:number,id:string,seed?:nu
  {stage===8&&<><ellipse cx="54" cy="66" rx="37" ry="58" fill="#ffe288"/><path d="M12 115Q48 61 69 10L57 65L88 101M57 65L27 51" stroke="#8b4e18" strokeWidth="2" fill="none"/><ellipse cx="82" cy="23" rx="3" ry="5" fill="#ffe5a0"/></>}
  {stage===9&&<><path d="M0 0L62 0L7 132H0ZM100 15L58 89L100 123Z" fill="#a5a9b9" opacity=".5"/><path d="M55 0L34 43L45 68L23 132M100 92L45 68L86 47" stroke="#c4cbd5" strokeWidth=".8" fill="none"/></>}
  {stage===10&&<><path d="M45 -5Q17 44 59 72L39 136M59 72L91 91M41 47L72 24M52 93L13 112" stroke="#d99c35" strokeWidth="1.8" fill="none"/><path d="M53 1L63 25L44 57L73 111L69 132" stroke="#ee3d36" strokeWidth="3" fill="none"/></>}
- </g><rect x="1" y="1" width="98" height="130" rx="9" fill={`url(#${id}-glint)`} stroke={dark?'#c6ad7980':'#ffffff90'} strokeWidth="1.5"/></>;
+ </g><TileWear seed={seed+stage*7} dark={dark}/><rect x="1" y="1" width="98" height="130" rx="9" fill={`url(#${id}-glint)`} stroke={dark?'#c6ad7980':'#ffffff90'} strokeWidth="1.5"/></>;
 }
 const clouds=['M-30 8Q-43-6-24-14Q-23-32-4-24Q12-38 26-17Q43-14 34 8Z','M-32 7C-43-8-26-19-19-13C-20-33 10-34 18-18C39-25 46 7 25 10H-23Z','M-35 7L-28-11L-16-10L-8-27L9-29L21-15L33-10L35 8Z','M-33 8Q-41-2-25-13Q-21-34 0-23Q19-37 28-11Q45-4 30 10Z'];
 const stars=['M0-25L7-8L24-4L11 8L14 26L0 15L-17 26L-12 7L-25-5L-7-9Z','M0-29L7-8L27 0L8 8L0 29L-8 8L-27 0L-8-8Z','M0-29L10-10L28 0L9 9L0 29L-9 9L-28 0L-10-10Z'];

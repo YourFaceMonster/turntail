@@ -13,3 +13,12 @@ export function observerCameraFrames(overview:number,duration=ENTRANCE_MS.approa
  const camera=observerCamera(i/frames,overview);
  return {offset:i/frames,transform:`translateZ(${ENTRANCE_FOCAL-ENTRANCE_FOCAL/camera.scale}px) rotateX(${camera.tilt*180/Math.PI}deg)`};
 });}
+/** Distant scenery moves less than the physical floor, and finishes at the
+ * exact live-scene transform. All layers share the observer animation clock. */
+export function environmentCameraFrames(overview:number,duration=ENTRANCE_MS.approach,near=false){
+ return observerCameraFrames(overview,duration).map((frame,i,frames)=>{
+  const p=i/(frames.length-1),camera=observerCamera(p,overview),tilt=camera.tilt/(72*Math.PI/180);
+  const travel=(1-camera.scale)/(1-Math.min(.999,overview));
+  return {offset:frame.offset,transform:`translate3d(0,${-(near?30:12)*tilt}px,0) scale(${1+Math.max(0,travel)*(near?.12:.055)})`};
+ });
+}

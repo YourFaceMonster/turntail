@@ -28,7 +28,8 @@ export function entranceTileMesh(){
  for(let i=0;i<ring.length;i++){
   const a=ring[i],b=ring[(i+1)%ring.length];
   vertex(0,0,0,.5,.5,0,0,1,1);vertex(a.x,a.y,0,a.x+.5,a.y+.5,0,0,1,1);vertex(b.x,b.y,0,b.x+.5,b.y+.5,0,0,1,1);
-  vertex(0,0,-.012,0,0,0,0,1,0);vertex(a.x*.98,a.y*.98,-.012,0,0,0,0,1,0);vertex(b.x*.98,b.y*.98,-.012,0,0,0,0,1,0);
+  // No second cap directly beneath the art: shallow depth buffers made the
+  // two almost coplanar surfaces flicker as the camera leaned over them.
   const n=Math.hypot((a.x+b.x)/2,(a.y+b.y)/2),nx=(a.x+b.x)/2/n,ny=(a.y+b.y)/2/n;
   const rows=[{z:-.012,k:.98},{z:-.09,k:1},{z:-.91,k:1},{z:-1,k:.96}];
   for(let r=1;r<rows.length;r++){
@@ -59,7 +60,7 @@ out vec3 v_surface;
 void main(){
  vec3 p=vec3(a_position.xy*i_size.xy,a_position.z*i_size.z);
  v_uv=a_uv;v_material=a_material;v_slot=0.;v_alpha=i_meta.z;v_surface=a_position;v_shadowSoftness=.055;
- if(a_material>1.5){float height=max(0.,i_pose.z-i_size.z);p.xy=p.xy*(1.07+min(height,160.)/650.);p.z=.15-i_pose.z;v_alpha*=1.-min(height/240.,.75);v_shadowSoftness=.045+min(height,180.)/950.;}
+ if(a_material>1.5){float height=max(0.,i_pose.z-i_size.z);p.xy=p.xy*(1.12+min(height,160.)/650.);p.z=.35-i_pose.z;v_alpha*=1.-min(height/240.,.75);v_shadowSoftness=.075+min(height,180.)/950.;}
  else if(a_material>.5){
   float c=cos(i_size.w),s=sin(i_size.w);p=vec3(p.x*c,p.y,-p.x*s);
   if(c<0.){v_slot=i_meta.x;v_uv.x=1.-v_uv.x;}
@@ -69,9 +70,12 @@ void main(){
  v_normal=vec3(mat2(c,s,-s,c)*a_normal.xy,a_normal.z);
  vec2 centered=p.xy-u_view*.5;
  float depth=centered.y*u_camera.y+p.z*u_camera.x;
- float factor=u_camera.z/max(.05,1.-depth*u_camera.z/1000.);
+ float projectionW=max(.05,1.-depth*u_camera.z/1000.);
+ float factor=u_camera.z/projectionW;
  vec2 screen=u_view*.5+vec2(centered.x,centered.y*u_camera.x-p.z*u_camera.y)*factor;
- gl_Position=vec4(screen.x/u_view.x*2.-1.,1.-screen.y/u_view.y*2.,-depth/8192.,1.);
+ // Retain homogeneous W so texture interpolation follows the perspective,
+ // instead of shearing along the two triangles of a nearly horizontal tile.
+ gl_Position=vec4(vec3(screen.x/u_view.x*2.-1.,1.-screen.y/u_view.y*2.,-depth/4096.)*projectionW,projectionW);
 }`;
 const fragmentSource=`#version 300 es
 precision highp float;
@@ -91,7 +95,8 @@ void main(){
  if(v_material>1.5){
   vec2 q=abs(v_uv-.5)-vec2(.32,.35);
   float d=length(max(q,0.))+min(max(q.x,q.y),0.)-.09;
-  color=vec4(.055,.035,.022,(1.-smoothstep(-.025,v_shadowSoftness,d))*.24*v_alpha);
+  float aa=max(fwidth(d),.004);
+  color=vec4(.035,.025,.02,(1.-smoothstep(-aa,v_shadowSoftness+aa,d))*.21*v_alpha);
  }else if(v_material>.5){
   vec2 cell=vec2(mod(v_slot,u_atlasGrid.x),floor(v_slot/u_atlasGrid.x));
   vec2 uv=(cell+clamp(v_uv,.002,.998))/u_atlasGrid;
@@ -137,7 +142,7 @@ export class EntranceGpu{
   gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.depthMask(false);gl.drawArraysInstanced(gl.TRIANGLES,0,6,data.length/GPU_TILE_STRIDE);
   gl.depthMask(true);gl.drawArraysInstanced(gl.TRIANGLES,6,this.count-6,data.length/GPU_TILE_STRIDE);
  }
- destroy(){const gl=this.gl;gl.deleteTexture(this.texture);gl.deleteBuffer(this.mesh);gl.deleteBuffer(this.instances);gl.deleteVertexArray(this.vao);gl.deleteProgram(this.program);gl.getExtension('WEBGL_lose_context')?.loseContext();}
+ destroy(){const gl=this.gl;gl.deleteTexture(this.texture);gl.deleteBuffer(this.mesh);gl.deleteBuffer(this.instances);gl.deleteVertexArray(this.vao);gl.deleteProgram(this.program);}
 }
 
 function image(src:string){return new Promise<HTMLImageElement>((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src;});}

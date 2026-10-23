@@ -1,9 +1,11 @@
 "use client";
 import {useId} from 'react';
 import ClassicTileOrnament from './ClassicTileOrnament';
+import TileWear from './TileWear';
+import {TILE_INKS} from '../../lib/tile-palette';
 import {useStageVisual,StageMaterial,StageMotif,StageOrnament} from "./StageVisuals";
 import {type Tile} from '../../lib/game';
-const colors=['#142034','#008b43','#f6c600','#de1734'];
+const colors=TILE_INKS;
 function Star({x=0,y=0,scale=1}:{x?:number,y?:number,scale?:number}){return <path transform={`translate(${x} ${y}) scale(${scale})`} d="M0-20L5-6L20-4L8 5L12 20L0 12L-12 20L-8 5L-20-4L-5-6Z"/>;}
 function Spark({x=0,y=0,scale=1}:{x?:number,y?:number,scale?:number}){return <path transform={`translate(${x} ${y}) scale(${scale})`} d="M0-10L3-3L10 0L3 3L0 10L-3 3L-10 0L-3-3Z"/>;}
 function Cloud(){return <path d="M-29 5C-41-1-34-18-22-15C-25-30-7-39 4-28C18-41 37-25 30-12C45-5 39 12 23 12H-22C-32 12-38 8-29 5Z"/>;}
@@ -61,8 +63,8 @@ export default function TileFace({tile:t,small=false}:{tile:Tile,small?:boolean}
  <rect width="100" height="132" rx="8" fill={`url(#${artId}-resin)`}/><image data-tile-grain="ivory" href="/turntale-ivory-material-055.webp" width="100" height="132" preserveAspectRatio="xMidYMid slice" opacity=".43"/>
  <rect x="1.4" y="1.4" width="97.2" height="129.2" rx="7" fill={`url(#${artId}-edge)`} stroke="#fff9e4" strokeWidth="1.8"/>
  <g opacity=".1" stroke="#86734b" strokeWidth=".5">{Array.from({length:12},(_,i)=><path key={i} d={`M${(i*31)%97} ${97+(i*13)%30}l${2+i%3} -1`}/>)}</g>
- <ClassicTileOrnament s={t.s} special={special}/>
- <g stroke={t.s===2?'#876300':undefined} strokeWidth={t.s===2?.8:undefined} paintOrder="stroke fill">
+ <TileWear seed={t.id}/><ClassicTileOrnament s={t.s} special={special}/>
+ <g stroke={t.s===2?'#8c3e08':undefined} strokeWidth={t.s===2?.65:undefined} paintOrder="stroke fill">
  <text className={special?'special-number':'tile-number'} x="45" y="65" textAnchor="middle" fontFamily="Georgia,serif" fontWeight="700" fontSize={t.n>9?51:60} letterSpacing={t.n>9?-3:-1}>{t.n}</text>
  <g className="engraved-suit-mark" data-motif={`${t.s}:${t.n}`} transform={special?'translate(52 104) scale(.42)':'translate(72 108) scale(.31)'}>{special?<SpecialMotif s={t.s} n={t.n}/>:<Motif s={t.s}/>}</g>
  </g></svg></span>;

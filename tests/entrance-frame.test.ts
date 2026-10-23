@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {entranceTileMesh,projectEntrancePoint,entranceCameraEase,GPU_TILE_STRIDE} from '../lib/entrance-gpu.ts';
 import {entranceFrameCamera,writeEntranceFrame,type EntranceRenderTile} from '../lib/entrance-frame.ts';
 import {planDealFlights} from '../lib/deal-motion.ts';
-import {observerCamera} from '../lib/entrance-camera.ts';
+import {observerCamera,environmentCameraFrames} from '../lib/entrance-camera.ts';
 import {ENTRANCE_MS} from '../lib/atmosphere.ts';
 const mesh=entranceTileMesh();
 assert.equal(mesh.length%27,0,'the shared prism contains complete triangles');
@@ -13,6 +13,12 @@ assert.ok([...mesh].filter((_,i)=>i%9===8&&mesh[i]===0).length>200,'the ivory bo
 assert.equal(entranceCameraEase(0),0);assert.equal(entranceCameraEase(1),1);
 for(let i=1;i<=100;i++)assert.ok(entranceCameraEase(i/100)>=entranceCameraEase((i-1)/100));
 const overview=.22;
+for(const near of [false,true]){
+ const frames=environmentCameraFrames(overview,ENTRANCE_MS.approach,near);
+ assert.equal(frames.at(-1)?.transform,'translate3d(0,0px,0) scale(1)','scenery ends at the exact live-scene pose');
+ assert.ok(!frames.some(frame=>frame.transform.includes('NaN')));
+}
+for(let i=6*9;i<mesh.length;i+=9)assert.ok(!(mesh[i+2]<0&&mesh[i+2]>-.02&&mesh[i+8]===0&&mesh[i+5]===0&&mesh[i+6]===0&&mesh[i+7]===1),'no near-coplanar cap can flicker through tile art');
 assert.deepEqual(entranceFrameCamera('deal',0,overview),{tilt:0,scale:1});
 assert.deepEqual(entranceFrameCamera('shuffle',0,overview),entranceFrameCamera('approach',ENTRANCE_MS.approach,overview),'camera does not restart when shuffling starts');
 assert.deepEqual(entranceFrameCamera('shuffle',ENTRANCE_MS.shuffle,overview),{tilt:0,scale:1});

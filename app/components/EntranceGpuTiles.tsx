@@ -29,7 +29,7 @@ function EntranceGpuTiles({cards,routes,phase,visible,width,height,overview,onSt
     const gpu=new EntranceGpu(node,atlas,tiles.length,width,height,body);engine.current=gpu;
     gpu.draw(writeEntranceFrame(data,tiles,routes,'prepare',0,width/2,height/2),{width,height,...entranceFrameCamera('prepare',0,overview)});
     setReady(true);latest.current.onStatus('ready');
-   }catch{if(!cancelled)latest.current.onStatus('fallback');}
+   }catch(error){if(!cancelled){console.warn('Opening tile renderer fell back:',error);latest.current.onStatus('fallback');}}
   })();
   return()=>{cancelled=true;node.removeEventListener('webglcontextlost',lost);engine.current?.destroy();engine.current=null;};
  },[cards,tiles,routes,width,height,overview,data,stage]);
