@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {endgameLevel,nextEntrance,ENTRANCE_MS,concealLiveTiles,entranceCurtain,type EntrancePhase} from '../lib/atmosphere.ts';
+import {endgameLevel,nextEntrance,ENTRANCE_MS,entranceDuration,concealLiveTiles,entranceCurtain,type EntrancePhase} from '../lib/atmosphere.ts';
 import {room,player,start,view,DEAL_REVIEW_MS,assertTurnReady} from '../lib/game.ts';
 for(const counts of [[12,12],[10,10,10],[9,9,9,9]])assert.equal(endgameLevel('playing',counts),0);
 assert.equal(endgameLevel('playing',[7,3,6]),1);
@@ -40,3 +40,6 @@ g.players[1].hand=g.players[1].hand.slice(0,1);const a=view(g,g.players[0].token
 g.players[1].hand[0]={id:59,n:15,s:3};const b=view(g,g.players[0].token);
 assert.equal(endgameLevel(a.phase,a.players.map(p=>p.count)),endgameLevel(b.phase,b.players.map(p=>p.count)));
 console.log('PASS: public-only tension thresholds/recovery, no hidden-hand inference, safe empty states, new/resume seamless entrance ordering, stationary handoff interval, duration budget, full opening review lock.');
+
+assert.ok(entranceDuration("approach",true)>=entranceDuration("approach")*2,"resume leaves time to recognize the saved opponents");
+assert.ok(entranceDuration("game-in",true)>entranceDuration("game-in"),"saved table has a gradual handoff");

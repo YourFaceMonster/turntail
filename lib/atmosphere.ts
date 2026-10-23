@@ -16,3 +16,6 @@ export function entranceCurtain(phase:EntrancePhase):'close'|'covered'|'open'|'c
  if(phase==='approach')return 'open';
  return 'clear';
 }
+
+/** Returning players get time to recognize their opponents and saved table. */
+export function entranceDuration(phase:EntrancePhase,resume=false){return resume&&phase==='approach'?2400:resume&&phase==='game-in'?850:ENTRANCE_MS[phase];}

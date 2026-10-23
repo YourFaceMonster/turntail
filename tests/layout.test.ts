@@ -19,7 +19,7 @@ for(const [width,height,landscape] of [[342,573,false],[372,747,false],[372,777,
    }else{
     assert.ok(r.width*5+4*6<=width-24,'five submitted tiles fit in one row');
     const board=r.seatHeight+18+8+18+rows*r.height+(rows-1)*4;
-    assert.ok(board+r.height+r.trickChrome+r.height*2+r.handChrome+12<=height,'all three regions fit vertically');
+    assert.ok(board+r.height+r.trickChrome+r.height*2+r.handChrome+24<=height,'all three regions fit vertically');
    }
   }
  }

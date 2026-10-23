@@ -23,7 +23,7 @@ function EntranceGpuTiles({cards,routes,phase,visible,width,height,overview,onSt
    try{
     const faces=cards.filter(card=>card.landing.item.kind==='own').map(card=>document.querySelector<SVGSVGElement>(`${card.landing.item.selector} svg`));
     if(faces.some(face=>!face))throw Error('Tile faces not ready');
-    const stageBack=document.querySelector<SVGSVGElement>('.active-table .floor-stage .stage-material-tile.back svg');
+    const stageBack=document.querySelector<SVGSVGElement>('.active-table .floor-stage .tile.back svg');
     const atlas=await entranceTileAtlas(faces,stageBack);if(cancelled)return;
     const color=stage?MATERIAL_COLORS[stage-1]:null,body=color?[1,3,5].map(i=>parseInt(color.slice(i,i+2),16)/255) as [number,number,number]:undefined;
     const gpu=new EntranceGpu(node,atlas,tiles.length,width,height,body);engine.current=gpu;

@@ -1,6 +1,7 @@
 import {materialTextureCell} from './stage-texture.ts';
 /** One shared mesh/atlas replaces hundreds of independently composited DOM faces. */
 export const GPU_TILE_STRIDE=12;
+export const TILE_ATLAS_CELL={width:192,height:264,columns:8,inset:6} as const;
 export type GpuCamera={width:number,height:number,tilt:number,scale:number};
 export function projectEntrancePoint(x:number,y:number,z:number,camera:GpuCamera){
  const c=Math.cos(camera.tilt),s=Math.sin(camera.tilt);
@@ -116,7 +117,7 @@ export class EntranceGpu{
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.generateMipmap(gl.TEXTURE_2D);
   this.uniforms={view:gl.getUniformLocation(program,'u_view'),camera:gl.getUniformLocation(program,'u_camera'),grid:gl.getUniformLocation(program,'u_atlasGrid')};
-  gl.uniform3fv(gl.getUniformLocation(program,'u_body'),body);gl.uniform2f(this.uniforms.grid,8,atlas.height/176);gl.uniform1i(gl.getUniformLocation(program,'u_atlas'),0);
+  gl.uniform3fv(gl.getUniformLocation(program,'u_body'),body);gl.uniform2f(this.uniforms.grid,TILE_ATLAS_CELL.columns,atlas.height/TILE_ATLAS_CELL.height);gl.uniform1i(gl.getUniformLocation(program,'u_atlas'),0);
   const ratio=Math.min(window.devicePixelRatio||1,2,Math.sqrt(2200000/(width*height)));
   canvas.width=Math.max(1,Math.round(width*ratio));canvas.height=Math.max(1,Math.round(height*ratio));gl.viewport(0,0,canvas.width,canvas.height);
   gl.enable(gl.DEPTH_TEST);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0);
@@ -135,24 +136,24 @@ function image(src:string){return new Promise<HTMLImageElement>((resolve,reject)
 /** Rasterise the approved SVG art once, before any camera or tile starts moving. */
 export async function entranceTileAtlas(faces:(SVGSVGElement|null)[],backSvg?:SVGSVGElement|null){
  const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');if(!ctx)throw Error('Tile atlas unavailable');
- canvas.width=1024;canvas.height=Math.ceil((faces.length+2)/8)*176;
+ const {width:w,height:h,columns,inset}=TILE_ATLAS_CELL;canvas.width=columns*w;canvas.height=Math.ceil((faces.length+2)/columns)*h;
  const urls:string[]=[];
  try{
   // External SVG images are blocked when decoded from a blob. Embed just the
   // current material crop once, before motion, rather than dropping the texture.
   const materials=new Map<number,string>(),sources=[...faces,backSvg].flatMap(svg=>svg?Array.from(svg.querySelectorAll<SVGImageElement>('image[data-stage-texture]')):[]);
   for(const source of sources){const stage=Number(source.getAttribute('data-stage-texture'));if(materials.has(stage))continue;
-   const texture=await image(source.getAttribute('href')!),cell=materialTextureCell(stage,texture.naturalWidth,texture.naturalHeight),crop=document.createElement('canvas');crop.width=128;crop.height=176;
-   const paint=crop.getContext('2d');if(!paint)throw Error('Material texture unavailable');paint.drawImage(texture,cell.x,cell.y,cell.width,cell.height,0,0,128,176);materials.set(stage,crop.toDataURL('image/png'));
+   const texture=await image(source.getAttribute('href')!),cell=materialTextureCell(stage,texture.naturalWidth,texture.naturalHeight),crop=document.createElement('canvas');crop.width=w;crop.height=h;
+   const paint=crop.getContext('2d');if(!paint)throw Error('Material texture unavailable');paint.drawImage(texture,cell.x,cell.y,cell.width,cell.height,0,0,w,h);materials.set(stage,crop.toDataURL('image/png'));
   }
   const back=backSvg?await raster(backSvg):await image('/turntale-tile-back-gold.svg');
-  async function raster(svg:SVGSVGElement){const copy=svg.cloneNode(true) as SVGSVGElement;for(const texture of copy.querySelectorAll('image[data-stage-texture]')){const src=materials.get(Number(texture.getAttribute('data-stage-texture')));if(src){texture.setAttribute('href',src);texture.setAttribute('x','0');texture.setAttribute('y','0');texture.setAttribute('width','100');texture.setAttribute('height','132');}}copy.setAttribute('xmlns','http://www.w3.org/2000/svg');copy.setAttribute('width','128');copy.setAttribute('height','176');copy.setAttribute('preserveAspectRatio','none');const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)],{type:'image/svg+xml'}));urls.push(url);return image(url);}
+  async function raster(svg:SVGSVGElement){const copy=svg.cloneNode(true) as SVGSVGElement;for(const texture of copy.querySelectorAll('image[data-stage-texture]')){const src=materials.get(Number(texture.getAttribute('data-stage-texture')));if(src){texture.setAttribute('href',src);texture.setAttribute('x','0');texture.setAttribute('y','0');texture.setAttribute('width','100');texture.setAttribute('height','132');}}copy.setAttribute('xmlns','http://www.w3.org/2000/svg');copy.setAttribute('width',String(w));copy.setAttribute('height',String(h));copy.setAttribute('preserveAspectRatio','none');const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)],{type:'image/svg+xml'}));urls.push(url);return image(url);}
   const art=await Promise.all(faces.map(svg=>svg?raster(svg):null));
   for(let slot=0;slot<faces.length+2;slot++){
-   const x=slot%8*128,y=Math.floor(slot/8)*176;
-   ctx.fillStyle='#fffdf3';ctx.beginPath();ctx.roundRect(x,y,128,176,[15]);ctx.fill();
-   ctx.fillStyle=slot===0?'#12513d':'#fff';ctx.beginPath();ctx.roundRect(x+4,y+4,120,168,[11]);ctx.fill();
-   const svg=slot===0?back:slot>1?art[slot-2]:null;if(svg)ctx.drawImage(svg,x+4,y+4,120,168);
+   const x=slot%columns*w,y=Math.floor(slot/columns)*h;
+   ctx.fillStyle='#fffdf3';ctx.beginPath();ctx.roundRect(x,y,w,h,[22.5]);ctx.fill();
+   ctx.fillStyle=slot===0?'#12513d':'#fff';ctx.beginPath();ctx.roundRect(x+inset,y+inset,w-inset*2,h-inset*2,[16.5]);ctx.fill();
+   const svg=slot===0?back:slot>1?art[slot-2]:null;if(svg)ctx.drawImage(svg,x+inset,y+inset,w-inset*2,h-inset*2);
   }
  }finally{urls.forEach(url=>URL.revokeObjectURL(url));}
  return canvas;
