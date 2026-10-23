@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {planShuffle,frameShuffle,shuffleDepth,shuffleKeyframes} from '../lib/shuffle-motion.ts';
-import {matchShuffleTracks,planDealFlights,sampleDealRoute,dealKeyframes,routeDistance,type DealRoute} from '../lib/deal-motion.ts';
+import {matchShuffleTracks,planDealFlights,sampleDealRoute,dealKeyframes,routeDistance,opponentExit,type DealRoute} from '../lib/deal-motion.ts';
 import {dealPlan,shuffleTileSize} from '../lib/deal-animation.ts';
 import {room,player,start,view} from '../lib/game.ts';
 function intersects(a:DealRoute,b:DealRoute,t:number){
@@ -20,7 +20,7 @@ for(const capacity of [2,3,4])for(const [width,height] of [[390,844],[844,390]])
  const items=dealPlan(view(g,g.players[0].token)),counts=new Map<string,number>();
  const destinations=items.map(item=>{
   if(item.kind==='opponent'){
-   const seat=Number(item.key.split('-')[1]);return {x:width*seat/capacity,y:height*.12,width:48,height:48,angle:rotation};
+   const seat=Number(item.key.split('-')[1]),ordinal=Number(item.key.split('-')[2]);return {...opponentExit({x:width*seat/capacity,y:height*.12,angle:rotation},width,height,90,ordinal,65),width:Math.min(38,width*.08),height:Math.min(50,height*.075)};
   }
   const layer=item.kind==='upper'?'lower':item.kind,n=counts.get(layer)||0;counts.set(layer,n+1);
   if(item.kind==='own')return {x:width*.18+(n%6)*width*.12,y:height*.81+Math.floor(n/6)*height*.09,width:Math.min(38,width*.08),height:Math.min(50,height*.075),angle:rotation};
@@ -39,7 +39,11 @@ for(const capacity of [2,3,4])for(const [width,height] of [[390,844],[844,390]])
   assert.equal(frames[0].transform,shuffleKeyframes(track.poses,size.width,size.height,route.depth,scale,width/2,height/2).at(-1)!.transform,'no shuffle/deal pose snap');
   const end=sampleDealRoute(route,1);assert.ok(Math.abs(end.angle-route.source.angle)<=180.000001,'deal turns take the shortest route even after multiple shuffle spins');assert.equal(end.x,route.target.x);assert.equal(end.y,route.target.y);
   assert.ok(Math.abs(size.width*end.sx-route.target.width)<1e-9);assert.ok(Math.abs(size.height*end.sy-route.target.height)<1e-9);
-  assert.ok(frames.some(f=>f.offset===.18)&&frames.some(f=>f.offset===.82),'browser interpolation never straddles movement stages');
+  assert.ok(frames.some(f=>f.offset===.18)&&frames.some(f=>f.offset===.82),'browser interpolation never straddles lift and landing stages');
+  if(route.kind==='opponent'){
+   assert.ok(route.target.x < -60||route.target.x > width+60||route.target.y < -60||route.target.y > height+60,'opponent tile exits past the viewport instead of shrinking into a count badge');
+   assert.equal(sampleDealRoute(route,.8).opacity,1,'no two on-board opponent groups dissolve above the floor');
+  }
   for(let j=0;j<i;j++){
    const other=routes[j],r=Math.max(Math.hypot(route.width,route.height),Math.hypot(route.target.width,route.target.height))/2+2,s=Math.max(Math.hypot(other.width,other.height),Math.hypot(other.target.width,other.target.height))/2+2;
    if(routeDistance(route.source,route.target,other.source,other.target)<r+s)assert.notEqual(route.tier,other.tier,'crossing swept footprints reserve different solid height bands');

@@ -535,7 +535,7 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 /* 0.3.10 — one back artwork and one finish, shared by play and dealing. */
 .tile.back.tile-back-shared{background:#12513d!important;color:#ffd02f;border:1px solid #a2c6b1!important;border-radius:12% / 9%!important;box-shadow:0 2px 4px #0003!important;overflow:hidden;padding:0!important}
 .tile.back.tile-back-shared:before,.tile.back.tile-back-shared:after{display:none!important}
-.deal-flying-card{position:absolute;left:0;top:0;transform-origin:50% 50%;transform:var(--start-transform);will-change:transform;contain:layout style}
+.deal-flying-card{position:absolute;left:0;top:0;transform-origin:50% 50%;contain:layout style}
 .deal-flipper{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateY(0deg)}
 .deal-back,.deal-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .deal-face{transform:rotateY(180deg)}
@@ -590,7 +590,6 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 .entry-back-art{position:absolute;inset:0;background:url('/turntale-tile-back-gold.svg') center/100% 100% no-repeat}
 /* These two legacy outlines appeared only when the live floor panel mounted. */
 .turntale.table-v211.active-table .play-column>.felt::before,.turntale.table-v211.active-table .play-column>.felt::after{content:none;display:none}
-@keyframes entry-body-handoff{0%,82%{opacity:1}100%{opacity:0}}
 @media(prefers-reduced-motion:reduce){.entry-room-warmth,.entry-room-moonlight{animation:none}}
 
 /* 4.0 observer camera. Room, tabletop and tiles occupy one fixed world. Only
@@ -607,31 +606,37 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 .entry-table .table-surface{box-shadow:inset 0 0 60px #170b0860}
 .entry-table .table-surface-rim{inset:4%;border-radius:50%;box-shadow:none}
 .entry-deck{position:absolute;inset:0;z-index:4;opacity:1;pointer-events:none;transform-style:preserve-3d;contain:layout style}
+.entry-shuffle-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none}
+.entry-menu-out .entry-shuffle-canvas,.entry-room-hold .entry-shuffle-canvas{display:none}
+.entry-menu-out .entry-deck,.entry-room-hold .entry-deck,.entry-prepare .entry-deck,.entry-approach .entry-deck,.entry-shuffle .entry-deck,.entry-deal .entry-deck,.entry-settle .entry-deck,.entry-game-in .entry-deck{visibility:hidden}
 .deal-flying-card{transform-style:preserve-3d}
 .entry-approach .entry-view-rig,.entry-shuffle .entry-view-rig{animation:observer-walk-in var(--camera-ms) cubic-bezier(.25,.45,.3,1) both;will-change:transform}
 .entry-approach .entry-camera,.entry-shuffle .entry-camera{animation:observer-look-down var(--camera-ms) cubic-bezier(.25,.45,.3,1) both;will-change:transform}
 @keyframes observer-walk-in{from{transform:scale3d(1,1,1)}to{transform:scale3d(var(--camera-near),var(--camera-near),var(--camera-near))}}
 @keyframes observer-look-down{from{transform:rotateX(62deg) scale3d(var(--camera-overview),var(--camera-overview),var(--camera-overview))}to{transform:rotateX(0deg) scale3d(var(--camera-overview),var(--camera-overview),var(--camera-overview))}}
-.entry-deal .entry-view-rig,.entry-fade-out .entry-view-rig{transform:scale3d(var(--camera-near),var(--camera-near),var(--camera-near))}
-.entry-deal .entry-camera,.entry-fade-out .entry-camera{transform:rotateX(0deg) scale3d(var(--camera-overview),var(--camera-overview),var(--camera-overview))}
+.entry-deal .entry-view-rig,.entry-settle .entry-view-rig,.entry-game-in .entry-view-rig{transform:scale3d(var(--camera-near),var(--camera-near),var(--camera-near))}
+.entry-deal .entry-camera,.entry-settle .entry-camera,.entry-game-in .entry-camera{transform:rotateX(0deg) scale3d(var(--camera-overview),var(--camera-overview),var(--camera-overview))}
 .entry-approach :is(.deal-side-top,.deal-side-left),.entry-shuffle :is(.deal-side-top,.deal-side-left),.entry-approach .deal-flying-card:before,.entry-approach .deal-flying-card:after,.entry-shuffle .deal-flying-card:before,.entry-shuffle .deal-flying-card:after{opacity:1}
-.entry-deal .deal-flying-card{animation:none}
-.entry-deal :is(.deal-side-top,.deal-side-left),.entry-deal .deal-flying-card:before,.entry-deal .deal-flying-card:after{opacity:1;animation:entry-body-handoff var(--deal-ms) linear both}
-.entry-deal .deal-own .deal-flipper{animation:deal-own-reveal .28s var(--flip-delay) ease both}
-.entry-fade-out .deal-flying-card{width:var(--target-w);height:var(--target-h);transform:translate3d(var(--end-left),var(--end-top),0) rotate(var(--target-angle))}
-.entry-fade-out .deal-own .deal-flipper{transform:rotateY(180deg)}
-.entry-fade-out .deal-opponent{opacity:0}
-.entry-fade-out .deal-lower .deal-covered{opacity:1}
-.entry-fade-out .deal-flying-card .tile{background:var(--finish-bg)!important;border:var(--finish-border)!important;border-radius:var(--finish-radius)!important;box-shadow:var(--finish-shadow)!important}
+.entry-deal .deal-own{visibility:visible;animation:entry-own-arrive var(--deal-ms) linear both}
+.entry-settle .deal-own,.entry-game-in .deal-own{visibility:visible}
+@keyframes entry-own-arrive{0%,82%{opacity:0}90%,100%{opacity:1}}
+.entry-deal .deal-flying-card,.entry-settle .deal-flying-card,.entry-game-in .deal-flying-card{width:var(--target-w);height:var(--target-h);transform:translate3d(var(--end-left),var(--end-top),0) rotate(var(--target-angle))}
+.entry-deal .deal-own .deal-flipper,.entry-settle .deal-own .deal-flipper,.entry-game-in .deal-own .deal-flipper{transform:rotateY(180deg)}
+.entry-settle .deal-opponent,.entry-game-in .deal-opponent,.entry-settle .deal-lower,.entry-game-in .deal-lower{visibility:hidden}
+.entry-deal .deal-flying-card .tile,.entry-settle .deal-flying-card .tile,.entry-game-in .deal-flying-card .tile{background:var(--finish-bg)!important;border:var(--finish-border)!important;border-radius:var(--finish-radius)!important;box-shadow:var(--finish-shadow)!important}
 .entry-edge-shade{position:absolute;inset:0;z-index:10;pointer-events:none;box-shadow:inset 0 0 9vw #0d090844}
-/* The live scene is swapped only behind a fully opaque, full-screen curtain.
-   It has a separate paint interval before fade-in; no table morph/crossfade. */
+/* The opening curtain is confined to the menu. The dealt scene stays visible
+   while the room and table blend into the live board beneath stationary tiles. */
 .entry-curtain{position:absolute;inset:0;z-index:20;background:#080706;opacity:0;pointer-events:none;will-change:opacity}
 .table-entrance[data-curtain="close"] .entry-curtain{animation:entrance-curtain-close var(--curtain-ms) ease-in-out both}
 .table-entrance[data-curtain="covered"] .entry-curtain{opacity:1}
 .table-entrance[data-curtain="open"] .entry-curtain{animation:entrance-curtain-open var(--curtain-ms) ease-in-out both}
 @keyframes entrance-curtain-close{from{opacity:0}to{opacity:1}}
 @keyframes entrance-curtain-open{from{opacity:1}to{opacity:0}}
-.entry-menu-out .entry-view-rig,.entry-room-hold .entry-view-rig,.entry-settle .entry-view-rig,.entry-game-in .entry-view-rig,.entry-menu-out .entry-edge-shade,.entry-room-hold .entry-edge-shade,.entry-settle .entry-edge-shade,.entry-game-in .entry-edge-shade{visibility:hidden}
+.entry-menu-out .entry-view-rig,.entry-room-hold .entry-view-rig,.entry-menu-out .entry-edge-shade,.entry-room-hold .entry-edge-shade{visibility:hidden}
+.entry-game-in .entry-room,.entry-game-in .entry-table,.entry-game-in .entry-edge-shade{animation:entry-scene-blend var(--curtain-ms) ease both}
+.entry-game-in .entry-deck,.entry-game-in .entry-shuffle-canvas{animation:entry-tiles-handoff var(--curtain-ms) linear both}
+@keyframes entry-scene-blend{0%{opacity:1}70%,100%{opacity:0}}
+@keyframes entry-tiles-handoff{0%,70%{opacity:1}100%{opacity:0}}
 @media(orientation:portrait){.entry-room{background-image:url('/turntale-empty-room-portrait.webp')}}
 @media(prefers-reduced-motion:reduce){.table-entrance{display:none}.entry-room-warmth,.entry-room-moonlight{animation:none}}

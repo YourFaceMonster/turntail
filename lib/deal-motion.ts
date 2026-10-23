@@ -30,6 +30,14 @@ export function matchShuffleTracks(sources:ShufflePose[],targets:ShufflePose[]):
  return targets.map((_,j)=>p[j+1]-1);
 }
 export type DealRoute=DealFlight&{tier:number,ceiling:number,ground:number,body:number};
+/** A count badge marks the seat, but must never become a landing tile. */
+export function opponentExit(seat:{x:number,y:number,angle:number},width:number,height:number,margin=90,ordinal=0,tileDiagonal=70){
+ const cx=width/2,cy=height/2,dx=seat.x-cx,dy=seat.y-cy;
+ const length=Math.max(1,Math.hypot(dx,dy));
+ const factor=Math.max((Math.abs(dx)>1e-6?(width/2+margin+tileDiagonal*5)/Math.abs(dx):0),(Math.abs(dy)>1e-6?(height/2+margin+tileDiagonal*5)/Math.abs(dy):0),1);
+ const side=ordinal===0?0:(ordinal%2?1:-1)*Math.ceil(ordinal/2)*(tileDiagonal+6);
+ return {...seat,x:cx+dx*factor-dy/length*side,y:cy+dy*factor+dx/length*side};
+}
 /**
  * Lift all tiles before transit, reserve separate height bands for crossing swept
  * footprints, then lower all tiles after transit. Crossed paths never share a
@@ -50,16 +58,22 @@ export function planDealFlights(flights:DealFlight[]):DealRoute[]{
  return routes;
 }
 export function sampleDealRoute(route:DealRoute,progress:number){
- const lift=smooth(progress/.18),travel=smooth((progress-.18)/.64),land=smooth((progress-.82)/.18);
+ // Every tile clears the table before transit and lands only after all transit.
+ // Within that safe interval, groups peel off at different times and speeds.
+ const lift=smooth(progress/.18);
+ const seed=Number(route.key.match(/\d+$/)?.[0]??0);
+ const start=.18+((seed*7+route.tier*3)%7)*.012;
+ const end=.73+((seed*11+route.tier)%7)*.012;
+ const travel=smooth((progress-start)/(end-start)),land=smooth((progress-.82)/.18);
  const a=route.source,b=route.target,angle=(((b.angle-a.angle+180)%360)+360)%360-180;
  return {x:lerp(a.x,b.x,travel),y:lerp(a.y,b.y,travel),angle:a.angle+angle*travel,
   sx:lerp(route.scale,b.width/route.width,travel),sy:lerp(route.scale,b.height/route.height,travel),
   z:progress<.18?lerp(route.depth*route.scale,route.ceiling,lift):lerp(route.ceiling,route.ground,land),
-  opacity:route.kind==='opponent'?1-smooth((progress-.72)/.1):1};
+  opacity:1};
 }
 export function dealKeyframes(route:DealRoute){
  // Include the exact stage boundaries. No keyframe interval straddles stages.
- const stops=[0,.18,.82,1,...Array.from({length:89},(_,i)=>i/88)].sort((a,b)=>a-b).filter((t,i,a)=>!i||t!==a[i-1]);
+ const stops=[0,.18,.82,1,...Array.from({length:37},(_,i)=>i/36)].sort((a,b)=>a-b).filter((t,i,a)=>!i||t!==a[i-1]);
  return stops.map(offset=>{
   const p=sampleDealRoute(route,offset);
   return {offset,opacity:p.opacity,transform:`translate3d(${p.x-route.width/2}px,${p.y-route.height/2}px,${p.z}px) rotate(${p.angle}deg) scale3d(${p.sx},${p.sy},${Math.min(p.sx,p.sy)})`};

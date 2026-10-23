@@ -15,19 +15,18 @@ const fresh=sequence(false),resume=sequence(true);
 assert.ok(fresh.indexOf('approach')<fresh.indexOf('shuffle'));
 assert.ok(fresh.indexOf('prepare')<fresh.indexOf('approach'));
 assert.ok(fresh.indexOf('prepare')<fresh.indexOf('deal'));
-assert.ok(fresh.indexOf('deal')<fresh.indexOf('fade-out'));
-assert.ok(fresh.indexOf('fade-out')<fresh.indexOf('settle'));
+assert.equal(fresh[fresh.indexOf('deal')+1],'settle','dealt backs stay visible during the board handoff');
 assert.equal(resume.includes('prepare'),false);assert.equal(resume.includes('deal'),false);
 assert.equal(resume.includes('shuffle'),false,'a saved hand is not visually redealt');
 for(const phases of [fresh,resume]){
  const swap=phases.indexOf('settle');
- assert.equal(phases[swap-1],'fade-out','the old scene always fades to full cover before switching');
- assert.equal(entranceCurtain(phases[swap]),'covered');
- assert.equal(phases[swap+1],'game-in');assert.equal(entranceCurtain('game-in'),'open');
- assert.ok(ENTRANCE_MS.settle>=100,'live board gets a covered paint interval');
+ assert.equal(phases[swap-1],phases===fresh?'deal':'approach');
+ assert.equal(entranceCurtain(phases[swap]),'clear');
+ assert.equal(phases[swap+1],'game-in');assert.equal(entranceCurtain('game-in'),'clear');
+ assert.ok(ENTRANCE_MS.settle>=100,'live board gets a stationary paint interval');
 }
-assert.equal(concealLiveTiles('deal'),true);assert.equal(concealLiveTiles('fade-out'),true);
-assert.equal(concealLiveTiles('settle'),false,'real tile paint is ready under the opaque curtain');
+assert.equal(concealLiveTiles('deal'),true);
+assert.equal(concealLiveTiles('settle'),false,'real tile paint is ready under stationary copies');
 assert.equal(concealLiveTiles('game-in'),false);
 assert.equal(entranceCurtain('prepare'),'covered','measurement and precomputation cannot flash an unfinished table');
 assert.equal(fresh.at(-1),'game-in');assert.equal(resume.at(-1),'game-in');
@@ -40,4 +39,4 @@ assert.doesNotThrow(()=>assertTurnReady(g,now+ENTRANCE_MS['game-in']+DEAL_REVIEW
 g.players[1].hand=g.players[1].hand.slice(0,1);const a=view(g,g.players[0].token);
 g.players[1].hand[0]={id:59,n:15,s:3};const b=view(g,g.players[0].token);
 assert.equal(endgameLevel(a.phase,a.players.map(p=>p.count)),endgameLevel(b.phase,b.players.map(p=>p.count)));
-console.log('PASS: public-only tension thresholds/recovery, no hidden-hand inference, safe empty states, new/resume entrance ordering, full-screen fade ordering and covered paint interval, duration budget, full opening review lock.');
+console.log('PASS: public-only tension thresholds/recovery, no hidden-hand inference, safe empty states, new/resume seamless entrance ordering, stationary handoff interval, duration budget, full opening review lock.');
