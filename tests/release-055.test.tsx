@@ -11,7 +11,7 @@ import {stagePalette} from '../lib/stage-presentation';
 import TableCollection from '../app/components/TableCollection';
 import {APP_VERSION} from '../lib/version';
 const noop=()=>{},backgrounds=new Set(),surfaces=new Set();
-assert.equal(APP_VERSION,'0.5.4');assert.equal(JSON.parse(readFileSync('package.json','utf8')).version,APP_VERSION);
+assert.equal(APP_VERSION,'0.5.5');assert.equal(JSON.parse(readFileSync('package.json','utf8')).version,APP_VERSION);
 for(let stage=1;stage<=10;stage++){
  const render=(small=false)=>renderToStaticMarkup(<StageVisuals stage={stage}><TileFace tile={{id:51,n:13,s:3}} small={small}/></StageVisuals>);
  const resting=render(),moving=render(true);
@@ -25,4 +25,4 @@ assert.equal(backgrounds.size,10);assert.equal(surfaces.size,10);
 const global=renderToStaticMarkup(<HighScores close={noop} personal={[]} profileToken="test" name="test" openHistory={noop}/>);assert.ok(global.includes('highscore-modal')&&global.includes('score-results'),'ranking content keeps a dedicated stable region');
 const basic=renderToStaticMarkup(<TileFace tile={{id:25,n:7,s:2}}/>),regional=renderToStaticMarkup(<StageVisuals stage={1}><TileFace tile={{id:25,n:7,s:2}}/></StageVisuals>);assert.ok(basic.includes('classic-tile-ornament')&&basic.includes('#f6c600')&&basic.includes('#876300'));assert.ok(!regional.includes('classic-tile-ornament'));
 const collection=renderToStaticMarkup(<TableCollection selected={0} unlocked={[0]} choose={noop}/>);assert.equal((collection.match(/class="collection-set /g)||[]).length,11);assert.equal((collection.match(/disabled=""/g)||[]).length,10);
-console.log('PASS: 0.5.4 version alignment, restored flat resting/moving faces, separate native-size/vector floors, 10 destination palettes and a stable ranking content region.');
+console.log('PASS: 0.5.5 version alignment, restored flat resting/moving faces, separate native-size/vector floors, 10 destination palettes and a stable ranking content region.');

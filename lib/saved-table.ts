@@ -13,6 +13,6 @@ export function savedTablePlan(game:SavedTableView):SavedTableItem[]{
  for(const tile of game.trick||[])rows.push({key:`trick-${tile.id}`,selector:`[data-arrival="${tile.id}"] .tile.face`,tile,back:false});
  return rows;
 }
-export function measureSavedTable(game:SavedTableView,rotation:number,read:(selector:string)=>{left:number,top:number,width:number,height:number}|null):{item:SavedTableItem,target:DealTarget}[]{
- return savedTablePlan(game).map(item=>{const rect=read(item.selector);if(!rect||rect.width<=0||rect.height<=0)throw Error('Saved table layout pending');return {item,target:dealTarget(rect,rotation)};});
+export function measureSavedTable(game:SavedTableView,rotation:number,read:(selector:string)=>{left:number,top:number,width:number,height:number}|null):{item:SavedTableItem,target:DealTarget,baseTarget?:DealTarget}[]{
+ return savedTablePlan(game).map(item=>{const rect=read(item.selector);if(!rect||rect.width<=0||rect.height<=0)throw Error('Saved table layout pending');const base=item.back&&item.level===2?read(item.selector.replace('.upper-tile','.lower-tile')):null;return {item,target:dealTarget(rect,rotation),...(base&&base.width>0?{baseTarget:dealTarget(base,rotation)}:{})};});
 }

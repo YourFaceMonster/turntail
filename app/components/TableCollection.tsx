@@ -9,5 +9,5 @@ export default function TableCollection({selected,unlocked,choose,disabled=false
  <div className="collection-grid">{[0,...STAGE_THEMES.map(t=>t.stage)].map(set=>{const open=unlocked.includes(set),name=set?STAGE_THEMES[set-1].name:'오리지널';return <button key={set} type="button" disabled={disabled||!open} aria-pressed={selected===set} aria-label={`${name} 세트 · ${!open?`${set}스테이지 클리어 시 해금`:selected===set?'선택됨':'선택 가능'}`} className={`collection-set ${selected===set?'chosen':''} ${open?'unlocked':'locked'}`} onClick={()=>choose(set)}>
   <StageVisuals stage={set||undefined}><div className="collection-scene"><TableSurface/><div className="collection-tiles"><TileBack/><TileFace tile={{id:26,n:7,s:2}}/></div>{!open&&<span className="collection-lock" aria-hidden="true">◇</span>}</div></StageVisuals>
   <strong>{name}</strong><small>{!open?`STAGE ${set} 클리어`:selected===set?'✓ 선택한 세트':set?'해금 완료':'기본 세트'}</small>
- </button>;})}</div><small className="collection-note">선택한 패와 테이블은 한 세트로 적용돼요. 해금과 선택은 이 브라우저에 저장돼요.</small></section>;
+ </button>;})}</div><small className="collection-note">일반 게임에는 선택한 세트가 적용돼요. 도전모드의 바닥은 해당 지역의 재질로 꾸며져요.</small></section>;
 }

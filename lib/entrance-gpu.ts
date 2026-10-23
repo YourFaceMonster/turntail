@@ -54,16 +54,18 @@ out vec3 v_normal;
 out float v_material;
 out float v_slot;
 out float v_alpha;
+out float v_shadowSoftness;
+out vec3 v_surface;
 void main(){
  vec3 p=vec3(a_position.xy*i_size.xy,a_position.z*i_size.z);
- v_uv=a_uv;v_material=a_material;v_slot=0.;v_alpha=i_meta.z;
- if(a_material>1.5){p.xy=p.xy*1.14+vec2(2.,5.);}
+ v_uv=a_uv;v_material=a_material;v_slot=0.;v_alpha=i_meta.z;v_surface=a_position;v_shadowSoftness=.055;
+ if(a_material>1.5){float height=max(0.,i_pose.z-i_size.z);p.xy=p.xy*(1.07+min(height,160.)/650.);p.z=.15-i_pose.z;v_alpha*=1.-min(height/240.,.75);v_shadowSoftness=.045+min(height,180.)/950.;}
  else if(a_material>.5){
   float c=cos(i_size.w),s=sin(i_size.w);p=vec3(p.x*c,p.y,-p.x*s);
   if(c<0.){v_slot=i_meta.x;v_uv.x=1.-v_uv.x;}
  }else{v_alpha*=i_meta.y;}
  float c=cos(i_pose.w),s=sin(i_pose.w);
- p.xy=mat2(c,s,-s,c)*p.xy;p+=i_pose.xyz;
+ p.xy=mat2(c,s,-s,c)*p.xy;if(a_material>1.5)p.xy+=vec2(2.,4.)+vec2(.28,.38)*max(0.,i_pose.z-i_size.z);p+=i_pose.xyz;
  v_normal=vec3(mat2(c,s,-s,c)*a_normal.xy,a_normal.z);
  vec2 centered=p.xy-u_view*.5;
  float depth=centered.y*u_camera.y+p.z*u_camera.x;
@@ -81,20 +83,24 @@ in vec3 v_normal;
 in float v_material;
 in float v_slot;
 in float v_alpha;
+in float v_shadowSoftness;
+in vec3 v_surface;
 out vec4 color;
 void main(){
  if(v_alpha<.001)discard;
  if(v_material>1.5){
   vec2 q=abs(v_uv-.5)-vec2(.32,.35);
   float d=length(max(q,0.))+min(max(q.x,q.y),0.)-.09;
-  color=vec4(.055,.035,.022,(1.-smoothstep(-.02,.08,d))*.19*v_alpha);
+  color=vec4(.055,.035,.022,(1.-smoothstep(-.025,v_shadowSoftness,d))*.24*v_alpha);
  }else if(v_material>.5){
   vec2 cell=vec2(mod(v_slot,u_atlasGrid.x),floor(v_slot/u_atlasGrid.x));
   vec2 uv=(cell+clamp(v_uv,.002,.998))/u_atlasGrid;
   color=texture(u_atlas,uv);color.a*=v_alpha;
  }else{
   float light=.79+.21*max(0.,dot(normalize(v_normal),normalize(vec3(-.5,-.7,.8))));
-  color=vec4(u_body*light,v_alpha);
+  float grain=fract(sin(dot(v_surface.xy*173.+v_surface.z*37.,vec2(12.9898,78.233)))*43758.5453);
+  float bevel=pow(max(0.,dot(normalize(v_normal),normalize(vec3(-.35,-.45,1.)))),18.)*.11;
+  color=vec4(u_body*(light+(grain-.5)*.018)+vec3(bevel*.95,bevel*.89,bevel*.75),v_alpha);
  }
  if(color.a<.005)discard;
 }`;
@@ -148,8 +154,13 @@ export async function entranceTileAtlas(faces:(SVGSVGElement|null)[],backSvg?:SV
    const texture=await image(source.getAttribute('href')!),cell=materialTextureCell(stage,texture.naturalWidth,texture.naturalHeight),crop=document.createElement('canvas');crop.width=w;crop.height=h;
    const paint=crop.getContext('2d');if(!paint)throw Error('Material texture unavailable');paint.drawImage(texture,cell.x,cell.y,cell.width,cell.height,0,0,w,h);materials.set(stage,crop.toDataURL('image/png'));
   }
+  const localImages=new Map<string,string>();
+  for(const svg of [...faces,backSvg])if(svg)for(const source of svg.querySelectorAll<SVGImageElement>('image:not([data-stage-texture])')){
+   const href=source.getAttribute('href');if(!href||localImages.has(href))continue;
+   const asset=await image(href),copy=document.createElement('canvas');copy.width=Math.min(asset.naturalWidth,TILE_ATLAS_CELL.height*2);copy.height=Math.round(copy.width*asset.naturalHeight/asset.naturalWidth);const paint=copy.getContext('2d');if(!paint)throw Error('Tile grain unavailable');paint.drawImage(asset,0,0,copy.width,copy.height);localImages.set(href,copy.toDataURL('image/png'));
+  }
   const back=backSvg?await raster(backSvg):await image('/turntale-tile-back-gold.svg');
-  async function raster(svg:SVGSVGElement){const copy=svg.cloneNode(true) as SVGSVGElement;for(const texture of copy.querySelectorAll('image[data-stage-texture]')){const src=materials.get(Number(texture.getAttribute('data-stage-texture')));if(src){texture.setAttribute('href',src);texture.setAttribute('x','0');texture.setAttribute('y','0');texture.setAttribute('width','100');texture.setAttribute('height','132');}}copy.setAttribute('xmlns','http://www.w3.org/2000/svg');copy.setAttribute('width',String(w));copy.setAttribute('height',String(h));copy.setAttribute('preserveAspectRatio','none');const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)],{type:'image/svg+xml'}));urls.push(url);return image(url);}
+  async function raster(svg:SVGSVGElement){const copy=svg.cloneNode(true) as SVGSVGElement;for(const texture of copy.querySelectorAll('image[data-stage-texture]')){const src=materials.get(Number(texture.getAttribute('data-stage-texture')));if(src){texture.setAttribute('href',src);texture.setAttribute('x','0');texture.setAttribute('y','0');texture.setAttribute('width','100');texture.setAttribute('height','132');}}for(const texture of copy.querySelectorAll('image:not([data-stage-texture])')){const src=localImages.get(texture.getAttribute('href')||'');if(src)texture.setAttribute('href',src);}copy.setAttribute('xmlns','http://www.w3.org/2000/svg');copy.setAttribute('width',String(w));copy.setAttribute('height',String(h));copy.setAttribute('preserveAspectRatio','none');const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)],{type:'image/svg+xml'}));urls.push(url);return image(url);}
   const art=await Promise.all(faces.map(svg=>svg?raster(svg):null));
   for(let slot=0;slot<faces.length+2;slot++){
    const x=slot%columns*w,y=Math.floor(slot/columns)*h;

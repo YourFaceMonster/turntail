@@ -13,6 +13,8 @@ import EntranceWorld from './EntranceWorld';
 import EntranceEnvironment from './EntranceEnvironment';
 import EntranceSeats from './EntranceSeats';
 import EntranceSavedTile from './EntranceSavedTile';
+import ResumeGpuTiles from './ResumeGpuTiles';
+import {platformGeometry,stageSetting} from '../../lib/stage-setting';
 import {tableCircle} from '../../lib/table-world';
 import {observerCameraFrames} from '../../lib/entrance-camera';
 import {planShuffle,frameShuffle,overviewScale,shuffleDepth,shuffleFrameIndices,shuffleKeyframes,shuffleTransform,type ShuffleScene} from '../../lib/shuffle-motion';
@@ -20,17 +22,18 @@ import {matchShuffleTracks,planDealFlights,dealKeyframes,opponentExit} from '../
 import {ENTRANCE_MS,entranceDuration,entranceCurtain,type EntrancePhase} from '../../lib/atmosphere';
 import {measureDealLayout,shuffleTileSize,type DealView,type DealItem,type DealTarget} from '../../lib/deal-animation';
 import {measureSavedTable,type SavedTableItem} from '../../lib/saved-table';
-type Props={company:{name:string,avatar?:string,points:number,count:number}[],tableSet:number,stage?:number,phase:EntrancePhase,resume:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void};
-function GameEntrance({company,tableSet,stage,phase,resume,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback}:Props){
+type Props={onWorldDiameter:(diameter:number)=>void,company:{name:string,avatar?:string,points:number,count:number}[],tableSet:number,stage?:number,phase:EntrancePhase,resume:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void};
+function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback}:Props){
  const [screen,setScreen]=useState({width:0,height:0}),[landings,setLandings]=useState<{item:DealItem,target:DealTarget,finish:Record<string,string>}[]>([]);
  const [scene,setScene]=useState<ShuffleScene|null>(null),[assetsReady,setAssetsReady]=useState(false);
  const [gpuStatus,setGpuStatus]=useState<'pending'|'ready'|'fallback'>('pending');
- const [savedLandings,setSavedLandings]=useState<{item:SavedTableItem,target:DealTarget}[]>([]),[savedBounds,setSavedBounds]=useState<{left:number,top:number,width:number,height:number}|null>(null);
+ const [savedLandings,setSavedLandings]=useState<{item:SavedTableItem,target:DealTarget,baseTarget?:DealTarget}[]>([]),[savedBounds,setSavedBounds]=useState<{left:number,top:number,width:number,height:number}|null>(null);
  const shuffleSeed=useRef(0),measuredKey=useRef(''),cardElements=useRef<(HTMLDivElement|null)[]>([]),running=useRef<Animation[]>([]);
  const animationPhase=useRef(''),cameraElement=useRef<HTMLDivElement>(null),cameraMotion=useRef<Animation|null>(null);
  const callbacks=useRef({onPrepared,onFallback});callbacks.current={onPrepared,onFallback};
- const circle=savedBounds?tableCircle(savedBounds,screen.width,screen.height):null;
+ const circle=savedBounds?tableCircle(savedBounds,screen.width,screen.height,resume?0:(scene?.width||0)+32):null;
  const diameter=circle?.diameter??(scene?.width??Math.max(screen.width,screen.height)*1.35)+32;
+ useEffect(()=>{if(phase==='menu-out')onWorldDiameter(0);else if(savedBounds&&(resume&&phase==='room-hold'||!resume&&phase==='prepare'&&scene))onWorldDiameter(diameter);},[phase,savedBounds,scene,resume,diameter,onWorldDiameter]);
  const overview=overviewScale({width:diameter-32,height:diameter-32},screen.width,screen.height);
  const worldX=circle?.cx??screen.width/2,worldY=circle?.cy??screen.height/2;
  useLayoutEffect(()=>{
@@ -48,7 +51,7 @@ function GameEntrance({company,tableSet,stage,phase,resume,reduced,visible:pageV
  useEffect(()=>{
   if(!screen.width)return;
   let cancelled=false;setAssetsReady(false);
-  const paths=[...(!stage?['/turntale-empty-room.webp']:[]),'/turntale-tile-back-gold.svg','/turntale-walnut-051.webp',...(stage||tableSet?['/turntale-stage-portraits.webp']:[]),...(tableSet?['/turntale-stage-materials-v2.webp']:[])];
+  const paths=[...(stage?[`/environments/stage-${stage}-055.webp`]:['/turntale-empty-room.webp']),'/turntale-ivory-material-055.webp','/turntale-stone-material-055.webp','/turntale-tile-back-gold.svg','/turntale-walnut-051.webp',...(stage||tableSet?['/turntale-stage-portraits.webp']:[]),...(tableSet?['/turntale-stage-materials-v2.webp']:[])];
   void Promise.all(paths.map(src=>new Promise<void>(resolve=>{const finish=()=>{clearTimeout(timer);resolve();},timer=setTimeout(finish,6000),img=new Image();img.onload=()=>{void img.decode().catch(()=>{}).then(finish);};img.onerror=finish;img.src=src;}))).then(()=>{if(!cancelled)setAssetsReady(true);});
   return()=>{cancelled=true;};
  },[screen.width>screen.height,!!screen.width,stage,tableSet]);
@@ -141,10 +144,10 @@ function GameEntrance({company,tableSet,stage,phase,resume,reduced,visible:pageV
   return()=>{running.current.forEach(animation=>animation.cancel());running.current=[];};
  },[cards,reduced,resume,scene,gpuStatus,scale,screen.width,screen.height]);
  useEffect(()=>{
-  if(!resume||phase!=='room-hold'||!assetsReady||!savedBounds||!pageVisible)return;
+  if(!resume||phase!=='room-hold'||!assetsReady||!savedBounds||!pageVisible||gpuStatus==='pending')return;
   let second=0;const first=requestAnimationFrame(()=>{second=requestAnimationFrame(()=>callbacks.current.onPrepared());});
   return()=>{cancelAnimationFrame(first);cancelAnimationFrame(second);};
- },[resume,phase,assetsReady,savedBounds,pageVisible]);
+ },[resume,phase,assetsReady,savedBounds,pageVisible,gpuStatus]);
  useEffect(()=>{
   if(phase!=='prepare'||!scene||!assetsReady||!pageVisible||gpuStatus==='pending')return;
   // Give the decoded artwork, paused transforms and compositing layers two paints.
@@ -164,14 +167,14 @@ function GameEntrance({company,tableSet,stage,phase,resume,reduced,visible:pageV
  if(phase==='idle'||reduced||typeof document==='undefined')return null;
 
  const curtain=phase==='menu-out'?ENTRANCE_MS['menu-out']:phase==='game-in'?entranceDuration('game-in',resume):360;
- return createPortal(<StageVisuals stage={tableSet||undefined}><div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${gpuStatus==='ready'?'entry-gpu-ready':''}`} aria-hidden="true" data-stage={stage} data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--stage-accent':stage?stagePalette(stage).accent:undefined,'--stage-side':tableSet?MATERIAL_COLORS[tableSet-1]:undefined,'--camera-ms':`${entranceDuration('approach',resume)}ms`,'--camera-far':`${(1-1/Math.max(.001,overview))*1000}px`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--curtain-ms':`${curtain}ms`} as CSSProperties}>
+ return createPortal(<StageVisuals stage={tableSet||undefined}><div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${gpuStatus==='ready'?'entry-gpu-ready':''}`} aria-hidden="true" data-stage={stage} data-world-kind={stageSetting(stage||0).kind} data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--stage-accent':stage?stagePalette(stage).accent:undefined,'--stage-side':tableSet?MATERIAL_COLORS[tableSet-1]:undefined,'--camera-ms':`${entranceDuration('approach',resume)}ms`,'--camera-far':`${(1-1/Math.max(.001,overview))*1000}px`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--curtain-ms':`${curtain}ms`} as CSSProperties}>
   <div className="entry-room"><EntranceEnvironment stage={stage}/></div>
   <div className="entry-view-rig">
   <div className="entry-camera" ref={cameraElement}>
-  <EntranceWorld diameter={diameter} cx={worldX} cy={worldY}/>
+  <EntranceWorld diameter={diameter} cx={worldX} cy={worldY} stage={stage||0}/>
   <EntranceSeats company={company} diameter={diameter} cx={worldX} cy={worldY}/>
-  <div className="entry-table" style={{left:worldX-diameter/2,top:worldY-diameter/2,width:diameter,height:diameter,borderRadius:"50%"}}><TableSurface stage={tableSet||undefined} withRim/></div>
-  {resume&&<div className="entry-saved-table">{savedLandings.map(({item,target})=><EntranceSavedTile key={item.key} item={item} target={target}/>)}</div>}
+  <div className="entry-table" style={{left:worldX-diameter/2,top:worldY-diameter/2,width:diameter,height:diameter,borderRadius:"50%",clipPath:platformGeometry(diameter,stage||0).clip}}><TableSurface stage={stage||tableSet||undefined} withRim/></div>
+  {resume&&gpuStatus!=='ready'&&<div className="entry-saved-table">{savedLandings.map(({item,target,baseTarget})=><EntranceSavedTile key={item.key} item={item} target={target} baseTarget={baseTarget}/>)}</div>}
   {!resume&&gpuStatus==='fallback'&&scene&&landings.length===60&&<div className="entry-deck">{cards.map(({landing,width:tileW,height:tileH,poses,depth},i)=>{
    const t=landing.target,kind=landing.item.kind;
    return <div key={i} ref={el=>{cardElements.current[i]=el;}} className={`deal-flying-card deal-${kind}`} style={{width:tileW,height:tileH,'--start-transform':shuffleTransform(poses![0],tileW,tileH,depth,scale,screen.width/2,screen.height/2),'--tile-depth':`${depth}px`,'--target-angle':`${t.angle}deg`,'--target-w':`${t.width}px`,'--target-h':`${t.height}px`,'--end-left':`${t.x-t.width/2}px`,'--end-top':`${t.y-t.height/2}px`,...landing.finish,'--flip-delay':`${ENTRANCE_MS.deal*.82}ms`,zIndex:i+1} as CSSProperties}>
@@ -182,6 +185,7 @@ function GameEntrance({company,tableSet,stage,phase,resume,reduced,visible:pageV
   })}</div>}
   </div>
   </div>
+  {resume&&savedLandings.length>0&&<ResumeGpuTiles rows={savedLandings} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
   {!resume&&scene&&cards.length===60&&<EntranceGpuTiles cards={cards} routes={dealRoutes} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
   <div className="entry-reunion"><div className="entry-return-note"><span>{resume?'WELCOME BACK':`${company.length+1} PLAYERS · TAKE YOUR SEAT`}</span><strong>{stage?`${stageTheme(stage).name}의 테이블`:resume?'익숙한 테이블로 돌아왔어요':'달빛 서재의 작은 승부'}</strong><small>{resume?'자리에 놓인 패 그대로, 승부를 이어갑니다.':'테이블에 둘러앉아 새로운 승부를 시작합니다.'}</small></div></div>
   <div className="entry-edge-shade"/>

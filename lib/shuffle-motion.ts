@@ -1,3 +1,4 @@
+import {tileBodyDepth} from './tile-body.ts';
 import {ENTRANCE_MS} from './atmosphere.ts';
 import {collideTiles,type RigidTile} from './shuffle-contacts.ts';
 export type ShufflePose={x:number,y:number,angle:number};
@@ -15,7 +16,7 @@ export function sweptDistance(a:ShufflePose,b:ShufflePose,c:ShufflePose,d:Shuffl
  return Math.hypot(x+dx*t,y+dy*t);
 }
 /** Conservative circles enclose every tile corner at every angle, including its body. */
-export function shuffleDepth(tileHeight:number){return Math.min(26,Math.max(18,tileHeight*.38));}
+export function shuffleDepth(tileHeight:number){return tileBodyDepth(tileHeight);}
 /**
  * One shared simulation for all 60 solid tiles. Yield after each frame so preparing
  * a fresh round never monopolises the main thread. No simulation runs during play.

@@ -1,0 +1,103 @@
+{
+  "tool": "built-in image_gen",
+  "assets": [
+    {
+      "name": "environment-1",
+      "destination": "public/environments/stage-1-055.webp"
+    },
+    {
+      "name": "environment-2",
+      "destination": "public/environments/stage-2-055.webp"
+    },
+    {
+      "name": "environment-4",
+      "destination": "public/environments/stage-4-055.webp"
+    },
+    {
+      "name": "environment-3",
+      "destination": "public/environments/stage-3-055.webp"
+    },
+    {
+      "name": "environment-5",
+      "destination": "public/environments/stage-5-055.webp"
+    },
+    {
+      "name": "environment-6",
+      "destination": "public/environments/stage-6-055.webp"
+    },
+    {
+      "name": "environment-7",
+      "destination": "public/environments/stage-7-055.webp"
+    },
+    {
+      "name": "environment-8",
+      "destination": "public/environments/stage-8-055.webp"
+    },
+    {
+      "name": "environment-10",
+      "destination": "public/environments/stage-10-055.webp"
+    },
+    {
+      "name": "ivory-material",
+      "destination": "public/turntale-ivory-material-055.webp"
+    },
+    {
+      "name": "environment-9",
+      "destination": "public/environments/stage-9-055.webp"
+    },
+    {
+      "name": "stone-material",
+      "destination": "public/turntale-stone-material-055.webp"
+    }
+  ],
+  "prompts": [
+    {
+      "name": "environment-1",
+      "prompt": "Use case: stylized-concept. Production background asset for TURNTALE, an atmospheric fantasy tile game. Cinematic high-end game environment with believable stone, weathered wood, fine material grain, atmospheric depth, physically plausible shadows, warm practical lamps balanced with cool moonlight. Rich painterly realism, not flat vector, not low-poly, not plastic. Wide landscape composition. Eye-height view into the location, horizon around the upper third. Foreground lower 60 percent is a quiet, empty floor/ground to allow a separate 3D playing surface to be composited. NO central table, no tiles, no characters, no text, no UI, no watermark, no dramatic lens flare. Keep subtle detail at edges and distant focus. Ancient starlight gateway on a floating island. Old limestone arch framing distant layered cloud seas and stars. Moss in worn steps, two small amber lanterns, roots and ferns on stone edges. Midnight teal and old gold. Foreground is worn limestone courtyard."
+    },
+    {
+      "name": "environment-2",
+      "prompt": "Use case: stylized-concept. Production background asset for TURNTALE, an atmospheric fantasy tile game. Cinematic high-end game environment with believable stone, weathered wood, fine material grain, atmospheric depth, physically plausible shadows, warm practical lamps balanced with cool moonlight. Rich painterly realism, not flat vector, not low-poly, not plastic. Wide landscape composition. Eye-height view into the location, horizon around the upper third. Foreground lower 60 percent is a quiet, empty floor/ground to allow a separate 3D playing surface to be composited. NO central table, no tiles, no characters, no text, no UI, no watermark, no dramatic lens flare. Keep subtle detail at edges and distant focus. Lantern travellers' encampment on a floating island. Canvas tents at the far left and right, a small cooking fire off to one side, hanging amber lanterns and a distant blue cloud valley. Foreground is quiet packed earth and old wooden decking. Cozy, lived-in, restrained."
+    },
+    {
+      "name": "environment-3",
+      "prompt": "Use case: stylized-concept. Production background asset for TURNTALE, an atmospheric fantasy tile game. Cinematic high-end game environment with believable stone, weathered wood, fine material grain, atmospheric depth, physically plausible shadows, warm practical lamps balanced with cool moonlight. Rich painterly realism, not flat vector, not low-poly, not plastic. Wide landscape composition. Eye-height view into the location, horizon around the upper third. Foreground lower 60 percent is a quiet, empty floor/ground to allow a separate 3D playing surface to be composited. NO central table, no tiles, no characters, no text, no UI, no watermark, no dramatic lens flare. Keep subtle detail at edges and distant focus. Ancient moss-covered stone stair terrace. Large irregular slate and jade-grey rocks, ferns and creeping roots, stairs ascending at the back. Fine wet mineral surface detail and fog between floating islands. Foreground is a broad empty weathered rock terrace. Deep green, damp silver moonlight."
+    },
+    {
+      "name": "environment-4",
+      "prompt": "Use case: stylized-concept. Production background asset for TURNTALE, an atmospheric fantasy tile game. Cinematic high-end game environment with believable stone, weathered wood, fine material grain, atmospheric depth, physically plausible shadows, warm practical lamps balanced with cool moonlight. Rich painterly realism, not flat vector, not low-poly, not plastic. Wide landscape composition. Eye-height view into the location, horizon around the upper third. Foreground lower 60 percent is a quiet, empty floor/ground to allow a separate 3D playing surface to be composited. NO central table, no tiles, no characters, no text, no UI, no watermark, no dramatic lens flare. Keep subtle detail at edges and distant focus. Mist waterfall sanctuary on a floating island cliff. Layered waterfalls descend behind blue-grey wet stone shelves. Fine spray, pools near frame edges, reeds and silver moonlit mist. Foreground is broad empty wet slate terrace with subtle shallow reflected light, not an indoor room."
+    },
+    {
+      "name": "environment-5",
+      "prompt": "Use case: stylized-concept. Production background asset for TURNTALE, an atmospheric fantasy tile game. Cinematic high-end game environment with believable stone, weathered wood, fine material grain, atmospheric depth, physically plausible shadows, warm practical lamps balanced with cool moonlight. Rich painterly realism, not flat vector, not low-poly, not plastic. Wide landscape composition. Eye-height view into the location, horizon around the upper third. Foreground lower 60 percent is a quiet, empty floor/ground to allow a separate 3D playing surface to be composited. NO central table, no tiles, no characters, no text, no UI, no watermark, no dramatic lens flare. Keep subtle detail at edges and distant focus. Cloud bridge shelter between floating islands. Weathered suspended wooden bridge receding into clouds, rope railings at sides, old stone-and-petrified-log resting terrace in foreground, wind-worn posts with small lamps. Slate blue, muted taupe, warm amber. Grounded material detail."
+    },
+    {
+      "name": "environment-6",
+      "prompt": "Use case: stylized-concept. Production background asset for TURNTALE, an atmospheric fantasy tile game. Cinematic high-end game environment with believable stone, weathered wood, fine material grain, atmospheric depth, physically plausible shadows, warm practical lamps balanced with cool moonlight. Rich painterly realism, not flat vector, not low-poly, not plastic. Wide landscape composition. Eye-height view into the location, horizon around the upper third. Foreground lower 60 percent is a quiet, empty floor/ground to allow a separate 3D playing surface to be composited. NO central table, no tiles, no characters, no text, no UI, no watermark, no dramatic lens flare. Keep subtle detail at edges and distant focus. Ruined guardians' hall open to the night. Heavy basalt columns and worn carved walls, faded purple standards, tiny warm lamps and broad empty dark stone floor. Serious ancient grandeur, subtle dust shafts, detailed matte porous stone, not horror."
+    },
+    {
+      "name": "environment-7",
+      "prompt": "Use case: stylized-concept. Production background asset for TURNTALE, an atmospheric fantasy tile game. Cinematic high-end game environment with believable stone, weathered wood, fine material grain, atmospheric depth, physically plausible shadows, warm practical lamps balanced with cool moonlight. Rich painterly realism, not flat vector, not low-poly, not plastic. Wide landscape composition. Eye-height view into the location, horizon around the upper third. Foreground lower 60 percent is a quiet, empty floor/ground to allow a separate 3D playing surface to be composited. NO central table, no tiles, no characters, no text, no UI, no watermark, no dramatic lens flare. Keep subtle detail at edges and distant focus. Moonlit ancient tree sanctuary. Huge silver-grey tree trunk and spreading roots on a floating island, blue hanging glass lamps, distant moonlit clouds. Empty quiet earthen and root-lined ground in lower frame. Pearl blue, desaturated silver green, soft bark, tactile moss."
+    },
+    {
+      "name": "environment-8",
+      "prompt": "Use case: stylized-concept. Production background asset for TURNTALE, an atmospheric fantasy tile game. Cinematic high-end game environment with believable stone, weathered wood, fine material grain, atmospheric depth, physically plausible shadows, warm practical lamps balanced with cool moonlight. Rich painterly realism, not flat vector, not low-poly, not plastic. Wide landscape composition. Eye-height view into the location, horizon around the upper third. Foreground lower 60 percent is a quiet, empty floor/ground to allow a separate 3D playing surface to be composited. NO central table, no tiles, no characters, no text, no UI, no watermark, no dramatic lens flare. Keep subtle detail at edges and distant focus. Starlight sanctuary. Pale ancient limestone columns, worn circular stone paving, delicate brass celestial instruments far to the sides, golden leaves on perimeter, tiny lamps. Open to the navy starry sky and distant floating islands. Empty pale stone foreground. Quiet golden grandeur."
+    },
+    {
+      "name": "environment-9",
+      "prompt": "Use case: stylized-concept. Production background asset for TURNTALE, an atmospheric fantasy tile game. Cinematic high-end game environment with believable stone, weathered wood, fine material grain, atmospheric depth, physically plausible shadows, warm practical lamps balanced with cool moonlight. Rich painterly realism, not flat vector, not low-poly, not plastic. Wide landscape composition. Eye-height view into the location, horizon around the upper third. Foreground lower 60 percent is a quiet, empty floor/ground to allow a separate 3D playing surface to be composited. NO central table, no tiles, no characters, no text, no UI, no watermark, no dramatic lens flare. Keep subtle detail at edges and distant focus. Ember altar terrace beneath the final ascent. Black obsidian and dark basalt architecture, two small dying braziers to far sides, soft airborne ash, red-brown glow against cold charcoal sky. Broad empty dark rock terrace in foreground. Detailed natural rock fractures, controlled firelight, solemn not horror."
+    },
+    {
+      "name": "environment-10",
+      "prompt": "Use case: stylized-concept. Production background asset for TURNTALE, an atmospheric fantasy tile game. Cinematic high-end game environment with believable stone, weathered wood, fine material grain, atmospheric depth, physically plausible shadows, warm practical lamps balanced with cool moonlight. Rich painterly realism, not flat vector, not low-poly, not plastic. Wide landscape composition. Eye-height view into the location, horizon around the upper third. Foreground lower 60 percent is a quiet, empty floor/ground to allow a separate 3D playing surface to be composited. NO central table, no tiles, no characters, no text, no UI, no watermark, no dramatic lens flare. Keep subtle detail at edges and distant focus. Majestic summit beneath a colossal red world tree above a sea of clouds. Massive dark bark trunk and intertwined roots fill the far background; crimson leaves and fine old gold sap in a few bark fissures. Distant floating islands, sunset fading to night. Huge quiet dark root-and-stone terrace in foreground, no table. An epic final sanctuary worthy of dragon, griffin and phoenix guardians, none of these characters present in this background. Rich restrained natural materials."
+    },
+    {
+      "name": "ivory-material",
+      "prompt": "Use case: photorealistic-natural. Production PBR-style albedo material texture. Entire square frame is a close orthographic macro photograph of warm ivory-colored polished cast resin used for premium physical game tiles. Barely visible fine pores, extremely subtle organic mottling and hairline wear, soft milky off-white cream, realistic tactile surface, very restrained low contrast, uniformly lit diffuse neutral light, no directional shadow. Material fills every edge with no object silhouette, no border, no text, no number, no symbol, no logo, no table, no collage. Not marble, no strong veins, no yellow stains. A single uninterrupted texture."
+    },
+    {
+      "name": "stone-material",
+      "prompt": "Use case: photorealistic-natural. Production PBR-style albedo texture, one uninterrupted square photograph of aged fine-grained grey limestone/slate. Orthographic top-down macro, diffuse neutral even light, natural mineral grains and tiny worn pits, sparse subtle hairline stone seams, moderately low contrast. Entire frame filled edge to edge by a single stone material, no outer slab edge, no perspective, no horizon, no objects, no table, no text, no symbols, no collage. Believable tactile detail for a fantasy stone gaming plinth. No large dramatic cracks and no moss obscuring the surface."
+    }
+  ]
+}

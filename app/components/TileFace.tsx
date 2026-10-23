@@ -57,6 +57,9 @@ export default function TileFace({tile:t,small=false}:{tile:Tile,small?:boolean}
  }
  return <span data-tile-id={t.id} data-number={t.n} data-suit={t.s} className={`tile face suit${t.s} ${small?'small':''} ${special?`special-${t.n===1?'one':'two'}`:''}`} style={{color:ink}}>
  <svg className="tile-art classic-tile-face" viewBox="0 0 100 132" aria-hidden="true" focusable="false" fill={ink} style={{color:ink}}>
+ <defs><linearGradient id={`${artId}-resin`} x1="0" y1="0" x2=".85" y2="1"><stop stopColor="#fffef9"/><stop offset=".55" stopColor="#f9f4e7"/><stop offset="1" stopColor="#d8cdb7"/></linearGradient><linearGradient id={`${artId}-edge`} x2="0" y2="1"><stop stopColor="#fff" stopOpacity=".75"/><stop offset=".18" stopColor="#fff" stopOpacity="0"/><stop offset=".83" stopColor="#9b8967" stopOpacity="0"/><stop offset="1" stopColor="#8d7c5e" stopOpacity=".3"/></linearGradient></defs>
+ <rect width="100" height="132" rx="8" fill={`url(#${artId}-resin)`}/><image data-tile-grain="ivory" href="/turntale-ivory-material-055.webp" width="100" height="132" preserveAspectRatio="xMidYMid slice" opacity=".43"/>
+ <rect x="1.4" y="1.4" width="97.2" height="129.2" rx="7" fill={`url(#${artId}-edge)`} stroke="#fff9e4" strokeWidth="1.8"/>
  <g opacity=".1" stroke="#86734b" strokeWidth=".5">{Array.from({length:12},(_,i)=><path key={i} d={`M${(i*31)%97} ${97+(i*13)%30}l${2+i%3} -1`}/>)}</g>
  <ClassicTileOrnament s={t.s} special={special}/>
  <g stroke={t.s===2?'#876300':undefined} strokeWidth={t.s===2?.8:undefined} paintOrder="stroke fill">
