@@ -898,3 +898,5 @@ body:has(.turntale[data-impact="finish"]) .live-table-scene{animation:viewport-f
 .classic-tile-face .tile-number,.classic-tile-face .special-number{text-shadow:0 -.3px .15px #36291555,0 .6px .2px #fff9}
 .stage-result:not(.stage-clear-result) .trophy{font-size:32px;margin:6px 0}.stage-result:not(.stage-clear-result) h2{margin:8px 0 12px}.stage-result .results{margin:12px 0}.stage-result .stage-result-target{font-size:10px;margin:9px 0}
 .journey-destination.journey-popup{background-image:linear-gradient(180deg,#0a15237a,#0a1523eb 33%,var(--stage-base) 68%),var(--destination-image)!important;background-size:cover!important;background-position:50% 18%!important}
+.surface-stone .table-surface-light::after{content:'';position:absolute;inset:0;background:linear-gradient(#07142355,#06111d44 40%,#02081355);pointer-events:none}
+.live-platform-shadow{position:absolute;border-radius:50%;pointer-events:none;background:radial-gradient(ellipse,#02070c99 30%,#02070c66 57%,transparent 72%)}
