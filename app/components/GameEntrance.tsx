@@ -4,7 +4,7 @@ import {memo,useMemo,useEffect,useLayoutEffect,useRef,useState,type CSSPropertie
 import TileBack from './TileBack';
 import TileFace from './TileFace';
 import TableSurface from './TableSurface';
-import {planShuffle,frameShuffle,overviewScale,shuffleDepth,shuffleKeyframes,shuffleTransform,type ShuffleScene} from '../../lib/shuffle-motion';
+import {planShuffle,frameShuffle,overviewScale,shuffleDepth,shuffleFrameIndices,shuffleKeyframes,shuffleTransform,type ShuffleScene} from '../../lib/shuffle-motion';
 import {matchShuffleTracks,planDealFlights,dealKeyframes,opponentExit} from '../../lib/deal-motion';
 import {ENTRANCE_MS,entranceCurtain,type EntrancePhase} from '../../lib/atmosphere';
 import {measureDealLayout,shuffleTileSize,type DealView,type DealItem,type DealTarget} from '../../lib/deal-animation';
@@ -75,13 +75,14 @@ function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,on
   return()=>{cancelled=true;clearTimeout(timer);planner.return(null!);};
  },[landings,own,screen.width,screen.height,preparing]);
  const scale=scene?frameShuffle(scene,screen.width,screen.height):1;
+ const shuffleFrames=useMemo(()=>scene?shuffleFrameIndices(scene):[],[scene]);
  const cards=useMemo(()=>{
   const targets=landings.map(l=>l.item.kind==='opponent'&&own?{...opponentExit(l.target,screen.width,screen.height,90,Number(l.item.key.match(/\d+$/)?.[0]??0),Math.hypot(own.width,own.height)),width:own.width,height:own.height}:l.target);
   const assignments=scene?matchShuffleTracks(scene.tracks.map(track=>{const p=track.poses.at(-1)!;return {...p,x:screen.width/2+p.x*scale,y:screen.height/2+p.y*scale};}),targets):[];
   return landings.map((landing,i)=>{
   const {width,height}=shuffleTileSize(landing.item.kind,landing.target,own!),poses=scene?.tracks[assignments[i]].poses,depth=shuffleDepth(height);
-  return {landing:{...landing,target:targets[i]},width,height,poses,depth,keyframes:poses?shuffleKeyframes(poses,width,height,depth,scale,screen.width/2,screen.height/2):[]};
- });},[landings,screen.width,screen.height,own,scene,scale]);
+  return {landing:{...landing,target:targets[i]},width,height,poses,depth,keyframes:poses?shuffleKeyframes(poses,width,height,depth,scale,screen.width/2,screen.height/2,shuffleFrames):[]};
+ });},[landings,screen.width,screen.height,own,scene,scale,shuffleFrames]);
  const dealFrames=useMemo(()=>scene?planDealFlights(cards.map(card=>{const p=card.poses!.at(-1)!;return {key:card.landing.item.key,kind:card.landing.item.kind,width:card.width,height:card.height,depth:card.depth,scale,source:{...p,x:screen.width/2+p.x*scale,y:screen.height/2+p.y*scale},target:card.landing.target};})).map(dealKeyframes):[],[cards,scene,scale,screen.width,screen.height]);
  useLayoutEffect(()=>{
   if(!scene||!cards.length||reduced||resume||!['prepare','approach','shuffle'].includes(phase))return;

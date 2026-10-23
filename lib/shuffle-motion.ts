@@ -97,8 +97,35 @@ export function sampleShufflePose(poses:ShufflePose[],progress:number):ShufflePo
 /** Close view uses actual measured tile dimensions; only the observer zooms. */
 export function frameShuffle(_scene:ShuffleScene,_width:number,_height:number){return 1;}
 export function overviewScale(scene:Pick<ShuffleScene,'width'|'height'>,width:number,height:number){return Math.min(1,width*.9/(scene.width+32),height*.78/(scene.height+32));}
-export function shuffleKeyframes(poses:ShufflePose[],width:number,height:number,depth:number,scale:number,cx:number,cy:number){
- return poses.map((p,i)=>({offset:i/(poses.length-1),transform:shuffleTransform(p,width,height,depth,scale,cx,cy)}));
+/** All 60 backs share these timestamps. Skip redundant frames only when the
+ * interpolated motion remains close to the original and solid bodies clear. */
+export function shuffleFrameIndices(scene:ShuffleScene){
+ const tracks=scene.tracks,last=(tracks[0]?.poses.length??1)-1,indices=[0];
+ if(!tracks.length)return indices;
+ const allowedError=Math.min(6,Math.min(...tracks.map(t=>t.radius))*.12);
+ const safe=(a:number,b:number)=>{
+  for(let i=0;i<tracks.length;i++){
+   const track=tracks[i],p=track.poses;
+   for(let frame=a+1;frame<b;frame++){
+    const t=(frame-a)/(b-a),point=p[frame];
+    if(Math.hypot(point.x-p[a].x-(p[b].x-p[a].x)*t,point.y-p[a].y-(p[b].y-p[a].y)*t)>allowedError)return false;
+   }
+   for(let j=0;j<i;j++){
+    const other=tracks[j];
+    if(sweptDistance(p[a],p[b],other.poses[a],other.poses[b])<track.radius+other.radius+.5)return false;
+   }
+  }
+  return true;
+ };
+ for(let start=0;start<last;){
+  let end=Math.min(last,start+3);
+  while(end>start+1&&!safe(start,end))end--;
+  indices.push(end);start=end;
+ }
+ return indices;
+}
+export function shuffleKeyframes(poses:ShufflePose[],width:number,height:number,depth:number,scale:number,cx:number,cy:number,indices?:readonly number[]){
+ return (indices??poses.map((_,i)=>i)).map(i=>({offset:i/(poses.length-1),transform:shuffleTransform(poses[i],width,height,depth,scale,cx,cy)}));
 }
 export function shuffleTransform(p:ShufflePose,width:number,height:number,depth:number,scale:number,cx:number,cy:number){
  return `translate3d(${cx+p.x*scale-width/2}px,${cy+p.y*scale-height/2}px,${depth*scale}px) rotate(${p.angle}deg) scale3d(${scale},${scale},${scale})`;
