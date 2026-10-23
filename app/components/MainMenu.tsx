@@ -26,5 +26,5 @@ export default function MainMenu(p:Props){return <section className="title-scree
   <nav className="title-tools" aria-label="메인 메뉴"><button onClick={p.scores}><span><Trophy aria-hidden="true"/></span>기록실</button><button onClick={p.settings}><span><Settings aria-hidden="true"/></span>설정</button></nav>
   <div className="title-ornament" aria-hidden="true"><span/>✧<span/></div>
  </div>
- <small className="title-version">TURNTALE · 0.3.6</small>
+ <small className="title-version">TURNTALE · 0.3.7</small>
  </section>;}
