@@ -132,3 +132,9 @@
 - The live board now uses the entrance's warm wooden grain, dark edges, rounded inset frame and warm/cool lamplight through one shared TableSurface component. Floor and hand remain on one continuous surface, with a translucent hand contrast layer.
 - Entrance table bounds now converge on the measured live table, including rotated layouts, during the existing handoff.
 - No gameplay or timing changes. Browser visual verification remains unavailable.
+
+### 4.0 full-size tiles and seating perspective — 2026-10-23
+- Fresh games now mount behind the room and measure their real tile layout before the approach, so every local/floor tile uses its live width and height from the first visible frame. Opponent tiles use local-hand proportions, never the count badge size. Narrow layouts overlap the pack instead of shrinking it.
+- A shared camera plane tilts both tiles and table: 68° low approach → 48° near the seat → 0° overhead during the shuffle. Six-pixel tile side faces add visible thickness; the final deal stays in viewport coordinates.
+- Both tabletops share a large oval inset ring, replacing the small rounded rectangular border.
+- Tests cover native sizes, packing bounds, hidden lower-layer geometry, phase order and reduced-motion progression. Type checking and production build required; browser visual QA remains unavailable due to the previously denied preview access.

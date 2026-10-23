@@ -598,3 +598,27 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 .entry-distributed .entry-table{transform:rotate(var(--table-angle,0deg));transition:transform .38s ease,opacity .38s ease,left .38s ease,top .38s ease,width .38s ease,height .38s ease}
 /* Keep the previously requested hand contrast as a translucent wash over the same wood. */
 .turntale.table-v211.active-table .play-column>.hand-panel{background:#100b073d!important;box-shadow:inset 0 8px 20px #0e09071f!important}
+
+/* 4.0 seating camera: one tilted plane carries both the table and full-size tiles. */
+.table-surface-rim{inset:12% 8%;border-radius:50%;border-color:#d3a46288;box-shadow:0 0 0 5px #21160e33,inset 0 0 0 7px #e5b36b0a,0 0 0 10px #d3a46218}
+.entry-camera{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 55%;transform:translateY(12vh) rotateX(68deg) scale(.9)}
+.entry-deck,.deal-flying-card{transform-style:preserve-3d}
+.entry-prepare .entry-room{opacity:1;transform:scale(1);transition:none}
+.entry-prepare .entry-table,.entry-prepare .entry-deck{opacity:0}
+.entry-approach .entry-camera{animation:walk-to-table var(--approach-ms) cubic-bezier(.25,.55,.3,1) both}
+.entry-shuffle .entry-camera{animation:sit-over-table var(--shuffle-ms) cubic-bezier(.3,.05,.25,1) both}
+.entry-deal .entry-camera,.entry-settle .entry-camera,.entry-game-in .entry-camera{transform:none}
+@keyframes walk-to-table{from{transform:translateY(12vh) rotateX(68deg) scale(.9)}to{transform:translateY(5vh) rotateX(48deg) scale(1)}}
+@keyframes sit-over-table{from{transform:translateY(5vh) rotateX(48deg) scale(1)}to{transform:translateY(0) rotateX(0deg) scale(1)}}
+.entry-approach .entry-table,.entry-shuffle .entry-table{transform:none;transition-delay:0s}
+.entry-approach .entry-deck{opacity:1}
+.entry-approach .deal-flying-card{transform:translate3d(var(--scatter-x),var(--scatter-y),0) rotate(var(--tile-angle))}
+.entry-approach .deal-back .tile,.entry-shuffle .deal-back .tile{box-shadow:0 1px 0 #dce3d6,0 2px 0 #bbc9b5,0 3px 0 #9fae96,0 4px 0 #89997e,0 5px 0 #6f8066,0 8px 9px #0c080980!important}
+/* Keep opacity continuous when the existing tiles begin to mix. */
+@keyframes full-deck-shuffle{0%{transform:translate3d(var(--scatter-x),var(--scatter-y),0) rotate(var(--tile-angle));opacity:1}42%{transform:translate3d(var(--sweep-x),var(--sweep-y),0) rotate(calc(var(--tile-angle) * -.7))}72%{transform:translate3d(var(--scatter-x),var(--sweep-y),0) rotate(calc(var(--tile-angle) * .4))}100%{transform:translate3d(var(--sx),var(--sy),0);opacity:1}}
+
+.deal-flying-card:before,.deal-flying-card:after{content:'';position:absolute;opacity:0;pointer-events:none;background:linear-gradient(#d7dfd0,#809174);transition:opacity .18s}
+.deal-flying-card:before{left:0;right:0;top:100%;height:6px;transform-origin:center top;transform:rotateX(-90deg);border-radius:0 0 3px 3px}
+.deal-flying-card:after{left:100%;top:0;bottom:0;width:6px;transform-origin:left center;transform:rotateY(90deg);background:#91a184}
+.entry-approach .deal-flying-card:before,.entry-approach .deal-flying-card:after,.entry-shuffle .deal-flying-card:before,.entry-shuffle .deal-flying-card:after{opacity:1}
+.entry-resume.entry-settle .entry-camera{animation:sit-over-table .38s ease both}
