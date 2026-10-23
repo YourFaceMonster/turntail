@@ -127,3 +127,8 @@
 - User approved the completed 0.3.11 experience and designated this release as 4.0.
 - Main menu, in-game header and footer now display 4.0; package version is 4.0.0.
 - Version metadata only; gameplay and animations match the approved 0.3.11 release.
+
+### 4.0 tabletop continuity — 2026-10-23
+- The live board now uses the entrance's warm wooden grain, dark edges, rounded inset frame and warm/cool lamplight through one shared TableSurface component. Floor and hand remain on one continuous surface, with a translucent hand contrast layer.
+- Entrance table bounds now converge on the measured live table, including rotated layouts, during the existing handoff.
+- No gameplay or timing changes. Browser visual verification remains unavailable.
