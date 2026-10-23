@@ -14,3 +14,20 @@
 - AI guaranteed finishing sequences favour forced draws before the final combination. No hidden hand or hidden floor identities used.
 - Active root uses a flex stage on all screen sizes; floor/played/hand grid regions remain isolated during AI animations.
 - Verification: TypeScript; existing engine/rules/strategy/selection/timeout suites; SQLite history checks; real API contract test for ten-round scores and consent; browser main menu, desktop AI match and tutorial steps 1–5. Final mobile visual QA and remaining tutorial interactions were interrupted by browser/environment transport failures.
+
+
+## TURNTALE 0.3.1 — 2026-10-23
+
+- More detailed title crest, gold inset button frames, consistent SVG menu icons, embers and saved profile name/photo. A new portrait composition keeps the lantern, castle window and tabletop visible rather than cropping the landscape center. Both title root and background use dynamic viewport height and content can grow on short screens.
+- The opening countdown is text inside the played-tile region. Removed the central modal and screen-dimming treatment; all starting hand faces retain full color while the existing three-second preparation guard runs.
+- Played tiles have a bounded current layer and a separate previous layer, only visible during the replacement/review. The central region has explicit independent grid tracks in both orientations. Tile landing bounce reduced to twelve pixels.
+- Floor, played tiles and hand now share one continuous wooden table surface, with only light separators between interaction regions.
+- The center names the new leader after a rally, with “내가 선!” and “선을 잡았습니다” for the local player; other leaders are named too.
+- Music/effects controls use centered 14px SVGs. Profile controls have explicit pointer/touch targeting, a visible saved avatar/name in the title menu, immediate tap feedback and a dedicated modal layer above the other dialogs.
+- Checks: TypeScript, tile sizing/layout bounds, challenge/selection/highscores, opening timing/rally reset, AI refinements passed. Browser preview access was denied by the environment security policy, so mobile/desktop visual and click verification could not be completed in this update.
+
+### Portrait title asset
+
+- Path: `public/turntale-room-portrait-v031.png`
+- Created with the built-in ImageGen tool using the approved `public/turntale-room.png` as reference.
+- Prompt: Portrait 9:16 composition of the same cozy magical nighttime game room, with crisp pixel detail, amber lantern, blue moonlit arched castle window, carved bookshelves, wine-red curtain, flowers, ornate lower wooden table and four ivory sun/star/moon/cloud tiles at the lower corners. Keep the center calm for live menu controls. Fill the entire canvas including the bottom. No text, buttons, logos or watermarks.
