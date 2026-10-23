@@ -26,7 +26,7 @@ function GameEntrance({stage,phase,resume,reduced,visible:pageVisible,game,rotat
  useEffect(()=>{
   if(!screen.width)return;
   let cancelled=false;setAssetsReady(false);
-  const paths=[screen.height>=screen.width?'/turntale-empty-room-portrait.webp':'/turntale-empty-room.webp','/turntale-tile-back-gold.svg','/turntale-intro-walnut.webp',...(stage?['/turntale-stage-map.png','/turntale-stage-portraits.webp']:[])];
+  const paths=[screen.height>=screen.width?'/turntale-empty-room-portrait.webp':'/turntale-empty-room.webp','/turntale-tile-back-gold.svg','/turntale-intro-walnut.webp',...(stage?['/turntale-stage-map.png','/turntale-stage-portraits.webp','/turntale-stage-materials-v2.webp']:[])];
   void Promise.all(paths.map(src=>new Promise<void>(resolve=>{const img=new Image();img.onload=()=>{void img.decode().catch(()=>{}).then(resolve);};img.onerror=()=>resolve();img.src=src;}))).then(()=>{if(!cancelled)setAssetsReady(true);});
   return()=>{cancelled=true;};
  },[screen.width>screen.height,!!screen.width,stage]);

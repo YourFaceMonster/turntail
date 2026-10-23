@@ -1,5 +1,5 @@
 "use client";
-import {useStageVisual,StageMaterial,StageMotif} from "./StageVisuals";
+import {useStageVisual,StageMaterial,StageMotif,StageOrnament} from "./StageVisuals";
 import {type Tile} from '../../lib/game';
 const colors=['#142034','#008b43','#d4a000','#de1734'];
 function Star({x=0,y=0,scale=1}:{x?:number,y?:number,scale?:number}){return <path transform={`translate(${x} ${y}) scale(${scale})`} d="M0-20L5-6L20-4L8 5L12 20L0 12L-12 20L-8 5L-20-4L-5-6Z"/>;}
@@ -47,7 +47,12 @@ function SpecialMotif({s,n}:{s:number,n:number}){
 /** The exact same art and body render in hand, flight and table. */
 export default function TileFace({tile:t,small=false}:{tile:Tile,small?:boolean}){
  const special=t.n===2,ink=colors[t.s],stage=useStageVisual();
- if(stage){const dark=[2,6,9,10].includes(stage),edge=dark?'#f9e9c6':'#fff8df';return <span data-tile-id={t.id} data-number={t.n} data-suit={t.s} className={`tile face stage-material-tile suit${t.s} ${small?'small':''}`} style={{color:ink}}><svg className="tile-art" style={{color:ink}} viewBox="0 0 100 132" aria-hidden="true" focusable="false"><StageMaterial stage={stage} id={`material-${stage}-${t.id}`} seed={t.id}/><g fill={ink} stroke={edge} strokeWidth={dark?2.5:1} paintOrder="stroke"><text x={special?8:49} y={special?43:79} textAnchor={special?'start':'middle'} fontFamily="Arial,sans-serif" fontWeight="900" fontSize={special?44:t.n>9?66:78} letterSpacing={special?0:-4}>{t.n}</text><g transform={special?'translate(50 91) scale(.72)':'translate(50 108) scale(.37)'} strokeWidth={dark?4:1.5}><StageMotif stage={stage} s={t.s}/></g></g></svg></span>;}
+ if(stage){
+  const dark=[2,6,9,10].includes(stage),numberProps={x:special?8:49,y:special?43:79,textAnchor:special?'start' as const:'middle' as const,fontFamily:'Arial,sans-serif',fontWeight:900,fontSize:special?44:t.n>9?66:78,letterSpacing:special?0:-4};
+  return <span data-tile-id={t.id} data-number={t.n} data-suit={t.s} className={`tile face stage-material-tile suit${t.s} ${small?'small':''}`} style={{color:ink}}><svg className="tile-art" style={{color:ink}} viewBox="0 0 100 132" aria-hidden="true" focusable="false"><StageMaterial stage={stage} id={`material-${stage}-${t.id}`} seed={t.id}/><StageOrnament stage={stage}/><rect x="7" y="20" width="86" height="64" rx="9" fill={dark?'#090e14':'#fff3d8'} opacity=".12"/>
+  <g fill={ink} paintOrder="stroke" strokeLinejoin="round"><text {...numberProps} stroke="#fff1d5" strokeWidth="5.5" aria-hidden="true">{t.n}</text><text {...numberProps} stroke="#111720" strokeWidth="2.7">{t.n}</text></g>
+  <g transform={special?'translate(50 91) scale(.88)':'translate(50 106) scale(.60)'} fill={ink} paintOrder="stroke" strokeLinejoin="round"><g stroke="#fff1d5" strokeWidth="8" aria-hidden="true"><StageMotif stage={stage} s={t.s} outline={{color:"#fff1d5",width:8}}/></g><g stroke="#111720" strokeWidth="5" aria-hidden="true"><StageMotif stage={stage} s={t.s} outline={{color:"#111720",width:5}}/></g><g stroke={ink} strokeWidth="1"><StageMotif stage={stage} s={t.s}/></g></g></svg></span>;
+ }
  return <span data-tile-id={t.id} data-number={t.n} data-suit={t.s} className={`tile face suit${t.s} ${small?'small':''} ${special?`special-${t.n===1?'one':'two'}`:''}`} style={{color:ink}}>
  <svg className="tile-art" viewBox="0 0 100 132" aria-hidden="true" focusable="false" fill={ink}>
  {special?<>

@@ -1,3 +1,4 @@
+import {materialTextureCell} from './stage-texture.ts';
 /** One shared mesh/atlas replaces hundreds of independently composited DOM faces. */
 export const GPU_TILE_STRIDE=12;
 export type GpuCamera={width:number,height:number,tilt:number,scale:number};
@@ -137,8 +138,15 @@ export async function entranceTileAtlas(faces:(SVGSVGElement|null)[],backSvg?:SV
  canvas.width=1024;canvas.height=Math.ceil((faces.length+2)/8)*176;
  const urls:string[]=[];
  try{
+  // External SVG images are blocked when decoded from a blob. Embed just the
+  // current material crop once, before motion, rather than dropping the texture.
+  const materials=new Map<number,string>(),sources=[...faces,backSvg].flatMap(svg=>svg?Array.from(svg.querySelectorAll<SVGImageElement>('image[data-stage-texture]')):[]);
+  for(const source of sources){const stage=Number(source.getAttribute('data-stage-texture'));if(materials.has(stage))continue;
+   const texture=await image(source.getAttribute('href')!),cell=materialTextureCell(stage,texture.naturalWidth,texture.naturalHeight),crop=document.createElement('canvas');crop.width=128;crop.height=176;
+   const paint=crop.getContext('2d');if(!paint)throw Error('Material texture unavailable');paint.drawImage(texture,cell.x,cell.y,cell.width,cell.height,0,0,128,176);materials.set(stage,crop.toDataURL('image/png'));
+  }
   const back=backSvg?await raster(backSvg):await image('/turntale-tile-back-gold.svg');
-  async function raster(svg:SVGSVGElement){const copy=svg.cloneNode(true) as SVGSVGElement;copy.setAttribute('xmlns','http://www.w3.org/2000/svg');copy.setAttribute('width','128');copy.setAttribute('height','176');copy.setAttribute('preserveAspectRatio','none');const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)],{type:'image/svg+xml'}));urls.push(url);return image(url);}
+  async function raster(svg:SVGSVGElement){const copy=svg.cloneNode(true) as SVGSVGElement;for(const texture of copy.querySelectorAll('image[data-stage-texture]')){const src=materials.get(Number(texture.getAttribute('data-stage-texture')));if(src){texture.setAttribute('href',src);texture.setAttribute('x','0');texture.setAttribute('y','0');texture.setAttribute('width','100');texture.setAttribute('height','132');}}copy.setAttribute('xmlns','http://www.w3.org/2000/svg');copy.setAttribute('width','128');copy.setAttribute('height','176');copy.setAttribute('preserveAspectRatio','none');const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)],{type:'image/svg+xml'}));urls.push(url);return image(url);}
   const art=await Promise.all(faces.map(svg=>svg?raster(svg):null));
   for(let slot=0;slot<faces.length+2;slot++){
    const x=slot%8*128,y=Math.floor(slot/8)*176;
