@@ -65,7 +65,7 @@ export default function Home(){
   const timer=setTimeout(()=>{
    const next=nextEntrance(entrance,entranceIntent.current.kind==='resume');
    if(entrance==='menu-out')setSetupOpen(null);
-   if(next==='prepare'||(next==='settle'&&entranceIntent.current.kind==='resume')){try{beginPractice();}catch(e){entranceBusy.current=false;setEntrance('idle');const message=e instanceof Error?e.message:'저장된 게임을 열지 못했어요.';if(entranceIntent.current.kind==='new'&&entranceIntent.current.stageGame||entranceIntent.current.kind==='resume'&&entranceIntent.current.game.stageRun){setStageError(message);setStageHubOpen(true);}else setError(message);return;}}
+   if(next==='prepare'||(next==='room-hold'&&entranceIntent.current.kind==='resume')){try{beginPractice();}catch(e){entranceBusy.current=false;setEntrance('idle');const message=e instanceof Error?e.message:'저장된 게임을 열지 못했어요.';if(entranceIntent.current.kind==='new'&&entranceIntent.current.stageGame||entranceIntent.current.kind==='resume'&&entranceIntent.current.game.stageRun){setStageError(message);setStageHubOpen(true);}else setError(message);return;}}
    if(next==='idle'){
     if(local.current?.phase==='playing'&&entranceIntent.current.kind==='new'){
      const g=structuredClone(local.current);g.turnReadyAt=Date.now()+DEAL_REVIEW_MS;publishLocal(g);

@@ -1,5 +1,5 @@
 import type {Tile} from './game';
-export type DealView={me:number,players:{count:number,hand?:Tile[]}[],stacks:{lowerPresent:boolean,upper:boolean}[]};
+export type DealView={me:number,players:{count:number,hand?:Tile[]}[],stacks:{lowerPresent:boolean,upper:boolean,lower?:Tile|null}[],trick?:Tile[]};
 export type DealItem={key:string,kind:'own'|'opponent'|'lower'|'upper',selector:string,boundsSelector?:string,tile?:Tile};
 /** Only the local player's faces are allowed in the animation plan. */
 export function dealPlan(game:DealView):DealItem[]{

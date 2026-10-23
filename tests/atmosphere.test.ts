@@ -30,7 +30,7 @@ assert.equal(concealLiveTiles('settle'),false,'real tile paint is ready under st
 assert.equal(concealLiveTiles('game-in'),false);
 assert.equal(entranceCurtain('prepare'),'covered','measurement and precomputation cannot flash an unfinished table');
 assert.equal(fresh.at(-1),'game-in');assert.equal(resume.at(-1),'game-in');
-assert.ok(fresh.reduce((sum,p)=>sum+ENTRANCE_MS[p],0)<7000,'full 60-tile deal stays under seven seconds excluding layout measurement');
+assert.ok(fresh.reduce((sum,p)=>sum+ENTRANCE_MS[p],0)<10000,'the slower opening stays under ten seconds excluding preparation');
 const g=room('INTRO',player('나'),true,2);g.players.push(player('달빛',true));const now=100000;start(g,now+ENTRANCE_MS['game-in']);
 assert.equal(g.turnReadyAt,now+ENTRANCE_MS['game-in']+DEAL_REVIEW_MS);
 assert.throws(()=>assertTurnReady(g,now+ENTRANCE_MS['game-in']+DEAL_REVIEW_MS-1));
@@ -41,5 +41,5 @@ g.players[1].hand[0]={id:59,n:15,s:3};const b=view(g,g.players[0].token);
 assert.equal(endgameLevel(a.phase,a.players.map(p=>p.count)),endgameLevel(b.phase,b.players.map(p=>p.count)));
 console.log('PASS: public-only tension thresholds/recovery, no hidden-hand inference, safe empty states, new/resume seamless entrance ordering, stationary handoff interval, duration budget, full opening review lock.');
 
-assert.ok(entranceDuration("approach",true)>=entranceDuration("approach")*2,"resume leaves time to recognize the saved opponents");
+assert.ok(entranceDuration("approach",true)>=entranceDuration("approach")*1.4,"resume leaves time to recognize the saved opponents");
 assert.ok(entranceDuration("game-in",true)>entranceDuration("game-in"),"saved table has a gradual handoff");

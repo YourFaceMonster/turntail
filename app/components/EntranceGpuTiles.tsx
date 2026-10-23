@@ -44,7 +44,7 @@ function EntranceGpuTiles({cards,routes,phase,visible,width,height,overview,onSt
    clock.current.elapsed+=Math.max(0,now-last);last=now;
    const elapsed=clock.current.elapsed;
    let camera=entranceFrameCamera(phase,elapsed,overview);
-   if(cameraAnimation&&typeof cameraAnimation.currentTime==='number'&&(phase==='approach'||phase==='shuffle'))camera=entranceFrameCamera('approach',cameraAnimation.currentTime,overview);
+   if(cameraAnimation&&typeof cameraAnimation.currentTime==='number'&&phase==='approach')camera=entranceFrameCamera('approach',cameraAnimation.currentTime,overview);
    try{engine.current?.draw(writeEntranceFrame(data,tiles,routes,phase,elapsed,width/2,height/2),{width,height,...camera});}
    catch{latest.current.onStatus('fallback');return;}
    if(moving&&elapsed<ENTRANCE_MS[phase])frame=requestAnimationFrame(draw);

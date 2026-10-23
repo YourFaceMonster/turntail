@@ -694,7 +694,7 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 .turntale.table-v211.active-table .seat-card .op-info>strong{font-size:11px;line-height:1.1}
 .turntale.table-v211.active-table .seat-card .seat-points{font-size:9px!important;margin-top:1px!important}
 .turntale.table-v211.active-table .action-buttons button{border-radius:12px!important}
-.turntale.table-v211.active-table .tile.face,.turntale.table-v211.active-table .tile.back{border:0!important;background:transparent!important;box-shadow:0 2px 3px #0006!important;border-radius:8% / 7%!important;padding:0!important;transition:none!important;animation:none!important;overflow:visible!important}
+
 .turntale.table-v211.active-table .tile-prism{width:100%!important;height:100%!important;display:block;background:transparent!important;transform:none!important;transition:none!important;animation:none!important;overflow:visible!important}
 .turntale.table-v211.active-table .flying-tile .tile{width:var(--sw)!important;height:var(--sh)!important;min-width:var(--sw)!important;min-height:var(--sh)!important;padding:0!important;transform:none!important}
 .turntale.table-v211.active-table .flying-tile{filter:none!important;transition:none!important}
@@ -720,7 +720,7 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 @media(max-width:700px){.stage-map-layout{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}.journey-map-guide{display:grid;grid-template-columns:1fr auto;gap:6px 12px;padding:12px 15px;overflow:visible}.journey-map-guide>.eyebrow{grid-column:1}.journey-map-guide>h3{grid-column:1;font-size:18px}.journey-map-guide>.primary{grid-column:2;grid-row:1/3}.journey-map-guide>p:not(.stage-error),.journey-map-guide>small{display:none}.journey-map-guide>.secondary,.journey-map-guide>.text-btn{margin:0!important;min-height:30px}.stage-map-header h2{font-size:21px!important}.score-shade .highscore-modal{padding:23px 18px!important}}
 @media(orientation:landscape) and (max-height:600px){.stage-map-layout{grid-template-columns:minmax(0,1fr) 240px;grid-template-rows:minmax(0,1fr)}.journey-map-guide{display:flex;flex-direction:column;justify-content:center;padding:12px 16px;gap:8px;overflow:auto}.journey-map-guide>h3{font-size:20px;margin:0}.journey-map-guide>.eyebrow{font-size:8px}.journey-map-guide>p:not(.stage-error),.journey-map-guide>small{display:none}.journey-map-guide>.primary{min-height:40px;width:100%;font-size:12px}.journey-map-guide>.secondary{margin:0;min-height:32px}.journey-map-guide>.text-btn{margin:0;min-height:28px}.stage-map-header{padding:10px 20px}.stage-map-header h2{font-size:20px!important}.stage-map-header p{font-size:10px}}
 /* The room stays at native viewport resolution while only the physical table moves. */
-.table-entrance>.entry-room{transform:none!important;background-size:cover!important;background-position:center!important;z-index:0}
+.table-entrance>.entry-room{background-size:cover!important;background-position:center!important;z-index:0}
 .table-entrance>.entry-view-rig{z-index:1}.entry-menu-out>.entry-room,.entry-room-hold>.entry-room,.entry-prepare>.entry-room{visibility:hidden}
 .entry-game-in>.entry-room{animation:entry-scene-blend var(--curtain-ms) ease both}
 .entry-reunion{position:absolute;inset:0;z-index:12;pointer-events:none;color:#f3e2bf}
@@ -736,3 +736,38 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 @keyframes table-companion-arrive{from{opacity:0;transform:translateY(17px)}to{opacity:1;transform:translateY(0)}}@keyframes companion-considers-hand{50%{transform:translateY(-3px)}}@keyframes reunion-handoff{from{opacity:1}to{opacity:0}}
 @media(orientation:landscape) and (max-height:600px){.entry-company{top:20px;width:min(72vw,600px)}.entry-companion-face{width:62px;height:62px;margin-bottom:6px}.entry-companion-hand{height:34px;margin-top:7px}.entry-companion-hand>.tile.back{width:24px!important;height:34px!important}.entry-return-note{bottom:9%;gap:6px}.entry-return-note>strong{font-size:22px}.entry-return-note>small{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.entry-reunion{display:none}.entry-companion,.entry-companion-hand{animation:none!important}}
+
+/* 0.5.1: transparent landmark hit rings, readable number badges and living water. */
+.journey-node,.journey-node.locked,.journey-node.cleared,.journey-node.available{width:60px;height:60px;background:transparent!important;box-shadow:none!important;border:1px solid #f2dfad4d;outline:none;backdrop-filter:none!important}
+.journey-node>span{width:30px;height:30px;border:2px solid #e9d5a6;background:#142137!important;color:#fff4d6;border-radius:50%;font-family:Arial,'Noto Sans KR',sans-serif;font-size:17px;font-weight:900;text-shadow:0 1px 2px #000;box-shadow:0 2px 5px #0009}
+.journey-node.available{border-color:#ffe8a77a}.journey-node.available>span{background:#48361c!important;border-color:#ffe19a;color:#fff9e5;box-shadow:0 0 0 2px #111b2d,0 0 9px #ffda6b88}
+.journey-node.cleared>span{border-color:#ceebc1;color:#e1ffd5;background:#203c32!important}.journey-node.selected>span{outline:2px solid #fff4c8;outline-offset:3px}.journey-node:focus-visible{outline:2px solid #fff;outline-offset:2px}.journey-node>i{display:none}
+.map-atmosphere{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;contain:layout paint}
+.map-water{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}.map-water-stream{animation:map-flow 1.5s linear infinite}.map-water-ripple{animation:map-ripple 4.8s ease-out infinite}
+.map-mist{position:absolute;width:78%;height:24%;background:radial-gradient(ellipse,#b6dcef19,transparent 68%);animation:map-wind 22s ease-in-out infinite alternate;will-change:transform;opacity:.65}.map-mist-near{left:-20%;top:49%}.map-mist-far{left:45%;top:16%;animation-duration:30s;animation-direction:alternate-reverse;opacity:.45}
+.map-wind-speck{position:absolute;width:2px;height:2px;background:#d1edbc;border-radius:50%;opacity:0;animation:map-speck var(--drift-time) var(--drift-delay) linear infinite}.map-wind-speck.leaf{width:5px;height:2px;border-radius:80% 0;background:#b1cd8a}
+@keyframes map-flow{from{stroke-dashoffset:0}to{stroke-dashoffset:-64}}@keyframes map-ripple{0%{transform:scale(.65);opacity:0}20%{opacity:.65}100%{transform:scale(1.7);opacity:0}}@keyframes map-wind{from{transform:translate3d(-4%,2%,0)}to{transform:translate3d(24%,-3%,0)}}@keyframes map-speck{0%{transform:translate3d(-25px,8px,0) rotate(0);opacity:0}18%,65%{opacity:.55}100%{transform:translate3d(65px,-24px,0) rotate(150deg);opacity:0}}
+.map-atmosphere[data-paused="true"] *{animation-play-state:paused!important}
+/* Flat approved faces remain identical in the hand, in flight and on the floor. */
+.turntale.table-v211.active-table .tile.face,.turntale.table-v211.active-table .tile.back{border-radius:7px!important;box-shadow:0 2px 0 #b8b19c,0 3px 4px #0005!important;transition:none!important;animation:none!important}
+.turntale.table-v211.active-table .tile.face:not(.stage-material-tile){background:#fffdf5!important}.turntale.table-v211.active-table .tile.back.tile-back-shared{background:#12513d!important;color:#dfc28a}
+.turntale.table-v211.active-table .stage-material-tile{overflow:hidden!important;background:transparent!important}.tile-art{shape-rendering:geometricPrecision}
+.table-surface[data-surface-stage]{background:#29201b!important;box-shadow:inset 0 0 60px #05081266}.table-surface-material{shape-rendering:geometricPrecision}
+/* The world remains fixed. Perspective travel changes the observer's distance. */
+.table-entrance>.entry-view-rig{perspective:1000px;perspective-origin:50% 50%;transform:none!important;animation:none!important}
+.entry-camera{transform:translateZ(var(--camera-far)) rotateX(58deg);transform-origin:50% 50%}
+.entry-approach .entry-camera{animation:observer-look-down var(--camera-ms) cubic-bezier(.25,.45,.3,1) both}
+@keyframes observer-look-down{from{transform:translateZ(var(--camera-far)) rotateX(58deg)}to{transform:translateZ(0) rotateX(0deg)}}
+.entry-shuffle .entry-camera,.entry-deal .entry-camera,.entry-settle .entry-camera,.entry-game-in .entry-camera{animation:none!important;transform:translateZ(0) rotateX(0deg)!important}
+.table-entrance>.entry-room{transform-origin:50% 42%;transform:scale(1)}
+.entry-approach>.entry-room{animation:observer-room-parallax var(--camera-ms) cubic-bezier(.25,.45,.3,1) both!important}
+.entry-shuffle>.entry-room,.entry-deal>.entry-room,.entry-settle>.entry-room,.entry-game-in>.entry-room{transform:scale(1.08) translateY(-1.8%)!important}
+@keyframes observer-room-parallax{from{transform:scale(1) translateY(0)}to{transform:scale(1.08) translateY(-1.8%)}}
+.entry-passing-edge{position:absolute;top:-10%;bottom:-10%;width:15%;z-index:8;pointer-events:none;background:linear-gradient(90deg,#0a0c0fe0,#1d201e8a,transparent);opacity:.8;transform:translateX(0)}.entry-passing-left{left:-5%}.entry-passing-right{right:-5%;rotate:180deg}
+.entry-approach .entry-passing-edge{animation:observer-pass-edge var(--camera-ms) cubic-bezier(.25,.45,.3,1) both}.entry-shuffle .entry-passing-edge,.entry-deal .entry-passing-edge,.entry-settle .entry-passing-edge,.entry-game-in .entry-passing-edge{visibility:hidden}
+@keyframes observer-pass-edge{to{transform:translateX(-130%);opacity:0}}
+.entry-saved-table{position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none;z-index:4}.entry-saved-tile{position:absolute;transform-origin:center;animation:none!important;transition:none!important}.entry-saved-tile>.tile{width:100%!important;height:100%!important;display:block;border-radius:7px;border:1px solid #d8c393;box-shadow:0 2px 0 #b8b19c,0 4px 5px #0006;overflow:hidden;padding:0}.entry-saved-tile .tile-art,.entry-saved-tile .tile>svg{width:100%;height:100%;display:block}.entry-saved-tile>.tile.back{background:#12513d;color:#dfc28a}.entry-saved-tile>.tile.face{background:#fffdf5}.entry-saved-tile>.tile.stage-material-tile{background:transparent}
+.entry-game-in .entry-saved-table{animation:entry-tiles-handoff var(--curtain-ms) linear both}.entry-game-in .entry-company,.entry-game-in .entry-return-note{opacity:0}
+.entry-return-note{bottom:5%;gap:6px}.entry-return-note>strong{font-size:clamp(17px,3vw,25px)}.entry-company{top:clamp(20px,5vh,55px)}.entry-companion-hand{display:none}
+.table-entrance[data-visible="false"] *{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.map-atmosphere{display:none}.map-atmosphere *{animation:none!important}}

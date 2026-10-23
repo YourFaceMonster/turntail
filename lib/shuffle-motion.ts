@@ -44,21 +44,21 @@ export function* planShuffle(seed:number,viewportWidth:number,viewportHeight:num
  }
  if(points.length!==sizes.length)throw Error('Unable to place solid shuffle tiles');
  const tracks=points.map((p,i)=>({radius:radii[i],poses:[{...p}]}));
- const velocity=points.map(()=>({x:0,y:0})),headings=points.map(()=>random()*Math.PI*2),spin=points.map(()=>180+random()*150);
- const sweep=(t:number)=>{const u=t*t*(3-2*t);return u*2.4+.16*Math.sin(Math.PI*t)*Math.sin(2*Math.PI*t);};
+ const velocity=points.map(()=>({x:0,y:0})),headings=points.map(()=>random()*Math.PI*2),spin=points.map(()=>70+random()*90);
+ const sweep=(t:number)=>{return .42*Math.sin(2*Math.PI*t)+.12*Math.sin(4*Math.PI*t);};
  for(let frame=1;frame<=FRAMES;frame++){
   const prior=points.map(p=>({...p})),progress=frame/FRAMES,envelope=Math.sin(Math.PI*progress);
   const delta=sweep(progress)-sweep((frame-1)/FRAMES),c=Math.cos(delta),s=Math.sin(delta);
-  // Shared transport carries the WHOLE wash a substantial distance. Local sliding
-  // then rearranges neighbours; blocked tiles never cancel the broad sweep.
+  // Two gentle alternating hand sweeps reverse instead of rotating the pile
+  // like a carousel. Independent vortices mix neighbours between each sweep.
   const base=prior.map(p=>({x:p.x*c-p.y*s,y:p.x*s+p.y*c,angle:p.angle+delta*180/Math.PI}));
   points=base.map(p=>({...p}));
   const order=points.map((_,i)=>(i+frame)%points.length);
   for(const i of order){
-   const p=base[i],normal=Math.hypot(p.x/rx,p.y/ry),turn=Math.cos(progress*Math.PI);
-   const vortexX=(i%2?1:-1)*rx*.25,vortexY=Math.sin(progress*Math.PI*2)*ry*.12;
-   let fx=-(p.y-vortexY)/ry*turn*2+Math.cos(headings[i]+progress*4)*1.1;
-   let fy=(p.x-vortexX)/rx*turn*2+Math.sin(headings[i]+progress*4)*1.1;
+   const p=base[i],normal=Math.hypot(p.x/rx,p.y/ry),turn=Math.cos(progress*Math.PI*2);
+   const vortexX=(p.x<0?-1:1)*rx*.3,vortexY=Math.sin(progress*Math.PI*2)*ry*.18;
+   let fx=-(p.y-vortexY)/ry*turn*2+Math.cos(headings[i]+progress*5)*1.7;
+   let fy=(p.x-vortexX)/rx*turn*2+Math.sin(headings[i]+progress*5)*1.7;
    for(let j=0;j<points.length;j++)if(i!==j){
     const dx=p.x-base[j].x,dy=p.y-base[j].y,reach=radii[i]+radii[j]+largest*.55;
     if(Math.abs(dx)>=reach||Math.abs(dy)>=reach)continue;
@@ -67,7 +67,7 @@ export function* planShuffle(seed:number,viewportWidth:number,viewportHeight:num
    }
    if(normal>.72){fx-=p.x/rx*(normal-.72)*14;fy-=p.y/ry*(normal-.72)*14;}
    const v=velocity[i],vx=v.x*c-v.y*s,vy=v.x*s+v.y*c;
-   const speed=largest*.19*envelope,n=Math.max(1,Math.hypot(fx,fy));
+   const speed=largest*.27*envelope,n=Math.max(1,Math.hypot(fx,fy));
    v.x=vx*.62+fx/n*speed*.38;v.y=vy*.62+fy/n*speed*.38;
    // Deflect along contact normals instead of repeatedly stopping and jittering.
    for(let pass=0;pass<2;pass++)for(let j=0;j<points.length;j++)if(i!==j){

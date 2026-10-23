@@ -4,7 +4,7 @@ export function endgameLevel(phase:string|undefined,counts:readonly number[],ope
  const least=Math.min(...counts);return least===1?2:least<=3?1:0;
 }
 export type EntrancePhase='idle'|'menu-out'|'room-hold'|'approach'|'shuffle'|'prepare'|'deal'|'settle'|'game-in';
-export const ENTRANCE_MS:Record<EntrancePhase,number>={idle:0,'menu-out':480,'room-hold':160,approach:1100,shuffle:2000,prepare:0,deal:1800,settle:100,'game-in':560};
+export const ENTRANCE_MS:Record<EntrancePhase,number>={idle:0,'menu-out':480,'room-hold':160,approach:2400,shuffle:3000,prepare:0,deal:2100,settle:160,'game-in':800};
 export function nextEntrance(phase:EntrancePhase,resume=false):EntrancePhase{
  return ({idle:'idle','menu-out':'room-hold','room-hold':resume?'approach':'prepare',prepare:'approach',approach:resume?'settle':'shuffle',shuffle:'deal',deal:'settle',settle:'game-in','game-in':'idle'} as const)[phase];
 }
@@ -18,4 +18,4 @@ export function entranceCurtain(phase:EntrancePhase):'close'|'covered'|'open'|'c
 }
 
 /** Returning players get time to recognize their opponents and saved table. */
-export function entranceDuration(phase:EntrancePhase,resume=false){return resume&&phase==='approach'?2400:resume&&phase==='game-in'?850:ENTRANCE_MS[phase];}
+export function entranceDuration(phase:EntrancePhase,resume=false){return resume&&phase==='approach'?3600:resume&&phase==='game-in'?1000:ENTRANCE_MS[phase];}

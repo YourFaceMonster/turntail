@@ -5,7 +5,8 @@ export const TILE_ATLAS_CELL={width:192,height:264,columns:8,inset:6} as const;
 export type GpuCamera={width:number,height:number,tilt:number,scale:number};
 export function projectEntrancePoint(x:number,y:number,z:number,camera:GpuCamera){
  const c=Math.cos(camera.tilt),s=Math.sin(camera.tilt);
- return {x:camera.width/2+(x-camera.width/2)*camera.scale,y:camera.height/2+((y-camera.height/2)*c-z*s)*camera.scale};
+ const depth=(y-camera.height/2)*s+z*c,factor=camera.scale/(1-depth*camera.scale/1000);
+ return {x:camera.width/2+(x-camera.width/2)*factor,y:camera.height/2+((y-camera.height/2)*c-z*s)*factor};
 }
 /** CSS cubic-bezier(.25,.45,.3,1), shared by the table camera and tile camera. */
 export function entranceCameraEase(t:number){
@@ -65,8 +66,9 @@ void main(){
  p.xy=mat2(c,s,-s,c)*p.xy;p+=i_pose.xyz;
  v_normal=vec3(mat2(c,s,-s,c)*a_normal.xy,a_normal.z);
  vec2 centered=p.xy-u_view*.5;
- vec2 screen=u_view*.5+vec2(centered.x,centered.y*u_camera.x-p.z*u_camera.y)*u_camera.z;
  float depth=centered.y*u_camera.y+p.z*u_camera.x;
+ float factor=u_camera.z/max(.05,1.-depth*u_camera.z/1000.);
+ vec2 screen=u_view*.5+vec2(centered.x,centered.y*u_camera.x-p.z*u_camera.y)*factor;
  gl_Position=vec4(screen.x/u_view.x*2.-1.,1.-screen.y/u_view.y*2.,-depth/8192.,1.);
 }`;
 const fragmentSource=`#version 300 es

@@ -29,11 +29,13 @@ for(const [width,height] of [[390,844],[844,390],[1280,720]]){
    if(phase!=='deal')assert.equal(data[at+10],tile.kind==='own'||tile.kind==='upper'?1:0,'no opponent count badge or lower tile suddenly appears');
   }
  }
- for(const elapsed of [0,ENTRANCE_MS.approach,ENTRANCE_MS.approach+ENTRANCE_MS.shuffle]){
+ for(const elapsed of [0,ENTRANCE_MS.approach/2,ENTRANCE_MS.approach]){
   const camera={width,height,...entranceFrameCamera('approach',elapsed,overview)},point=projectEntrancePoint(width/2+70,height/2+40,24,camera);
-  const eased=entranceCameraEase(elapsed/(ENTRANCE_MS.approach+ENTRANCE_MS.shuffle)),rig=1+(1/overview-1)*eased,angle=62*Math.PI/180*(1-eased);
-  assert.ok(Math.abs(point.x-(width/2+70*overview*rig))<1e-8);
-  assert.ok(Math.abs(point.y-(height/2+(40*Math.cos(angle)-24*Math.sin(angle))*overview*rig))<1e-8,'GPU tiles use the same nested camera transform as the DOM table');
+  const eased=entranceCameraEase(elapsed/ENTRANCE_MS.approach),distance=1000*(1+(1/overview-1)*(1-eased)),angle=58*Math.PI/180*(1-eased);
+  const factor=1000/(distance-40*Math.sin(angle)-24*Math.cos(angle));
+  assert.ok(Math.abs(point.x-(width/2+70*factor))<1e-8);
+  assert.ok(Math.abs(point.y-(height/2+(40*Math.cos(angle)-24*Math.sin(angle))*factor))<1e-8,'GPU projection matches the CSS camera distance, tilt and perspective');
+
  }
 }
-console.log('PASS: one rounded solid mesh; 60 native-size tiles, exact shuffle/deal/game handoffs, hidden lower/opponent slots and the original camera projection across phone/landscape/desktop.');
+console.log('PASS: one rounded solid mesh; 60 native-size tiles, exact shuffle/deal/game handoffs, hidden lower/opponent slots and perspective travel towards a stationary world across phone/landscape/desktop.');
