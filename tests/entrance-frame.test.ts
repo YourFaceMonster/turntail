@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {entranceTileMesh,projectEntrancePoint,entranceCameraEase,GPU_TILE_STRIDE} from '../lib/entrance-gpu.ts';
 import {entranceFrameCamera,writeEntranceFrame,type EntranceRenderTile} from '../lib/entrance-frame.ts';
 import {planDealFlights} from '../lib/deal-motion.ts';
+import {observerCamera} from '../lib/entrance-camera.ts';
 import {ENTRANCE_MS} from '../lib/atmosphere.ts';
 const mesh=entranceTileMesh();
 assert.equal(mesh.length%27,0,'the shared prism contains complete triangles');
@@ -31,7 +32,7 @@ for(const [width,height] of [[390,844],[844,390],[1280,720]]){
  }
  for(const elapsed of [0,ENTRANCE_MS.approach/2,ENTRANCE_MS.approach]){
   const camera={width,height,...entranceFrameCamera('approach',elapsed,overview)},point=projectEntrancePoint(width/2+70,height/2+40,24,camera);
-  const eased=entranceCameraEase(elapsed/ENTRANCE_MS.approach),distance=1000*(1+(1/overview-1)*(1-eased)),angle=58*Math.PI/180*(1-eased);
+  const state=observerCamera(elapsed/ENTRANCE_MS.approach,overview),distance=1000/state.scale,angle=state.tilt;
   const factor=1000/(distance-40*Math.sin(angle)-24*Math.cos(angle));
   assert.ok(Math.abs(point.x-(width/2+70*factor))<1e-8);
   assert.ok(Math.abs(point.y-(height/2+(40*Math.cos(angle)-24*Math.sin(angle))*factor))<1e-8,'GPU projection matches the CSS camera distance, tilt and perspective');

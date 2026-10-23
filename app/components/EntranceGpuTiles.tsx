@@ -38,7 +38,7 @@ function EntranceGpuTiles({cards,routes,phase,visible,width,height,overview,onSt
   if(!ready||!visible)return;
   let frame=0,last=performance.now();
   // The DOM table's animation clock keeps both projections in the same frame.
-  const cameraAnimation=document.querySelector('.entry-camera')?.getAnimations().find(animation=>animation instanceof CSSAnimation&&animation.animationName==='observer-look-down');
+  const cameraAnimation=document.querySelector('.entry-camera')?.getAnimations().find(animation=>animation.id==='turntale-observer');
   const moving=phase==='approach'||phase==='shuffle'||phase==='deal';
   function draw(now:number){
    clock.current.elapsed+=Math.max(0,now-last);last=now;
@@ -47,6 +47,7 @@ function EntranceGpuTiles({cards,routes,phase,visible,width,height,overview,onSt
    if(cameraAnimation&&typeof cameraAnimation.currentTime==='number'&&phase==='approach')camera=entranceFrameCamera('approach',cameraAnimation.currentTime,overview);
    try{engine.current?.draw(writeEntranceFrame(data,tiles,routes,phase,elapsed,width/2,height/2),{width,height,...camera});}
    catch{latest.current.onStatus('fallback');return;}
+   // Never quantise to 16.7ms: the display's rAF clock may be 60/90/120/144Hz.
    if(moving&&elapsed<ENTRANCE_MS[phase])frame=requestAnimationFrame(draw);
   }
   draw(last);return()=>cancelAnimationFrame(frame);

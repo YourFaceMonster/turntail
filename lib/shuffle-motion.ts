@@ -1,9 +1,12 @@
+import {ENTRANCE_MS} from './atmosphere.ts';
 import {collideTiles,type RigidTile} from './shuffle-contacts.ts';
 export type ShufflePose={x:number,y:number,angle:number};
 export type ShuffleSize={width:number,height:number};
 export type ShuffleTrack={radius:number,width?:number,height?:number,poses:ShufflePose[],contacts?:number[]};
 export type ShuffleScene={width:number,height:number,tracks:ShuffleTrack[],contacts?:number};
-const FRAMES=144,GAP=4;
+export const SHUFFLE_HZ=120;
+export const SHUFFLE_FRAMES=Math.round(ENTRANCE_MS.shuffle/1000*SHUFFLE_HZ);
+const FRAMES=SHUFFLE_FRAMES,GAP=4,DT=144/FRAMES;
 function rng(seed:number){let state=seed>>>0;return()=>{state=(state+0x6d2b79f5)>>>0;let n=state;n=Math.imul(n^(n>>>15),n|1);n^=n+Math.imul(n^(n>>>7),n|61);return ((n^(n>>>14))>>>0)/4294967296;};}
 /** Minimum centre distance for the WHOLE linear interval, not just its endpoints. */
 export function sweptDistance(a:ShufflePose,b:ShufflePose,c:ShufflePose,d:ShufflePose){
@@ -56,14 +59,14 @@ export function* planShuffle(seed:number,viewportWidth:number,viewportHeight:num
    const normal=Math.hypot(p.x,p.y)/rx,inward=Math.max(0,normal-.48)*4;
    const fx=-dy/d*turn+Math.cos(phases[i]+t*5)*.55-p.x/rx*inward;
    const fy=dx/d*turn+Math.sin(phases[i]+t*5)*.55-p.y/ry*inward;
-   p.vx=p.vx*.95+fx*drive;p.vy=p.vy*.95+fy*drive;p.spin=p.spin*.95+Math.sin(phases[i]+t*7)*.001*envelope;
+   p.vx=p.vx*Math.pow(.95,DT)+fx*drive*DT;p.vy=p.vy*Math.pow(.95,DT)+fy*drive*DT;p.spin=p.spin*Math.pow(.95,DT)+Math.sin(phases[i]+t*7)*.001*envelope*DT;
    const cap=largest*.24,spd=Math.hypot(p.vx,p.vy);if(spd>cap){p.vx*=cap/spd;p.vy*=cap/spd;}
-   if(t>.84){p.vx*=.84;p.vy*=.84;p.spin*=.78;}
+   if(t>.84){p.vx*=Math.pow(.84,DT);p.vy*=Math.pow(.84,DT);p.spin*=Math.pow(.78,DT);}
   }
   // Four substeps and eight short constraint passes preserve contact while
   // avoiding tunnelling. This entire simulation is prepared before playback.
   for(let sub=0;sub<4;sub++){
-   for(const p of bodies){p.x+=p.vx/4;p.y+=p.vy/4;p.angle+=p.spin/4*180/Math.PI;}
+   for(const p of bodies){p.x+=p.vx*DT/4;p.y+=p.vy*DT/4;p.angle+=p.spin*DT/4*180/Math.PI;}
    for(let pass=0;pass<(frame===FRAMES?48:8);pass++){
     for(let i=0;i<bodies.length;i++)for(let j=0;j<i;j++){
      const a=bodies[i],b=bodies[j],reach=tracks[i].radius+tracks[j].radius;

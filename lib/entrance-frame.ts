@@ -1,14 +1,15 @@
 import {sampleShufflePose,type ShufflePose} from './shuffle-motion.ts';
 import {sampleDealRoute,type DealRoute} from './deal-motion.ts';
 import {ENTRANCE_MS,type EntrancePhase} from './atmosphere.ts';
-import {entranceCameraEase,GPU_TILE_STRIDE} from './entrance-gpu.ts';
+import {GPU_TILE_STRIDE} from './entrance-gpu.ts';
+import {observerCamera} from './entrance-camera.ts';
 export type EntranceRenderTile={width:number,height:number,depth:number,poses:ShufflePose[],faceSlot:number,kind:'own'|'opponent'|'lower'|'upper',target:{x:number,y:number,width:number,height:number,angle:number}};
 const clamp=(n:number)=>Math.max(0,Math.min(1,n));
 export function entranceFrameCamera(phase:EntrancePhase,elapsed:number,overview:number){
- const progress=['shuffle','deal','settle','game-in'].includes(phase)?1:phase==='approach'?entranceCameraEase(elapsed/ENTRANCE_MS.approach):0;
+ const progress=['shuffle','deal','settle','game-in'].includes(phase)?1:phase==='approach'?elapsed/ENTRANCE_MS.approach:0;
  // Perspective camera travels towards a stationary world. It finishes before
  // shuffling, so tiles never ride a moving/scaling tabletop during the wash.
- return {tilt:58*Math.PI/180*(1-progress),scale:1/(1+(1/overview-1)*(1-progress))};
+ return observerCamera(progress,overview);
 }
 /** The original 60-body tracks and flight routes feed one instanced GPU draw. */
 export function writeEntranceFrame(data:Float32Array,tiles:EntranceRenderTile[],routes:DealRoute[],phase:EntrancePhase,elapsed:number,cx:number,cy:number){

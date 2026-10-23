@@ -593,7 +593,7 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
    the camera rig approaches it; the tabletop has no entrance/fly-up animation. */
 .table-entrance{position:fixed;inset:0;z-index:10000;overflow:hidden;pointer-events:auto;perspective:none;background:transparent;--ivory-tile-shadow:inset 0 1px 0 #fff,1px 5px 7px #100b0855}
 .entry-view-rig{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 50%;transform:scale3d(1,1,1)}
-.entry-room{position:absolute;inset:0;background:#17120f url('/turntale-empty-room.webp') center top/cover no-repeat;transform:translateZ(-3000px);pointer-events:none}
+.entry-room{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,#39342b,#111b20 80%);pointer-events:none}
 .entry-room-warmth,.entry-room-moonlight{position:absolute;inset:0;pointer-events:none}
 .entry-room-warmth{background:radial-gradient(ellipse at 8% 45%,#ffd39426,transparent 60%);animation:entry-candle-breathe 4.7s ease-in-out infinite}
 .entry-room-moonlight{background:radial-gradient(ellipse at 58% 12%,#8aace018,transparent 55%);animation:entry-candle-breathe 8s -3s ease-in-out infinite reverse}
@@ -632,7 +632,6 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 .entry-game-in .entry-deck,.entry-game-in .entry-gpu-tiles{animation:entry-tiles-handoff var(--curtain-ms) linear both}
 @keyframes entry-scene-blend{0%{opacity:1}70%,100%{opacity:0}}
 @keyframes entry-tiles-handoff{0%,70%{opacity:1}100%{opacity:0}}
-@media(orientation:portrait){.entry-room{background-image:url('/turntale-empty-room-portrait.webp')}}
 @media(prefers-reduced-motion:reduce){.table-entrance{display:none}.entry-room-warmth,.entry-room-moonlight{animation:none}}
 
 /* The stage challenge is an additional single-player flow on the 4.0 table. */
@@ -651,25 +650,15 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 @media(max-width:700px){.single-mode-menu{padding:25px 18px!important}.single-mode-cards{gap:10px}.single-mode-cards>button{padding:18px 13px;min-height:250px}.single-mode-cards strong{font-size:25px}.single-mode-cards small{font-size:8px;letter-spacing:1px}.single-mode-cards p{font-size:11px}.stage-map-shade{padding:6px!important}.stage-map-hub{max-height:96dvh!important;border-radius:13px!important}.stage-map-header{padding:18px 16px 12px}.stage-map-header h2{font-size:22px!important}.stage-map-header p{font-size:10px}.stage-map-header .eyebrow{font-size:8px;letter-spacing:1px}.stage-map-layout{grid-template-columns:minmax(0,1fr)}.journey-map{max-width:560px;margin:auto}.journey-destination{position:relative;padding:22px 20px;background:linear-gradient(145deg,#142737,#101c2a)}.destination-opponents .stage-portrait{width:58px;height:58px}.journey-destination h3{font-size:29px}.journey-node{width:44px;height:44px}.journey-node>small{font-size:9px;padding:3px 4px}.destination-material{margin:12px 0}.destination-objective{padding:8px 0 15px}.destination-story{font-size:13px}.save-slot-list>button{padding:14px}}
 
 [data-stage="1"] .table-surface{background-image:linear-gradient(150deg,#4d36243b,#20180f70),url('/turntale-intro-walnut.webp');background-size:cover;background-position:center}
-.table-entrance[data-stage="1"] .entry-room{background-image:linear-gradient(0deg,#08121ca3,#0b142c55),url("/turntale-stage-map.png");background-position:49% 82%;background-size:auto,180% auto}
 [data-stage="2"] .table-surface{background-image:linear-gradient(140deg,#39210f65,#1b110d85),url('/turntale-intro-walnut.webp');background-size:cover;background-position:center}
-.table-entrance[data-stage="2"] .entry-room{background-image:linear-gradient(0deg,#08121ca3,#0b142c55),url("/turntale-stage-map.png");background-position:47% 70%;background-size:auto,180% auto}
 [data-stage="3"] .table-surface{background-image:repeating-linear-gradient(118deg,transparent 0 27px,#adc2aa17 28px,#345c4b30 33px,transparent 41px),radial-gradient(ellipse at 20% 10%,#73907a,#263d34 80%);background-size:cover;background-position:center}
-.table-entrance[data-stage="3"] .entry-room{background-image:linear-gradient(0deg,#08121ca3,#0b142c55),url("/turntale-stage-map.png");background-position:65% 61%;background-size:auto,180% auto}
 [data-stage="4"] .table-surface{background-image:repeating-linear-gradient(125deg,transparent 0 78px,#bde9f224 79px,#bde9f203 85px),radial-gradient(ellipse at 10% 15%,#779eaa,#253d51 80%);background-size:cover;background-position:center}
-.table-entrance[data-stage="4"] .entry-room{background-image:linear-gradient(0deg,#08121ca3,#0b142c55),url("/turntale-stage-map.png");background-position:27% 50%;background-size:auto,180% auto}
 [data-stage="5"] .table-surface{background-image:repeating-linear-gradient(90deg,transparent 0 82px,#171e1c66 83px,#d5c4a31a 85px),linear-gradient(0deg,#54626166,#53616144),url('/turntale-intro-walnut.webp');background-size:cover;background-position:center}
-.table-entrance[data-stage="5"] .entry-room{background-image:linear-gradient(0deg,#08121ca3,#0b142c55),url("/turntale-stage-map.png");background-position:49% 51%;background-size:auto,180% auto}
 [data-stage="6"] .table-surface{background-image:repeating-radial-gradient(circle at 22% 19%,#bcc0c007 0 1px,transparent 2px 5px),linear-gradient(130deg,#46454f,#24212d);background-size:cover;background-position:center}
-.table-entrance[data-stage="6"] .entry-room{background-image:linear-gradient(0deg,#08121ca3,#0b142c55),url("/turntale-stage-map.png");background-position:80% 44%;background-size:auto,180% auto}
 [data-stage="7"] .table-surface{background-image:linear-gradient(130deg,#97c8d033,#38547677),url('/turntale-intro-walnut.webp');background-size:cover;background-position:center}
-.table-entrance[data-stage="7"] .entry-room{background-image:linear-gradient(0deg,#08121ca3,#0b142c55),url("/turntale-stage-map.png");background-position:74% 28%;background-size:auto,180% auto}
 [data-stage="8"] .table-surface{background-image:repeating-linear-gradient(35deg,transparent 0 65px,#d5b47620 66px,transparent 74px),radial-gradient(ellipse at 30% 25%,#867547,#443b2c 85%);background-size:cover;background-position:center}
-.table-entrance[data-stage="8"] .entry-room{background-image:linear-gradient(0deg,#08121ca3,#0b142c55),url("/turntale-stage-map.png");background-position:30% 29%;background-size:auto,180% auto}
 [data-stage="9"] .table-surface{background-image:linear-gradient(125deg,transparent 38%,#b6a2a612 39%,transparent 43%),repeating-linear-gradient(112deg,transparent 0 135px,#dec1ba17 136px,transparent 139px),linear-gradient(135deg,#38313b,#171a23);background-size:cover;background-position:center}
-.table-entrance[data-stage="9"] .entry-room{background-image:linear-gradient(0deg,#08121ca3,#0b142c55),url("/turntale-stage-map.png");background-position:38% 21%;background-size:auto,180% auto}
 [data-stage="10"] .table-surface{background-image:linear-gradient(94deg,#5c171e38,#150b16a3),repeating-linear-gradient(82deg,transparent 0 36px,#d4593620 38px,transparent 42px),url('/turntale-intro-walnut.webp');background-size:cover;background-position:center}
-.table-entrance[data-stage="10"] .entry-room{background-image:linear-gradient(0deg,#08121ca3,#0b142c55),url("/turntale-stage-map.png");background-position:28% 11%;background-size:auto,180% auto}
 .stage-mode .play-column>.table-surface{opacity:1}.table-entrance[data-stage] .entry-room-warmth{opacity:.7}
 
 .table-entrance[data-stage] .deal-side-top,.table-entrance[data-stage] .deal-side-left{background:var(--stage-side)!important}.table-entrance[data-stage] .deal-flying-card:before{background:var(--stage-side)!important}
@@ -786,3 +775,20 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 .entry-game-in .entry-world-floor,.entry-game-in .entry-world-landmark{animation:entry-scene-blend var(--curtain-ms) ease both}.entry-table{box-shadow:inset 0 0 0 1px #d5b68555,0 18px 0 #292119,0 38px 28px #0006}
 @media(max-width:600px){.collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.collection-scene{height:105px}.profile-modal{padding:25px 18px!important}}
 @media(prefers-reduced-motion:reduce){.game-layout.screen-shake{animation:none!important;transform:none!important}}
+
+/* 0.5.3: one clean room; no legacy photograph/map or temporary floating posts. */
+.table-entrance>.entry-room{background:radial-gradient(ellipse at 50% 25%,#3c362c,#121c21 80%)!important;transform:none!important;animation:none!important}
+.entry-approach .entry-camera{animation:none!important}.entry-camera{transform:translateZ(var(--camera-far)) rotateX(72deg)}
+.entry-world{position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none}
+.entry-ground{position:absolute;transform:translateZ(calc(var(--support-height)*-1));background-color:#242a29;background-image:linear-gradient(90deg,#10171466 1px,transparent 1px),linear-gradient(#10171466 1px,transparent 1px),radial-gradient(ellipse,#45504b,#1b2424 72%);background-size:148px 148px,148px 148px,100% 100%;backface-visibility:hidden}
+.entry-wall{position:absolute;transform-origin:50% 100%;transform:translateZ(calc(var(--support-height)*-1)) rotateX(-90deg);background:linear-gradient(to top,#292d25 0 27%,#5b594037 27.3% 28%,#26322e 28.3% 100%);border-bottom:10px solid #1b251f;backface-visibility:hidden}
+.entry-contact-shadow{position:absolute;border-radius:50%;background:radial-gradient(ellipse,#080c0b99,transparent 70%);transform:translateZ(calc(var(--support-height)*-1 + 2px))}
+.entry-table-leg{position:absolute;width:var(--support-width);height:0;transform-style:preserve-3d}
+.entry-table-leg>span{position:absolute;top:0;left:0;width:var(--support-width);height:var(--support-height);transform-origin:50% 0;backface-visibility:visible;border:1px solid #1d160f;border-radius:3px;background:linear-gradient(90deg,#261c13,#61462a 30%,#3b2b1b 65%,#201a13)}
+.entry-table-leg>.leg-front{transform:translateY(calc(var(--support-width)*.5)) rotateX(-90deg)}
+.entry-table-leg>.leg-side{transform:translateX(calc(var(--support-width)*.5)) rotateZ(90deg) rotateX(-90deg);background:linear-gradient(90deg,#342618,#1e1a13)}
+.entry-table-leg>.leg-back{transform:translateY(calc(var(--support-width)*-.5)) rotateX(-90deg);background:#231c14}
+.entry-table-leg>.leg-foot{position:absolute;left:-30%;top:calc(var(--support-width)*-.65);width:160%;height:calc(var(--support-width)*1.6);border-radius:50%;background:radial-gradient(ellipse,#050805bd,transparent 72%);transform:translateZ(calc(var(--support-height)*-1 + 1px))}
+.entry-apron{position:absolute;border-radius:50%;transform:translateZ(-19px);background:linear-gradient(120deg,#775136,#271c13 70%);border:4px solid #2b2017;backface-visibility:hidden}
+.entry-table{box-shadow:inset 0 0 0 2px #c2a27455;border:3px solid #63482d}
+.entry-game-in .entry-world{animation:entry-scene-blend var(--curtain-ms) ease both}
