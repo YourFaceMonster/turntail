@@ -18,7 +18,7 @@ export async function POST(req:Request){try{
  if(b.action==="syncScores"){
   if(!profile)return reply({error:"기기 기록을 확인하지 못했어요."},400);
   const rows=sharedScores(b.scores),name=String(b.name||"플레이어").replace(/[\u0000-\u001f\u007f]/g,"").trim().slice(0,12)||"플레이어";
-  const statements=rows.map(r=>db.prepare("INSERT INTO shared_scores (id,device,name,mode,size,kind,score,at,entry_id) VALUES (?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,score=excluded.score,at=excluded.at,entry_id=excluded.entry_id WHERE excluded.score>shared_scores.score OR (excluded.score=shared_scores.score AND excluded.at<shared_scores.at)").bind(`${profile}:single:${r.size}:${r.kind}`,profile,name,'single',r.size,r.kind,r.score,r.at,r.id));
+  const statements=rows.map(r=>db.prepare("INSERT INTO shared_scores (id,device,name,mode,size,kind,score,at,entry_id) VALUES (?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO NOTHING").bind(`${profile}:${r.size}:${r.id}`,profile,name,'single',r.size,r.kind,r.score,r.at,r.id));
   statements.push(db.prepare("UPDATE shared_scores SET name=? WHERE device=?").bind(name,profile));
   await db.batch(statements);return reply({synced:true});
  }
@@ -29,14 +29,14 @@ export async function POST(req:Request){try{
   const [rows,total,mine]=await Promise.all([
    db.prepare(LEADERBOARD_CTE+"SELECT name,score,at,rank,CASE WHEN device=? THEN 1 ELSE 0 END AS isMe FROM ranked ORDER BY rank LIMIT ? OFFSET ?").bind(...args,profile||'',PAGE_SIZE,page*PAGE_SIZE).all(),
    db.prepare(LEADERBOARD_CTE+"SELECT COUNT(*) AS total FROM ranked").bind(...args).first<{total:number}>(),
-   profile?db.prepare(LEADERBOARD_CTE+"SELECT name,score,at,rank,1 AS isMe FROM ranked WHERE device=?").bind(...args,profile).first():Promise.resolve(null)
+   profile?db.prepare(LEADERBOARD_CTE+"SELECT name,score,at,rank,1 AS isMe FROM ranked WHERE device=? ORDER BY rank LIMIT 1").bind(...args,profile).first():Promise.resolve(null)
   ]);
   return reply({rows:rows.results.map((r:any)=>({...r,isMe:!!r.isMe})),total:total?.total||0,mine:mine?{...mine,isMe:true}:null,page,pageSize:PAGE_SIZE});
  }
  if(b.action==="highscores"){
   if(!profile)return reply({error:"기기 기록을 확인하지 못했어요."},400);
   let scores:HighScore[]=[];
-  const rows=await db.prepare("SELECT id,size,result FROM match_records WHERE device=? AND json_extract(result,'$.challenge') IS NOT NULL ORDER BY at ASC").bind(profile).all();
+  const rows=await db.prepare("SELECT id,size,result FROM match_records WHERE device=? ORDER BY at ASC").bind(profile).all();
   for(const row of rows.results as any[]){const result=JSON.parse(row.result),me=result.players.findIndex((p:any)=>row.id===result.id+':'+p.id);if(me>=0)scores=mergeScores(scores,scoreEntries(result,me,'multi',row.size));}
   return reply({scores});
  }

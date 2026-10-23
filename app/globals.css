@@ -466,3 +466,31 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 }
 .turntale .title-screen{background-image:url('/turntale-room-v036.png')}
 @media(orientation:portrait){.turntale .title-screen{background-image:url('/turntale-room-portrait-v036.png')}}
+
+/* 0.3.8 — tutorial selection stays inside its own padded tray. */
+.turntale .tutorial-hand{position:relative;isolation:isolate;align-items:center;flex-wrap:wrap;gap:14px;margin:12px 0 20px;padding:18px 12px 20px;min-height:116px;background:#151c29;border:1px solid #555269;border-radius:12px}
+.turntale .tutorial-hand>button{display:block;flex:0 0 auto;min-width:0;line-height:0;position:relative;transition:transform .16s ease,box-shadow .16s ease;outline:none;box-shadow:none}
+.turntale .tutorial-hand>button.selected{transform:translateY(-3px);outline:2px solid #ffdc6c;outline-offset:3px;box-shadow:0 0 12px #ffdc6c55}
+.turntale .tutorial-hand>button:focus-visible{outline:2px solid #bdf5e1;outline-offset:5px}
+.turntale .tutorial-hand>button .tile,.turntale .tutorial-table .tile{width:50px!important;height:68px!important;flex:none}
+.turntale .tutorial-table{position:relative;isolation:isolate;padding-bottom:21px}
+.turntale .tutorial-back.selected{transform:none;outline-width:2px;outline-offset:3px}
+.turntale .helper-bubble{position:relative;margin-bottom:12px}
+
+/* Window lights share the original room's cover crop in each orientation. */
+.castle-window-light{opacity:.45;animation:castle-light-breathe var(--light-duration,4.6s) ease-in-out var(--light-delay,0s) infinite;transform-box:fill-box;transform-origin:center}
+@keyframes castle-light-breathe{0%,100%{opacity:.22;transform:scale(.92)}32%{opacity:.85;transform:scale(1.06)}48%{opacity:.48;transform:scale(.98)}72%{opacity:1;transform:scale(1.1)}}
+
+/* Menu → room-only pause → dark dissolve → game. Keep the room art mounted. */
+.turntale .title-content,.turntale .menu-profile,.turntale .title-version,.turntale .setup-shade{transition:opacity .7s ease,filter .7s ease}
+.turntale[data-entrance="menu-out"] .title-content,.turntale[data-entrance="menu-out"] .menu-profile,.turntale[data-entrance="menu-out"] .title-version,.turntale[data-entrance="menu-out"] .setup-shade,
+.turntale[data-entrance="room-hold"] .title-content,.turntale[data-entrance="room-hold"] .menu-profile,.turntale[data-entrance="room-hold"] .title-version,
+.turntale[data-entrance="darken"] .title-content,.turntale[data-entrance="darken"] .menu-profile,.turntale[data-entrance="darken"] .title-version{opacity:0;filter:blur(3px);pointer-events:none}
+.game-entrance-veil{position:fixed;inset:0;z-index:1000;background:#080c11;opacity:0;pointer-events:none}
+.game-entrance-veil.entrance-darken{animation:entrance-darken .4s ease-in both}
+.game-entrance-veil.entrance-game-in{animation:entrance-reveal .65s ease-out both}
+@keyframes entrance-darken{from{opacity:0}to{opacity:1}}
+@keyframes entrance-reveal{from{opacity:1}to{opacity:0}}
+@media(prefers-reduced-motion:reduce){.castle-window-light{animation:none;opacity:.4}.turntale .tutorial-hand>button,.turntale .title-content,.turntale .menu-profile,.turntale .title-version,.turntale .setup-shade{transition:none}.game-entrance-veil{animation:none!important;display:none}}
+
+@media(max-width:380px){.turntale .tutorial-hand{gap:8px;padding-inline:8px}}

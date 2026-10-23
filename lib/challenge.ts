@@ -11,7 +11,14 @@ export function topScores(rows:HighScore[],mode:HighScore['mode'],size:number,ki
 }
 export function mergeScores(old:HighScore[],added:HighScore[]):HighScore[]{const all=[...old,...added];return (['single','multi'] as const).flatMap(mode=>[2,3,4].flatMap(size=>(['single','ten'] as const).flatMap(kind=>topScores(all,mode,size,kind))));}
 export function scoreEntries(result:{id:string,at:number,voided?:boolean,players:{delta:number}[],challenge?:Challenge|null},me:number,mode:HighScore['mode'],size:number):HighScore[]{
- const c=result.challenge;if(result.voided||!c||c.abandoned||!c.roundIds.includes(result.id))return [];
+ const c=result.challenge;if(result.voided||!result.players[me])return [];
  const rows:HighScore[]=[{id:`${mode}:round:${result.id}`,mode,size,kind:'single',score:result.players[me].delta,at:result.at}];
- if(c.complete)rows.push({id:`${mode}:ten:${c.id}`,mode,size,kind:'ten',score:c.scores[me],at:result.at});return rows;
+ if(c&&c.complete&&c.completed===10&&!c.abandoned&&c.roundIds.includes(result.id))rows.push({id:`${mode}:ten:${c.id}`,mode,size,kind:'ten',score:c.scores[me],at:result.at});return rows;
+}
+
+// Keep every completed event for upload; TOP 3 is a display-only projection.
+export function mergeScoreHistory(old:HighScore[],added:HighScore[]):HighScore[]{
+ const unique=new Map<string,HighScore>();
+ for(const row of [...old,...added]){const key=`${row.mode}:${row.size}:${row.kind}:${row.id}`;if(!unique.has(key)&&Number.isFinite(row.score)&&Number.isFinite(row.at))unique.set(key,row);}
+ return [...unique.values()].sort((a,b)=>a.at-b.at||a.id.localeCompare(b.id));
 }

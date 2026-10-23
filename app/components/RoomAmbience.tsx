@@ -18,11 +18,20 @@ function CandleLight({id,x,y,r,delay=0,scale=1}:{id:string,x:number,y:number,r:n
   </g></g>
  </g>;
 }
+function CastleLights({id,portrait=false}:{id:string,portrait?:boolean}){
+ const windows=portrait?[[858,278,3],[873,278,3],[868,310,4],[804,334,3],[837,379,4],[847,378,3],[756,364,2],[655,430,5],[842,441,3],[872,527,5]]:[[1499,198,3],[1515,198,3],[1513,230,4],[1440,249,3],[1468,294,3],[1483,294,3],[1359,278,2],[1206,340,5],[1494,354,4],[1526,445,6]];
+ return <g className="castle-lights">{windows.map(([x,y,r],i)=><g key={i} transform={`translate(${x} ${y})`}>
+  <g className="castle-window-light" style={{'--light-delay':`${i*-.83}s`,'--light-duration':`${3.7+(i%4)*.9}s`} as CSSProperties}>
+   <ellipse rx={r*5} ry={r*6} fill={`url(#${id}light)`}/><rect x={-r*.55} y={-r} width={r*1.1} height={r*2.2} rx={r*.3} fill="#fff1a8"/>
+  </g>
+ </g>)}</g>;
+}
 export default function RoomAmbience(){
  const id=useId().replace(/:/g,'');const wide=id+'wide',tall=id+'tall';
  return <div className="room-ambience" aria-hidden="true">
   <svg className="ambience-wide" viewBox="0 0 1672 941" preserveAspectRatio="xMidYMax slice">
    <LightDefs id={wide}/>
+   <CastleLights id={wide}/>
    <CandleLight id={wide} x={76} y={426} r={270} scale={1.15} delay={-.5}/>
    <CandleLight id={wide} x={550} y={133} r={130} scale={.65} delay={-1.1}/>
    <CandleLight id={wide} x={365} y={400} r={150}/>
@@ -31,6 +40,7 @@ export default function RoomAmbience(){
   </svg>
   <svg className="ambience-portrait" viewBox="0 0 940 1672" preserveAspectRatio="xMidYMax slice">
    <LightDefs id={tall}/>
+   <CastleLights id={tall} portrait/>
    <CandleLight id={tall} x={45} y={1090} r={300} scale={1.1} delay={-.5}/>
    <CandleLight id={tall} x={258} y={236} r={160} scale={.7} delay={-1.1}/>
    <CandleLight id={tall} x={106} y={500} r={140} scale={.75}/>
