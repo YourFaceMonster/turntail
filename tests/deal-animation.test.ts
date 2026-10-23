@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {room,player,start,view,startingHandSize} from '../lib/game.ts';
-import {dealPlan,dealTarget,shufflePoint} from '../lib/deal-animation.ts';
+import {dealPlan,dealTarget,shufflePoint,measureDealLayout} from '../lib/deal-animation.ts';
 for(const size of [2,3,4]){
  const g=room('DEAL',player('나'),true,size);for(let i=1;i<size;i++)g.players.push(player('상대'+i,true));start(g);
  for(let me=0;me<size;me++){
@@ -30,3 +30,20 @@ for(const [width,height] of [[320,568],[390,844],[844,390],[1280,720]]){
  assert.ok(positions.every(p=>p.x>=17&&p.x<=width-17&&p.y>=22.5&&p.y<=height-22.5),'all 60 shuffled tiles fit the viewport');
 }
 console.log('PASS: all 60 tiles partitioned for every seat in 2/3/4-player games, unique endpoints, private-face isolation, rotated viewport alignment, narrow/wide shuffle bounds.');
+
+// Reproduce real CSS: lower tiles under an upper tile have display:none (zero bounds).
+for(const size of [2,3,4]){
+ const g=room('HIDDEN',player('나'),true,size);for(let i=1;i<size;i++)g.players.push(player('상대'+i,true));start(g);
+ const v=view(g,g.players[0].token),plan=dealPlan(v),finish={'--finish-bg':'white'};
+ for(const rotation of [0,90,-90]){
+  const read=(selector:string)=>({rect:selector.includes('.lower-tile')?{left:0,top:0,width:0,height:0}:{left:80,top:120,width:40,height:52},finish});
+  const rows=measureDealLayout(v,rotation,read);
+  assert.equal(rows.length,60,'hidden lower layers must not skip the deal phase');
+  for(const row of rows){assert.equal(row.target.x,100);assert.equal(row.target.y,146);assert.equal(row.finish,finish);}
+  assert.ok(plan.filter(p=>p.kind==='lower').every(p=>p.boundsSelector));
+  assert.ok(plan.filter(p=>p.kind!=='lower').every(p=>!p.boundsSelector),'only a covered floor tile has a geometry substitute');
+ }
+ assert.throws(()=>measureDealLayout(v,0,()=>({rect:{left:0,top:0,width:0,height:0},finish})),/Layout pending/,'a missing board still waits for layout');
+ assert.throws(()=>measureDealLayout(v,0,()=>null),/Layout pending/,'unmounted tiles cannot produce false success');
+}
+console.log('PASS: zero-size hidden lower tiles resolve all 60 destinations in 2/3/4 seats and all rotations; genuinely missing layouts still wait.');

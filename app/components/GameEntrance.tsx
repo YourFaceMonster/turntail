@@ -5,7 +5,7 @@ import RoomAmbience from './RoomAmbience';
 import TileBack from './TileBack';
 import TileFace from './TileFace';
 import {ENTRANCE_MS,type EntrancePhase} from '../../lib/atmosphere';
-import {dealPlan,dealTarget,shufflePoint,DEAL_TILE_W,DEAL_TILE_H,type DealView,type DealItem,type DealTarget} from '../../lib/deal-animation';
+import {measureDealLayout,shufflePoint,DEAL_TILE_W,DEAL_TILE_H,type DealView,type DealItem,type DealTarget} from '../../lib/deal-animation';
 type Props={phase:EntrancePhase,resume:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void};
 export default function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback}:Props){
  const [screen,setScreen]=useState({width:0,height:0}),[landings,setLandings]=useState<{item:DealItem,target:DealTarget,finish:Record<string,string>}[]>([]);
@@ -20,7 +20,7 @@ export default function GameEntrance({phase,resume,reduced,visible:pageVisible,g
    if(ended)return;
    try{
     const {game,rotation}=latest.current;if(!game)throw Error('Not mounted');
-    const rows=dealPlan(game).map(item=>{const el=document.querySelector(item.selector),r=el?.getBoundingClientRect();if(!r||r.width<=0||r.height<=0)throw Error('Layout pending');const style=getComputedStyle(el!);return {item,target:dealTarget(r,rotation),finish:{'--finish-bg':style.background,'--finish-border':style.border,'--finish-radius':style.borderRadius,'--finish-shadow':style.boxShadow}};});
+    const rows=measureDealLayout(game,rotation,selector=>{const el=document.querySelector(selector);if(!el)return null;const style=getComputedStyle(el);return {rect:el.getBoundingClientRect(),finish:{'--finish-bg':style.background,'--finish-border':style.border,'--finish-radius':style.borderRadius,'--finish-shadow':style.boxShadow}};});
     const signature=JSON.stringify(rows.map(r=>r.target));stable=signature===last?stable+1:0;last=signature;
     if(stable>=2){setLandings(rows);if(phase==='prepare')callbacks.current.onPrepared();return;}
    }catch{}
