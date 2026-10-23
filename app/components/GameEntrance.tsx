@@ -1,9 +1,10 @@
 "use client";
 import {createPortal} from 'react-dom';
-import {memo,useMemo,useEffect,useLayoutEffect,useRef,useState,type CSSProperties} from 'react';
+import {memo,useMemo,useEffect,useLayoutEffect,useRef,useState,useCallback,type CSSProperties} from 'react';
 import TileBack from './TileBack';
 import TileFace from './TileFace';
 import TableSurface from './TableSurface';
+import EntranceGpuTiles from './EntranceGpuTiles';
 import {planShuffle,frameShuffle,overviewScale,shuffleDepth,shuffleFrameIndices,shuffleKeyframes,shuffleTransform,type ShuffleScene} from '../../lib/shuffle-motion';
 import {matchShuffleTracks,planDealFlights,dealKeyframes,opponentExit} from '../../lib/deal-motion';
 import {ENTRANCE_MS,entranceCurtain,type EntrancePhase} from '../../lib/atmosphere';
@@ -12,21 +13,24 @@ type Props={phase:EntrancePhase,resume:boolean,reduced:boolean,visible:boolean,g
 function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback}:Props){
  const [screen,setScreen]=useState({width:0,height:0}),[landings,setLandings]=useState<{item:DealItem,target:DealTarget,finish:Record<string,string>}[]>([]);
  const [scene,setScene]=useState<ShuffleScene|null>(null),[assetsReady,setAssetsReady]=useState(false);
+ const [gpuStatus,setGpuStatus]=useState<'pending'|'ready'|'fallback'>('pending');
  const shuffleSeed=useRef(0),measuredKey=useRef(''),cardElements=useRef<(HTMLDivElement|null)[]>([]),running=useRef<Animation[]>([]);
  const animationPhase=useRef('');
  const callbacks=useRef({onPrepared,onFallback});callbacks.current={onPrepared,onFallback};
+ const activePhase=useRef(phase);activePhase.current=phase;
+ const gpuPrepared=useCallback((status:'ready'|'fallback')=>{setGpuStatus(status);if(status==='fallback'&&['shuffle','deal'].includes(activePhase.current))callbacks.current.onFallback();},[]);
  const latest=useRef({game,rotation});latest.current={game,rotation};
  useEffect(()=>{const resize=()=>setScreen({width:window.innerWidth,height:window.innerHeight});resize();window.addEventListener('resize',resize);return()=>window.removeEventListener('resize',resize);},[]);
  // Decode while the menu is still visible, rather than on the first moving frame.
  useEffect(()=>{
   if(!screen.width)return;
   let cancelled=false;setAssetsReady(false);
-  const paths=[screen.height>=screen.width?'/turntale-empty-room-portrait.webp':'/turntale-empty-room.webp','/turntale-tile-back-gold.svg'];
+  const paths=[screen.height>=screen.width?'/turntale-empty-room-portrait.webp':'/turntale-empty-room.webp','/turntale-tile-back-gold.svg','/turntale-intro-walnut.webp'];
   void Promise.all(paths.map(src=>new Promise<void>(resolve=>{const img=new Image();img.onload=()=>{void img.decode().catch(()=>{}).then(resolve);};img.onerror=()=>resolve();img.src=src;}))).then(()=>{if(!cancelled)setAssetsReady(true);});
   return()=>{cancelled=true;};
  },[screen.width>screen.height,!!screen.width]);
  useLayoutEffect(()=>{
-  if(phase==='menu-out'){shuffleSeed.current=crypto.getRandomValues(new Uint32Array(1))[0];setLandings([]);setScene(null);measuredKey.current='';}
+  if(phase==='menu-out'){shuffleSeed.current=crypto.getRandomValues(new Uint32Array(1))[0];setLandings([]);setScene(null);setGpuStatus('pending');measuredKey.current='';}
   if(!['prepare','approach','shuffle','deal'].includes(phase)||resume||reduced||!pageVisible)return;
   const layoutKey=`${screen.width}:${screen.height}:${rotation}`;
   if(phase!=='prepare'&&measuredKey.current===layoutKey)return;
@@ -75,33 +79,35 @@ function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,on
   return()=>{cancelled=true;clearTimeout(timer);planner.return(null!);};
  },[landings,own,screen.width,screen.height,preparing]);
  const scale=scene?frameShuffle(scene,screen.width,screen.height):1;
- const shuffleFrames=useMemo(()=>scene?shuffleFrameIndices(scene):[],[scene]);
  const cards=useMemo(()=>{
   const targets=landings.map(l=>l.item.kind==='opponent'&&own?{...opponentExit(l.target,screen.width,screen.height,90,Number(l.item.key.match(/\d+$/)?.[0]??0),Math.hypot(own.width,own.height)),width:own.width,height:own.height}:l.target);
   const assignments=scene?matchShuffleTracks(scene.tracks.map(track=>{const p=track.poses.at(-1)!;return {...p,x:screen.width/2+p.x*scale,y:screen.height/2+p.y*scale};}),targets):[];
   return landings.map((landing,i)=>{
   const {width,height}=shuffleTileSize(landing.item.kind,landing.target,own!),poses=scene?.tracks[assignments[i]].poses,depth=shuffleDepth(height);
-  return {landing:{...landing,target:targets[i]},width,height,poses,depth,keyframes:poses?shuffleKeyframes(poses,width,height,depth,scale,screen.width/2,screen.height/2,shuffleFrames):[]};
- });},[landings,screen.width,screen.height,own,scene,scale,shuffleFrames]);
- const dealFrames=useMemo(()=>scene?planDealFlights(cards.map(card=>{const p=card.poses!.at(-1)!;return {key:card.landing.item.key,kind:card.landing.item.kind,width:card.width,height:card.height,depth:card.depth,scale,source:{...p,x:screen.width/2+p.x*scale,y:screen.height/2+p.y*scale},target:card.landing.target};})).map(dealKeyframes):[],[cards,scene,scale,screen.width,screen.height]);
+  return {landing:{...landing,target:targets[i]},width,height,poses,depth};
+ });},[landings,screen.width,screen.height,own,scene,scale]);
+ const dealRoutes=useMemo(()=>scene?planDealFlights(cards.map(card=>{const p=card.poses!.at(-1)!;return {key:card.landing.item.key,kind:card.landing.item.kind,width:card.width,height:card.height,depth:card.depth,scale,source:{...p,x:screen.width/2+p.x*scale,y:screen.height/2+p.y*scale},target:card.landing.target};})):[],[cards,scene,scale,screen.width,screen.height]);
+ const dealFrames=useMemo(()=>gpuStatus==='fallback'?dealRoutes.map(dealKeyframes):[],[dealRoutes,gpuStatus]);
  useLayoutEffect(()=>{
-  if(!scene||!cards.length||reduced||resume||!['prepare','approach','shuffle'].includes(phase))return;
+  if(gpuStatus!=='fallback'||!scene||!cards.length||reduced||resume||!['prepare','approach','shuffle'].includes(phase))return;
+  const indices=shuffleFrameIndices(scene);
   running.current=cards.flatMap((card,i)=>{
    const el=cardElements.current[i];if(!el)return [];
-   const animation=el.animate(card.keyframes,{duration:ENTRANCE_MS.shuffle,easing:'linear',fill:'both'});
+   const animation=el.animate(shuffleKeyframes(card.poses!,card.width,card.height,card.depth,scale,screen.width/2,screen.height/2,indices),{duration:ENTRANCE_MS.shuffle,easing:'linear',fill:'both'});
    animation.pause();animation.currentTime=0;
    if(phase==='shuffle'&&pageVisible)animation.play();return [animation];
   });
   animationPhase.current='shuffle';
   return()=>{running.current.forEach(animation=>animation.cancel());running.current=[];};
- },[cards,reduced,resume,scene]);
+ },[cards,reduced,resume,scene,gpuStatus,scale,screen.width,screen.height]);
  useEffect(()=>{
-  if(phase!=='prepare'||!scene||!assetsReady||!pageVisible)return;
+  if(phase!=='prepare'||!scene||!assetsReady||!pageVisible||gpuStatus==='pending')return;
   // Give the decoded artwork, paused transforms and compositing layers two paints.
   let second=0;const first=requestAnimationFrame(()=>{second=requestAnimationFrame(()=>callbacks.current.onPrepared());});
   return()=>{cancelAnimationFrame(first);cancelAnimationFrame(second);};
- },[phase,scene,assetsReady,pageVisible]);
+ },[phase,scene,assetsReady,pageVisible,gpuStatus]);
  useLayoutEffect(()=>{
+  if(gpuStatus!=='fallback')return;
   if(phase==='deal'&&animationPhase.current!=='deal'&&dealFrames.length){
    running.current.forEach(animation=>animation.cancel());
    running.current=dealFrames.flatMap((frames,i)=>{const el=cardElements.current[i];if(!el)return [];const animation=el.animate(frames,{duration:ENTRANCE_MS.deal,easing:'linear',fill:'both'});animation.pause();animation.currentTime=0;return [animation];});
@@ -109,17 +115,17 @@ function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,on
   }
   if(phase==='shuffle'||phase==='deal')running.current.forEach(animation=>pageVisible?animation.play():animation.pause());
   else if(['settle','game-in','idle','menu-out'].includes(phase)){running.current.forEach(animation=>animation.cancel());running.current=[];animationPhase.current='';}
- },[phase,pageVisible,dealFrames]);
+ },[phase,pageVisible,dealFrames,gpuStatus]);
  if(phase==='idle'||reduced||typeof document==='undefined')return null;
  const diameter=(scene?.width??Math.max(screen.width,screen.height)*1.35)+32;
  const overview=overviewScale({width:diameter-32,height:diameter-32},screen.width,screen.height);
  const curtain=phase==='menu-out'?ENTRANCE_MS['menu-out']:phase==='game-in'?ENTRANCE_MS['game-in']:360;
- return createPortal(<div className={`table-entrance entry-${phase} ${resume?'entry-resume':''}`} aria-hidden="true" data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--camera-ms':`${ENTRANCE_MS.approach+(resume?0:ENTRANCE_MS.shuffle)}ms`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--curtain-ms':`${curtain}ms`} as CSSProperties}>
+ return createPortal(<div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${gpuStatus==='ready'?'entry-gpu-ready':''}`} aria-hidden="true" data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--camera-ms':`${ENTRANCE_MS.approach+(resume?0:ENTRANCE_MS.shuffle)}ms`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--curtain-ms':`${curtain}ms`} as CSSProperties}>
   <div className="entry-view-rig">
   <div className="entry-room"><div className="entry-room-warmth"/><div className="entry-room-moonlight"/></div>
   <div className="entry-camera">
   <div className="entry-table"><TableSurface/></div>
-  {!resume&&scene&&landings.length===60&&<div className="entry-deck">{cards.map(({landing,width:tileW,height:tileH,poses,depth},i)=>{
+  {!resume&&gpuStatus==='fallback'&&scene&&landings.length===60&&<div className="entry-deck">{cards.map(({landing,width:tileW,height:tileH,poses,depth},i)=>{
    const t=landing.target,kind=landing.item.kind;
    return <div key={i} ref={el=>{cardElements.current[i]=el;}} className={`deal-flying-card deal-${kind}`} style={{width:tileW,height:tileH,'--start-transform':shuffleTransform(poses![0],tileW,tileH,depth,scale,screen.width/2,screen.height/2),'--tile-depth':`${depth}px`,'--target-angle':`${t.angle}deg`,'--target-w':`${t.width}px`,'--target-h':`${t.height}px`,'--end-left':`${t.x-t.width/2}px`,'--end-top':`${t.y-t.height/2}px`,...landing.finish,'--flip-delay':`${ENTRANCE_MS.deal*.82}ms`,zIndex:i+1} as CSSProperties}>
     <span className="deal-side-top"/><span className="deal-side-left"/>
@@ -129,6 +135,7 @@ function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,on
   })}</div>}
   </div>
   </div>
+  {!resume&&scene&&cards.length===60&&<EntranceGpuTiles cards={cards} routes={dealRoutes} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
   <div className="entry-edge-shade"/>
   <div className="entry-curtain"/>
  </div>,document.body);
