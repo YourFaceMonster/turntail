@@ -2,7 +2,7 @@ export type ShufflePose={x:number,y:number,angle:number};
 export type ShuffleSize={width:number,height:number};
 export type ShuffleTrack={radius:number,poses:ShufflePose[]};
 export type ShuffleScene={width:number,height:number,tracks:ShuffleTrack[]};
-const FRAMES=96,GAP=4;
+const FRAMES=144,GAP=4;
 function rng(seed:number){let state=seed>>>0;return()=>{state=(state+0x6d2b79f5)>>>0;let n=state;n=Math.imul(n^(n>>>15),n|1);n^=n+Math.imul(n^(n>>>7),n|61);return ((n^(n>>>14))>>>0)/4294967296;};}
 /** Minimum centre distance for the WHOLE linear interval, not just its endpoints. */
 export function sweptDistance(a:ShufflePose,b:ShufflePose,c:ShufflePose,d:ShufflePose){
@@ -20,8 +20,9 @@ export function shuffleDepth(tileHeight:number){return Math.min(26,Math.max(18,t
  */
 export function* planShuffle(seed:number,viewportWidth:number,viewportHeight:number,sizes:ShuffleSize[]):Generator<void,ShuffleScene>{
  const random=rng(seed),largest=Math.max(...sizes.map(s=>Math.hypot(s.width,s.height)/2+2)),radii=sizes.map(()=>largest);
- const aspect=Math.max(.65,Math.min(1.75,viewportWidth/viewportHeight));
- let rx=largest*Math.sqrt(sizes.length*aspect/.42),ry=rx/aspect,points:ShufflePose[]=[];
+ // A circular physical tabletop allows a broad sweeping wash. The close camera
+ // may crop peripheral tiles rather than shrinking all 60 physical objects.
+ let rx=largest*Math.sqrt(sizes.length/.42),ry=rx,points:ShufflePose[]=[];
  // Rejection sampling gives a loose pile from the very first frame, not a grid.
  for(let attempt=0;attempt<12;attempt++){
   points=[];
@@ -43,33 +44,45 @@ export function* planShuffle(seed:number,viewportWidth:number,viewportHeight:num
  }
  if(points.length!==sizes.length)throw Error('Unable to place solid shuffle tiles');
  const tracks=points.map((p,i)=>({radius:radii[i],poses:[{...p}]}));
- const velocity=points.map(()=>({x:0,y:0})),headings=points.map(()=>random()*Math.PI*2),spin=points.map(()=>40+random()*80);
+ const velocity=points.map(()=>({x:0,y:0})),headings=points.map(()=>random()*Math.PI*2),spin=points.map(()=>180+random()*150);
+ const sweep=(t:number)=>{const u=t*t*(3-2*t);return u*2.4+.16*Math.sin(Math.PI*t)*Math.sin(2*Math.PI*t);};
  for(let frame=1;frame<=FRAMES;frame++){
   const prior=points.map(p=>({...p})),progress=frame/FRAMES,envelope=Math.sin(Math.PI*progress);
-  // Rotate visitation order to avoid favouring a particular tile or hand.
-  const order=points.map((_,i)=>(i+frame)%points.length),moved=new Set<number>();
+  const delta=sweep(progress)-sweep((frame-1)/FRAMES),c=Math.cos(delta),s=Math.sin(delta);
+  // Shared transport carries the WHOLE wash a substantial distance. Local sliding
+  // then rearranges neighbours; blocked tiles never cancel the broad sweep.
+  const base=prior.map(p=>({x:p.x*c-p.y*s,y:p.x*s+p.y*c,angle:p.angle+delta*180/Math.PI}));
+  points=base.map(p=>({...p}));
+  const order=points.map((_,i)=>(i+frame)%points.length);
   for(const i of order){
-   const p=prior[i],normal=Math.hypot(p.x/rx,p.y/ry),turn=progress<.54?1:-1;
-   let fx=-p.y/ry*turn*1.6+Math.cos(headings[i]+progress*5)*.7;
-   let fy=p.x/rx*turn*1.6+Math.sin(headings[i]+progress*5)*.7;
+   const p=base[i],normal=Math.hypot(p.x/rx,p.y/ry),turn=Math.cos(progress*Math.PI);
+   const vortexX=(i%2?1:-1)*rx*.25,vortexY=Math.sin(progress*Math.PI*2)*ry*.12;
+   let fx=-(p.y-vortexY)/ry*turn*2+Math.cos(headings[i]+progress*4)*1.1;
+   let fy=(p.x-vortexX)/rx*turn*2+Math.sin(headings[i]+progress*4)*1.1;
    for(let j=0;j<points.length;j++)if(i!==j){
-    const dx=p.x-prior[j].x,dy=p.y-prior[j].y,d=Math.hypot(dx,dy),reach=radii[i]+radii[j]+largest*.8;
-    if(d<reach&&d>0){const push=(reach-d)/largest*2;fx+=dx/d*push;fy+=dy/d*push;}
+    const dx=p.x-base[j].x,dy=p.y-base[j].y,d=Math.hypot(dx,dy),reach=radii[i]+radii[j]+largest*.55;
+    if(d<reach&&d>0){const push=(reach-d)/largest*2.5;fx+=dx/d*push;fy+=dy/d*push;}
    }
-   if(normal>.78){fx-=p.x/rx*(normal-.78)*16;fy-=p.y/ry*(normal-.78)*16;}
-   const v=velocity[i],speed=largest*.055*envelope,n=Math.max(1,Math.hypot(fx,fy));
-   v.x=v.x*.72+fx/n*speed*.28;v.y=v.y*.72+fy/n*speed*.28;
-   let accepted=false;
+   if(normal>.72){fx-=p.x/rx*(normal-.72)*14;fy-=p.y/ry*(normal-.72)*14;}
+   const v=velocity[i],vx=v.x*c-v.y*s,vy=v.x*s+v.y*c;
+   const speed=largest*.19*envelope,n=Math.max(1,Math.hypot(fx,fy));
+   v.x=vx*.62+fx/n*speed*.38;v.y=vy*.62+fy/n*speed*.38;
+   // Deflect along contact normals instead of repeatedly stopping and jittering.
+   for(let pass=0;pass<2;pass++)for(let j=0;j<points.length;j++)if(i!==j){
+    const dx=p.x-points[j].x,dy=p.y-points[j].y,d=Math.hypot(dx,dy);
+    if(d>0&&d<radii[i]+radii[j]+GAP+speed*2){
+     const toward=(v.x*dx+v.y*dy)/d;
+     if(toward<0){v.x-=dx/d*toward;v.y-=dy/d*toward;}
+    }
+   }
    for(const fraction of [1,.65,.3,0]){
     const q={x:p.x+v.x*fraction,y:p.y+v.y*fraction,angle:p.angle+spin[i]/FRAMES*envelope*(i%2?-1:1)};
     const inner=1-(largest+GAP)/Math.min(rx,ry);
-    if(Math.hypot(q.x/rx,q.y/ry)>inner)continue;
-    if(points.every((_,j)=>j===i||sweptDistance(p,q,prior[j],moved.has(j)?points[j]:prior[j])>=radii[i]+radii[j]+GAP-1e-7)){
-     points[i]=q;accepted=true;break;
-    }
+    if(Math.hypot(q.x/rx,q.y/ry)>inner+1e-9)continue;
+    if(points.every((_,j)=>j===i||(
+     Math.hypot(q.x-points[j].x,q.y-points[j].y)>=radii[i]+radii[j]+GAP-1e-7&&
+     sweptDistance(prior[i],q,prior[j],points[j])>=radii[i]+radii[j]+.5))){points[i]=q;break;}
    }
-   if(!accepted)points[i]={...p};
-   moved.add(i);
   }
   points.forEach((p,i)=>tracks[i].poses.push({...p}));
   yield;
@@ -81,7 +94,9 @@ export function sampleShufflePose(poses:ShufflePose[],progress:number):ShufflePo
  const n=Math.max(0,Math.min(1,progress))*(poses.length-1),i=Math.min(poses.length-2,Math.floor(n)),t=n-i,a=poses[i],b=poses[i+1];
  return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,angle:a.angle+(b.angle-a.angle)*t};
 }
-export function frameShuffle(scene:ShuffleScene,width:number,height:number){return Math.min(1,width*.91/scene.width,height*.83/scene.height);}
+/** Close view uses actual measured tile dimensions; only the observer zooms. */
+export function frameShuffle(_scene:ShuffleScene,_width:number,_height:number){return 1;}
+export function overviewScale(scene:Pick<ShuffleScene,'width'|'height'>,width:number,height:number){return Math.min(1,width*.9/(scene.width+32),height*.78/(scene.height+32));}
 export function shuffleKeyframes(poses:ShufflePose[],width:number,height:number,depth:number,scale:number,cx:number,cy:number){
  return poses.map((p,i)=>({offset:i/(poses.length-1),transform:shuffleTransform(p,width,height,depth,scale,cx,cy)}));
 }

@@ -37,7 +37,7 @@ for(const capacity of [2,3,4])for(const [width,height] of [[390,844],[844,390]])
  for(let i=0;i<60;i++){
   const route=routes[i],frames=dealKeyframes(route),track=scene.tracks[assignment[i]],size=sizes[i];
   assert.equal(frames[0].transform,shuffleKeyframes(track.poses,size.width,size.height,route.depth,scale,width/2,height/2).at(-1)!.transform,'no shuffle/deal pose snap');
-  const end=sampleDealRoute(route,1);assert.equal(end.x,route.target.x);assert.equal(end.y,route.target.y);
+  const end=sampleDealRoute(route,1);assert.ok(Math.abs(end.angle-route.source.angle)<=180.000001,'deal turns take the shortest route even after multiple shuffle spins');assert.equal(end.x,route.target.x);assert.equal(end.y,route.target.y);
   assert.ok(Math.abs(size.width*end.sx-route.target.width)<1e-9);assert.ok(Math.abs(size.height*end.sy-route.target.height)<1e-9);
   assert.ok(frames.some(f=>f.offset===.18)&&frames.some(f=>f.offset===.82),'browser interpolation never straddles movement stages');
   for(let j=0;j<i;j++){

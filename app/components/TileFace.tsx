@@ -1,5 +1,5 @@
 import {type Tile} from '../../lib/game';
-const colors=['#142034','#008b43','#b46c00','#de1734'];
+const colors=['#142034','#008b43','#d4a000','#de1734'];
 function Star({x=0,y=0,scale=1}:{x?:number,y?:number,scale?:number}){return <path transform={`translate(${x} ${y}) scale(${scale})`} d="M0-20L5-6L20-4L8 5L12 20L0 12L-12 20L-8 5L-20-4L-5-6Z"/>;}
 function Spark({x=0,y=0,scale=1}:{x?:number,y?:number,scale?:number}){return <path transform={`translate(${x} ${y}) scale(${scale})`} d="M0-10L3-3L10 0L3 3L0 10L-3 3L-10 0L-3-3Z"/>;}
 function Cloud(){return <path d="M-29 5C-41-1-34-18-22-15C-25-30-7-39 4-28C18-41 37-25 30-12C45-5 39 12 23 12H-22C-32 12-38 8-29 5Z"/>;}

@@ -9,7 +9,7 @@ import GameEntrance from './components/GameEntrance';
 import Back from './components/TileBack';
 import TableSurface from './components/TableSurface';
 import GameAtmosphere from './components/GameAtmosphere';
-import {endgameLevel,ENTRANCE_MS,nextEntrance,type EntrancePhase} from '../lib/atmosphere';
+import {endgameLevel,ENTRANCE_MS,nextEntrance,concealLiveTiles,type EntrancePhase} from '../lib/atmosphere';
 import {tensionSound,shuffleSound} from '../lib/atmosphere-audio';
 import Tutorial from './components/Tutorial';
 import TableNotice from './components/TableNotice';
@@ -50,7 +50,7 @@ export default function Home(){
   const timer=setTimeout(()=>{
    const next=nextEntrance(entrance,entranceIntent.current.kind==='resume');
    if(entrance==='menu-out')setSetupOpen(null);
-   if(next==='prepare'||(next==='game-in'&&entranceIntent.current.kind==='resume'))beginPractice();
+   if(next==='prepare'||(next==='settle'&&entranceIntent.current.kind==='resume'))beginPractice();
    if(next==='idle'){
     if(local.current?.phase==='playing'&&entranceIntent.current.kind==='new'){
      const g=structuredClone(local.current);g.turnReadyAt=Date.now()+DEAL_REVIEW_MS;publishLocal(g);
@@ -267,7 +267,7 @@ export default function Home(){
  const historyGroups:LineupHistory[]=historyMode==="practice"?practiceGroups:onlineHistory?.groups||[];
  const rows:RecordRow[]=historyMode==="practice"?localRecords:onlineHistory?.records||[];
  const summary=historyMode==="practice"?{games:practiceGroups.reduce((a,g)=>a+g.games,0),wins:practiceGroups.reduce((a,g)=>a+g.wins,0),points:practiceGroups.reduce((a,g)=>a+g.points,0)}:onlineHistory?.summary||{games:0,wins:0,points:0};
- return <main inert={entrance!=="idle"} aria-busy={entrance!=="idle"} data-entrance={entrance} data-endgame={pressure} data-visible={pageVisible} data-dealing={entranceIntent.current.kind==='new'&&['prepare','approach','shuffle','deal','settle'].includes(entrance)} style={{"--opponent-count":Math.max(1,(game?.players.length||3)-1),"--stage-width":`${stageWidth}px`,"--stage-height":`${stageHeight}px`,"--table-card-height":`${rackCardHeight}px`,"--tile-h":`${rackCardHeight}px`,"--tile-w":`${rackTileWidth}px`,"--seat-height":`${dimensions.seatHeight}px`,"--seat-rail":`${dimensions.seatRail}px`,"--rack-cols":rackColumns,"--floor-cols":game?.cols||5} as CSSProperties} className={`table-v211 turntale ${!game?"home-screen":""} ${openingReview?"opening-review":""} ${game?`in-game players-${game.capacity} ${activeTable?"active-table":""}`:""} ${landscapeTable?"landscape-table":""} ${rotated?"rotated-stage":""} ${portraitRotated?"portrait-stage":""} ${activeTable&&layout==="portrait"?"portrait-table":""} ${game&&(game.rally||0)>=3?`rally-tension tension-${(game.rally||0)>=9?3:(game.rally||0)>=6?2:1}`:""} ${nativeFullscreen||expanded?"immersive-screen":""}`}>
+ return <main inert={entrance!=="idle"} aria-busy={entrance!=="idle"} data-entrance={entrance} data-endgame={pressure} data-visible={pageVisible} data-dealing={entranceIntent.current.kind==='new'&&concealLiveTiles(entrance)} style={{"--opponent-count":Math.max(1,(game?.players.length||3)-1),"--stage-width":`${stageWidth}px`,"--stage-height":`${stageHeight}px`,"--table-card-height":`${rackCardHeight}px`,"--tile-h":`${rackCardHeight}px`,"--tile-w":`${rackTileWidth}px`,"--seat-height":`${dimensions.seatHeight}px`,"--seat-rail":`${dimensions.seatRail}px`,"--rack-cols":rackColumns,"--floor-cols":game?.cols||5} as CSSProperties} className={`table-v211 turntale ${!game?"home-screen":""} ${openingReview?"opening-review":""} ${game?`in-game players-${game.capacity} ${activeTable?"active-table":""}`:""} ${landscapeTable?"landscape-table":""} ${rotated?"rotated-stage":""} ${portraitRotated?"portrait-stage":""} ${activeTable&&layout==="portrait"?"portrait-table":""} ${game&&(game.rally||0)>=3?`rally-tension tension-${(game.rally||0)>=9?3:(game.rally||0)>=6?2:1}`:""} ${nativeFullscreen||expanded?"immersive-screen":""}`}>
  <div className="endgame-room-shade" data-level={pressure} aria-hidden="true"/>
  <GameEntrance game={game} rotation={rotated?90:portraitRotated?-90:0} onPrepared={entrancePrepared} onFallback={entranceFallback} visible={pageVisible} phase={entrance} resume={entranceIntent.current.kind==='resume'} reduced={entranceReduced.current}/>
  <audio ref={musicRef} src="/audio/night-table.mp3" loop preload="none" aria-hidden="true"/>

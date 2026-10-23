@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {endgameLevel,nextEntrance,ENTRANCE_MS,type EntrancePhase} from '../lib/atmosphere.ts';
+import {endgameLevel,nextEntrance,ENTRANCE_MS,concealLiveTiles,entranceCurtain,type EntrancePhase} from '../lib/atmosphere.ts';
 import {room,player,start,view,DEAL_REVIEW_MS,assertTurnReady} from '../lib/game.ts';
 for(const counts of [[12,12],[10,10,10],[9,9,9,9]])assert.equal(endgameLevel('playing',counts),0);
 assert.equal(endgameLevel('playing',[7,3,6]),1);
@@ -15,9 +15,21 @@ const fresh=sequence(false),resume=sequence(true);
 assert.ok(fresh.indexOf('approach')<fresh.indexOf('shuffle'));
 assert.ok(fresh.indexOf('prepare')<fresh.indexOf('approach'));
 assert.ok(fresh.indexOf('prepare')<fresh.indexOf('deal'));
-assert.ok(fresh.indexOf('deal')<fresh.indexOf('settle'));
+assert.ok(fresh.indexOf('deal')<fresh.indexOf('fade-out'));
+assert.ok(fresh.indexOf('fade-out')<fresh.indexOf('settle'));
 assert.equal(resume.includes('prepare'),false);assert.equal(resume.includes('deal'),false);
 assert.equal(resume.includes('shuffle'),false,'a saved hand is not visually redealt');
+for(const phases of [fresh,resume]){
+ const swap=phases.indexOf('settle');
+ assert.equal(phases[swap-1],'fade-out','the old scene always fades to full cover before switching');
+ assert.equal(entranceCurtain(phases[swap]),'covered');
+ assert.equal(phases[swap+1],'game-in');assert.equal(entranceCurtain('game-in'),'open');
+ assert.ok(ENTRANCE_MS.settle>=100,'live board gets a covered paint interval');
+}
+assert.equal(concealLiveTiles('deal'),true);assert.equal(concealLiveTiles('fade-out'),true);
+assert.equal(concealLiveTiles('settle'),false,'real tile paint is ready under the opaque curtain');
+assert.equal(concealLiveTiles('game-in'),false);
+assert.equal(entranceCurtain('prepare'),'covered','measurement and precomputation cannot flash an unfinished table');
 assert.equal(fresh.at(-1),'game-in');assert.equal(resume.at(-1),'game-in');
 assert.ok(fresh.reduce((sum,p)=>sum+ENTRANCE_MS[p],0)<7000,'full 60-tile deal stays under seven seconds excluding layout measurement');
 const g=room('INTRO',player('나'),true,2);g.players.push(player('달빛',true));const now=100000;start(g,now+ENTRANCE_MS['game-in']);
@@ -28,4 +40,4 @@ assert.doesNotThrow(()=>assertTurnReady(g,now+ENTRANCE_MS['game-in']+DEAL_REVIEW
 g.players[1].hand=g.players[1].hand.slice(0,1);const a=view(g,g.players[0].token);
 g.players[1].hand[0]={id:59,n:15,s:3};const b=view(g,g.players[0].token);
 assert.equal(endgameLevel(a.phase,a.players.map(p=>p.count)),endgameLevel(b.phase,b.players.map(p=>p.count)));
-console.log('PASS: public-only tension thresholds/recovery, no hidden-hand inference, safe empty states, new/resume entrance ordering, duration budget, full opening review lock.');
+console.log('PASS: public-only tension thresholds/recovery, no hidden-hand inference, safe empty states, new/resume entrance ordering, full-screen fade ordering and covered paint interval, duration budget, full opening review lock.');

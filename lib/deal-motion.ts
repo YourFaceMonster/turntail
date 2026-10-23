@@ -51,7 +51,7 @@ export function planDealFlights(flights:DealFlight[]):DealRoute[]{
 }
 export function sampleDealRoute(route:DealRoute,progress:number){
  const lift=smooth(progress/.18),travel=smooth((progress-.18)/.64),land=smooth((progress-.82)/.18);
- const a=route.source,b=route.target,angle=((b.angle-a.angle+540)%360)-180;
+ const a=route.source,b=route.target,angle=(((b.angle-a.angle+180)%360)+360)%360-180;
  return {x:lerp(a.x,b.x,travel),y:lerp(a.y,b.y,travel),angle:a.angle+angle*travel,
   sx:lerp(route.scale,b.width/route.width,travel),sy:lerp(route.scale,b.height/route.height,travel),
   z:progress<.18?lerp(route.depth*route.scale,route.ceiling,lift):lerp(route.ceiling,route.ground,land),

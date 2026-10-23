@@ -4,14 +4,13 @@ import {memo,useMemo,useEffect,useLayoutEffect,useRef,useState,type CSSPropertie
 import TileBack from './TileBack';
 import TileFace from './TileFace';
 import TableSurface from './TableSurface';
-import {planShuffle,frameShuffle,shuffleDepth,shuffleKeyframes,shuffleTransform,type ShuffleScene} from '../../lib/shuffle-motion';
+import {planShuffle,frameShuffle,overviewScale,shuffleDepth,shuffleKeyframes,shuffleTransform,type ShuffleScene} from '../../lib/shuffle-motion';
 import {matchShuffleTracks,planDealFlights,dealKeyframes} from '../../lib/deal-motion';
-import {ENTRANCE_MS,type EntrancePhase} from '../../lib/atmosphere';
-import {measureDealLayout,dealTarget,shuffleTileSize,type DealView,type DealItem,type DealTarget} from '../../lib/deal-animation';
+import {ENTRANCE_MS,entranceCurtain,type EntrancePhase} from '../../lib/atmosphere';
+import {measureDealLayout,shuffleTileSize,type DealView,type DealItem,type DealTarget} from '../../lib/deal-animation';
 type Props={phase:EntrancePhase,resume:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void};
 function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback}:Props){
  const [screen,setScreen]=useState({width:0,height:0}),[landings,setLandings]=useState<{item:DealItem,target:DealTarget,finish:Record<string,string>}[]>([]);
- const [tableTarget,setTableTarget]=useState<DealTarget|null>(null);
  const [scene,setScene]=useState<ShuffleScene|null>(null),[assetsReady,setAssetsReady]=useState(false);
  const shuffleSeed=useRef(0),measuredKey=useRef(''),cardElements=useRef<(HTMLDivElement|null)[]>([]),running=useRef<Animation[]>([]);
  const animationPhase=useRef('');
@@ -22,13 +21,13 @@ function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,on
  useEffect(()=>{
   if(!screen.width)return;
   let cancelled=false;setAssetsReady(false);
-  const paths=[screen.height>=screen.width?'/turntale-empty-room-portrait.webp':'/turntale-empty-room.webp','/turntale-tile-back.svg'];
+  const paths=[screen.height>=screen.width?'/turntale-empty-room-portrait.webp':'/turntale-empty-room.webp','/turntale-tile-back-gold.svg'];
   void Promise.all(paths.map(src=>new Promise<void>(resolve=>{const img=new Image();img.onload=()=>{void img.decode().catch(()=>{}).then(resolve);};img.onerror=()=>resolve();img.src=src;}))).then(()=>{if(!cancelled)setAssetsReady(true);});
   return()=>{cancelled=true;};
  },[screen.width>screen.height,!!screen.width]);
  useLayoutEffect(()=>{
-  if(phase==='menu-out'){shuffleSeed.current=crypto.getRandomValues(new Uint32Array(1))[0];setLandings([]);setScene(null);setTableTarget(null);measuredKey.current='';}
-  if(!['prepare','approach','shuffle','deal','settle','game-in'].includes(phase)||resume||reduced||!pageVisible)return;
+  if(phase==='menu-out'){shuffleSeed.current=crypto.getRandomValues(new Uint32Array(1))[0];setLandings([]);setScene(null);measuredKey.current='';}
+  if(!['prepare','approach','shuffle','deal'].includes(phase)||resume||reduced||!pageVisible)return;
   const layoutKey=`${screen.width}:${screen.height}:${rotation}`;
   if(phase!=='prepare'&&measuredKey.current===layoutKey)return;
   // A viewport change mid-flight must reveal the correctly laid-out live board,
@@ -42,12 +41,11 @@ function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,on
     const rows=measureDealLayout(game,rotation,selector=>{const el=document.querySelector(selector);return el?{rect:el.getBoundingClientRect(),finish:{}}:null;});
     const tableRect=document.querySelector('.active-table .play-column')?.getBoundingClientRect();
     if(!tableRect||tableRect.width<=0||tableRect.height<=0)throw Error('Table layout pending');
-    const table=dealTarget(tableRect,rotation);
-    const signature=JSON.stringify([table,rows.map(r=>r.target)]);stable=signature===last?stable+1:0;last=signature;
+    const signature=JSON.stringify([tableRect.width,tableRect.height,rows.map(r=>r.target)]);stable=signature===last?stable+1:0;last=signature;
     if(stable>=2){
      // Expensive computed styles are read once after geometry has settled.
      for(const row of rows){const style=getComputedStyle(document.querySelector(row.item.selector)!);row.finish={'--finish-bg':style.background,'--finish-border':style.border,'--finish-radius':style.borderRadius,'--finish-shadow':style.boxShadow};}
-     measuredKey.current=layoutKey;setLandings(rows);setTableTarget(table);return;
+     measuredKey.current=layoutKey;setLandings(rows);return;
     }
    }catch{}
    if(++attempt<90)frame=requestAnimationFrame(measure);
@@ -105,25 +103,29 @@ function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,on
    animationPhase.current='deal';
   }
   if(phase==='shuffle'||phase==='deal')running.current.forEach(animation=>pageVisible?animation.play():animation.pause());
-  else if(['settle','game-in','idle','menu-out'].includes(phase)){running.current.forEach(animation=>animation.cancel());running.current=[];animationPhase.current='';}
+  else if(['fade-out','settle','game-in','idle','menu-out'].includes(phase)){running.current.forEach(animation=>animation.cancel());running.current=[];animationPhase.current='';}
  },[phase,pageVisible,dealFrames]);
  if(phase==='idle'||reduced||typeof document==='undefined')return null;
- const visible=['approach','shuffle','prepare','deal','settle','game-in'].includes(phase),distributed=['deal','settle','game-in'].includes(phase)&&landings.length===60;
- return createPortal(<div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${distributed?'entry-distributed':''}`} aria-hidden="true" data-visible={pageVisible} style={{'--approach-ms':`${ENTRANCE_MS.approach}ms`,'--shuffle-ms':`${ENTRANCE_MS.shuffle}ms`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--reveal-ms':`${ENTRANCE_MS['game-in']}ms`,visibility:visible?'visible':'hidden'} as CSSProperties}>
+ const diameter=(scene?.width??Math.max(screen.width,screen.height)*1.35)+32;
+ const overview=overviewScale({width:diameter-32,height:diameter-32},screen.width,screen.height);
+ const curtain=phase==='menu-out'?ENTRANCE_MS['menu-out']:phase==='fade-out'?ENTRANCE_MS['fade-out']:phase==='game-in'?ENTRANCE_MS['game-in']:360;
+ return createPortal(<div className={`table-entrance entry-${phase} ${resume?'entry-resume':''}`} aria-hidden="true" data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--camera-ms':`${ENTRANCE_MS.approach+(resume?0:ENTRANCE_MS.shuffle)}ms`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--curtain-ms':`${curtain}ms`} as CSSProperties}>
+  <div className="entry-view-rig">
   <div className="entry-room"><div className="entry-room-warmth"/><div className="entry-room-moonlight"/></div>
   <div className="entry-camera">
-  <div className="entry-table" style={distributed&&tableTarget?{'--table-dx':`${tableTarget.x-screen.width/2}px`,'--table-dy':`${tableTarget.y-screen.height/2}px`,'--table-sx':tableTarget.width/(screen.width*.96),'--table-sy':tableTarget.height/(screen.height*.82),'--table-angle':`${tableTarget.angle}deg`} as CSSProperties:undefined}><TableSurface/></div>
+  <div className="entry-table"><TableSurface/></div>
   {!resume&&scene&&landings.length===60&&<div className="entry-deck">{cards.map(({landing,width:tileW,height:tileH,poses,depth},i)=>{
    const t=landing.target,kind=landing.item.kind;
-   const last=poses!.at(-1)!;
-   return <div key={i} ref={el=>{cardElements.current[i]=el;}} className={`deal-flying-card deal-${kind}`} style={{width:tileW,height:tileH,'--start-transform':shuffleTransform(poses![0],tileW,tileH,depth,scale,screen.width/2,screen.height/2),'--scatter-transform':shuffleTransform(last,tileW,tileH,depth,scale,screen.width/2,screen.height/2),'--tile-depth':`${depth}px`,'--sx':`${screen.width/2+last.x*scale-tileW/2}px`,'--sy':`${screen.height/2+last.y*scale-tileH/2}px`,'--scatter-scale':scale,'--scatter-z':`${depth*scale}px`,'--rest-angle':`${last.angle}deg`,'--tx':`${t.x-tileW/2}px`,'--ty':`${t.y-tileH/2}px`,'--target-angle':`${t.angle}deg`,'--target-w':`${t.width}px`,'--target-h':`${t.height}px`,'--end-left':`${t.x-t.width/2}px`,'--end-top':`${t.y-t.height/2}px`,...landing.finish,'--target-sx':t.width/tileW,'--target-sy':t.height/tileH,'--flip-delay':`${ENTRANCE_MS.deal*.82}ms`,zIndex:i+1} as CSSProperties}>
+   return <div key={i} ref={el=>{cardElements.current[i]=el;}} className={`deal-flying-card deal-${kind}`} style={{width:tileW,height:tileH,'--start-transform':shuffleTransform(poses![0],tileW,tileH,depth,scale,screen.width/2,screen.height/2),'--tile-depth':`${depth}px`,'--target-angle':`${t.angle}deg`,'--target-w':`${t.width}px`,'--target-h':`${t.height}px`,'--end-left':`${t.x-t.width/2}px`,'--end-top':`${t.y-t.height/2}px`,...landing.finish,'--flip-delay':`${ENTRANCE_MS.deal*.82}ms`,zIndex:i+1} as CSSProperties}>
     <span className="deal-side-top"/><span className="deal-side-left"/>
     <div className="deal-flipper"><div className="deal-back"><TileBack flat/></div>{landing?.item.tile&&<div className="deal-face"><TileFace tile={landing.item.tile}/></div>}</div>
     {kind==='lower'&&<span className="deal-covered tile covered-face"/>}
    </div>;
   })}</div>}
   </div>
+  </div>
   <div className="entry-edge-shade"/>
+  <div className="entry-curtain"/>
  </div>,document.body);
 }
 
