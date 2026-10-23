@@ -144,3 +144,10 @@
 - Removed the final 10×6 grid. Every launch gets a visual-only random seed with 60 independent five-pose sweeping paths, rotation and staggered timing. The final scattered pose is also the start of the deal, avoiding a snap into rows.
 - Randomness stays fixed across rerenders and never changes dealt tile identities or game rules.
 - Checks: native tile geometry, hidden floor layers, random-motion bounds/continuity, entrance pacing and type checking. Browser visual verification remains unavailable.
+
+### 4.0 smoother entrance only — 2026-10-23
+- Removed the ivory border/body shadow override from live game tiles, restoring their pre-ivory appearance. Thicker 18–26 px white side faces apply only to entrance clones.
+- Replaced five independently eased segments with one continuous Bezier path, precomputed into 49 native transform keyframes. Camera approach and seating now use the same uninterrupted animation.
+- Memoized entrance paths and stable callbacks; suppressed hidden game clock repainting during the entrance. Reuse measured target geometry across phases, recalculating only for viewport/orientation changes.
+- Converted the large table resize/position transition into transform/opacity and simplified clone shadows to reduce rendering work.
+- Verified path velocity continuity, rotated bounds, exact final deal origin, phase/pacing tests and types. No device frame-rate claim: browser profiling remains unavailable.

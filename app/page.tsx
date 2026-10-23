@@ -1,5 +1,5 @@
 "use client";
-import {useEffect,useLayoutEffect,useRef,useState,useMemo,type CSSProperties} from "react";
+import {useEffect,useLayoutEffect,useRef,useState,useMemo,useCallback,type CSSProperties} from "react";
 import {act,assertTurnReady,restartMatch,REVIEW_MS,DEAL_REVIEW_MS,PLAY_REVIEW_MS,DRAW_TRAVEL_MS,startingHandSize,resetChallenge,isRedTwoSingle,beats,botMove,combo,legalOptions,player,rank,room,sorted,start,suitRank,suits,symbols,view,uid,type Game,type Tile,type RoundResult} from "../lib/game";
 import {tapTileSelection,tapSelectableTileIds} from "../lib/selection";
 import {tileLayout} from "../lib/layout";
@@ -41,6 +41,7 @@ export default function Home(){
  useEffect(()=>{const update=()=>setPageVisible(!document.hidden);update();document.addEventListener('visibilitychange',update);return()=>document.removeEventListener('visibilitychange',update);},[]);
  const [entrance,setEntrance]=useState<EntrancePhase>('idle');
  const entranceBusy=useRef(false),entranceReduced=useRef(false);
+ const entrancePrepared=useCallback(()=>setEntrance('approach'),[]),entranceFallback=useCallback(()=>setEntrance('game-in'),[]);
  const entranceIntent=useRef<{kind:'new'}|{kind:'resume',game:Game,session:Session}>({kind:'new'});
  useEffect(()=>{
   if(entrance==='idle'||!pageVisible)return;
@@ -83,7 +84,7 @@ export default function Home(){
  const openingReview=!!game&&game.phase==="playing"&&game.lastEvent?.type==="deal"&&clock<(game.turnReadyAt||0);
  const reviewing=!!game&&clock<(game.turnReadyAt||0),watchingPlay=reviewing&&game?.lastEvent?.type==="play";
  const leadReview=!!game&&game.phase==="playing"&&!game.trick.length&&game.lastEvent?.type!=="deal"&&reviewing;
- useEffect(()=>{setClock(Date.now());if(!game||Date.now()>=Math.max(game.turnReadyAt||0,game.turnDeadline||0))return;const timer=setInterval(()=>setClock(Date.now()),80);return()=>clearInterval(timer);},[game?.turnReadyAt,game?.turnDeadline]);
+ useEffect(()=>{if(entrance!=="idle")return;setClock(Date.now());if(!game||Date.now()>=Math.max(game.turnReadyAt||0,game.turnDeadline||0))return;const timer=setInterval(()=>setClock(Date.now()),80);return()=>clearInterval(timer);},[game?.turnReadyAt,game?.turnDeadline,entrance]);
  useEffect(()=>{if(!flair)return;const timer=setTimeout(()=>setFlair(null),2250);return()=>clearTimeout(timer);},[flair?.id]);
  const [previousPlay,setPreviousPlay]=useState<Tile[]>([]),[slam,setSlam]=useState("");
  const pendingBeat=useRef(false);
@@ -268,7 +269,7 @@ export default function Home(){
  const summary=historyMode==="practice"?{games:practiceGroups.reduce((a,g)=>a+g.games,0),wins:practiceGroups.reduce((a,g)=>a+g.wins,0),points:practiceGroups.reduce((a,g)=>a+g.points,0)}:onlineHistory?.summary||{games:0,wins:0,points:0};
  return <main inert={entrance!=="idle"} aria-busy={entrance!=="idle"} data-entrance={entrance} data-endgame={pressure} data-visible={pageVisible} data-dealing={entranceIntent.current.kind==='new'&&['prepare','approach','shuffle','deal','settle'].includes(entrance)} style={{"--opponent-count":Math.max(1,(game?.players.length||3)-1),"--stage-width":`${stageWidth}px`,"--stage-height":`${stageHeight}px`,"--table-card-height":`${rackCardHeight}px`,"--tile-h":`${rackCardHeight}px`,"--tile-w":`${rackTileWidth}px`,"--seat-height":`${dimensions.seatHeight}px`,"--seat-rail":`${dimensions.seatRail}px`,"--rack-cols":rackColumns,"--floor-cols":game?.cols||5} as CSSProperties} className={`table-v211 turntale ${!game?"home-screen":""} ${openingReview?"opening-review":""} ${game?`in-game players-${game.capacity} ${activeTable?"active-table":""}`:""} ${landscapeTable?"landscape-table":""} ${rotated?"rotated-stage":""} ${portraitRotated?"portrait-stage":""} ${activeTable&&layout==="portrait"?"portrait-table":""} ${game&&(game.rally||0)>=3?`rally-tension tension-${(game.rally||0)>=9?3:(game.rally||0)>=6?2:1}`:""} ${nativeFullscreen||expanded?"immersive-screen":""}`}>
  <div className="endgame-room-shade" data-level={pressure} aria-hidden="true"/>
- <GameEntrance game={game} rotation={rotated?90:portraitRotated?-90:0} onPrepared={()=>setEntrance('approach')} onFallback={()=>setEntrance('game-in')} visible={pageVisible} phase={entrance} resume={entranceIntent.current.kind==='resume'} reduced={entranceReduced.current}/>
+ <GameEntrance game={game} rotation={rotated?90:portraitRotated?-90:0} onPrepared={entrancePrepared} onFallback={entranceFallback} visible={pageVisible} phase={entrance} resume={entranceIntent.current.kind==='resume'} reduced={entranceReduced.current}/>
  <audio ref={musicRef} src="/audio/night-table.mp3" loop preload="none" aria-hidden="true"/>
  <header className="topbar"><a className="brand" href="/" onClick={e=>{if(game){e.preventDefault();leaveTable();}}}><span className="brand-icon">✦</span> TURNTALE</a><div className="top-actions"><button className="display-trigger" onClick={()=>setScreenOpen(true)} aria-label="화면 설정" title="전체화면 · 가로 모드">⛶</button>{game&&<button className="text-btn" onClick={leaveTable}>홈으로</button>}{game&&!game.practice&&<button className={`chat-trigger ${unreadChat?"has-unread":""}`} onClick={()=>{armAudio();setChatOpen(true);}} aria-label={unreadChat?"채팅 열기 · 새 메시지":"채팅 열기"}>💬 채팅{unreadChat&&<i/>}</button>}<button className="profile-trigger" onClick={openProfile} aria-label="내 프로필 설정"><SeatAvatar seat={game?.me||0} photo={mine?.avatar||avatar}/></button><button className="text-btn" onClick={openHistory}>전적</button><span className="alpha">4.0</span><button className="icon-btn" onClick={()=>setRules(true)} aria-label="게임 규칙">?</button></div></header>
  {!game?<MainMenu single={()=>{setChallengeMode(false);setSetupOpen('single');}} multi={()=>{setChallengeMode(false);setSetupOpen('multi');}} tutorial={()=>setTutorialOpen(true)} scores={()=>void openScores()} settings={()=>setSettingsOpen(true)} profile={openProfile} resume={resume} canResume={resumeAvailable} name={name} avatar={avatar}/>:<>

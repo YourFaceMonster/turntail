@@ -1,4 +1,20 @@
 export type ShufflePose={x:number,y:number,angle:number};
+/** One continuous Bezier curve; no ease-to-stop at each intermediate waypoint. */
+export function sampleShufflePose(poses:ShufflePose[],progress:number):ShufflePose{
+ const t=Math.max(0,Math.min(1,progress)),u=t*t*(3-2*t),points=poses.map(p=>({...p}));
+ for(let n=points.length-1;n>0;n--)for(let i=0;i<n;i++){
+  for(const key of ['x','y','angle'] as const)points[i][key]+=(points[i+1][key]-points[i][key])*u;
+ }
+ return points[0];
+}
+export function shuffleDepth(tileHeight:number){return Math.min(26,Math.max(18,tileHeight*.38));}
+/** Precompute once, then let the browser animate transforms without JS per frame. */
+export function shuffleKeyframes(poses:ShufflePose[],width:number,height:number,depth:number){
+ return Array.from({length:49},(_,i)=>{
+  const t=i/48,p=sampleShufflePose(poses,t),v=Math.max(0,(t-.5)*2),z=depth*(1-v*v*(3-2*v));
+  return {offset:t,transform:`translate3d(${p.x-width/2}px,${p.y-height/2}px,${z}px) rotate(${p.angle}deg)`};
+ });
+}
 /** Visual randomness only. A launch seed keeps rerenders and resizes continuous. */
 export function shuffleMotion(seed:number,index:number,width:number,height:number,tileWidth:number,tileHeight:number){
  let state=(seed^Math.imul(index+1,0x9e3779b9))>>>0;

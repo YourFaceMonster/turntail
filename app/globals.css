@@ -559,7 +559,7 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 .deal-flying-card .tile.face:before,.deal-flying-card .tile.face:after{display:none!important}
 .deal-flying-card .tile-number,.deal-flying-card .special-number,.deal-flying-card .special-motif{filter:none!important}
 .deal-covered{opacity:0;background:#fff;transition:opacity .15s ease}
-.entry-shuffle .deal-flying-card{animation:full-deck-shuffle var(--mix-ms) var(--mix-delay) cubic-bezier(.4,0,.35,1) both}
+.entry-shuffle .deal-flying-card{animation:none}
 
 .entry-prepare .entry-room{opacity:0;transform:scale(1.65)}
 .entry-prepare .entry-table{opacity:1;transform:none;transition:none}
@@ -624,21 +624,22 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 .entry-resume.entry-settle .entry-camera{animation:sit-over-table .38s ease both}
 
 /* 4.0 ivory tile bodies: the patterned top sits on a substantial white block. */
-:root{--ivory-tile-shadow:inset 0 1px 0 #fff,0 1px 0 #fffefa,0 2px 0 #fffdf5,0 3px 0 #f5f3e9,0 4px 0 #e8e5d9,0 5px 0 #d8d5c8,0 6px 0 #bbb8aa,1px 9px 7px #100b0860}
-.turntale.table-v211.active-table :is(.tile.face,.tile.back.tile-back-shared,.tile.covered-face),.deal-flying-card :is(.tile.face,.tile.back.tile-back-shared,.tile.covered-face){box-shadow:var(--ivory-tile-shadow)!important;border:2px solid #fffdf3!important}
+.table-entrance{--ivory-tile-shadow:inset 0 1px 0 #fff,1px 5px 7px #100b0855}
+.deal-flying-card :is(.tile.face,.tile.back.tile-back-shared,.tile.covered-face){box-shadow:var(--ivory-tile-shadow)!important;border:2px solid #fffdf3!important}
 .entry-approach .deal-back .tile,.entry-shuffle .deal-back .tile{box-shadow:inset 0 1px 0 #fff,0 1px 0 #fffefa,0 2px 0 #fffdf5,0 3px 0 #f5f3e9,0 4px 0 #e8e5d9,0 5px 0 #d8d5c8,1px 10px 10px #100b0860!important}
 .deal-flying-card:before{height:var(--tile-depth,12px);background:linear-gradient(#fffef8 0%,#f7f5ec 28%,#e9e6da 80%,#c8c4b5 100%);border-bottom:1px solid #a9a596}
 .deal-flying-card:after{width:var(--tile-depth,12px);background:linear-gradient(90deg,#fffdf4,#e6e2d5);border-right:1px solid #b8b3a3}
-@keyframes full-deck-shuffle{
- 0%{transform:translate3d(var(--mix-x0),var(--mix-y0),var(--tile-depth)) rotate(var(--mix-a0))}
- 28%{transform:translate3d(var(--mix-x1),var(--mix-y1),var(--tile-depth)) rotate(var(--mix-a1))}
- 55%{transform:translate3d(var(--mix-x2),var(--mix-y2),var(--tile-depth)) rotate(var(--mix-a2))}
- 80%{transform:translate3d(var(--mix-x3),var(--mix-y3),calc(var(--tile-depth) * .5)) rotate(var(--mix-a3))}
- 100%{transform:translate3d(var(--sx),var(--sy),0) rotate(var(--rest-angle))}
-}
+
 
 .deal-side-top,.deal-side-left{position:absolute;display:block;opacity:0;pointer-events:none;backface-visibility:hidden;transition:opacity .18s}
 .deal-side-top{left:0;right:0;bottom:100%;height:var(--tile-depth);transform-origin:center bottom;transform:rotateX(90deg);background:linear-gradient(#c8c4b5,#fffef8);border-top:1px solid #b8b3a3}
 .deal-side-left{right:100%;top:0;bottom:0;width:var(--tile-depth);transform-origin:right center;transform:rotateY(-90deg);background:linear-gradient(90deg,#dedacf,#fffdf4);border-left:1px solid #b8b3a3}
 .deal-flying-card:before,.deal-flying-card:after{backface-visibility:hidden}
 .entry-approach :is(.deal-side-top,.deal-side-left),.entry-shuffle :is(.deal-side-top,.deal-side-left){opacity:1}
+
+/* 4.0 animation-only performance pass; live tile styling is unchanged. */
+.entry-approach:not(.entry-resume) .entry-camera,.entry-shuffle .entry-camera{animation:continuous-seat-camera calc(var(--approach-ms) + var(--shuffle-ms)) cubic-bezier(.25,.45,.3,1) both;will-change:transform}
+@keyframes continuous-seat-camera{from{transform:translateY(12vh) rotateX(68deg) scale(.9)}to{transform:translateY(0) rotateX(0deg) scale(1)}}
+.entry-table{transition:transform .38s ease,opacity .38s ease}
+.entry-distributed .entry-table{transform:translate3d(var(--table-dx,0px),var(--table-dy,0px),0) rotate(var(--table-angle,0deg)) scale(var(--table-sx,1),var(--table-sy,1));transition:transform .38s ease,opacity .38s ease}
+.entry-approach .deal-back .tile,.entry-shuffle .deal-back .tile{box-shadow:inset 0 1px 0 #fff,1px 5px 7px #100b0855!important}
