@@ -30,12 +30,6 @@ export function dealTarget(rect:{left:number,top:number,width:number,height:numb
  const swap=Math.abs(angle)%180===90;
  return {x:rect.left+rect.width/2,y:rect.top+rect.height/2,width:swap?rect.height:rect.width,height:swap?rect.width:rect.height,angle};
 }
-/** Fit positions by overlapping the pack, never by shrinking the actual tiles. */
-export function shufflePoint(index:number,width:number,height:number,tileWidth:number,tileHeight:number){
- const dx=Math.max(0,Math.min(tileWidth*.78,(width-tileWidth-28)/9));
- const dy=Math.max(0,Math.min(tileHeight*.8,(height-tileHeight-40)/5));
- return {x:width/2+(index%10-4.5)*dx,y:height/2+(Math.floor(index/10)-2.5)*dy};
-}
 export function shuffleTileSize(kind:DealItem['kind'],target:DealTarget,own:DealTarget){
  // The opponent endpoint is a count badge, not the size of a physical tile.
  const source=kind==='opponent'?own:target;

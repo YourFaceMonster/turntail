@@ -5,17 +5,19 @@ import RoomAmbience from './RoomAmbience';
 import TileBack from './TileBack';
 import TileFace from './TileFace';
 import TableSurface from './TableSurface';
+import {shuffleMotion} from '../../lib/shuffle-motion';
 import {ENTRANCE_MS,type EntrancePhase} from '../../lib/atmosphere';
-import {measureDealLayout,dealTarget,shufflePoint,shuffleTileSize,type DealView,type DealItem,type DealTarget} from '../../lib/deal-animation';
+import {measureDealLayout,dealTarget,shuffleTileSize,type DealView,type DealItem,type DealTarget} from '../../lib/deal-animation';
 type Props={phase:EntrancePhase,resume:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void};
 export default function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback}:Props){
  const [screen,setScreen]=useState({width:0,height:0}),[landings,setLandings]=useState<{item:DealItem,target:DealTarget,finish:Record<string,string>}[]>([]);
  const [tableTarget,setTableTarget]=useState<DealTarget|null>(null);
+ const shuffleSeed=useRef(0);
  const callbacks=useRef({onPrepared,onFallback});callbacks.current={onPrepared,onFallback};
  const latest=useRef({game,rotation});latest.current={game,rotation};
  useEffect(()=>{const resize=()=>setScreen({width:window.innerWidth,height:window.innerHeight});resize();window.addEventListener('resize',resize);return()=>window.removeEventListener('resize',resize);},[]);
  useLayoutEffect(()=>{
-  if(phase==='menu-out'){setLandings([]);setTableTarget(null);}
+  if(phase==='menu-out'){shuffleSeed.current=crypto.getRandomValues(new Uint32Array(1))[0];setLandings([]);setTableTarget(null);}
   if(!['prepare','approach','shuffle','deal','settle','game-in'].includes(phase)||resume||reduced||!pageVisible)return;
   let frame=0,attempt=0,last='',stable=0,ended=false;
   function measure(){
@@ -38,7 +40,6 @@ export default function GameEntrance({phase,resume,reduced,visible:pageVisible,g
  if(phase==='idle'||reduced||typeof document==='undefined')return null;
  const visible=['approach','shuffle','prepare','deal','settle','game-in'].includes(phase),distributed=['deal','settle','game-in'].includes(phase)&&landings.length===60;
  const own=landings.find(row=>row.item.kind==='own')?.target;
- const packW=Math.max(0,...landings.map(row=>row.item.kind==='opponent'?own!.width:row.target.width)),packH=Math.max(0,...landings.map(row=>row.item.kind==='opponent'?own!.height:row.target.height));
  return createPortal(<div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${distributed?'entry-distributed':''}`} aria-hidden="true" data-visible={pageVisible} style={{'--approach-ms':`${ENTRANCE_MS.approach}ms`,'--shuffle-ms':`${ENTRANCE_MS.shuffle}ms`,'--reveal-ms':`${ENTRANCE_MS['game-in']}ms`,visibility:visible?'visible':'hidden'} as CSSProperties}>
   <div className="entry-room"><RoomAmbience/></div>
   <div className="entry-camera">
@@ -46,10 +47,10 @@ export default function GameEntrance({phase,resume,reduced,visible:pageVisible,g
   {!resume&&landings.length===60&&<div className="entry-deck">{landings.map((landing,i)=>{
    const t=landing.target,kind=landing.item.kind;
    const {width:tileW,height:tileH}=shuffleTileSize(kind,t,own!);
-   const {x,y}=shufflePoint(i,screen.width,screen.height,packW,packH),side=i%2?1:-1;
-   const spreadX=Math.min(110,Math.max(12,(screen.width-packW)/3)),spreadY=Math.min(105,Math.max(12,(screen.height-packH)/4));
-
-   return <div key={i} className={`deal-flying-card deal-${kind}`} style={{width:tileW,height:tileH,'--sx':`${x-tileW/2}px`,'--sy':`${y-tileH/2}px`,'--scatter-x':`${screen.width/2+side*spreadX*(.3+(i*23%100)/100)-tileW/2}px`,'--scatter-y':`${screen.height/2+((i*43)%200/100-1)*spreadY-tileH/2}px`,'--sweep-x':`${screen.width/2-side*spreadX*(.3+(i*31%100)/100)-tileW/2}px`,'--sweep-y':`${screen.height/2+((i*37)%200/100-1)*spreadY-tileH/2}px`,'--tile-angle':`${(i*41)%100-50}deg`,'--tx':`${t.x-tileW/2}px`,'--ty':`${t.y-tileH/2}px`,'--target-angle':`${t.angle}deg`,'--target-w':`${t.width}px`,'--target-h':`${t.height}px`,'--end-left':`${t.x-t.width/2}px`,'--end-top':`${t.y-t.height/2}px`,...landing?.finish,'--target-sx':t.width/tileW,'--target-sy':t.height/tileH,'--deal-delay':`${i*15}ms`,'--flip-delay':`${i*15+670}ms`,zIndex:i+1} as CSSProperties}>
+   const motion=shuffleMotion(shuffleSeed.current,i,screen.width,screen.height,tileW,tileH),last=motion.poses[4];
+   const poses=Object.fromEntries(motion.poses.flatMap((p,n)=>[[`--mix-x${n}`,`${p.x-tileW/2}px`],[`--mix-y${n}`,`${p.y-tileH/2}px`],[`--mix-a${n}`,`${p.angle}deg`]]));
+   return <div key={i} className={`deal-flying-card deal-${kind}`} style={{width:tileW,height:tileH,...poses,'--tile-depth':`${Math.min(14,Math.max(9,tileH*.2))}px`,'--mix-delay':`${motion.delay}ms`,'--mix-ms':`${ENTRANCE_MS.shuffle-motion.delay}ms`,'--sx':`${last.x-tileW/2}px`,'--sy':`${last.y-tileH/2}px`,'--rest-angle':`${last.angle}deg`,'--tx':`${t.x-tileW/2}px`,'--ty':`${t.y-tileH/2}px`,'--target-angle':`${t.angle}deg`,'--target-w':`${t.width}px`,'--target-h':`${t.height}px`,'--end-left':`${t.x-t.width/2}px`,'--end-top':`${t.y-t.height/2}px`,...landing.finish,'--target-sx':t.width/tileW,'--target-sy':t.height/tileH,'--deal-delay':`${i*15}ms`,'--flip-delay':`${i*15+670}ms`,zIndex:i+1} as CSSProperties}>
+    <span className="deal-side-top"/><span className="deal-side-left"/>
     <div className="deal-flipper"><div className="deal-back"><TileBack/></div>{landing?.item.tile&&<div className="deal-face"><TileFace tile={landing.item.tile}/></div>}</div>
     {kind==='lower'&&<span className="deal-covered tile covered-face"/>}
    </div>;

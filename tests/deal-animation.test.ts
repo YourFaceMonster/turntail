@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {room,player,start,view,startingHandSize} from '../lib/game.ts';
-import {dealPlan,dealTarget,shufflePoint,shuffleTileSize,measureDealLayout} from '../lib/deal-animation.ts';
+import {dealPlan,dealTarget,shuffleTileSize,measureDealLayout} from '../lib/deal-animation.ts';
 for(const size of [2,3,4]){
  const g=room('DEAL',player('나'),true,size);for(let i=1;i<size;i++)g.players.push(player('상대'+i,true));start(g);
  for(let me=0;me<size;me++){
@@ -24,12 +24,7 @@ for(const angle of [0,90,-90]){
  assert.equal(projectedWidth,rect.width);assert.equal(projectedHeight,rect.height);
  assert.equal(t.x-projectedWidth/2,rect.left);assert.equal(t.y-projectedHeight/2,rect.top);
 }
-for(const [width,height] of [[320,568],[390,844],[844,390],[1280,720]]){
- const positions=Array.from({length:60},(_,i)=>shufflePoint(i,width,height,34,45));
- assert.equal(new Set(positions.map(p=>`${p.x},${p.y}`)).size,60);
- assert.ok(positions.every(p=>p.x>=17&&p.x<=width-17&&p.y>=22.5&&p.y<=height-22.5),'all 60 shuffled tiles fit the viewport');
-}
-console.log('PASS: all 60 tiles partitioned for every seat in 2/3/4-player games, unique endpoints, private-face isolation, rotated viewport alignment, narrow/wide shuffle bounds.');
+console.log('PASS: all 60 tiles partitioned for every seat in 2/3/4-player games, unique endpoints, private-face isolation, rotated viewport alignment.');
 
 // Reproduce real CSS: lower tiles under an upper tile have display:none (zero bounds).
 for(const size of [2,3,4]){
@@ -48,10 +43,9 @@ for(const size of [2,3,4]){
 }
 console.log('PASS: zero-size hidden lower tiles resolve all 60 destinations in 2/3/4 seats and all rotations; genuinely missing layouts still wait.');
 
-for(const [width,height] of [[320,568],[390,844],[844,390],[1280,720]])for(const [w,h] of [[42,56],[64,84],[78,104]]){
+for(const [w,h] of [[42,56],[64,84],[78,104]]){
  const target={x:100,y:200,width:w,height:h,angle:0};
  for(const kind of ['own','lower','upper'] as const)assert.deepEqual(shuffleTileSize(kind,target,{...target,width:40,height:52}),{width:w,height:h},'physical tile size equals its live slot throughout the shuffle');
  assert.deepEqual(shuffleTileSize('opponent',{...target,width:34,height:28},target),{width:w,height:h},'count badge cannot shrink a shuffled opponent tile');
- for(let i=0;i<60;i++){const p=shufflePoint(i,width,height,w,h);assert.ok(p.x>=w/2&&p.x<=width-w/2&&p.y>=h/2&&p.y<=height-h/2,'pack fits by spacing, not by tile scaling');}
 }
 console.log('PASS: native-size shuffle for phone/tablet/desktop slots; opponent badges do not set tile size.');

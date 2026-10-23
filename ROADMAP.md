@@ -138,3 +138,9 @@
 - A shared camera plane tilts both tiles and table: 68° low approach → 48° near the seat → 0° overhead during the shuffle. Six-pixel tile side faces add visible thickness; the final deal stays in viewport coordinates.
 - Both tabletops share a large oval inset ring, replacing the small rounded rectangular border.
 - Tests cover native sizes, packing bounds, hidden lower-layer geometry, phase order and reduced-motion progression. Type checking and production build required; browser visual QA remains unavailable due to the previously denied preview access.
+
+### 4.0 ivory bodies and loose shuffle — 2026-10-23
+- Intro tile side faces now use an ivory-white body 9–14 px thick, scaled to each tile; live hand/floor tiles have matching white bevels and visible layered edges. Existing top artwork is retained.
+- Removed the final 10×6 grid. Every launch gets a visual-only random seed with 60 independent five-pose sweeping paths, rotation and staggered timing. The final scattered pose is also the start of the deal, avoiding a snap into rows.
+- Randomness stays fixed across rerenders and never changes dealt tile identities or game rules.
+- Checks: native tile geometry, hidden floor layers, random-motion bounds/continuity, entrance pacing and type checking. Browser visual verification remains unavailable.
