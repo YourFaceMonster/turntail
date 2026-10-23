@@ -1,4 +1,8 @@
 "use client";
+import {useState,type CSSProperties} from 'react';
+import {stageTheme,STAGE_THEMES} from '../../lib/stage-theme';
+import {StageBackArt} from './StageVisuals';
+import {StagePortrait} from './StagePortrait';
 import type {Game,view} from '../../lib/game';
 import {stageConfig,STAGE_TARGETS,type StageRecord} from '../../lib/stage-challenge';
 import TileFace from './TileFace';
@@ -6,16 +10,19 @@ type View=ReturnType<typeof view>;
 const number=(n:number)=>n.toLocaleString('ko-KR');
 const signed=(n:number)=>`${n>0?'+':''}${number(n)}`;
 const statusName={playing:'진행 중','stage-clear':'스테이지 클리어','game-over':'게임 오버',complete:'10스테이지 완료',abandoned:'도전 포기'};
-export function StageHub({active,start,resume,records,abandon,close,error=''}:{active:Game|null,start:()=>void,resume:()=>void,records:()=>void,abandon:()=>void,close:()=>void,error?:string}){
- const run=active?.stageRun;
- return <div className="modal-shade" onClick={close}><section className="modal stage-hub" role="dialog" aria-modal="true" aria-label="스테이지 도전" onClick={e=>e.stopPropagation()}>
-  <button className="close" aria-label="도전 모드 닫기" onClick={close}>×</button><span className="eyebrow">SINGLE PLAYER · STAGE CHALLENGE</span><h2>열 번의 문턱,<br/>이어지는 한 수.</h2><p className="stage-intro">나와 AI 3명의 4인전. 보유 점수를 이어가며 10스테이지에 도전하세요.</p>
-  <div className="stage-rules"><span><b>200점</b>으로 시작</span><span>판수 제한 없이</span><span>내 점수 <b>0점 미만</b>이면 종료</span></div>
-  {error&&<p role="alert" className="stage-error">{error}</p>}{!run&&<button className="primary full" disabled={!!error} onClick={start}>1스테이지 · 새 도전 시작 →</button>}
-  {run&&<div className="stage-resume-card"><span>저장된 도전 · {statusName[run.status]}</span><strong>STAGE {run.stage}<small> / 10</small></strong><p>보유 {number(run.score)}점 · 최고 {number(run.peakScore)}점 · {run.rounds}판 정산</p><button className="primary full" onClick={resume}>{active?.phase==='ended'?'저장된 판 결과 이어보기 →':'같은 패로 이어하기 →'}</button><button className="text-btn" onClick={abandon}>이 도전 포기</button></div>}
-  <ol className="stage-list" aria-label="스테이지별 목표">{STAGE_TARGETS.map((target,i)=>{const n=i+1,cleared=!!run&&run.cleared>=n,current=run?.stage===n;return <li key={n} className={`${cleared?'cleared':''} ${current?'current':''}`}><span className="stage-number">{cleared?'✓':String(n).padStart(2,'0')}</span><div><strong>스테이지 {n}</strong><small>AI 난이도 {n} · 시작 각 {stageConfig(n).aiScore}점</small></div><b>{number(target)}<small>목표 점수</small></b></li>;})}</ol>
-  <p className="stage-rule-note">목표 보유 점수 달성 <b>또는</b> AI 한 명이 0점 이하가 되면 클리어.<br/>다음 스테이지에서 내 점수는 유지되고 AI 3명은 새로 시작해요.</p>
-  <button className="secondary full" onClick={records}>스테이지 도전 전적 보기</button><p className="foot muted">모든 행동을 이 브라우저에 자동 저장해요. 일반 전적·하이스코어와 별도로 기록합니다.</p>
+export function StageHub({active,start,resume,advance,records,abandon,close,error=''}:{active:Game|null,start:()=>void,resume:()=>void,advance:()=>void,records:()=>void,abandon:()=>void,close:()=>void,error?:string}){
+ const run=active?.stageRun,next=run?.status==='stage-clear'?Math.min(10,run.stage+1):run?.stage||1;
+ const [selected,setSelected]=useState(next),theme=stageTheme(selected),current=selected===run?.stage,enterable=selected===next;
+ return <div className="modal-shade stage-map-shade" onClick={close}><section className="modal stage-hub stage-map-hub" role="dialog" aria-modal="true" aria-labelledby="stage-map-title" onClick={e=>e.stopPropagation()} style={{'--stage-accent':theme.accent} as CSSProperties}>
+  <header className="stage-map-header"><div><span className="eyebrow">THE FLOATING ISLES · STAGE CHALLENGE</span><h2 id="stage-map-title">공중섬의 열 가지 이야기</h2><p>{run?`저장된 여정 · ${run.score.toLocaleString()}점 · ${run.cleared}개 거점 돌파`:'별빛 관문에서 붉은 세계수까지, 한 수씩 오르는 여정.'}</p></div><button className="close" aria-label="도전 모드 닫기" onClick={close}>×</button></header>
+  <div className="stage-map-layout"><div className="journey-map"><img src="/turntale-stage-map.png" alt="별빛 관문에서 야영지와 폭포, 고목과 성소를 거쳐 붉은 세계수로 오르는 공중섬 지도" width="1024" height="1536"/><svg className="journey-route" viewBox="0 0 100 150" preserveAspectRatio="none" aria-hidden="true"><polyline points={STAGE_THEMES.map(t=>`${t.position[0]},${t.position[1]*1.5}`).join(' ')}/>{STAGE_THEMES.slice(0,Math.min(10,(run?.cleared||0)+1)).map((t,i,arr)=>i<arr.length-1?<line key={t.stage} className="route-cleared" x1={t.position[0]} y1={t.position[1]*1.5} x2={arr[i+1].position[0]} y2={arr[i+1].position[1]*1.5}/>:null)}</svg>
+  {STAGE_THEMES.map(t=>{const cleared=!!run&&t.stage<=run.cleared,locked=t.stage>next;return <button key={t.stage} type="button" className={`journey-node ${cleared?'cleared':''} ${t.stage===next?'available':''} ${selected===t.stage?'selected':''} ${locked?'locked':''}`} style={{left:`${t.position[0]}%`,top:`${t.position[1]}%`}} aria-label={`${t.stage}스테이지 ${t.name} · ${cleared?'클리어':locked?'미개방':'진행 가능'}`} aria-pressed={selected===t.stage} onClick={()=>setSelected(t.stage)}><span>{cleared?'✓':t.stage}</span><small>{t.name}</small>{locked&&<i aria-hidden="true">·</i>}</button>;})}</div>
+  <aside className="journey-destination"><span className="eyebrow">{selected===10?'THE FINAL TABLE':`DESTINATION ${String(selected).padStart(2,'0')}`} · {selected>next?'미개방':selected<next?'돌파한 거점':'다음 여정'}</span><h3>{theme.name}</h3><p className="destination-story">{theme.short}</p><div className="destination-material"><span>이번 테이블의 패</span><strong>{theme.material}</strong><div className={`material-preview material-${selected}`} aria-hidden="true"><StageBackArt stage={selected}/></div></div><div className="destination-opponents">{theme.opponents.map(p=><div key={p.name}><StagePortrait index={p.portrait}/><strong>{p.name}<small>{p.title}</small></strong></div>)}</div><p className="destination-quote">“{theme.opponents[0].quote}”</p><div className="destination-objective"><span>클리어 목표</span><strong>{number(stageConfig(selected).target)}점</strong><small>또는 AI 한 명 0점 이하 · AI 시작 각 200점</small></div>
+  {error&&<p role="alert" className="stage-error">{error}</p>}
+  {!run?<button className="primary full" disabled={selected!==1||!!error} onClick={start}>{selected===1?'별빛 관문 · 첫 여정 시작 →':'앞선 거점부터 차례로 열려요'}</button>:<button className="primary full" disabled={!enterable&&!current||!!error} onClick={run.status==='stage-clear'&&selected===next?advance:resume}>{run.status==='stage-clear'&&selected===next?'이 거점으로 출발 →':current?'저장된 승부 이어하기 →':selected<next?'이미 지나온 거점이에요':'앞선 거점을 돌파해 주세요'}</button>}
+  {run&&<button className="text-btn full" onClick={start}>1스테이지부터 새로 시작</button>}
+  <details className="destination-lore"><summary>장소 이야기 · 여정 규칙</summary><p>{theme.intro}</p><p>200점으로 시작 · 내 점수가 0점 미만이면 종료. 다음 스테이지에도 내 점수는 이어지고 AI 3명은 새로 시작해요.</p><p>일반 전적과 별도로 자동 저장해요. 같은 브라우저에서 이어갈 수 있어요.</p>{run&&<button className="text-btn" onClick={abandon}>현재 도전 포기</button>}</details><button className="secondary full" onClick={records}>도전 전적 보기</button>
+  </aside></div>
  </section></div>;
 }
 export function StageRecords({records,close}:{records:StageRecord[],close:()=>void}){

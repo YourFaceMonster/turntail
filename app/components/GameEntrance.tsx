@@ -1,6 +1,7 @@
 "use client";
 import {createPortal} from 'react-dom';
 import {memo,useMemo,useEffect,useLayoutEffect,useRef,useState,useCallback,type CSSProperties} from 'react';
+import {MATERIAL_COLORS} from './StageVisuals';
 import TileBack from './TileBack';
 import TileFace from './TileFace';
 import TableSurface from './TableSurface';
@@ -9,8 +10,8 @@ import {planShuffle,frameShuffle,overviewScale,shuffleDepth,shuffleFrameIndices,
 import {matchShuffleTracks,planDealFlights,dealKeyframes,opponentExit} from '../../lib/deal-motion';
 import {ENTRANCE_MS,entranceCurtain,type EntrancePhase} from '../../lib/atmosphere';
 import {measureDealLayout,shuffleTileSize,type DealView,type DealItem,type DealTarget} from '../../lib/deal-animation';
-type Props={phase:EntrancePhase,resume:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void};
-function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback}:Props){
+type Props={stage?:number,phase:EntrancePhase,resume:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void};
+function GameEntrance({stage,phase,resume,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback}:Props){
  const [screen,setScreen]=useState({width:0,height:0}),[landings,setLandings]=useState<{item:DealItem,target:DealTarget,finish:Record<string,string>}[]>([]);
  const [scene,setScene]=useState<ShuffleScene|null>(null),[assetsReady,setAssetsReady]=useState(false);
  const [gpuStatus,setGpuStatus]=useState<'pending'|'ready'|'fallback'>('pending');
@@ -25,10 +26,10 @@ function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,on
  useEffect(()=>{
   if(!screen.width)return;
   let cancelled=false;setAssetsReady(false);
-  const paths=[screen.height>=screen.width?'/turntale-empty-room-portrait.webp':'/turntale-empty-room.webp','/turntale-tile-back-gold.svg','/turntale-intro-walnut.webp'];
+  const paths=[screen.height>=screen.width?'/turntale-empty-room-portrait.webp':'/turntale-empty-room.webp','/turntale-tile-back-gold.svg','/turntale-intro-walnut.webp',...(stage?['/turntale-stage-map.png','/turntale-stage-portraits.webp']:[])];
   void Promise.all(paths.map(src=>new Promise<void>(resolve=>{const img=new Image();img.onload=()=>{void img.decode().catch(()=>{}).then(resolve);};img.onerror=()=>resolve();img.src=src;}))).then(()=>{if(!cancelled)setAssetsReady(true);});
   return()=>{cancelled=true;};
- },[screen.width>screen.height,!!screen.width]);
+ },[screen.width>screen.height,!!screen.width,stage]);
  useLayoutEffect(()=>{
   if(phase==='menu-out'){shuffleSeed.current=crypto.getRandomValues(new Uint32Array(1))[0];setLandings([]);setScene(null);setGpuStatus('pending');measuredKey.current='';}
   if(!['prepare','approach','shuffle','deal'].includes(phase)||resume||reduced||!pageVisible)return;
@@ -120,7 +121,7 @@ function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,on
  const diameter=(scene?.width??Math.max(screen.width,screen.height)*1.35)+32;
  const overview=overviewScale({width:diameter-32,height:diameter-32},screen.width,screen.height);
  const curtain=phase==='menu-out'?ENTRANCE_MS['menu-out']:phase==='game-in'?ENTRANCE_MS['game-in']:360;
- return createPortal(<div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${gpuStatus==='ready'?'entry-gpu-ready':''}`} aria-hidden="true" data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--camera-ms':`${ENTRANCE_MS.approach+(resume?0:ENTRANCE_MS.shuffle)}ms`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--curtain-ms':`${curtain}ms`} as CSSProperties}>
+ return createPortal(<div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${gpuStatus==='ready'?'entry-gpu-ready':''}`} aria-hidden="true" data-stage={stage} data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--stage-side':stage?MATERIAL_COLORS[stage-1]:undefined,'--camera-ms':`${ENTRANCE_MS.approach+(resume?0:ENTRANCE_MS.shuffle)}ms`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--curtain-ms':`${curtain}ms`} as CSSProperties}>
   <div className="entry-view-rig">
   <div className="entry-room"><div className="entry-room-warmth"/><div className="entry-room-moonlight"/></div>
   <div className="entry-camera">

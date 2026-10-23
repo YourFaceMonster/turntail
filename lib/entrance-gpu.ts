@@ -70,6 +70,7 @@ void main(){
 const fragmentSource=`#version 300 es
 precision highp float;
 uniform sampler2D u_atlas;
+uniform vec3 u_body;
 uniform vec2 u_atlasGrid;
 in vec2 v_uv;
 in vec3 v_normal;
@@ -89,7 +90,7 @@ void main(){
   color=texture(u_atlas,uv);color.a*=v_alpha;
  }else{
   float light=.79+.21*max(0.,dot(normalize(v_normal),normalize(vec3(-.5,-.7,.8))));
-  color=vec4(vec3(1.,.983,.937)*light,v_alpha);
+  color=vec4(u_body*light,v_alpha);
  }
  if(color.a<.005)discard;
 }`;
@@ -97,7 +98,7 @@ export class EntranceGpu{
  private gl:WebGL2RenderingContext;private program:WebGLProgram;private vao:WebGLVertexArrayObject;
  private mesh:WebGLBuffer;private instances:WebGLBuffer;private texture:WebGLTexture;private count:number;
  private uniforms:{view:WebGLUniformLocation|null,camera:WebGLUniformLocation|null,grid:WebGLUniformLocation|null};
- constructor(canvas:HTMLCanvasElement,atlas:HTMLCanvasElement,count:number,width:number,height:number){
+ constructor(canvas:HTMLCanvasElement,atlas:HTMLCanvasElement,count:number,width:number,height:number,body:[number,number,number]=[1,.983,.937]){
   const gl=canvas.getContext('webgl2',{alpha:true,antialias:true,premultipliedAlpha:false,powerPreference:'high-performance'});
   if(!gl)throw Error('WebGL2 unavailable');this.gl=gl;
   const compile=(type:number,source:string)=>{const shader=gl.createShader(type)!;gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){const message=gl.getShaderInfoLog(shader);gl.deleteShader(shader);throw Error(message||'Tile shader compilation failed');}return shader;};
@@ -114,7 +115,7 @@ export class EntranceGpu{
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.generateMipmap(gl.TEXTURE_2D);
   this.uniforms={view:gl.getUniformLocation(program,'u_view'),camera:gl.getUniformLocation(program,'u_camera'),grid:gl.getUniformLocation(program,'u_atlasGrid')};
-  gl.uniform2f(this.uniforms.grid,8,atlas.height/176);gl.uniform1i(gl.getUniformLocation(program,'u_atlas'),0);
+  gl.uniform3fv(gl.getUniformLocation(program,'u_body'),body);gl.uniform2f(this.uniforms.grid,8,atlas.height/176);gl.uniform1i(gl.getUniformLocation(program,'u_atlas'),0);
   const ratio=Math.min(window.devicePixelRatio||1,2,Math.sqrt(2200000/(width*height)));
   canvas.width=Math.max(1,Math.round(width*ratio));canvas.height=Math.max(1,Math.round(height*ratio));gl.viewport(0,0,canvas.width,canvas.height);
   gl.enable(gl.DEPTH_TEST);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0);
@@ -131,13 +132,14 @@ export class EntranceGpu{
 
 function image(src:string){return new Promise<HTMLImageElement>((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src;});}
 /** Rasterise the approved SVG art once, before any camera or tile starts moving. */
-export async function entranceTileAtlas(faces:(SVGSVGElement|null)[]){
+export async function entranceTileAtlas(faces:(SVGSVGElement|null)[],backSvg?:SVGSVGElement|null){
  const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');if(!ctx)throw Error('Tile atlas unavailable');
  canvas.width=1024;canvas.height=Math.ceil((faces.length+2)/8)*176;
  const urls:string[]=[];
  try{
-  const back=await image('/turntale-tile-back-gold.svg');
-  const art=await Promise.all(faces.map(async svg=>{if(!svg)return null;const copy=svg.cloneNode(true) as SVGSVGElement;copy.setAttribute('xmlns','http://www.w3.org/2000/svg');copy.setAttribute('width','128');copy.setAttribute('height','176');copy.setAttribute('preserveAspectRatio','none');const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)],{type:'image/svg+xml'}));urls.push(url);return image(url);}));
+  const back=backSvg?await raster(backSvg):await image('/turntale-tile-back-gold.svg');
+  async function raster(svg:SVGSVGElement){const copy=svg.cloneNode(true) as SVGSVGElement;copy.setAttribute('xmlns','http://www.w3.org/2000/svg');copy.setAttribute('width','128');copy.setAttribute('height','176');copy.setAttribute('preserveAspectRatio','none');const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)],{type:'image/svg+xml'}));urls.push(url);return image(url);}
+  const art=await Promise.all(faces.map(svg=>svg?raster(svg):null));
   for(let slot=0;slot<faces.length+2;slot++){
    const x=slot%8*128,y=Math.floor(slot/8)*176;
    ctx.fillStyle='#fffdf3';ctx.beginPath();ctx.roundRect(x,y,128,176,[15]);ctx.fill();

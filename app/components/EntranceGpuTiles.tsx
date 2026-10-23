@@ -5,10 +5,12 @@ import {entranceFrameCamera,writeEntranceFrame,type EntranceRenderTile} from '..
 import type {ShufflePose} from '../../lib/shuffle-motion';
 import type {DealRoute} from '../../lib/deal-motion';
 import type {DealItem,DealTarget} from '../../lib/deal-animation';
+import {useStageVisual,MATERIAL_COLORS} from './StageVisuals';
 import {ENTRANCE_MS,type EntrancePhase} from '../../lib/atmosphere';
 type Card={width:number,height:number,depth:number,poses?:ShufflePose[],landing:{item:DealItem,target:DealTarget}};
 type Props={cards:Card[],routes:DealRoute[],phase:EntrancePhase,visible:boolean,width:number,height:number,overview:number,onStatus:(status:'ready'|'fallback')=>void};
 function EntranceGpuTiles({cards,routes,phase,visible,width,height,overview,onStatus}:Props){
+ const stage=useStageVisual();
  const canvas=useRef<HTMLCanvasElement>(null),engine=useRef<EntranceGpu|null>(null),[ready,setReady]=useState(false);
  const latest=useRef({phase,onStatus});latest.current={phase,onStatus};
  const clock=useRef({phase,elapsed:0}),tiles=useMemo<EntranceRenderTile[]>(()=>{let faceSlot=2;return cards.map(card=>({...card,poses:card.poses!,kind:card.landing.item.kind,target:card.landing.target,faceSlot:card.landing.item.kind==='own'?faceSlot++:1}));},[cards]);
@@ -21,14 +23,16 @@ function EntranceGpuTiles({cards,routes,phase,visible,width,height,overview,onSt
    try{
     const faces=cards.filter(card=>card.landing.item.kind==='own').map(card=>document.querySelector<SVGSVGElement>(`${card.landing.item.selector} svg`));
     if(faces.some(face=>!face))throw Error('Tile faces not ready');
-    const atlas=await entranceTileAtlas(faces);if(cancelled)return;
-    const gpu=new EntranceGpu(node,atlas,tiles.length,width,height);engine.current=gpu;
+    const stageBack=document.querySelector<SVGSVGElement>('.active-table .floor-stage .stage-material-tile.back svg');
+    const atlas=await entranceTileAtlas(faces,stageBack);if(cancelled)return;
+    const color=stage?MATERIAL_COLORS[stage-1]:null,body=color?[1,3,5].map(i=>parseInt(color.slice(i,i+2),16)/255) as [number,number,number]:undefined;
+    const gpu=new EntranceGpu(node,atlas,tiles.length,width,height,body);engine.current=gpu;
     gpu.draw(writeEntranceFrame(data,tiles,routes,'prepare',0,width/2,height/2),{width,height,...entranceFrameCamera('prepare',0,overview)});
     setReady(true);latest.current.onStatus('ready');
    }catch{if(!cancelled)latest.current.onStatus('fallback');}
   })();
   return()=>{cancelled=true;node.removeEventListener('webglcontextlost',lost);engine.current?.destroy();engine.current=null;};
- },[cards,tiles,routes,width,height,overview,data]);
+ },[cards,tiles,routes,width,height,overview,data,stage]);
  useLayoutEffect(()=>{if(clock.current.phase!==phase)clock.current={phase,elapsed:0};},[phase]);
  useEffect(()=>{
   if(!ready||!visible)return;
