@@ -3,6 +3,7 @@ import {act,assertTurnReady,botMove,player,room,start,view,capacity,advanceRoom,
 import {avatarImage,updateProfile,sendChat} from "../../../lib/social";
 import {scoreEntries,mergeScores,type HighScore} from "../../../lib/challenge";
 import {LINEUP_SUMMARY_SQL,LINEUP_PLAYERS_SQL} from "../../../lib/history";
+import {sharedScores,LEADERBOARD_CTE,boardArgs,PAGE_SIZE} from "../../../lib/leaderboard";
 export const dynamic="force-dynamic";
 function reply(x:unknown,status=200){return Response.json(x,{status,headers:{"Cache-Control":"no-store"}});}
 async function deviceKey(secret:unknown){
@@ -14,6 +15,24 @@ export async function POST(req:Request){try{
  const origin=req.headers.get("origin");if(origin&&origin!==new URL(req.url).origin)return reply({error:"접속 주소를 확인해 주세요."},403);
  const b=await req.json() as any;const db=env.DB;if(!db)throw Error("게임 저장소에 연결하지 못했어요.");
  const profile=await deviceKey(b.profileToken);
+ if(b.action==="syncScores"){
+  if(!profile)return reply({error:"기기 기록을 확인하지 못했어요."},400);
+  const rows=sharedScores(b.scores),name=String(b.name||"플레이어").replace(/[\u0000-\u001f\u007f]/g,"").trim().slice(0,12)||"플레이어";
+  const statements=rows.map(r=>db.prepare("INSERT INTO shared_scores (id,device,name,mode,size,kind,score,at,entry_id) VALUES (?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,score=excluded.score,at=excluded.at,entry_id=excluded.entry_id WHERE excluded.score>shared_scores.score OR (excluded.score=shared_scores.score AND excluded.at<shared_scores.at)").bind(`${profile}:single:${r.size}:${r.kind}`,profile,name,'single',r.size,r.kind,r.score,r.at,r.id));
+  statements.push(db.prepare("UPDATE shared_scores SET name=? WHERE device=?").bind(name,profile));
+  await db.batch(statements);return reply({synced:true});
+ }
+ if(b.action==="leaderboard"){
+  const mode=b.mode,kind=b.kind,size=Number(b.size),page=Number(b.page??0);
+  if(!['single','multi'].includes(mode)||!['single','ten'].includes(kind)||![2,3,4].includes(size)||!Number.isInteger(page)||page<0||page>100000)return reply({error:"순위 부문을 확인해 주세요."},400);
+  const args=boardArgs(mode,size,kind);
+  const [rows,total,mine]=await Promise.all([
+   db.prepare(LEADERBOARD_CTE+"SELECT name,score,at,rank,CASE WHEN device=? THEN 1 ELSE 0 END AS isMe FROM ranked ORDER BY rank LIMIT ? OFFSET ?").bind(...args,profile||'',PAGE_SIZE,page*PAGE_SIZE).all(),
+   db.prepare(LEADERBOARD_CTE+"SELECT COUNT(*) AS total FROM ranked").bind(...args).first<{total:number}>(),
+   profile?db.prepare(LEADERBOARD_CTE+"SELECT name,score,at,rank,1 AS isMe FROM ranked WHERE device=?").bind(...args,profile).first():Promise.resolve(null)
+  ]);
+  return reply({rows:rows.results.map((r:any)=>({...r,isMe:!!r.isMe})),total:total?.total||0,mine:mine?{...mine,isMe:true}:null,page,pageSize:PAGE_SIZE});
+ }
  if(b.action==="highscores"){
   if(!profile)return reply({error:"기기 기록을 확인하지 못했어요."},400);
   let scores:HighScore[]=[];

@@ -15,6 +15,13 @@
       "when": 1792654494522,
       "tag": "0001_neat_nightshade",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1792718532408,
+      "tag": "0002_unknown_spirit",
+      "breakpoints": true
     }
   ]
 }

@@ -56,7 +56,7 @@ export function lowestHandLead(players:Player[]){
 export const REVIEW_MS=1000;
 export const DEAL_REVIEW_MS=3000;
 export const PLAY_REVIEW_MS=1600; // Flight + one second to read the play.
-export const DRAW_TRAVEL_MS=1500; // Public lower draw: centre review, collect. Hidden upper stays face-down.
+export const DRAW_TRAVEL_MS=900; // 140ms to centre + 500ms review + 180ms collect, with a small guard.
 export const TURN_MS=30000,FINAL_TURN_MS=60000;
 export const automated=(p:Player)=>!!(p.bot||p.replaced);
 export function hostSeat(g:Game){const at=g.players.findIndex(p=>!automated(p));return at<0?0:at;}

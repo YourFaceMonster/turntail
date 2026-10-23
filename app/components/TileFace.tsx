@@ -9,6 +9,8 @@ function Motif({s}:{s:number}){
  if(s===2)return <path d="M10-29C-25-32-38 13-10 29C2 35 20 28 28 16C-3 24-17-11 10-29Z"/>;
  return <><circle r="17"/>{Array.from({length:12},(_,i)=><path key={i} transform={`rotate(${i*30})`} d="M-2-24L0-34L2-24Z"/>)}</>;
 }
+/** Shared vector emblems keep menu, decorative tiles and game suits consistent. */
+export function SuitEmblem({s}:{s:number}){const scale=[.95,1.65,1.12,1.08][s];return <svg className={`suit-emblem emblem-${s}`} viewBox="0 0 100 100" aria-hidden="true" focusable="false" fill="currentColor"><g transform={`translate(50 52) scale(${scale})`}><Motif s={s}/></g></svg>;}
 /** The four number-two emblems keep their approved suit-specific artwork. */
 function SpecialMotif({s,n}:{s:number,n:number}){
  if(s===0)return <>

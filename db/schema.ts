@@ -5,3 +5,8 @@ export const matchRecords = sqliteTable("match_records", {
  at: integer("at").notNull(), win: integer("win").notNull(), points: integer("points").notNull(),
  size: integer("size").notNull(), result: text("result").notNull()
 });
+export const sharedScores = sqliteTable("shared_scores", {
+ id:text("id").primaryKey(),device:text("device").notNull(),name:text("name").notNull(),
+ mode:text("mode").notNull(),size:integer("size").notNull(),kind:text("kind").notNull(),
+ score:integer("score").notNull(),at:integer("at").notNull(),entryId:text("entry_id").notNull()
+});
