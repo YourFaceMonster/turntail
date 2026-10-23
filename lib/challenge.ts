@@ -10,8 +10,8 @@ export function topScores(rows:HighScore[],mode:HighScore['mode'],size:number,ki
  const seen=new Set<string>();return rows.filter(r=>{if(r.mode!==mode||r.size!==size||r.kind!==kind||seen.has(r.id))return false;seen.add(r.id);return Number.isFinite(r.score)&&Number.isFinite(r.at);}).sort((a,b)=>b.score-a.score||a.at-b.at).slice(0,3);
 }
 export function mergeScores(old:HighScore[],added:HighScore[]):HighScore[]{const all=[...old,...added];return (['single','multi'] as const).flatMap(mode=>[2,3,4].flatMap(size=>(['single','ten'] as const).flatMap(kind=>topScores(all,mode,size,kind))));}
-export function scoreEntries(result:{id:string,at:number,voided?:boolean,players:{delta:number}[],challenge?:Challenge|null},me:number,mode:HighScore['mode'],size:number):HighScore[]{
- const c=result.challenge;if(result.voided||!result.players[me])return [];
+export function scoreEntries(result:{id:string,at:number,voided?:boolean,players:{delta:number}[],challenge?:Challenge|null,stageRun?:unknown},me:number,mode:HighScore['mode'],size:number):HighScore[]{
+ const c=result.challenge;if(result.voided||result.stageRun||!result.players[me])return [];
  const rows:HighScore[]=[{id:`${mode}:round:${result.id}`,mode,size,kind:'single',score:result.players[me].delta,at:result.at}];
  if(c&&c.complete&&c.completed===10&&!c.abandoned&&c.roundIds.includes(result.id))rows.push({id:`${mode}:ten:${c.id}`,mode,size,kind:'ten',score:c.scores[me],at:result.at});return rows;
 }

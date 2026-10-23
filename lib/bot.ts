@@ -220,24 +220,42 @@ function exact(p:Position,w:World,ranked:Candidate[]):{action:BotAction,nodes:nu
  }catch(e){if(e!==stopped)throw e;return null;}
 }
 
-export function analyzeBotDecision(input:BotPosition):BotAnalysis{
- const p=publicPosition(input);inferForcedCards(p);const ctx=context(),forced=finish(p,ctx);
+export function stageBotProfile(level:number){
+ if(!Number.isInteger(level)||level<1||level>10)throw Error('AI 난이도는 1~10 사이여야 해요.');
+ return {level,samples:[0,0,0,2,3,4,5,6,8,10][level-1],plies:[0,0,0,6,10,12,14,16,20,24][level-1],exact:level>=7,scoreRisk:Math.max(0,level-7)};
+}
+function introductoryDecision(p:Position,ctx:Context,level:number):BotAction{
+ const hand=p.players[p.me].hand||[],options=legalOptions(hand,p.trick),immediate=options.find(o=>o.tiles.length===hand.length);
+ if(immediate)return {type:'play',tiles:immediate.tiles};
+ const m=level===2?model(hand,ctx):null;
+ const ranked=options.map(o=>({o,score:o.tiles.length*12-o.tiles.reduce((n,t)=>n+power(t),0)*.08+(m?(m.cost(hand)-m.cost(without(hand,o.tiles)))*18:0)})).sort((a,b)=>b.score-a.score||a.o.id.localeCompare(b.o.id));
+ if(ranked.length)return {type:'play',tiles:ranked[0].o.tiles};
+ const floor=p.stacks.map((s,index)=>({s,index,value:s.lower?hand.filter(t=>t.n===s.lower!.n).length*5+power(s.lower)*.03:0})).filter(s=>s.s.available).sort((a,b)=>b.value-a.value||a.index-b.index);
+ return floor.length?{type:'draw',index:floor[0].index}:{type:'pass'};
+}
+export function analyzeBotDecision(input:BotPosition,level?:number):BotAnalysis{
+ const profile=level===undefined?null:stageBotProfile(level),p=publicPosition(input),ctx=context();
+ if(profile&&profile.level<=2)return {action:introductoryDecision(p,ctx,profile.level),method:'heuristic',samples:0,candidates:legalOptions(p.players[p.me].hand||[],p.trick).length,nodes:0};
+ if(!profile||profile.level>=7)inferForcedCards(p);
+ const forced=finish(p,ctx);
  if(forced)return {action:forced,method:'finish',samples:0,candidates:1,nodes:0};
  const ranked=rankActions(p,ctx);if(!ranked.length)return {action:{type:'pass'},method:'heuristic',samples:0,candidates:0,nodes:0};
+ if(profile&&profile.level===3)return {action:ranked[0].action,method:'heuristic',samples:0,candidates:ranked.length,nodes:0};
  const random=randomFor(p),first=sample(p,random);
- if(first){const solved=exact(p,first,ranked);if(solved)return {...solved,method:'exact',samples:1,candidates:ranked.length};}
+ if(first&&(!profile||profile.exact)){const solved=exact(p,first,ranked);if(solved)return {...solved,method:'exact',samples:1,candidates:ranked.length};}
  const roots=candidates(p,ranked);
  if(!first||roots.length===1||(p.players[p.me].hand?.length||0)>20)return {action:ranked[0].action,method:'heuristic',samples:0,candidates:ranked.length,nodes:0};
- const worlds=[first];const count=p.players.length===2?10:8;
+ const worlds=[first];const count=profile?.samples??(p.players.length===2?10:8);
  for(let i=1;i<count;i++){const w=sample(p,random);if(w)worlds.push(w);}
- const depth=p.players.length*4+4;let nodes=0;
+ const depth=profile?.plies??p.players.length*4+4;let nodes=0;
  const evaluated=roots.map(root=>{let sum=0,squares=0;
   for(const w of worlds){let state=step(w,root.action);
    for(let ply=0;ply<depth&&state.winner===null;ply++){
     const pos=perspective(state),a=finish(pos,ctx)||rankActions(pos,ctx)[0]?.action;if(!a)break;
     state=step(state,a);nodes++;
    }
-   const value=leaf(state,p.me,ctx);sum+=value;squares+=value*value;
+   const risk=profile?.scoreRisk||0,delta=settlement(state,p.me),balance=(input.players[input.me].points||0)+delta;
+   const value=leaf(state,p.me,ctx)+risk*delta*.6-(risk&&balance<=0?400+risk*50:risk*Math.max(0,40-balance)*.5);sum+=value;squares+=value*value;
   }
   const mean=sum/worlds.length,deviation=Math.sqrt(Math.max(0,squares/worlds.length-mean*mean));
   return {root,value:mean-deviation*.10+root.score*.10};
@@ -245,4 +263,4 @@ export function analyzeBotDecision(input:BotPosition):BotAnalysis{
  evaluated.sort((a,b)=>b.value-a.value||b.root.score-a.root.score);
  return {action:evaluated[0].root.action,method:'lookahead',samples:worlds.length,candidates:roots.length,nodes};
 }
-export function chooseStrategicAction(p:BotPosition):BotAction{return analyzeBotDecision(p).action;}
+export function chooseStrategicAction(p:BotPosition,level?:number):BotAction{return analyzeBotDecision(p,level).action;}
