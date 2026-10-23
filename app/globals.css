@@ -420,3 +420,21 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 @media(orientation:portrait){.turntale .title-logo-smooth h1>.title-wordmark-text{font-size:clamp(68px,20vw,85px);letter-spacing:-4px}.turntale .title-content .title-logo-smooth h1{letter-spacing:-4px;padding-right:4px}.wordmark-sparks{height:26px;font-size:11px}.wordmark-sparks>span:nth-child(2){font-size:24px}.wordmark-rule{width:150px;font-size:12px}}
 @media(orientation:portrait) and (max-height:740px){.turntale .title-logo-smooth h1>.title-wordmark-text{font-size:68px}.wordmark-sparks{height:20px;margin-bottom:0}.wordmark-sparks>span:nth-child(2){font-size:21px}.wordmark-rule{font-size:10px;line-height:1;height:10px}}
 @media(orientation:landscape) and (max-height:600px){.turntale .title-logo-smooth h1>.title-wordmark-text{font-size:65px;letter-spacing:-4px}.wordmark-sparks{height:20px;margin:0}.wordmark-sparks>span:nth-child(2){font-size:21px}.wordmark-rule{height:9px;font-size:10px}}
+
+/* 0.3.5 — faithful approved lettering; lead role above a stronger player name. */
+.turntale .title-content .title-logo-approved{width:min(400px,100%);text-align:center}
+.turntale .title-content .title-logo-approved h1{display:block;line-height:0;padding:0;margin:0;text-shadow:none;letter-spacing:0}
+.turntale .title-logo-approved h1>img{display:block;width:100%;height:auto;max-height:150px;object-fit:contain;filter:drop-shadow(0 2px 4px #140e1880)}
+.turntale.active-table .table-notice-lead{gap:5px}
+.table-notice-lead>.notice-lead-label{display:block;font-size:clamp(23px,6vmin,34px);font-weight:900;letter-spacing:.18em;padding-left:.18em;line-height:1.1;color:#eec977;text-shadow:0 2px 0 #54321a,0 0 9px #160d07}
+.table-notice-lead>.notice-leader-name{display:block;font-size:clamp(35px,9vmin,56px);font-weight:900;letter-spacing:.02em;line-height:1.15;color:#fff5d5;text-shadow:0 2px 0 #86552d,0 0 12px #160d07;max-width:100%;overflow-wrap:anywhere}
+.table-notice-lead>p{font-size:clamp(9px,2.5vmin,13px);margin-top:2px;color:#ecdcbd}
+@media(orientation:portrait){.turntale .title-content .title-logo-approved{width:min(320px,100%)}.turntale .title-logo-approved h1>img{max-height:124px}}
+@media(orientation:portrait) and (max-height:740px){.turntale .title-content .title-logo-approved{width:270px;max-width:100%}.turntale .title-logo-approved h1>img{max-height:100px}}
+@media(orientation:landscape) and (max-height:600px){.turntale .title-content .title-logo-approved{width:260px}.turntale .title-logo-approved h1>img{max-height:94px}.table-notice-lead>.notice-lead-label{font-size:22px}.table-notice-lead>.notice-leader-name{font-size:34px}}
+/* Frame the visible alpha artwork directly; transparent file margins do not shrink the logo. */
+.turntale .title-content .title-logo-approved{width:330px;max-width:100%}
+.turntale .title-logo-approved h1>.title-wordmark-crop{display:block;width:100%;height:auto;max-height:none;overflow:hidden;filter:drop-shadow(0 2px 4px #140e1880)}
+@media(orientation:portrait){.turntale .title-content .title-logo-approved{width:280px}.turntale .title-content{padding-top:58px;padding-bottom:58px}}
+@media(orientation:portrait) and (max-height:740px){.turntale .title-content .title-logo-approved{width:230px}.turntale .title-content{padding-top:50px;padding-bottom:38px}}
+@media(orientation:landscape) and (max-height:600px){.turntale .title-content .title-logo-approved{width:210px}}

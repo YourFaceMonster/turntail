@@ -13,7 +13,7 @@ export default function MainMenu(p:Props){return <section className="title-scree
  <button className="menu-profile" onClick={p.profile} aria-label="내 프로필 설정">{p.avatar?<img src={p.avatar} alt=""/>:<UserRound aria-hidden="true"/>}<span>{p.name||'내 프로필'}</span><ChevronRight aria-hidden="true"/></button>
  <div className="title-content">
   <div className="title-crest" aria-hidden="true"><span/><b>✦</b><span/></div>
-  <div className="title-logo title-logo-premium title-logo-smooth"><div className="wordmark-sparks" aria-hidden="true"><span>✦</span><span>✦</span><span>✦</span></div><h1><span className="title-wordmark-text">턴테일</span></h1></div><p className="title-english">TURNTALE</p><div className="wordmark-rule" aria-hidden="true"><span/>✧<span/></div>
+  <div className="title-logo title-logo-premium title-logo-approved"><h1 aria-label="턴테일"><svg className="title-wordmark-crop" viewBox="489 54 1210 613" width="1210" height="613" aria-hidden="true"><image href="/turntale-wordmark-v035.png" x="0" y="0" width="2172" height="724"/></svg></h1></div><p className="title-english">TURNTALE</p><div className="wordmark-rule" aria-hidden="true"><span/>✧<span/></div>
   <p className="title-tagline">한 장의 선택, 새로운 이야기</p>
   <div className="title-suits" aria-label="해 · 별 · 달 · 구름">{[3,1,2,0].map(s=><span key={s} className={`title-suit-${s}`}><SuitEmblem s={s}/></span>)}</div>
   <div className="title-play">
@@ -26,5 +26,5 @@ export default function MainMenu(p:Props){return <section className="title-scree
   <nav className="title-tools" aria-label="메인 메뉴"><button onClick={p.scores}><span><Trophy aria-hidden="true"/></span>기록실</button><button onClick={p.settings}><span><Settings aria-hidden="true"/></span>설정</button></nav>
   <div className="title-ornament" aria-hidden="true"><span/>✧<span/></div>
  </div>
- <small className="title-version">TURNTALE · 0.3.4</small>
+ <small className="title-version">TURNTALE · 0.3.5</small>
  </section>;}
