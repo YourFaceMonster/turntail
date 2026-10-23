@@ -438,3 +438,31 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 @media(orientation:portrait){.turntale .title-content .title-logo-approved{width:280px}.turntale .title-content{padding-top:58px;padding-bottom:58px}}
 @media(orientation:portrait) and (max-height:740px){.turntale .title-content .title-logo-approved{width:230px}.turntale .title-content{padding-top:50px;padding-bottom:38px}}
 @media(orientation:landscape) and (max-height:600px){.turntale .title-content .title-logo-approved{width:210px}}
+
+/* 0.3.6 — readable lead celebration and candle-lit room motion. */
+.table-notice-lead>.notice-lead-label{position:relative;animation:lead-label-arrive .36s cubic-bezier(.18,.85,.28,1.25) both}
+.notice-lead-label:before,.notice-lead-label:after{content:'✦';position:absolute;top:50%;font-size:.48em;line-height:1;color:#ffe3a1;text-shadow:0 0 12px #ffbd62;animation:lead-star-open .65s ease-out both}
+.notice-lead-label:before{right:calc(100% + 15px)}.notice-lead-label:after{left:calc(100% + 15px)}
+.table-notice-lead>.notice-leader-name{position:relative;animation:leader-name-arrive .4s .06s cubic-bezier(.16,.9,.24,1.15) both,leader-name-glow 1.15s .06s ease-out both}
+.table-notice-lead>p{position:relative;animation:leader-detail-arrive .32s .16s ease-out both}
+.table-notice-lead>.notice-lead-burst{position:absolute;left:50%;top:50%;width:min(300px,85%);height:110px;pointer-events:none;border-radius:50%;background:radial-gradient(ellipse,#e7b65738,transparent 68%);animation:lead-burst-open .85s ease-out both}
+@keyframes lead-label-arrive{from{opacity:0;transform:translateY(8px) scale(.72)}65%{opacity:1;transform:translateY(-2px) scale(1.12)}to{opacity:1;transform:none}}
+@keyframes lead-star-open{from{opacity:0;transform:translateY(-50%) scale(.2)}50%{opacity:1;transform:translateY(-50%) scale(1.4)}to{opacity:.8;transform:translateY(-50%) scale(1)}}
+@keyframes leader-name-arrive{from{opacity:0;transform:translateY(12px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes leader-name-glow{0%{color:#fff5d5;text-shadow:0 2px 0 #86552d,0 0 12px #160d07}32%{color:#fffdf3;text-shadow:0 2px 0 #86552d,0 0 13px #ffc96f,0 0 28px #e8a347aa}100%{color:#fff5d5;text-shadow:0 2px 0 #86552d,0 0 10px #e8b16166,0 0 12px #160d07}}
+@keyframes leader-detail-arrive{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes lead-burst-open{0%{opacity:0;transform:translate(-50%,-50%) scale(.45)}45%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.35)}}
+/* Flame, light and cast shadow share a phase. Irregular keyframes avoid a mechanical pulse. */
+.candle-flame{animation:candle-dance 2.3s var(--candle-delay,0s) ease-in-out infinite;filter:drop-shadow(0 0 9px #ffb249)}
+.candle-light-wash,.table-candle-reflection{transform-box:fill-box;transform-origin:center;mix-blend-mode:screen;animation:candle-light-dance 2.3s var(--candle-delay,0s) ease-in-out infinite}
+.candle-cast-shadow{transform-box:view-box;transform-origin:0 0;animation:candle-shadow-dance 2.3s var(--candle-delay,0s) ease-in-out infinite;opacity:.45}
+.table-candle-reflection{opacity:.4}
+@keyframes candle-dance{0%,100%{transform:rotate(-10deg) scale(.88,1.12);opacity:.88}18%{transform:rotate(9deg) scale(1.1,.88);opacity:1}38%{transform:rotate(-6deg) scale(.9,1.2);opacity:.79}57%{transform:rotate(12deg) scale(1.07,.94);opacity:1}73%{transform:rotate(-11deg) scale(.86,1.08);opacity:.84}87%{transform:rotate(5deg) scale(1.02,1.16);opacity:.98}}
+@keyframes candle-light-dance{0%,100%{opacity:.54;transform:translate(-5px,2px) scale(.95)}18%{opacity:.9;transform:translate(7px,-2px) scale(1.08)}38%{opacity:.45;transform:translate(-6px,3px) scale(.94)}57%{opacity:.85;transform:translate(8px,-1px) scale(1.05)}73%{opacity:.5;transform:translate(-5px,2px) scale(.96)}87%{opacity:.82;transform:translate(4px,-2px) scale(1.04)}}
+@keyframes candle-shadow-dance{0%,100%{opacity:.4;transform:rotate(2deg) skewY(1.5deg) scaleX(1.02)}18%{opacity:.65;transform:rotate(-3deg) skewY(-2deg) scaleX(.96)}38%{opacity:.32;transform:rotate(3deg) skewY(2deg) scaleX(1.04)}57%{opacity:.6;transform:rotate(-2.5deg) skewY(-1.5deg) scaleX(.98)}73%{opacity:.4;transform:rotate(2deg) skewY(1deg)}87%{opacity:.56;transform:rotate(-1.5deg) skewY(-1deg)}}
+@media(prefers-reduced-motion:reduce){
+ .candle-flame,.candle-light-wash,.candle-cast-shadow,.table-candle-reflection,.table-notice-lead>.notice-lead-label,.notice-lead-label:before,.notice-lead-label:after,.table-notice-lead>.notice-leader-name,.table-notice-lead>p,.table-notice-lead>.notice-lead-burst{animation:none!important}
+ .candle-light-wash{opacity:.5}.candle-cast-shadow{opacity:.35}.table-candle-reflection{opacity:.4}.notice-lead-label:before,.notice-lead-label:after{transform:translateY(-50%)}.table-notice-lead>.notice-lead-burst{display:none}
+}
+.turntale .title-screen{background-image:url('/turntale-room-v036.png')}
+@media(orientation:portrait){.turntale .title-screen{background-image:url('/turntale-room-portrait-v036.png')}}
