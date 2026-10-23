@@ -42,3 +42,13 @@
 - Offline single-player personal bests sync on entry, new results, profile rename and board opening; failed uploads retain local records for retry. These are bounded device-reported records, not an anti-cheat system. Existing multiplayer challenge records are read directly from server settlements and need no reconnect/backfill. Voided or abandoned matches do not rank. Public output contains only nickname, score, achievement time, rank and self marker; profile tokens, device keys, hands and match bodies are not returned.
 - Added schema-only shared_scores migration. Live data is preserved. Real SQLite + real route regression tests cover cross-device visibility, negative scores, deduplication, best-per-player, ties, pagination, own rank, old multiplayer records, void exclusion, invalid uploads and origin checks. Existing pacing, selection/challenge, layout and online-timeout API tests pass.
 - Preview visual/touch QA remains unavailable after the browser policy denial; no alternate browser surface was used to bypass that restriction.
+
+## TURNTALE 0.3.3 — 2026-10-23
+
+- Restored the original illustrated tabletop composition and viewing angles in both orientations. Removed the separate flat foreground tile controls; adjusted only the illustrated tile sizes to make all four appear like the same tall rectangular pieces while retaining perspective, bevels, shadows and original grouping.
+- Added a gently darkened inset background to the hand area, with a subtle divider. Tile faces stay legible and full color during the opening review.
+- Draw timing now has exactly 800ms at center, retaining 140ms entry and 180ms collection. Total CSS flight 1120ms, authoritative/local guard 1200ms. Reduced-motion flights use the same updated total.
+- Replaced CSS letter effects with a dedicated transparent champagne-gold Korean wordmark reading “턴테일”, with sculpted lettering and restrained leaf flourishes. Accessible heading text is supplied by the image alt label.
+- Built-in ImageGen assets: `public/turntale-room-v033.png`, `public/turntale-room-portrait-v033.png`, `public/turntale-wordmark-v033.png`.
+- Background prompt: preserve the original room, camera, four angled illustrated rectangular tiles and their original groups; minimally balance their visible sizes; preserve everything else with no text or UI. Logo prompt: exact Korean text “턴테일”, refined fantasy storybook calligraphic serif strokes in champagne gold and bronze bevels, restrained leaf flourishes, tightly framed 3:1 transparent wordmark, no other text/background.
+- TypeScript, pacing and online-turn deadline/privacy regression suites passed. Artwork inspected directly; final browser layout/touch QA remains limited by the existing browser access policy denial.
