@@ -55,6 +55,7 @@ export function lowestHandLead(players:Player[]){
 }
 export const REVIEW_MS=1000;
 export const DEAL_REVIEW_MS=3000;
+export const LEAD_REVIEW_MS=1200; // Show the new lead after the last draw has landed.
 export const PLAY_REVIEW_MS=1600; // Flight + one second to read the play.
 export const DRAW_TRAVEL_MS=1200; // 140ms to centre + 800ms review + 180ms collect, with a small guard.
 export const TURN_MS=30000,FINAL_TURN_MS=60000;
@@ -143,7 +144,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
  }else throw Error("지원하지 않는 동작이에요.");
  if(!automatic)p.timeouts=0;
  g.turn=(who+1)%g.players.length;
- if(g.lastBy===g.turn){g.rally=0;g.trick=[];g.lastBy=null;note(g,`${g.players[g.turn].name}이 선을 잡았습니다.`);}
+ if(g.lastBy===g.turn){g.rally=0;g.trick=[];g.lastBy=null;g.turnReadyAt=Math.max(now,g.turnReadyAt||0)+LEAD_REVIEW_MS;note(g,`${g.players[g.turn].name}이 선을 잡았습니다.`);}
  scheduleTurn(g,now);
 }
 export function view(g:Game,token:string){
