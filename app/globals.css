@@ -603,9 +603,11 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 .entry-room-moonlight{background:radial-gradient(ellipse at 58% 12%,#8aace018,transparent 55%);animation:entry-candle-breathe 8s -3s ease-in-out infinite reverse}
 @keyframes entry-candle-breathe{0%,100%{opacity:.4}30%{opacity:.9}52%{opacity:.55}75%{opacity:1}}
 .entry-camera{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 50%;transform:rotateX(62deg) scale3d(var(--camera-overview),var(--camera-overview),var(--camera-overview))}
-.entry-table{position:absolute;left:calc(50% - var(--table-diameter)/2);top:calc(50% - var(--table-diameter)/2);width:var(--table-diameter);height:var(--table-diameter);border:3px solid #987346;border-radius:50%;box-shadow:inset 0 0 0 2px #d6ad6940,0 12px 0 #29190f,0 20px 30px #08050377;isolation:isolate;transform:none;animation:none;transition:none}
-.entry-table .table-surface{box-shadow:inset 0 0 60px #170b0860}
-.entry-table .table-surface-rim{inset:4%;border-radius:50%;box-shadow:none}
+.entry-table{position:absolute;left:calc(50% - var(--table-diameter)/2);top:calc(50% - var(--table-diameter)/2);width:var(--table-diameter);height:var(--table-diameter);border:3px solid #65462f;border-radius:50%;box-shadow:inset 0 0 0 1px #a67c4d24,0 10px 0 #291b13,0 18px 26px #08050366;isolation:isolate;transform:none;animation:none;transition:none}
+/* A matte walnut top matches the candlelit room; the live game keeps its own finish. */
+.entry-table .table-surface{background:radial-gradient(ellipse at 14% 30%,#b47a421c,transparent 58%),repeating-linear-gradient(94deg,#d2a47705 0,#d2a47705 1px,transparent 1px,transparent 7px),linear-gradient(150deg,#513727,#402b20 68%,#332319);box-shadow:inset 0 0 75px #130b0866}
+.entry-table .table-surface-rim{inset:4%;border:1px solid #a4835e35;border-radius:50%;box-shadow:none}
+.entry-table .table-surface-light{background:radial-gradient(ellipse at 10% 22%,#d2914e14,transparent 47%)}
 .entry-deck{position:absolute;inset:0;z-index:4;opacity:1;pointer-events:none;transform-style:preserve-3d;contain:layout style}
 .deal-flying-card{transform-style:preserve-3d}
 .entry-approach .entry-view-rig,.entry-shuffle .entry-view-rig{animation:observer-walk-in var(--camera-ms) cubic-bezier(.25,.45,.3,1) both;will-change:transform}
