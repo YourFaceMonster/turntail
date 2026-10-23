@@ -56,13 +56,11 @@ export default function TileFace({tile:t,small=false}:{tile:Tile,small?:boolean}
   <g transform={special?'translate(50 91) scale(.88)':'translate(50 106) scale(.60)'} fill={ink} paintOrder="stroke" strokeLinejoin="round"><g stroke="#fff1d5" strokeWidth="8" aria-hidden="true"><StageMotif stage={stage} s={t.s} outline={{color:"#fff1d5",width:8}}/></g><g stroke="#111720" strokeWidth="5" aria-hidden="true"><StageMotif stage={stage} s={t.s} outline={{color:"#111720",width:5}}/></g><g stroke={ink} strokeWidth="1"><StageMotif stage={stage} s={t.s}/></g></g></svg></span>;
  }
  return <span data-tile-id={t.id} data-number={t.n} data-suit={t.s} className={`tile face suit${t.s} ${small?'small':''} ${special?`special-${t.n===1?'one':'two'}`:''}`} style={{color:ink}}>
- <svg className="tile-art classic-tile-face" viewBox="0 0 100 132" aria-hidden="true" focusable="false" fill={ink}><ClassicTileOrnament/><g stroke={t.s===2?'#876300':undefined} strokeWidth={t.s===2?1.2:undefined} paintOrder="stroke fill">
- {special?<>
-  <text className="special-number" x="8" y="43" fontFamily="Arial,sans-serif" fontWeight="800" fontSize="44">{t.n}</text>
-  <g className="special-motif" data-motif={`${t.s}:${t.n}`} transform={`translate(50 ${t.s===2?88:90}) scale(${t.s===2?.66:.72})`}><SpecialMotif s={t.s} n={t.n}/></g>
- </>:<>
-  <text className="tile-number" x="49" y="79" textAnchor="middle" fontFamily="Arial,sans-serif" fontWeight="900" fontSize={t.n>9?66:78} letterSpacing="-4">{t.n}</text>
-  <g transform="translate(50 108) scale(.37)"><Motif s={t.s}/></g>
- </>}
+ <svg className="tile-art classic-tile-face" viewBox="0 0 100 132" aria-hidden="true" focusable="false" fill={ink} style={{color:ink}}>
+ <g opacity=".1" stroke="#86734b" strokeWidth=".5">{Array.from({length:12},(_,i)=><path key={i} d={`M${(i*31)%97} ${97+(i*13)%30}l${2+i%3} -1`}/>)}</g>
+ <ClassicTileOrnament s={t.s} special={special}/>
+ <g stroke={t.s===2?'#876300':undefined} strokeWidth={t.s===2?.8:undefined} paintOrder="stroke fill">
+ <text className={special?'special-number':'tile-number'} x="45" y="65" textAnchor="middle" fontFamily="Georgia,serif" fontWeight="700" fontSize={t.n>9?51:60} letterSpacing={t.n>9?-3:-1}>{t.n}</text>
+ <g className="engraved-suit-mark" data-motif={`${t.s}:${t.n}`} transform={special?'translate(52 104) scale(.42)':'translate(72 108) scale(.31)'}>{special?<SpecialMotif s={t.s} n={t.n}/>:<Motif s={t.s}/>}</g>
  </g></svg></span>;
 }

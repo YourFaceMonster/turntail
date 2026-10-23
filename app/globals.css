@@ -792,3 +792,68 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 .entry-apron{position:absolute;border-radius:50%;transform:translateZ(-19px);background:linear-gradient(120deg,#775136,#271c13 70%);border:4px solid #2b2017;backface-visibility:hidden}
 .entry-table{box-shadow:inset 0 0 0 2px #c2a27455;border:3px solid #63482d}
 .entry-game-in .entry-world{animation:entry-scene-blend var(--curtain-ms) ease both}
+
+/* 0.5.4: a landing has three distinct weights. Rotated layouts keep their base transform. */
+.turntale[data-impact="single"] .trick-tiles{animation:single-tile-impact .2s ease-out}
+.turntale[data-impact="power"]{animation:viewport-power-impact .32s ease-out}
+.turntale[data-impact="finish"]{animation:viewport-finish-impact .62s ease-out}
+@keyframes single-tile-impact{0%,100%{translate:0 0}25%{translate:0 1.5px}55%{translate:0 -1px}80%{translate:0 .5px}}
+@keyframes viewport-power-impact{0%,100%{translate:0 0}15%{translate:-3px 2px}32%{translate:3px -2px}50%{translate:-2px 1px}72%{translate:1px -.5px}}
+@keyframes viewport-finish-impact{0%,100%{translate:0 0}9%{translate:0 5px}20%{translate:-5px -3px}32%{translate:4px 2px}47%{translate:-3px -2px}63%{translate:2px 1px}80%{translate:-1px 0}}
+.turntale[data-impact="single"] .felt.slam-impact{animation:none!important}
+.classic-tile-face{color:inherit}.classic-tile-face .tile-number,.classic-tile-face .special-number{font-variant-numeric:lining-nums}
+/* Art and lighting describe the destination; the chosen skin describes the tabletop. */
+.entrance-environment{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.environment-library{background:#151d22 url('/turntale-empty-room.webp') center center/cover no-repeat}
+.table-entrance>.entry-room{background:#17252b!important;opacity:1!important;animation:none!important}
+.entry-room::after{content:'';position:absolute;inset:0;background:linear-gradient(#090e1720,transparent 48%,#07111655)}
+.entry-ground{background-color:#323c36;mask-image:radial-gradient(ellipse,#000 25%,#000a 60%,transparent 76%)}
+.table-entrance:not([data-stage]) .entry-ground{background-image:url('/turntale-walnut-051.webp');background-size:1254px 1254px;filter:brightness(.55)}
+.entry-wall{visibility:hidden}
+.environment-water{animation:environment-flow 2.8s linear infinite}.environment-ember{animation:environment-glimmer 3.8s ease-in-out infinite alternate}
+@keyframes environment-flow{to{stroke-dashoffset:-60}}@keyframes environment-glimmer{to{opacity:.2;translate:0 -14px}}
+/* Character busts are upright beside their chairs in the same camera space. */
+.entry-world-company{position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none}
+.entry-world-seat{position:absolute;transform-origin:50% 100%;transform:translateZ(-12px) rotateX(-90deg);transform-style:preserve-3d;text-align:center;backface-visibility:visible}
+.world-chair{position:absolute;inset:12% 4% -13%;border:7px solid #674c32;border-radius:45% 45% 12% 12%;background:linear-gradient(90deg,#151f20,#374b48,#142126);box-shadow:inset 0 0 0 2px #bfa26977,0 6px 10px #0005}
+.world-companion-body{position:absolute;inset:42% 12% 0;border-radius:45% 45% 18% 18%;background:linear-gradient(90deg,#203038,var(--seat-color),#2b3540);border:1px solid #d6c39655}
+.world-companion-body>i,.world-companion-body>b{position:absolute;top:35%;width:50%;height:18%;border-radius:30px;background:var(--seat-color);border-bottom:2px solid #c3b8a555;rotate:20deg;left:-9%}.world-companion-body>b{left:auto;right:-9%;rotate:-20deg}
+.world-companion-portrait{position:absolute;top:2%;left:16%;width:68%;aspect-ratio:1;overflow:hidden;border-radius:48% 48% 40% 40%;box-shadow:0 6px 12px #0007;mask-image:linear-gradient(#000 86%,transparent)}
+.world-companion-portrait>.stage-portrait{display:block!important;position:absolute!important;inset:0;width:100%!important;height:100%!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+.world-companion-portrait>img{width:100%;height:100%;object-fit:cover}.world-companion-portrait>span:not(.stage-portrait){display:grid;place-items:center;width:100%;height:100%;font-size:clamp(65px,9vw,120px);background:radial-gradient(#d3c8a9,#53635c)}
+.world-held-tiles{position:absolute;left:25%;right:25%;top:65%;height:23%;display:flex;justify-content:center;perspective:300px}.world-held-tiles>.tile{width:38%!important;height:100%!important;flex-shrink:1;box-shadow:0 2px 4px #0007;rotate:-10deg}.world-held-tiles>.tile:nth-child(2){rotate:0deg;translate:0 -3px}.world-held-tiles>.tile:last-child{rotate:10deg}
+.entry-world-seat>strong,.entry-world-seat>small{position:absolute;left:-10%;right:-10%;top:91%;font-size:clamp(12px,1.4vw,20px);color:#fff1cd;text-shadow:0 2px 3px #000}.entry-world-seat>small{top:104%;font-size:clamp(10px,1vw,14px);color:#d0d2c3}
+.entry-shuffle .entry-world-company,.entry-deal .entry-world-company,.entry-settle .entry-world-company,.entry-game-in .entry-world-company{visibility:hidden}
+.entry-return-note{bottom:5%;background:linear-gradient(90deg,transparent,#14202bdd,transparent);padding:16px 25px;border-radius:30px}
+/* Saved stacks are solids with an unprinted edge, including the covered lower layer. */
+.entry-saved-tile{transform-style:preserve-3d}
+.saved-top{position:absolute;inset:0;transform:translateZ(var(--saved-depth));transform-style:preserve-3d}
+.saved-top>.tile{width:100%!important;height:100%!important;display:block;overflow:hidden;border-radius:7px;border:1px solid #e5d9bc;padding:0;background:#fffdf5;box-shadow:inset 0 1px 0 #fff}
+.saved-top>.tile.back{background:#12513d;color:#dfc28a}.saved-top>.stage-material-tile{background:transparent}
+.saved-top .tile-art,.saved-top .tile>svg{width:100%;height:100%;display:block}
+.saved-side{position:absolute;display:block;background:repeating-linear-gradient(#b3a98e 0,#eee3c9 1px,#c5baa0 var(--saved-layer));border:1px solid #8b816b88;box-shadow:inset 0 1px 1px #fff6;backface-visibility:visible}
+.saved-side-bottom{left:0;top:100%;width:100%;height:var(--saved-depth);transform-origin:50% 0;transform:rotateX(90deg)}
+.saved-side-left,.saved-side-right{top:0;width:var(--saved-depth);height:100%;transform-origin:0 50%;transform:rotateY(-90deg)}.saved-side-left{left:0}.saved-side-right{left:100%;filter:brightness(.8)}
+.entry-game-in .saved-top{animation:saved-depth-settle .5s ease-out both}
+@keyframes saved-depth-settle{to{transform:translateZ(0)}}
+/* The round surface is permanent. UI is revealed over it before the entrance leaves. */
+.live-table-scene{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:#17252b}
+.live-table-scene>.entrance-environment{opacity:.65}
+.live-round-table{position:absolute;border-radius:50%;overflow:hidden;border:3px solid #63482d;box-shadow:0 16px 0 #271b13,0 28px 35px #0008}
+.turntale.active-table{z-index:2}.turntale.table-v211.active-table .play-column>.table-surface{display:none!important}
+.turntale.table-v211.active-table .play-column{background:transparent!important;border-color:#d0b4824d;box-shadow:inset 0 0 0 1px #d6ad691c!important}
+.turntale[data-entrance="game-in"]{z-index:10001}
+.entry-game-in .entry-table,.entry-game-in .entry-world,.entry-game-in>.entry-room,.entry-game-in .entry-edge-shade{animation:none!important;opacity:1!important}
+.entry-game-in .entry-saved-table{animation:entry-saved-handoff var(--curtain-ms) linear both}
+@keyframes entry-saved-handoff{0%,20%{opacity:1}58%,100%{opacity:0}}
+.turntale[data-entrance="game-in"] .play-column{animation:table-ui-reveal .6s ease-out both}
+.turntale[data-entrance="game-in"] .opponents,.turntale[data-entrance="game-in"] .room-bar,.turntale[data-entrance="game-in"]>.topbar{animation:table-ui-reveal .5s .12s ease-out both}
+.turntale[data-entrance="game-in"] .hand-heading,.turntale[data-entrance="game-in"] .action-bar,.turntale[data-entrance="game-in"] .hand-tools,.turntale[data-entrance="game-in"] .my-score{animation:table-ui-reveal .5s .28s ease-out both}
+@keyframes table-ui-reveal{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.turntale[data-impact],.turntale[data-impact] .trick-tiles,.environment-water,.environment-ember{animation:none!important;translate:0 0}.turntale[data-entrance="game-in"] *{animation:none!important}}
+.entry-approach .entry-world-company{animation:world-seats-settle var(--camera-ms) linear both}
+@keyframes world-seats-settle{0%,72%{opacity:1}97%,100%{opacity:0}}
+.world-held-tiles{animation:companion-consider 2.6s ease-in-out infinite alternate}
+@keyframes companion-consider{from{transform:rotate(-2deg) translateY(0)}to{transform:rotate(2deg) translateY(-3px)}}
+@media(prefers-reduced-motion:reduce){.world-held-tiles{animation:none}}
+.live-round-table{isolation:isolate}

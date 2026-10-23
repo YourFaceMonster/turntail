@@ -10,6 +10,10 @@ import TileFace from './TileFace';
 import TableSurface from './TableSurface';
 import EntranceGpuTiles from './EntranceGpuTiles';
 import EntranceWorld from './EntranceWorld';
+import EntranceEnvironment from './EntranceEnvironment';
+import EntranceSeats from './EntranceSeats';
+import EntranceSavedTile from './EntranceSavedTile';
+import {tableCircle} from '../../lib/table-world';
 import {observerCameraFrames} from '../../lib/entrance-camera';
 import {planShuffle,frameShuffle,overviewScale,shuffleDepth,shuffleFrameIndices,shuffleKeyframes,shuffleTransform,type ShuffleScene} from '../../lib/shuffle-motion';
 import {matchShuffleTracks,planDealFlights,dealKeyframes,opponentExit} from '../../lib/deal-motion';
@@ -25,9 +29,10 @@ function GameEntrance({company,tableSet,stage,phase,resume,reduced,visible:pageV
  const shuffleSeed=useRef(0),measuredKey=useRef(''),cardElements=useRef<(HTMLDivElement|null)[]>([]),running=useRef<Animation[]>([]);
  const animationPhase=useRef(''),cameraElement=useRef<HTMLDivElement>(null),cameraMotion=useRef<Animation|null>(null);
  const callbacks=useRef({onPrepared,onFallback});callbacks.current={onPrepared,onFallback};
- const diameter=resume&&savedBounds?Math.hypot(savedBounds.width,savedBounds.height)+180:(scene?.width??Math.max(screen.width,screen.height)*1.35)+32;
+ const circle=savedBounds?tableCircle(savedBounds,screen.width,screen.height):null;
+ const diameter=circle?.diameter??(scene?.width??Math.max(screen.width,screen.height)*1.35)+32;
  const overview=overviewScale({width:diameter-32,height:diameter-32},screen.width,screen.height);
- const worldX=resume&&savedBounds?savedBounds.left+savedBounds.width/2:screen.width/2,worldY=resume&&savedBounds?savedBounds.top+savedBounds.height/2:screen.height/2;
+ const worldX=circle?.cx??screen.width/2,worldY=circle?.cy??screen.height/2;
  useLayoutEffect(()=>{
   if(phase!=='approach'||reduced||!cameraElement.current)return;
   const duration=entranceDuration('approach',resume),motion=cameraElement.current.animate(observerCameraFrames(overview,duration),{duration,easing:'linear',fill:'both'});
@@ -43,7 +48,7 @@ function GameEntrance({company,tableSet,stage,phase,resume,reduced,visible:pageV
  useEffect(()=>{
   if(!screen.width)return;
   let cancelled=false;setAssetsReady(false);
-  const paths=['/turntale-tile-back-gold.svg','/turntale-walnut-051.webp',...(stage||tableSet?['/turntale-stage-portraits.webp']:[]),...(tableSet?['/turntale-stage-materials-v2.webp']:[])];
+  const paths=[...(!stage?['/turntale-empty-room.webp']:[]),'/turntale-tile-back-gold.svg','/turntale-walnut-051.webp',...(stage||tableSet?['/turntale-stage-portraits.webp']:[]),...(tableSet?['/turntale-stage-materials-v2.webp']:[])];
   void Promise.all(paths.map(src=>new Promise<void>(resolve=>{const finish=()=>{clearTimeout(timer);resolve();},timer=setTimeout(finish,6000),img=new Image();img.onload=()=>{void img.decode().catch(()=>{}).then(finish);};img.onerror=finish;img.src=src;}))).then(()=>{if(!cancelled)setAssetsReady(true);});
   return()=>{cancelled=true;};
  },[screen.width>screen.height,!!screen.width,stage,tableSet]);
@@ -87,7 +92,7 @@ function GameEntrance({company,tableSet,stage,phase,resume,reduced,visible:pageV
       const style=getComputedStyle(document.querySelector(row.item.selector)!);
       row.finish={'--finish-bg':style.background,'--finish-border':style.border,'--finish-radius':style.borderRadius,'--finish-shadow':style.boxShadow};
      }
-     measuredKey.current=layoutKey;setLandings(rows);return;
+     measuredKey.current=layoutKey;setSavedBounds({left:tableRect.left,top:tableRect.top,width:tableRect.width,height:tableRect.height});setLandings(rows);return;
     }
    }catch{}
    if(++attempt<90)frame=requestAnimationFrame(measure);
@@ -160,12 +165,13 @@ function GameEntrance({company,tableSet,stage,phase,resume,reduced,visible:pageV
 
  const curtain=phase==='menu-out'?ENTRANCE_MS['menu-out']:phase==='game-in'?entranceDuration('game-in',resume):360;
  return createPortal(<StageVisuals stage={tableSet||undefined}><div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${gpuStatus==='ready'?'entry-gpu-ready':''}`} aria-hidden="true" data-stage={stage} data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--stage-accent':stage?stagePalette(stage).accent:undefined,'--stage-side':tableSet?MATERIAL_COLORS[tableSet-1]:undefined,'--camera-ms':`${entranceDuration('approach',resume)}ms`,'--camera-far':`${(1-1/Math.max(.001,overview))*1000}px`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--curtain-ms':`${curtain}ms`} as CSSProperties}>
-  <div className="entry-room"/>
+  <div className="entry-room"><EntranceEnvironment stage={stage}/></div>
   <div className="entry-view-rig">
   <div className="entry-camera" ref={cameraElement}>
   <EntranceWorld diameter={diameter} cx={worldX} cy={worldY}/>
-  <div className="entry-table" style={resume&&savedBounds?{left:savedBounds.left+savedBounds.width/2-diameter/2,top:savedBounds.top+savedBounds.height/2-diameter/2,width:diameter,height:diameter,borderRadius:"50%"}:undefined}><TableSurface stage={tableSet||undefined} withRim/></div>
-  {resume&&<div className="entry-saved-table">{savedLandings.map(({item,target:t})=><div key={item.key} className="entry-saved-tile" data-saved-key={item.key} style={{left:t.x-t.width/2,top:t.y-t.height/2,width:t.width,height:t.height,transform:`rotate(${t.angle}deg)`}}>{item.back?<TileBack/>:item.tile?<TileFace tile={item.tile}/>:null}</div>)}</div>}
+  <EntranceSeats company={company} diameter={diameter} cx={worldX} cy={worldY}/>
+  <div className="entry-table" style={{left:worldX-diameter/2,top:worldY-diameter/2,width:diameter,height:diameter,borderRadius:"50%"}}><TableSurface stage={tableSet||undefined} withRim/></div>
+  {resume&&<div className="entry-saved-table">{savedLandings.map(({item,target})=><EntranceSavedTile key={item.key} item={item} target={target}/>)}</div>}
   {!resume&&gpuStatus==='fallback'&&scene&&landings.length===60&&<div className="entry-deck">{cards.map(({landing,width:tileW,height:tileH,poses,depth},i)=>{
    const t=landing.target,kind=landing.item.kind;
    return <div key={i} ref={el=>{cardElements.current[i]=el;}} className={`deal-flying-card deal-${kind}`} style={{width:tileW,height:tileH,'--start-transform':shuffleTransform(poses![0],tileW,tileH,depth,scale,screen.width/2,screen.height/2),'--tile-depth':`${depth}px`,'--target-angle':`${t.angle}deg`,'--target-w':`${t.width}px`,'--target-h':`${t.height}px`,'--end-left':`${t.x-t.width/2}px`,'--end-top':`${t.y-t.height/2}px`,...landing.finish,'--flip-delay':`${ENTRANCE_MS.deal*.82}ms`,zIndex:i+1} as CSSProperties}>
@@ -177,7 +183,7 @@ function GameEntrance({company,tableSet,stage,phase,resume,reduced,visible:pageV
   </div>
   </div>
   {!resume&&scene&&cards.length===60&&<EntranceGpuTiles cards={cards} routes={dealRoutes} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
-  {resume&&<div className="entry-reunion"><div className="entry-company">{company.map((p,i)=><div className="entry-companion" key={p.name+i} style={{'--seat-delay':`${i*180}ms`} as CSSProperties}><div className="entry-companion-face">{p.avatar?.startsWith('stage-portrait:')?<StagePortrait index={Number(p.avatar.split(':')[1])}/>:p.avatar?<img src={p.avatar} alt=""/>:<span>{['🦉','🐯','🐼'][i]}</span>}</div><strong>{p.name}</strong><small>{p.points}점 · {p.count}장</small><div className="entry-companion-hand">{Array.from({length:Math.min(3,p.count)},(_,n)=><TileBack key={n}/>)}</div></div>)}</div><div className="entry-return-note"><span>WELCOME BACK</span><strong>{stage?`${stageTheme(stage).name}의 테이블`:'익숙한 테이블로 돌아왔어요'}</strong><small>상대들이 기다리고 있어요. 저장된 승부를 이어갑니다.</small></div></div>}
+  <div className="entry-reunion"><div className="entry-return-note"><span>{resume?'WELCOME BACK':`${company.length+1} PLAYERS · TAKE YOUR SEAT`}</span><strong>{stage?`${stageTheme(stage).name}의 테이블`:resume?'익숙한 테이블로 돌아왔어요':'달빛 서재의 작은 승부'}</strong><small>{resume?'자리에 놓인 패 그대로, 승부를 이어갑니다.':'테이블에 둘러앉아 새로운 승부를 시작합니다.'}</small></div></div>
   <div className="entry-edge-shade"/>
   <div className="entry-curtain"/>
  </div></StageVisuals>,document.body);
