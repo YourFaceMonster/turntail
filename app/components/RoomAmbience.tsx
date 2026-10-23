@@ -19,10 +19,11 @@ function CandleLight({id,x,y,r,delay=0,scale=1}:{id:string,x:number,y:number,r:n
  </g>;
 }
 function CastleLights({id,portrait=false}:{id:string,portrait?:boolean}){
- const windows=portrait?[[858,278,3],[873,278,3],[868,310,4],[804,334,3],[837,379,4],[847,378,3],[756,364,2],[655,430,5],[842,441,3],[872,527,5]]:[[1499,198,3],[1515,198,3],[1513,230,4],[1440,249,3],[1468,294,3],[1483,294,3],[1359,278,2],[1206,340,5],[1494,354,4],[1526,445,6]];
- return <g className="castle-lights">{windows.map(([x,y,r],i)=><g key={i} transform={`translate(${x} ${y})`}>
-  <g className="castle-window-light" style={{'--light-delay':`${i*-.83}s`,'--light-duration':`${3.7+(i%4)*.9}s`} as CSSProperties}>
-   <ellipse rx={r*5} ry={r*6} fill={`url(#${id}light)`}/><rect x={-r*.55} y={-r} width={r*1.1} height={r*2.2} rx={r*.3} fill="#fff1a8"/>
+ const windows=portrait?[[858,278,3],[873,278,3],[868,310,4],[804,334,3],[837,379,4],[847,378,3],[756,364,2],[655,430,5],[842,441,3],[872,527,5],[720,447,3],[756,447,2],[787,443,2],[803,548,3],[834,552,3]]:[[1499,198,3],[1515,198,3],[1513,230,4],[1440,249,3],[1468,294,3],[1483,294,3],[1359,278,2],[1206,340,5],[1494,354,4],[1526,445,6],[1324,354,4],[1366,354,2],[1406,353,2],[1428,460,3],[1387,489,4]];
+ return <g className="castle-lights">{windows.map(([x,y,r],i)=><g key={i} transform={`translate(${x} ${y})`} style={{'--light-delay':`${i*-.83}s`,'--light-duration':`${3.7+(i%4)*.9}s`} as CSSProperties}>
+  <rect className="castle-window-shade" x={-r*1.1} y={-r*1.6} width={r*2.2} height={r*3.2} rx={r*.5} fill="#142039"/>
+  <g className="castle-window-light">
+   <ellipse rx={r*7} ry={r*6} fill={`url(#${id}light)`}/><rect x={-r*.55} y={-r} width={r*1.1} height={r*2.2} rx={r*.3} fill="#fff1a8"/>
   </g>
  </g>)}</g>;
 }

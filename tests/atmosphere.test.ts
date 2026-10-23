@@ -13,10 +13,13 @@ for(const invalid of [[],[1],[0,1],[NaN,1],[-1,2],[1.5,2]])assert.equal(endgameL
 function sequence(resume:boolean){let phase:EntrancePhase='menu-out';const seen:EntrancePhase[]=[];for(let i=0;i<10&&phase!=='idle';i++){seen.push(phase);phase=nextEntrance(phase,resume);}assert.equal(phase,'idle');return seen;}
 const fresh=sequence(false),resume=sequence(true);
 assert.ok(fresh.indexOf('approach')<fresh.indexOf('shuffle'));
-assert.ok(fresh.indexOf('shuffle')<fresh.indexOf('settle'));
+assert.ok(fresh.indexOf('shuffle')<fresh.indexOf('prepare'));
+assert.ok(fresh.indexOf('prepare')<fresh.indexOf('deal'));
+assert.ok(fresh.indexOf('deal')<fresh.indexOf('settle'));
+assert.equal(resume.includes('prepare'),false);assert.equal(resume.includes('deal'),false);
 assert.equal(resume.includes('shuffle'),false,'a saved hand is not visually redealt');
 assert.equal(fresh.at(-1),'game-in');assert.equal(resume.at(-1),'game-in');
-assert.ok(fresh.reduce((sum,p)=>sum+ENTRANCE_MS[p],0)<4000,'new game entrance stays under four seconds');
+assert.ok(fresh.reduce((sum,p)=>sum+ENTRANCE_MS[p],0)<6000,'full 60-tile deal stays under six seconds excluding layout measurement');
 const g=room('INTRO',player('나'),true,2);g.players.push(player('달빛',true));const now=100000;start(g,now+ENTRANCE_MS['game-in']);
 assert.equal(g.turnReadyAt,now+ENTRANCE_MS['game-in']+DEAL_REVIEW_MS);
 assert.throws(()=>assertTurnReady(g,now+ENTRANCE_MS['game-in']+DEAL_REVIEW_MS-1));

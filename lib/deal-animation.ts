@@ -1,0 +1,26 @@
+import type {Tile} from './game';
+export type DealView={me:number,players:{count:number,hand?:Tile[]}[],stacks:{lowerPresent:boolean,upper:boolean}[]};
+export type DealItem={key:string,kind:'own'|'opponent'|'lower'|'upper',selector:string,tile?:Tile};
+/** Only the local player's faces are allowed in the animation plan. */
+export function dealPlan(game:DealView):DealItem[]{
+ const items:DealItem[]=[];
+ const rounds=Math.max(...game.players.map(p=>p.count));
+ for(let n=0;n<rounds;n++)for(let seat=0;seat<game.players.length;seat++){
+  const p=game.players[seat];if(n>=p.count)continue;
+  if(seat===game.me){const t=p.hand?.[n];if(!t)throw Error('내 손패 위치를 확인하지 못했어요.');items.push({key:`own-${t.id}`,kind:'own',selector:`[data-hand="${t.id}"] .tile.face`,tile:t});}
+  else items.push({key:`opponent-${seat}-${n}`,kind:'opponent',selector:`[data-seat="${seat}"] .remaining-tile`});
+ }
+ for(const layer of ['lower','upper'] as const)game.stacks.forEach((s,i)=>{if(layer==='lower'?s.lowerPresent:s.upper)items.push({key:`${layer}-${i}`,kind:layer,selector:`[data-stack="${i}"] .${layer}-tile .tile`});});
+ if(items.length!==60)throw Error('처음 배분할 패는 60개여야 해요.');return items;
+}
+export type DealTarget={x:number,y:number,width:number,height:number,angle:number};
+/** Viewport coordinates, including the app's rotated portrait/landscape stages. */
+export function dealTarget(rect:{left:number,top:number,width:number,height:number},angle:number):DealTarget{
+ const swap=Math.abs(angle)%180===90;
+ return {x:rect.left+rect.width/2,y:rect.top+rect.height/2,width:swap?rect.height:rect.width,height:swap?rect.width:rect.height,angle};
+}
+export const DEAL_TILE_W=34,DEAL_TILE_H=45;
+export function shufflePoint(index:number,width:number,height:number){
+ const spacing=Math.min(1,(width-28)/290,(height-40)/240);
+ return {x:width/2+(index%10-4.5)*27*spacing,y:height/2+(Math.floor(index/10)-2.5)*35*spacing};
+}

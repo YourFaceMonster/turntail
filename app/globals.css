@@ -512,19 +512,11 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 .entry-shuffle .entry-table,.entry-settle .entry-table,.entry-game-in .entry-table{opacity:1;transform:none;transition-duration:.3s}
 .entry-table-rim{position:absolute;inset:17%;border:1px solid #d3a4624d;border-radius:32px;box-shadow:0 0 0 5px #21160e33,inset 0 0 0 7px #e5b36b0a}
 .entry-lamplight{position:absolute;inset:0;background:radial-gradient(ellipse at 10% 15%,#e9a65350,transparent 50%),radial-gradient(ellipse at 100% 10%,#8aa6ec22,transparent 45%);pointer-events:none}
-.entry-tiles{position:absolute;left:50%;top:50%;width:0;height:0;opacity:0;transition:opacity .15s ease}
-.entry-shuffle .entry-tiles,.entry-settle .entry-tiles,.entry-game-in .entry-tiles{opacity:1}
-.entry-tile-slot{position:absolute;width:38px;height:52px;margin:-26px 0 0 -19px;transform:translate(var(--slot-x),var(--slot-y));will-change:transform}
-.entry-ivory-tile{display:block;width:100%;height:100%;padding:3px;border:1px solid #f6eed7;border-radius:6px;background:#f5ecd8;box-shadow:1px 1px 0 #fff8,2px 4px 0 #c4bea8,3px 6px 0 #8b816c,5px 9px 8px #150c0a99}
-.entry-tile-back{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border:1px solid #d7ba7480;border-radius:3px;background:linear-gradient(135deg,#21634e,#103a30);box-shadow:inset 0 0 0 2px #0c2c22,inset 0 0 0 3px #c7ab5e55;color:#d2b572}
-.entry-tile-back .suit-emblem{width:27px;height:27px;opacity:.8}
-.entry-shuffle .entry-tile-slot{animation:seated-tile-shuffle calc(var(--shuffle-ms) - 110ms) var(--tile-delay) cubic-bezier(.22,.65,.3,1) both}
-@keyframes seated-tile-shuffle{0%{transform:translate(var(--scatter-x),var(--scatter-y)) rotate(var(--tile-angle));opacity:0}13%{opacity:1}44%{transform:translate(var(--sweep-x),var(--sweep-y)) rotate(calc(var(--tile-angle) * -.5))}82%{transform:translate(var(--slot-x),calc(var(--slot-y) - 3px)) rotate(-2deg)}100%{transform:translate(var(--slot-x),var(--slot-y)) rotate(0deg);opacity:1}}
 .entry-edge-shade{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 12vw 3vw #0d090866}
 .entry-game-in{animation:seated-table-reveal var(--reveal-ms) ease-in-out both}
 @keyframes seated-table-reveal{from{opacity:1}to{opacity:0}}
 @media(orientation:portrait){.entry-room{background-image:url('/turntale-room-portrait-v036.png');transform-origin:50% 84%}.entry-approach .entry-room,.entry-shuffle .entry-room,.entry-settle .entry-room{transform:scale(1.8)}}
-@media(max-width:380px){.entry-tiles{scale:.87}}
+
 
 /* Lighting lives underneath every interactive tile and control. */
 .turntale.table-v211.active-table .play-column{position:relative}
@@ -552,3 +544,47 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 
 .table-entrance[data-visible="false"] *{animation-play-state:paused!important}
 @media(prefers-reduced-motion:reduce){.turntale>.endgame-room-shade{transition:none}}
+
+/* 0.3.10 — one back artwork and one finish, shared by play and dealing. */
+.tile.back.tile-back-shared{background:#12513d!important;color:#e6c87d;border:1px solid #a2c6b1!important;border-radius:12% / 9%!important;box-shadow:0 2px 4px #0003!important;overflow:hidden;padding:0!important}
+.tile.back.tile-back-shared:before,.tile.back.tile-back-shared:after{display:none!important}
+.entry-deck{position:absolute;inset:0;z-index:4;opacity:0;pointer-events:none}
+.entry-shuffle .entry-deck,.entry-prepare .entry-deck,.entry-deal .entry-deck,.entry-settle .entry-deck,.entry-game-in .entry-deck{opacity:1}
+.deal-flying-card{position:absolute;left:0;top:0;width:34px;height:45px;transform-origin:50% 50%;transform:translate3d(var(--sx),var(--sy),0);will-change:transform}
+.deal-flipper{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateY(0deg)}
+.deal-back,.deal-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.deal-face{transform:rotateY(180deg)}
+.deal-flying-card .tile{position:absolute!important;inset:0;width:100%!important;height:100%!important;aspect-ratio:auto!important;margin:0!important;box-shadow:0 2px 4px #0003!important;border:1px solid #d2d9d4!important;border-radius:12% / 9%!important;padding:0!important;transform:none!important}
+.deal-flying-card .tile.face{background:#fff!important}
+.deal-flying-card .tile.face:before,.deal-flying-card .tile.face:after{display:none!important}
+.deal-flying-card .tile-number,.deal-flying-card .special-number,.deal-flying-card .special-motif{filter:none!important}
+.deal-covered{opacity:0;background:#fff;transition:opacity .15s ease}
+.entry-shuffle .deal-flying-card{animation:full-deck-shuffle var(--shuffle-ms) cubic-bezier(.22,.65,.3,1) both}
+@keyframes full-deck-shuffle{0%{transform:translate3d(var(--scatter-x),var(--scatter-y),0) rotate(var(--tile-angle));opacity:0}12%{opacity:1}42%{transform:translate3d(var(--sweep-x),var(--sweep-y),0) rotate(calc(var(--tile-angle) * -.7))}72%{transform:translate3d(var(--scatter-x),var(--sweep-y),0) rotate(calc(var(--tile-angle) * .4))}100%{transform:translate3d(var(--sx),var(--sy),0);opacity:1}}
+.entry-prepare .entry-room{opacity:0;transform:scale(1.65)}
+.entry-prepare .entry-table{opacity:1;transform:none;transition:none}
+.entry-distributed{background:transparent}
+.entry-distributed .entry-room,.entry-distributed .entry-table,.entry-distributed .entry-edge-shade{opacity:0;transition:opacity .38s ease;transform:none}
+.entry-deal .deal-flying-card{animation:deal-to-live-slot .72s var(--deal-delay) cubic-bezier(.22,.7,.25,1) both}
+.entry-deal .deal-opponent{animation-name:deal-to-opponent}
+.entry-deal .deal-own .deal-flipper{animation:deal-own-reveal .28s var(--flip-delay) ease both}
+@keyframes deal-to-live-slot{from{transform:translate3d(var(--sx),var(--sy),0)}to{transform:translate3d(var(--tx),var(--ty),0) rotate(var(--target-angle)) scale(var(--target-sx),var(--target-sy))}}
+@keyframes deal-to-opponent{0%{transform:translate3d(var(--sx),var(--sy),0);opacity:1}80%{opacity:1}100%{transform:translate3d(var(--tx),var(--ty),0) rotate(var(--target-angle)) scale(var(--target-sx),var(--target-sy));opacity:0}}
+@keyframes deal-own-reveal{to{transform:rotateY(180deg)}}
+.entry-distributed.entry-settle .deal-flying-card,.entry-distributed.entry-game-in .deal-flying-card{width:var(--target-w);height:var(--target-h);transform:translate3d(var(--end-left),var(--end-top),0) rotate(var(--target-angle));transition:transform .12s ease}
+.entry-settle .deal-own .deal-flipper,.entry-game-in .deal-own .deal-flipper{transform:rotateY(180deg)}
+.entry-settle .deal-opponent,.entry-game-in .deal-opponent{opacity:0}
+.entry-settle .deal-lower .deal-covered,.entry-game-in .deal-lower .deal-covered{opacity:1}
+.entry-distributed.entry-game-in{animation:none}
+.entry-distributed.entry-game-in .entry-deck{animation:seated-table-reveal var(--reveal-ms) linear both}
+/* Targets remain in layout for measurement; only their paint waits for the handoff. */
+.turntale[data-dealing="true"] [data-hand-area] .tile,.turntale[data-dealing="true"] [data-stack] .tile{visibility:hidden!important}
+.turntale[data-dealing="true"] .hand-tile:after{display:none!important}
+/* Existing painted windows dim too; warm glow alone cannot darken a bright pixel. */
+.castle-window-shade{animation:castle-window-dim var(--light-duration,4.6s) ease-in-out var(--light-delay,0s) infinite}
+@keyframes castle-window-dim{0%,100%{opacity:.88}32%{opacity:.06}48%{opacity:.56}72%{opacity:0}}
+.castle-window-light{animation-name:castle-window-warm}
+@keyframes castle-window-warm{0%,100%{opacity:.05;transform:scale(.88)}32%{opacity:1;transform:scale(1.15)}48%{opacity:.28;transform:scale(.94)}72%{opacity:1;transform:scale(1.22)}}
+@media(prefers-reduced-motion:reduce){.castle-window-shade{animation:none;opacity:0}.castle-window-light{animation:none;opacity:.35}}
+
+.entry-distributed.entry-settle .deal-flying-card .tile,.entry-distributed.entry-game-in .deal-flying-card .tile{background:var(--finish-bg)!important;border:var(--finish-border)!important;border-radius:var(--finish-radius)!important;box-shadow:var(--finish-shadow)!important}
