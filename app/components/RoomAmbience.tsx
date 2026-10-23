@@ -26,11 +26,35 @@ function CastleLights({id,portrait=false}:{id:string,portrait?:boolean}){
   </g>
  </g>)}</g>;
 }
+function MoonWeather({id,portrait=false}:{id:string,portrait?:boolean}){
+ const x=portrait?830:1482,y=portrait?155:98;
+ const windowPath=portrait?'M702 192V130Q728 9 816 25Q882 25 902 135V265H702Z':'M1276 151V69Q1348-25 1460 2Q1545 8 1565 97V176H1276Z';
+ return <>
+  <defs>
+   <clipPath id={id+'sky'}><path d={windowPath}/></clipPath>
+   <linearGradient id={id+'cloud'} x1="0" y1="0" x2="0" y2="1"><stop stopColor="#a7b6df" stopOpacity=".75"/><stop offset=".22" stopColor="#657cae" stopOpacity=".86"/><stop offset="1" stopColor="#293957" stopOpacity=".08"/></linearGradient>
+   <radialGradient id={id+'moon'}><stop stopColor="#c3dcff" stopOpacity=".4"/><stop offset="1" stopColor="#95b9ed" stopOpacity="0"/></radialGradient>
+   <filter id={id+'cloud-soft'} x="-10%" y="-30%" width="120%" height="160%"><feGaussianBlur stdDeviation="2"/></filter>
+  </defs>
+  <g clipPath={`url(#${id}sky)`}>
+   <ellipse className="moon-breath" cx={x} cy={y} rx="105" ry="80" fill={`url(#${id}moon)`}/>
+   <g transform={`translate(${x} ${y-9})`}><g className="moon-cloud-drift" fill={`url(#${id}cloud)`} filter={`url(#${id}cloud-soft)`}>
+    <path d="M-160 16Q-151-2-126 1Q-110-23-81-13Q-59-40-30-25Q-4-41 16-19Q45-29 65-9Q94-13 103 8Q143 3 162 23Q89 52-4 38Q-94 51-160 16Z"/>
+   </g></g>
+   <g transform={`translate(${x} ${y+48})`}><g className="moon-cloud-drift cloud-wisp" fill={`url(#${id}cloud)`}><path d="M-160 8Q-95-28-44-3Q9-19 44 2Q100-10 158 18Q69 34-25 22Q-106 31-160 8Z"/></g></g>
+  </g>
+  <g className="window-moonlight" fill={`url(#${id}moon)`}>
+   <ellipse cx={portrait?796:1435} cy={portrait?655:525} rx={portrait?175:205} ry={portrait?130:75}/>
+  </g>
+  <path className="window-curtain-edge" d={portrait?'M906 48Q915 175 935 263L940 307Q923 202 918 53Z':'M1580 0Q1599 90 1655 181L1672 198Q1620 95 1601 0Z'} fill="#963c4659"/>
+ </>;
+}
 export default function RoomAmbience(){
  const id=useId().replace(/:/g,'');const wide=id+'wide',tall=id+'tall';
  return <div className="room-ambience" aria-hidden="true">
   <svg className="ambience-wide" viewBox="0 0 1672 941" preserveAspectRatio="xMidYMax slice">
    <LightDefs id={wide}/>
+   <MoonWeather id={wide}/>
    <CastleLights id={wide}/>
    <CandleLight id={wide} x={76} y={426} r={270} scale={1.15} delay={-.5}/>
    <CandleLight id={wide} x={550} y={133} r={130} scale={.65} delay={-1.1}/>
@@ -40,6 +64,7 @@ export default function RoomAmbience(){
   </svg>
   <svg className="ambience-portrait" viewBox="0 0 940 1672" preserveAspectRatio="xMidYMax slice">
    <LightDefs id={tall}/>
+   <MoonWeather id={tall} portrait/>
    <CastleLights id={tall} portrait/>
    <CandleLight id={tall} x={45} y={1090} r={300} scale={1.1} delay={-.5}/>
    <CandleLight id={tall} x={258} y={236} r={160} scale={.7} delay={-1.1}/>

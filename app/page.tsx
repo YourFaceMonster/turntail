@@ -5,6 +5,10 @@ import {tapTileSelection,tapSelectableTileIds} from "../lib/selection";
 import {tileLayout} from "../lib/layout";
 import {Music2,Volume2,VolumeX} from "lucide-react";
 import MainMenu from './components/MainMenu';
+import GameEntrance from './components/GameEntrance';
+import GameAtmosphere from './components/GameAtmosphere';
+import {endgameLevel,ENTRANCE_MS,nextEntrance,type EntrancePhase} from '../lib/atmosphere';
+import {tensionSound,shuffleSound} from '../lib/atmosphere-audio';
 import Tutorial from './components/Tutorial';
 import TableNotice from './components/TableNotice';
 import HighScores from './components/HighScores';
@@ -31,25 +35,35 @@ export default function Home(){
  const [setupOpen,setSetupOpen]=useState<'single'|'multi'|null>(null),[settingsOpen,setSettingsOpen]=useState(false),[tutorialOpen,setTutorialOpen]=useState(false),[challengeMode,setChallengeMode]=useState(false);
  const [scoresOpen,setScoresOpen]=useState(false),[scores,setScores]=useState<HighScore[]>([]),[award,setAward]=useState('');
  const scoreSeen=useRef('');
- const [entrance,setEntrance]=useState<'idle'|'menu-out'|'room-hold'|'darken'|'game-in'>('idle');
+ const [pageVisible,setPageVisible]=useState(true);
+ useEffect(()=>{const update=()=>setPageVisible(!document.hidden);update();document.addEventListener('visibilitychange',update);return()=>document.removeEventListener('visibilitychange',update);},[]);
+ const [entrance,setEntrance]=useState<EntrancePhase>('idle');
  const entranceBusy=useRef(false),entranceReduced=useRef(false);
+ const entranceIntent=useRef<{kind:'new'}|{kind:'resume',game:Game,session:Session}>({kind:'new'});
  useEffect(()=>{
-  if(entrance==='idle')return;
-  const duration=entranceReduced.current?0:({ 'menu-out':700,'room-hold':500,darken:400,'game-in':650 } as const)[entrance];
+  if(entrance==='idle'||!pageVisible)return;
+  const duration=entranceReduced.current?0:ENTRANCE_MS[entrance];
   const timer=setTimeout(()=>{
-   if(entrance==='menu-out'){setSetupOpen(null);setEntrance('room-hold');}
-   else if(entrance==='room-hold')setEntrance('darken');
-   else if(entrance==='darken'){beginPractice();setEntrance('game-in');}
-   else {entranceBusy.current=false;setEntrance('idle');}
+   const next=nextEntrance(entrance,entranceIntent.current.kind==='resume');
+   if(entrance==='menu-out')setSetupOpen(null);
+   if(next==='game-in')beginPractice();
+   if(next==='idle'){
+    if(local.current?.phase==='playing'&&entranceIntent.current.kind==='new'){
+     const g=structuredClone(local.current);g.turnReadyAt=Date.now()+DEAL_REVIEW_MS;publishLocal(g);
+    }
+    entranceBusy.current=false;
+   }
+   setEntrance(next);
   },duration);
   return()=>clearTimeout(timer);
- },[entrance]);
+ },[entrance,pageVisible]);
  const [game,setGame]=useState<View|null>(null),[session,setSession]=useState<Session|null>(null),[revision,setRevision]=useState(0);
  const [name,setName]=useState(""),[code,setCode]=useState(""),[size,setSize]=useState(3),[friendSize,setFriendSize]=useState(3),[matchMode,setMatchMode]=useState<"unlimited"|"target">("unlimited"),[targetScore,setTargetScore]=useState(100),[busy,setBusy]=useState(false),[error,setError]=useState(""),[toast,setToast]=useState("");
  const [rules,setRules]=useState(false),[recordsOpen,setRecordsOpen]=useState(false),[historyMode,setHistoryMode]=useState("practice"),[onlineHistory,setOnlineHistory]=useState<any>(null),[historyError,setHistoryError]=useState(""),[historyBusy,setHistoryBusy]=useState(false);
  const [practiceGroups,setPracticeGroups]=useState<LineupHistory[]>([]),[localRecords,setLocalRecords]=useState<RecordRow[]>([]),[selected,setSelected]=useState<number[]>([]),[selectionMode,setSelectionMode]=useState(0),[pick,setPick]=useState<number|null>(null),[sortBy,setSortBy]=useState("number");
  const [music,setMusic]=useState(true),[sound,setSound]=useState(true),[haptic,setHaptic]=useState(true),[hapticSupported,setHapticSupported]=useState(false),[flights,setFlights]=useState<Flight[]>([]),[burst,setBurst]=useState(""),[resultReady,setResultReady]=useState(false);
  const sess=useRef<Session|null>(null),local=useRef<Game|null>(null),current=useRef<View|null>(null),rev=useRef(0),seen=useRef(-1),pending=useRef(false),sequence=useRef(0),profile=useRef(""),audio=useRef<AudioContext|null>(null);
+ const [audioEpoch,setAudioEpoch]=useState(0);
  const musicRef=useRef<HTMLAudioElement|null>(null),musicUnlocked=useRef(false),rackRef=useRef<HTMLDivElement|null>(null);
  const [avatar,setAvatar]=useState(""),[profileOpen,setProfileOpen]=useState(false),[draftName,setDraftName]=useState(""),[draftAvatar,setDraftAvatar]=useState(""),[photoBusy,setPhotoBusy]=useState(false),[profileBusy,setProfileBusy]=useState(false),[profileError,setProfileError]=useState("");
  const [chatOpen,setChatOpen]=useState(false),[chatText,setChatText]=useState(""),[chatBusy,setChatBusy]=useState(false),[chatError,setChatError]=useState(""),[readChat,setReadChat]=useState("");
@@ -78,9 +92,9 @@ export default function Home(){
  const tableRef=useRef<HTMLElement|null>(null),[tableSize,setTableSize]=useState({width:342,height:573});
  const floorRef=useRef<HTMLDivElement|null>(null),[floorSize,setFloorSize]=useState({width:320,height:150});
  const preferences=useRef({sound:true,haptic:true,music:true});preferences.current={sound,haptic,music};
- function syncMusic(enabled=preferences.current.music){const track=musicRef.current;if(!track)return;if(!enabled||!musicUnlocked.current||document.hidden){track.pause();return;}track.volume=current.current?.phase==="ended"?.12:.34;void track.play().catch(()=>{});}
+ function syncMusic(enabled=preferences.current.music){const track=musicRef.current;if(!track)return;if(!enabled||!musicUnlocked.current||document.hidden){track.pause();return;}void track.play().catch(()=>{});}
  function toggleMusic(){musicUnlocked.current=true;syncMusic(!music);setMusic(!music);safeSet("jangseong-music",music?"off":"on");}
- function armAudio(){musicUnlocked.current=true;syncMusic();try{if(!audio.current){const C=window.AudioContext||(window as any).webkitAudioContext;if(C)audio.current=new C();}void audio.current?.resume();}catch{}}
+ function armAudio(){musicUnlocked.current=true;syncMusic();try{if(!audio.current){const C=window.AudioContext||(window as any).webkitAudioContext;if(C)audio.current=new C();}if(audio.current?.state!=='running')void audio.current?.resume().then(()=>setAudioEpoch(n=>n+1)).catch(()=>{});}catch{}}
  function feel(kind="tap"){
   try{if(preferences.current.haptic&&navigator.vibrate)navigator.vibrate(kind==="win"?[35,45,65,45,95]:kind==="two"?[12,32,12,32,65]:kind==="submit"?10:kind==="slam"?[28,22,58]:kind==="play"?[16,20,35]:kind==="draw"?22:kind==="turn"?[12,35,12]:8);}catch{}
   const ctx=audio.current;if(!ctx||!preferences.current.sound)return;
@@ -164,7 +178,7 @@ export default function Home(){
  },[session]);
  useEffect(()=>{
   if(!game?.practice||game.phase!=="playing"||!game.players[game.turn]?.bot)return;
-  const id=setInterval(()=>{if(!document.hidden&&!pending.current&&!flyingIds.current.size&&Date.now()>=(current.current?.turnReadyAt||0))void request("bot");},450);return()=>clearInterval(id);
+  const id=setInterval(()=>{if(!document.hidden&&!entranceBusy.current&&!pending.current&&!flyingIds.current.size&&Date.now()>=(current.current?.turnReadyAt||0))void request("bot");},450);return()=>clearInterval(id);
  },[game?.turn,revision,game?.phase,session?.local]);
  useEffect(()=>{setSelected([]);setSelectionMode(0);setPick(null);},[game?.turn,game?.round,game?.trick.map(t=>t.id).join(",")]);
  useEffect(()=>{if(game)window.scrollTo(0,0);},[game?.code,game?.round]);
@@ -185,20 +199,31 @@ export default function Home(){
  function resetView(){setPreviousPlay([]);setSlam("");resetOrientation();setFlair(null);setChatOpen(false);setChatText("");setReadChat("");sequence.current++;setSession(null);setGame(null);current.current=null;setSelected([]);setSelectionMode(0);setPick(null);setError("");setFlights([]);setResultReady(false);setPlayedSize(null);}
  function practice(){
   if(pending.current||entranceBusy.current)return;
-  armAudio();feel();entranceBusy.current=true;entranceReduced.current=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  entranceIntent.current={kind:'new'};armAudio();feel();entranceBusy.current=true;entranceReduced.current=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   setEntrance('menu-out');
  }
  function beginPractice(){
   resetView();seen.current=-1;rev.current=0;
-  setSetupOpen(null);scoreSeen.current="";const p=player(name||"나");p.avatar=avatar;const g=room("AI-"+uid().slice(0,6).toUpperCase(),p,true,size,{challenge:challengeMode});
-  for(let i=1;i<size;i++)g.players.push(player(["달빛","해솔","별하"][i-1],true));start(g,Date.now()+(entranceReduced.current?0:650));
+  setSetupOpen(null);scoreSeen.current="";
+  if(entranceIntent.current.kind==='resume'){
+   const {game:saved,session:s}=entranceIntent.current,g=structuredClone(saved);
+   if(g.phase==='playing')g.turnReadyAt=Math.max(g.turnReadyAt||0,Date.now()+(entranceReduced.current?0:ENTRANCE_MS['game-in']));
+   sess.current=s;setSession(s);publishLocal(g);return;
+  }
+  const p=player(name||"나");p.avatar=avatar;const g=room("AI-"+uid().slice(0,6).toUpperCase(),p,true,size,{challenge:challengeMode});
+  for(let i=1;i<size;i++)g.players.push(player(["달빛","해솔","별하"][i-1],true));start(g,Date.now()+(entranceReduced.current?0:ENTRANCE_MS['game-in']));
   const s={code:g.code,token:p.token,local:true};sess.current=s;setSession(s);setResumeAvailable(true);safeSet("jangseong-session",JSON.stringify(s));safeSet("jangseong-name",name);publishLocal(g);
  }
- function resume(){resetOrientation();armAudio();if(pending.current)return;const s=readJSON<Session|null>("jangseong-session",null);if(!s)return;seen.current=-1;rev.current=0;sess.current=s;setSession(s);if(s.local){const g=readJSON<Game|null>("jangseong-practice-game",null);if(!g){setError("저장된 연습 게임이 없어요. 새 연습을 시작해 주세요.");return;}publishLocal(g);}else void request("state");}
+ function resume(){
+  if(pending.current||entranceBusy.current)return;armAudio();const s=readJSON<Session|null>('jangseong-session',null);if(!s)return;
+  if(s.local){const g=readJSON<Game|null>('jangseong-practice-game',null);if(!g){setError('저장된 연습 게임이 없어요. 새 연습을 시작해 주세요.');return;}
+   entranceIntent.current={kind:'resume',game:g,session:s};entranceBusy.current=true;entranceReduced.current=window.matchMedia('(prefers-reduced-motion: reduce)').matches;setEntrance('menu-out');
+  }else{resetOrientation();seen.current=-1;rev.current=0;sess.current=s;setSession(s);void request('state');}
+ }
  async function create(){setSetupOpen(null);armAudio();resetView();seen.current=-1;rev.current=0;sess.current=null;await request("create",{name:name||"방장",avatar,size:friendSize,matchMode,targetScore,challenge:challengeMode});}
  async function join(){setSetupOpen(null);armAudio();resetView();seen.current=-1;rev.current=0;sess.current=null;await request("join",{name:name||"친구",avatar,code:code.toUpperCase().trim()});}
  async function share(){if(!game)return;armAudio();feel();const url=location.origin+"/?room="+game.code;try{await navigator.clipboard.writeText(url);setToast("초대 링크를 복사했어요. 친구에게 보내 주세요.");}catch{setToast("친구에게 방 코드 "+game.code+"를 알려 주세요.");}}
- const mine=game?.players[game.me],myTurn=game?.phase==="playing"&&game.turn===game.me&&!mine?.replaced&&!reviewing&&!flights.length&&(!game.turnDeadline||clock<game.turnDeadline),hand=mine?.hand||[],choice=hand.filter(t=>selected.includes(t.id)),comb=combo(choice),legal=myTurn&&beats(choice,game?.trick||[]),floor=game?.stacks.reduce((n,s)=>n+Number(s.lowerPresent)+Number(s.upper),0)||0;
+ const mine=game?.players[game.me],myTurn=entrance==='idle'&&game?.phase==="playing"&&game.turn===game.me&&!mine?.replaced&&!reviewing&&!flights.length&&(!game.turnDeadline||clock<game.turnDeadline),hand=mine?.hand||[],choice=hand.filter(t=>selected.includes(t.id)),comb=combo(choice),legal=myTurn&&beats(choice,game?.trick||[]),floor=game?.stacks.reduce((n,s)=>n+Number(s.lowerPresent)+Number(s.upper),0)||0;
  useEffect(()=>{if(!myTurn||!game)return;const key=`${game.code}:${game.round}:${game.lastEvent?.id}`;if(turnAnnounced.current!==key){turnAnnounced.current=key;feel("turn");}},[myTurn,game?.lastEvent?.id]);
  const sizingCount=hand.length+flights.filter(f=>f.kind==="play"&&game?.lastEvent?.who===game?.me).length-(flights.some(f=>f.kind==="draw"&&f.who===game?.me)?1:0);
  const dimensions=tileLayout({width:tableSize.width,height:tableSize.height,floorWidth:floorSize.width,handWidth:rackSize.width,handCount:sizingCount,cols:game?.cols||5,rows:game?.rows||3,players:game?.capacity||3,landscape:landscapeTable});
@@ -224,19 +249,30 @@ export default function Home(){
  const visibleCount=(index:number)=>Math.max(0,(game?.players[index]?.count||0)-(flights.some(f=>f.kind==="draw"&&f.who===index)?1:0));
  const matchComplete=game?.matchWinner!==null&&game?.matchWinner!==undefined,wonResult=!!game&&(game.matchWinner??game.winner)===game.me;
  const secondsLeft=Math.max(0,Math.ceil(((game?.turnDeadline||0)-clock)/1000));
+ const pressure=endgameLevel(game?.phase,(game?.players||[]).map((_,i)=>visibleCount(i)),openingReview||entrance!=='idle');
+ useEffect(()=>{if(!pressure||!sound||!pageVisible||!audio.current||audio.current.state!=='running')return;return tensionSound(audio.current,pressure);},[pressure,sound,pageVisible,entrance,audioEpoch]);
+ useEffect(()=>{if(entrance!=='shuffle'||entranceReduced.current||!sound||!pageVisible||!audio.current||audio.current.state!=='running')return;return shuffleSound(audio.current);},[entrance,sound,pageVisible]);
+ useEffect(()=>{
+  const track=musicRef.current;if(!track)return;const target=game?.phase==='ended'?.12:pressure===2?.14:pressure===1?.23:.34;
+  if(!musicUnlocked.current){track.volume=target;return;}
+  let frame=0;const from=track.volume,started=performance.now();
+  const fade=(now:number)=>{const t=Math.min(1,(now-started)/1100);track.volume=from+(target-from)*t;if(t<1)frame=requestAnimationFrame(fade);};
+  frame=requestAnimationFrame(fade);return()=>cancelAnimationFrame(frame);
+ },[pressure,game?.phase,music,pageVisible]);
  const activeSeat=reviewing?game?.lastEvent?.who:game?.turn;
  const historyGroups:LineupHistory[]=historyMode==="practice"?practiceGroups:onlineHistory?.groups||[];
  const rows:RecordRow[]=historyMode==="practice"?localRecords:onlineHistory?.records||[];
  const summary=historyMode==="practice"?{games:practiceGroups.reduce((a,g)=>a+g.games,0),wins:practiceGroups.reduce((a,g)=>a+g.wins,0),points:practiceGroups.reduce((a,g)=>a+g.points,0)}:onlineHistory?.summary||{games:0,wins:0,points:0};
- return <main inert={entrance!=="idle"} aria-busy={entrance!=="idle"} data-entrance={entrance} style={{"--opponent-count":Math.max(1,(game?.players.length||3)-1),"--stage-width":`${stageWidth}px`,"--stage-height":`${stageHeight}px`,"--table-card-height":`${rackCardHeight}px`,"--tile-h":`${rackCardHeight}px`,"--tile-w":`${rackTileWidth}px`,"--seat-height":`${dimensions.seatHeight}px`,"--seat-rail":`${dimensions.seatRail}px`,"--rack-cols":rackColumns,"--floor-cols":game?.cols||5} as CSSProperties} className={`table-v211 turntale ${!game?"home-screen":""} ${openingReview?"opening-review":""} ${game?`in-game players-${game.capacity} ${activeTable?"active-table":""}`:""} ${landscapeTable?"landscape-table":""} ${rotated?"rotated-stage":""} ${portraitRotated?"portrait-stage":""} ${activeTable&&layout==="portrait"?"portrait-table":""} ${game&&(game.rally||0)>=3?`rally-tension tension-${(game.rally||0)>=9?3:(game.rally||0)>=6?2:1}`:""} ${nativeFullscreen||expanded?"immersive-screen":""}`}>
- {entrance!=='idle'&&<div className={`game-entrance-veil entrance-${entrance}`} aria-hidden="true"/>}
+ return <main inert={entrance!=="idle"} aria-busy={entrance!=="idle"} data-entrance={entrance} data-endgame={pressure} data-visible={pageVisible} style={{"--opponent-count":Math.max(1,(game?.players.length||3)-1),"--stage-width":`${stageWidth}px`,"--stage-height":`${stageHeight}px`,"--table-card-height":`${rackCardHeight}px`,"--tile-h":`${rackCardHeight}px`,"--tile-w":`${rackTileWidth}px`,"--seat-height":`${dimensions.seatHeight}px`,"--seat-rail":`${dimensions.seatRail}px`,"--rack-cols":rackColumns,"--floor-cols":game?.cols||5} as CSSProperties} className={`table-v211 turntale ${!game?"home-screen":""} ${openingReview?"opening-review":""} ${game?`in-game players-${game.capacity} ${activeTable?"active-table":""}`:""} ${landscapeTable?"landscape-table":""} ${rotated?"rotated-stage":""} ${portraitRotated?"portrait-stage":""} ${activeTable&&layout==="portrait"?"portrait-table":""} ${game&&(game.rally||0)>=3?`rally-tension tension-${(game.rally||0)>=9?3:(game.rally||0)>=6?2:1}`:""} ${nativeFullscreen||expanded?"immersive-screen":""}`}>
+ <div className="endgame-room-shade" data-level={pressure} aria-hidden="true"/>
+ <GameEntrance visible={pageVisible} phase={entrance} resume={entranceIntent.current.kind==='resume'} reduced={entranceReduced.current}/>
  <audio ref={musicRef} src="/audio/night-table.mp3" loop preload="none" aria-hidden="true"/>
- <header className="topbar"><a className="brand" href="/" onClick={e=>{if(game){e.preventDefault();leaveTable();}}}><span className="brand-icon">✦</span> TURNTALE</a><div className="top-actions"><button className="display-trigger" onClick={()=>setScreenOpen(true)} aria-label="화면 설정" title="전체화면 · 가로 모드">⛶</button>{game&&<button className="text-btn" onClick={leaveTable}>홈으로</button>}{game&&!game.practice&&<button className={`chat-trigger ${unreadChat?"has-unread":""}`} onClick={()=>{armAudio();setChatOpen(true);}} aria-label={unreadChat?"채팅 열기 · 새 메시지":"채팅 열기"}>💬 채팅{unreadChat&&<i/>}</button>}<button className="profile-trigger" onClick={openProfile} aria-label="내 프로필 설정"><SeatAvatar seat={game?.me||0} photo={mine?.avatar||avatar}/></button><button className="text-btn" onClick={openHistory}>전적</button><span className="alpha">0.3.8</span><button className="icon-btn" onClick={()=>setRules(true)} aria-label="게임 규칙">?</button></div></header>
+ <header className="topbar"><a className="brand" href="/" onClick={e=>{if(game){e.preventDefault();leaveTable();}}}><span className="brand-icon">✦</span> TURNTALE</a><div className="top-actions"><button className="display-trigger" onClick={()=>setScreenOpen(true)} aria-label="화면 설정" title="전체화면 · 가로 모드">⛶</button>{game&&<button className="text-btn" onClick={leaveTable}>홈으로</button>}{game&&!game.practice&&<button className={`chat-trigger ${unreadChat?"has-unread":""}`} onClick={()=>{armAudio();setChatOpen(true);}} aria-label={unreadChat?"채팅 열기 · 새 메시지":"채팅 열기"}>💬 채팅{unreadChat&&<i/>}</button>}<button className="profile-trigger" onClick={openProfile} aria-label="내 프로필 설정"><SeatAvatar seat={game?.me||0} photo={mine?.avatar||avatar}/></button><button className="text-btn" onClick={openHistory}>전적</button><span className="alpha">0.3.9</span><button className="icon-btn" onClick={()=>setRules(true)} aria-label="게임 규칙">?</button></div></header>
  {!game?<MainMenu single={()=>{setChallengeMode(false);setSetupOpen('single');}} multi={()=>{setChallengeMode(false);setSetupOpen('multi');}} tutorial={()=>setTutorialOpen(true)} scores={()=>void openScores()} settings={()=>setSettingsOpen(true)} profile={openProfile} resume={resume} canResume={resumeAvailable} name={name} avatar={avatar}/>:<>
  <section className="room-bar"><div><span className="eyebrow">{game.challenge&&!game.challenge.abandoned?`10판 도전 · ${game.challenge.complete?"완료":game.phase==="ended"?`${game.challenge.completed}판 완료`:`${game.challenge.completed+1}판 진행 중`} · 합산 ${signed(game.challenge.scores[game.me]||0)}점`:game.practice?"SINGLE PLAYER":"MULTIPLAYER"}</span><h1>{game.phase==="lobby"?`${game.capacity}인 대기실`:`라운드 ${game.displayRound}`} <span className="room-code">{game.practice?`${game.capacity}인 연습`:game.code}</span></h1></div><div className="room-actions">{game.phase!=="lobby"&&<span className="compact-score">나 <b>{signed(mine?.points||0)}</b>{game.matchMode==="target"?`/${game.targetScore}`:""}점</span>}<button className={`sound-btn music-btn ${music?"music-on":""}`} onClick={toggleMusic} aria-pressed={music} aria-label={music?"배경음 끄기":"배경음 켜기"} title="잔잔한 재즈 배경음"><Music2 aria-hidden="true"/></button><button className="sound-btn" onClick={()=>{armAudio();setSound(!sound);safeSet("jangseong-sound",sound?"off":"on");}} aria-label={sound?"효과음 끄기":"효과음 켜기"} title="패 효과음">{sound?<Volume2 aria-hidden="true"/>:<VolumeX aria-hidden="true"/>}</button>{!game.practice&&<button className="secondary compact" onClick={share}>초대 링크 ↗</button>}</div></section>
  {game.phase==="lobby"?<section className="lobby panel"><span className="lobby-orbit">✦</span><h2>{game.capacity}명이 모이면, 시작.</h2><p className="muted">초대 링크 또는 방 코드를 친구에게 보내 주세요.</p><p className="lobby-match-rule">{game.challenge?"10판 도전 · 유효 경기 10판의 내 점수 합산":game.matchMode==="target"?`${game.targetScore}점 선착순 · 목표 도달 시 매치 종료`:"무제한 모드 · 원하는 만큼 계속 플레이"}</p><div className="seats">{Array.from({length:game.capacity},(_,i)=><div className={`seat ${game.players[i]?"filled":""}`} key={i}>{game.players[i]?<SeatAvatar seat={i} photo={game.players[i]?.avatar}/>:<span className="avatar">+</span>}<strong>{game.players[i]?.name||"친구 기다리는 중"}</strong><span>{i===0?"방장":game.players[i]?"준비 완료":"빈자리"}</span></div>)}</div><button className="primary" onClick={()=>{armAudio();void request("start");}} disabled={busy||game.me!==0||game.players.length!==game.capacity}>{game.me===0?(game.players.length===game.capacity?"게임 시작 →":`${game.players.length}/${game.capacity}명 · 친구를 기다려 주세요`):"방장이 시작하면 함께 입장해요"}</button><p className="muted foot">각자 휴대폰으로 접속하세요. 손패는 자신에게만 보입니다.</p></section>:<section className="game-layout" ref={tableRef}>
 
- <div className="play-column"><section className={`felt ${burst?"impact":""} ${slam?"slam-impact":""}`}>{(game.rally||0)>=3&&<div className="rally-pressure" aria-hidden="true"/>}<div className="opponents">{game.players.map((p,i)=>i===game.me?null:<div data-seat={i} key={p.id} className={`opponent ${visibleCount(i)<5?"low-hand":""} ${visibleCount(i)===1?"last-tile":""} persona-${personas[i].color} ${activeSeat===i&&game.phase==="playing"?"active":""}`}><div className="seat-card"><SeatAvatar seat={i} photo={p.avatar}/><div className="op-info"><strong>{p.name} {(p.bot||p.replaced)&&<small>{p.replaced?"AI 대체":"AI"}</small>}</strong><span className="seat-points">{signed(p.points)}점</span></div>{activeSeat===i&&game.phase==="playing"&&<span className="turn-flag"><i/>{reviewing?"패 확인 중":p.replaced?"AI 진행":game.turnDeadline?`${secondsLeft}초`:"진행 중"}</span>}</div><div className="remaining-badge"><div className="remaining-count remaining-tile" aria-label={`남은 패 ${visibleCount(i)}장`}><strong className="remaining-number">{visibleCount(i)}</strong>{visibleCount(i)===1&&<i aria-hidden="true">!</i>}</div><small>장 남음</small></div></div>)}</div>
+ <div className="play-column"><GameAtmosphere level={pressure}/><section className={`felt ${burst?"impact":""} ${slam?"slam-impact":""}`}>{(game.rally||0)>=3&&<div className="rally-pressure" aria-hidden="true"/>}<div className="opponents">{game.players.map((p,i)=>i===game.me?null:<div data-seat={i} key={p.id} className={`opponent ${visibleCount(i)<5?"low-hand":""} ${visibleCount(i)===1?"last-tile":""} persona-${personas[i].color} ${activeSeat===i&&game.phase==="playing"?"active":""}`}><div className="seat-card"><SeatAvatar seat={i} photo={p.avatar}/><div className="op-info"><strong>{p.name} {(p.bot||p.replaced)&&<small>{p.replaced?"AI 대체":"AI"}</small>}</strong><span className="seat-points">{signed(p.points)}점</span></div>{activeSeat===i&&game.phase==="playing"&&<span className="turn-flag"><i/>{reviewing?"패 확인 중":p.replaced?"AI 진행":game.turnDeadline?`${secondsLeft}초`:"진행 중"}</span>}</div><div className="remaining-badge"><div className="remaining-count remaining-tile" aria-label={`남은 패 ${visibleCount(i)}장`}><strong className="remaining-number">{visibleCount(i)}</strong>{visibleCount(i)===1&&<i aria-hidden="true">!</i>}</div><small>장 남음</small></div></div>)}</div>
  <div className="table-heading"><span>바닥 <b key={floor}>{floor}장</b>{!game.trick.length&&<em className="lead-lock-label">선 · 제출만 가능</em>}</span>{game.phase==="playing"&&!game.practice&&game.turnDeadline>0&&!reviewing&&<span className={`turn-timer ${secondsLeft<=5?"timer-urgent":""} ${game.players[game.turn].timeouts>=2?"final-chance":""}`} role="timer" aria-label={`${game.players[game.turn].name} 제한 시간 ${secondsLeft}초`}>◷ {secondsLeft}초{game.players[game.turn].timeouts>=2?" · 마지막 기회":game.players[game.turn].timeouts?" · 경고 1/3":""}</span>}{(game.rally||0)>=3&&<span className="rally-counter">{game.rally} RALLY</span>}<span className="suit-legend" aria-label="강한 문양 순서"><i className="legend-sun">해</i> › <i className="legend-star">별</i> › <i className="legend-moon">달</i> › <i className="legend-cloud">구름</i></span></div>
  <div className={`floor-stage ${!game.trick.length?"lead-locked":""}`} ref={floorRef} style={{"--floor-cell-h":`${floorCellH}px`,"--floor-cell-w":`${floorCellW}px`} as CSSProperties}><div className={`wall cols-${game.cols}`} style={{"--cols":game.cols,"--rows":game.rows} as CSSProperties}>{game.stacks.map((s,i)=><button data-stack={i} key={i} className={`stack ${s.upper&&s.lowerPresent?"double-stack":""} ${s.available?"available":""} ${pick===i?"picked":""} ${!s.lowerPresent&&!s.upper?"empty":""}`} disabled={!myTurn||!game.trick.length||!s.available||busy} onClick={()=>{if(!game.trick.length)return;armAudio();feel();setPick(pick===i?null:i);setSelected([]);}} aria-label={`${Math.floor(i/game.cols)+1}행 ${i%game.cols+1}열 ${s.upper?"위층 비공개 패":"아래층 "+(s.lower?suits[s.lower.s]+s.lower.n:"빈자리")} ${s.available?"가져오기 가능":"선택 불가"}`}>{s.lowerPresent&&<span className="lower-tile" aria-hidden={s.upper||undefined}>{s.lower?<TileFace tile={s.lower} small/>:<span className="tile covered-face"/>}</span>}{s.upper&&<span className="upper-tile"><Back/></span>}{!s.lowerPresent&&!s.upper&&<span className="empty-mark">·</span>}{(s.upper||s.lowerPresent)&&<span className="floor-level" aria-hidden="true">{s.upper?"2층":"1층"}</span>}{pick===i&&<span className="pick-check">✓</span>}</button>)}</div>{(openingReview||leadReview&&!flights.length)&&<TableNotice key={game.lastEvent?.id} title={openingReview?"게임 시작":"선"} leader={openingReview?undefined:game.players[game.turn].name} detail={openingReview?`첫 선 · ${game.players[game.turn].name} · 손패를 확인하세요`:"원하는 조합으로 패를 내세요"} seconds={openingReview?Math.max(1,Math.min(3,Math.ceil((game.turnReadyAt-clock)/1000))):undefined}/>}{flair&&<div className={`table-flair ${flair.red?"red-two-flair":"combo-flair"} ${flair.label.length>7?"long-label":""} combo-tier-${patternTier(flair.label)}`} key={flair.id} role="status"><span className="flair-rays"/><small>{flair.red?"UNBEATABLE SINGLE":flair.two?"POWER TWO":flair.rally>=3?`${flair.rally}번째 랠리 · 긴장 고조`:"NICE PLAY"}</small><strong>{flair.red?"☀ 빨간 2":flair.label}</strong><span>{flair.red?"최강 싱글 · 이 패는 넘을 수 없어요":flair.two?"2의 힘으로 흐름을 바꿉니다!":playComment(flair.id,flair.rally)}</span></div>}{flights.some(f=>f.kind==="draw")&&game.lastEvent?.type==="draw"&&<div className="draw-reveal-caption" key={game.lastEvent.id} role="status">{game.players[game.lastEvent.who].name} · {game.lastEvent.concealed?"비밀 패 가져오기":"가져온 패 공개"}</div>}</div>
  <div className="floor-caption">{watchingPlay?<span className="review-countdown" role="status">{game.players[game.lastEvent!.who].name}의 패 확인 중 · {Math.max(1,Math.ceil(((game.turnReadyAt||0)-clock)/1000))}초<span key={game.lastEvent?.id}/></span>:(game.rally||0)>=3&&pick===null?<span className="rally-label">{game.rally} RALLY · {game.rally!>=6?"승부의 순간":"긴장되는 주고받기"}</span>:pick!==null?"가져오면 즉시 턴 종료 · 이번 차례에는 낼 수 없어요":floor?"위층을 가져오면 아래층 공개 · 외곽부터 한 개씩":"바닥 패 소진 · 제출하거나 패스하세요"}</div>
@@ -267,6 +303,6 @@ export default function Home(){
  {scoresOpen&&<HighScores close={()=>setScoresOpen(false)} personal={scores} initialMode={game&&!game.practice?'multi':'single'} initialSize={game?.capacity||size} initialKind={game?.challenge?.complete?'ten':'single'} profileToken={profile.current} name={name} openHistory={()=>{setScoresOpen(false);openHistory();}}/>}
  {tutorialOpen&&<Tutorial close={()=>setTutorialOpen(false)}/>}
  {rules&&<div className="modal-shade" onClick={()=>setRules(false)}><section className="modal rules" onClick={e=>e.stopPropagation()}><button className="close" onClick={()=>setRules(false)} aria-label="규칙 닫기">×</button><span className="eyebrow">HOW TO PLAY</span><h2>턴테일, 이렇게 즐겨요.</h2><ol><li><b>2인은 손패 12개, 3인은 10개, 4인은 9개씩.</b> 전체 60개 중 나머지를 두 층에 놓습니다. 2인: 바닥 36개(3×6), 3인: 30개(5×3), 4인: 24개(4×3).</li><li><b>덮인 아래층도 비공개.</b> 바로 위의 위층 패를 가져간 뒤에만 아래층의 숫자와 문양이 공개됩니다. 공개되어도 외곽 접근 조건을 충족해야 가져갈 수 있습니다.</li><li><b>내거나, 한 개 가져오거나.</b> 상대가 낸 패가 있을 때는 낼 수 있어도 가져올 수 있습니다. 선을 잡아 새로 시작하는 차례에는 반드시 제출하며 바닥 패를 가져올 수 없습니다. 위층에서 가져온 패는 비공개로 손패에 들어갑니다. 아래층 공개 패만 모두에게 0.5초간 보여주며, 그 차례에 낼 수 없고 턴이 끝납니다.</li><li><b>외곽부터 길 열기.</b> 같은 층에서 상하좌우 중 한쪽이 비어야 합니다. 아래층은 위를 덮은 패도 없어야 합니다.</li><li><b>같은 개수, 더 강한 조합.</b> 싱글·페어·트리플·5개 조합을 냅니다. 다른 모든 사람이 제출하지 않으면 마지막 제출자가 새 선을 잡습니다. 싱글은 싱글, 페어는 페어, 트리플은 트리플끼리 비교하며 5장 족보끼리만 경쟁합니다. 포카드는 같은 숫자 4장에 원하는 다른 한 장을 붙입니다.</li><li><b>시작 전 손패 확인.</b> 첫 선을 알려준 뒤 3초 후 시작합니다.</li><li><b>친구 대전 제한 시간.</b> 각 차례 30초, 2회 연속 시간 초과 뒤 다음 차례는 60초입니다. 초과한 차례는 AI가 처리하며, 3회 연속 초과하면 AI가 계속 대신합니다. 시간 안에 직접 내기·가져오기·패스하면 연속 초과가 초기화됩니다. AI가 대신 행동한 판은 무효이며 점수·전적에 반영하지 않습니다.</li><li><b>목표 점수 또는 무제한.</b> 친구 방을 만들 때 종료 규칙을 선택합니다. 목표 모드는 누적 점수가 목표에 도달하면 매치가 끝나고, 같은 라운드에 여럿 도달하면 누적 점수가 높은 사람이 이깁니다. 무제한은 라운드를 계속합니다. 새 매치는 테이블 점수만 초기화하고 저장 전적은 유지합니다.</li><li><b>손패 0개면 즉시 승리.</b> 바닥이 없어져도 계속하며, 이때부터 패스할 수 있습니다.</li><li><b>남은 패 차이만큼 정산.</b> 모든 두 사람끼리 패가 많은 쪽이 적은 쪽에게 그 차이만큼 지불합니다. 예: 0·4·7개 → +11·−1·−10점. 별도의 ‘2’ 배수 벌점은 적용하지 않습니다.</li></ol><div className="rule-note"><b>서열</b><p>2 ＞ 1 ＞ 15 ＞ … ＞ 3<br/>빨강 해 ☀ ＞ 초록 별 ✦ ＞ 노랑 달 ☾ ＞ 검정 구름 ☁</p><p>손패의 밝은 테두리는 낼 수 있는 조합의 후보입니다. 조합 버튼을 누르면 함께 선택되며, 같은 버튼을 다시 누르면 다음 후보로 바뀝니다. 페어/트리플의 선택된 패를 누르면 그 한 장만 빠지고, 다른 색 패를 누르면 유지한 패와 합쳐 다시 선택합니다.</p><b>5개 족보 (강한 순)</b><p>스트레이트 플러시 → 포카드 → 풀하우스 → 플러시 → 스트레이트</p><p>첫 선은 모든 참가자의 손패만 비교해 가장 약한 패를 가진 사람입니다. 같은 숫자는 구름 → 달 → 별 → 해 순으로 비교하며, 바닥 패는 제외합니다. 1·2·3·4·5가 최강 스트레이트이며, 12·13·14·15·1도 가능합니다.</p></div><button className="primary full" onClick={()=>setRules(false)}>한 판 해 볼까요?</button></section></div>}
- <footer>TURNTALE · 턴테일 <span>비공식 플레이 테이블 · 0.3.8</span></footer>
+ <footer>TURNTALE · 턴테일 <span>비공식 플레이 테이블 · 0.3.9</span></footer>
  </main>;
 }

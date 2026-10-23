@@ -484,13 +484,71 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 /* Menu → room-only pause → dark dissolve → game. Keep the room art mounted. */
 .turntale .title-content,.turntale .menu-profile,.turntale .title-version,.turntale .setup-shade{transition:opacity .7s ease,filter .7s ease}
 .turntale[data-entrance="menu-out"] .title-content,.turntale[data-entrance="menu-out"] .menu-profile,.turntale[data-entrance="menu-out"] .title-version,.turntale[data-entrance="menu-out"] .setup-shade,
-.turntale[data-entrance="room-hold"] .title-content,.turntale[data-entrance="room-hold"] .menu-profile,.turntale[data-entrance="room-hold"] .title-version,
-.turntale[data-entrance="darken"] .title-content,.turntale[data-entrance="darken"] .menu-profile,.turntale[data-entrance="darken"] .title-version{opacity:0;filter:blur(3px);pointer-events:none}
-.game-entrance-veil{position:fixed;inset:0;z-index:1000;background:#080c11;opacity:0;pointer-events:none}
-.game-entrance-veil.entrance-darken{animation:entrance-darken .4s ease-in both}
-.game-entrance-veil.entrance-game-in{animation:entrance-reveal .65s ease-out both}
-@keyframes entrance-darken{from{opacity:0}to{opacity:1}}
-@keyframes entrance-reveal{from{opacity:1}to{opacity:0}}
-@media(prefers-reduced-motion:reduce){.castle-window-light{animation:none;opacity:.4}.turntale .tutorial-hand>button,.turntale .title-content,.turntale .menu-profile,.turntale .title-version,.turntale .setup-shade{transition:none}.game-entrance-veil{animation:none!important;display:none}}
+.turntale[data-entrance="room-hold"] .title-content,.turntale[data-entrance="room-hold"] .menu-profile,.turntale[data-entrance="room-hold"] .title-version{opacity:0;filter:blur(3px);pointer-events:none}
+@media(prefers-reduced-motion:reduce){.castle-window-light{animation:none;opacity:.4}.turntale .tutorial-hand>button,.turntale .title-content,.turntale .menu-profile,.turntale .title-version,.turntale .setup-shade{transition:none}}
 
 @media(max-width:380px){.turntale .tutorial-hand{gap:8px;padding-inline:8px}}
+
+/* 0.3.9 — visible sky motion, clipped behind the painted window frame. */
+.moon-cloud-drift{animation:moon-cloud-cross 17s -5.5s linear infinite;will-change:transform;opacity:.82}
+.cloud-wisp{animation-duration:26s;animation-delay:-14s;opacity:.38}
+.moon-breath,.window-moonlight{animation:moonlight-through-cloud 17s -5.5s ease-in-out infinite}
+.window-curtain-edge{transform-origin:top right;animation:curtain-soft-sway 7s ease-in-out infinite}
+@keyframes moon-cloud-cross{from{transform:translateX(-380px)}to{transform:translateX(380px)}}
+@keyframes moonlight-through-cloud{0%,24%,78%,100%{opacity:.72}42%,58%{opacity:.08}}
+@keyframes curtain-soft-sway{0%,100%{transform:skewX(-.7deg);opacity:.35}50%{transform:skewX(1.2deg);opacity:.65}}
+
+/* C + A: seated camera approach, grounded shuffle, then the actual playing table. */
+.turntale[data-entrance="approach"] .title-content,.turntale[data-entrance="approach"] .menu-profile,.turntale[data-entrance="approach"] .title-version,
+.turntale[data-entrance="shuffle"] .title-content,.turntale[data-entrance="shuffle"] .menu-profile,.turntale[data-entrance="shuffle"] .title-version,
+.turntale[data-entrance="settle"] .title-content,.turntale[data-entrance="settle"] .menu-profile,.turntale[data-entrance="settle"] .title-version{opacity:0;pointer-events:none}
+.turntale .title-content,.turntale .menu-profile,.turntale .title-version,.turntale .setup-shade{transition-duration:.6s}
+.table-entrance{position:fixed;inset:0;z-index:10000;overflow:hidden;background:#17120f;pointer-events:auto;perspective:1100px;opacity:1}
+.entry-room{position:absolute;inset:0;background:url('/turntale-room-v036.png') center bottom/cover no-repeat;transform-origin:50% 83%;transform:scale(1);transition:transform var(--approach-ms) cubic-bezier(.2,.65,.3,1),opacity .5s ease;will-change:transform}
+.entry-approach .entry-room,.entry-shuffle .entry-room,.entry-settle .entry-room,.entry-game-in .entry-room{transform:scale(1.65)}
+.entry-shuffle .entry-room,.entry-settle .entry-room,.entry-game-in .entry-room{opacity:0}
+.entry-table{position:absolute;inset:-12%;opacity:0;transform:translateY(32%) rotateX(48deg) scale(.85);background:radial-gradient(ellipse at 24% 35%,#b2844a48,transparent 60%),repeating-linear-gradient(94deg,#ffffff04 0,#ffffff04 1px,transparent 1px,transparent 5px),linear-gradient(150deg,#67492f,#49331f 68%,#352416);transform-origin:center 75%;transition:transform var(--approach-ms) cubic-bezier(.2,.65,.3,1),opacity var(--approach-ms) ease;box-shadow:inset 0 0 150px #170b08}
+.entry-approach .entry-table{opacity:1;transform:translateY(0) rotateX(8deg) scale(1);transition-delay:.12s}
+.entry-shuffle .entry-table,.entry-settle .entry-table,.entry-game-in .entry-table{opacity:1;transform:none;transition-duration:.3s}
+.entry-table-rim{position:absolute;inset:17%;border:1px solid #d3a4624d;border-radius:32px;box-shadow:0 0 0 5px #21160e33,inset 0 0 0 7px #e5b36b0a}
+.entry-lamplight{position:absolute;inset:0;background:radial-gradient(ellipse at 10% 15%,#e9a65350,transparent 50%),radial-gradient(ellipse at 100% 10%,#8aa6ec22,transparent 45%);pointer-events:none}
+.entry-tiles{position:absolute;left:50%;top:50%;width:0;height:0;opacity:0;transition:opacity .15s ease}
+.entry-shuffle .entry-tiles,.entry-settle .entry-tiles,.entry-game-in .entry-tiles{opacity:1}
+.entry-tile-slot{position:absolute;width:38px;height:52px;margin:-26px 0 0 -19px;transform:translate(var(--slot-x),var(--slot-y));will-change:transform}
+.entry-ivory-tile{display:block;width:100%;height:100%;padding:3px;border:1px solid #f6eed7;border-radius:6px;background:#f5ecd8;box-shadow:1px 1px 0 #fff8,2px 4px 0 #c4bea8,3px 6px 0 #8b816c,5px 9px 8px #150c0a99}
+.entry-tile-back{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border:1px solid #d7ba7480;border-radius:3px;background:linear-gradient(135deg,#21634e,#103a30);box-shadow:inset 0 0 0 2px #0c2c22,inset 0 0 0 3px #c7ab5e55;color:#d2b572}
+.entry-tile-back .suit-emblem{width:27px;height:27px;opacity:.8}
+.entry-shuffle .entry-tile-slot{animation:seated-tile-shuffle calc(var(--shuffle-ms) - 110ms) var(--tile-delay) cubic-bezier(.22,.65,.3,1) both}
+@keyframes seated-tile-shuffle{0%{transform:translate(var(--scatter-x),var(--scatter-y)) rotate(var(--tile-angle));opacity:0}13%{opacity:1}44%{transform:translate(var(--sweep-x),var(--sweep-y)) rotate(calc(var(--tile-angle) * -.5))}82%{transform:translate(var(--slot-x),calc(var(--slot-y) - 3px)) rotate(-2deg)}100%{transform:translate(var(--slot-x),var(--slot-y)) rotate(0deg);opacity:1}}
+.entry-edge-shade{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 12vw 3vw #0d090866}
+.entry-game-in{animation:seated-table-reveal var(--reveal-ms) ease-in-out both}
+@keyframes seated-table-reveal{from{opacity:1}to{opacity:0}}
+@media(orientation:portrait){.entry-room{background-image:url('/turntale-room-portrait-v036.png');transform-origin:50% 84%}.entry-approach .entry-room,.entry-shuffle .entry-room,.entry-settle .entry-room{transform:scale(1.8)}}
+@media(max-width:380px){.entry-tiles{scale:.87}}
+
+/* Lighting lives underneath every interactive tile and control. */
+.turntale.table-v211.active-table .play-column{position:relative}
+.turntale.table-v211.active-table .play-column>.endgame-atmosphere{position:absolute!important;inset:0;z-index:0;pointer-events:none;overflow:hidden;border-radius:inherit}
+.turntale.table-v211.active-table .play-column>.felt,.turntale.table-v211.active-table .play-column>.hand-panel{position:relative;z-index:1}
+.endgame-atmosphere>div{position:absolute;inset:0;pointer-events:none;transition:opacity 1.2s ease;opacity:0}
+.endgame-vignette{background:radial-gradient(ellipse at 50% 50%,transparent 22%,#080a1470 63%,#030509ed 100%)}
+.endgame-warm-light{background:radial-gradient(ellipse at 8% 42%,#ffc26445,transparent 58%);mix-blend-mode:screen}
+.endgame-cool-light{background:radial-gradient(ellipse at 100% 14%,#9bb9ef29,transparent 57%);mix-blend-mode:screen}
+.endgame-atmosphere[data-level="1"]>.endgame-vignette{opacity:.65}
+.endgame-atmosphere[data-level="2"]>.endgame-vignette{opacity:1}
+.endgame-atmosphere[data-level="1"]>.endgame-warm-light,.endgame-atmosphere[data-level="1"]>.endgame-cool-light{opacity:.5}
+.endgame-atmosphere[data-level="2"]>.endgame-warm-light,.endgame-atmosphere[data-level="2"]>.endgame-cool-light{opacity:.85}
+.endgame-atmosphere[data-level="2"]>.endgame-cast-shadows{opacity:.65;animation:endgame-shadow-flutter 3.8s ease-in-out infinite}
+.endgame-cast-shadows{transform-origin:left 50%}
+.endgame-cast-shadows>i{position:absolute;left:-15%;top:8%;width:135%;height:22%;transform:rotate(-27deg);background:linear-gradient(180deg,transparent,#100e2266,transparent);filter:blur(9px)}
+.endgame-cast-shadows>i:nth-child(2){top:55%;transform:rotate(31deg);height:17%}.endgame-cast-shadows>i:nth-child(3){top:83%;transform:rotate(22deg);height:12%}
+@keyframes endgame-shadow-flutter{0%,100%{transform:skewY(-2deg) scaleX(1);opacity:.45}22%{transform:skewY(3deg) scaleX(1.08);opacity:.7}43%{transform:skewY(-1deg) scaleX(.97);opacity:.35}64%{transform:skewY(2deg) scaleX(1.04);opacity:.6}}
+.turntale{isolation:isolate}
+.turntale>.endgame-room-shade{position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse at 50% 55%,#05081318,#03050cdd);pointer-events:none;opacity:0;transition:opacity 1.2s ease}
+.turntale>.endgame-room-shade[data-level="1"]{opacity:.5}.turntale>.endgame-room-shade[data-level="2"]{opacity:.9}
+.turntale .play-column{transition:box-shadow 1.2s ease}
+.turntale[data-visible="false"] .room-ambience *,.turntale[data-visible="false"] .endgame-atmosphere *{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.moon-cloud-drift,.moon-breath,.window-moonlight,.window-curtain-edge,.endgame-atmosphere[data-level="2"]>.endgame-cast-shadows{animation:none!important}.moon-cloud-drift{transform:translateX(-160px);opacity:.35}.window-moonlight,.moon-breath{opacity:.5}.endgame-atmosphere>div,.turntale .play-column{transition:none}.table-entrance{display:none}}
+
+.table-entrance[data-visible="false"] *{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.turntale>.endgame-room-shade{transition:none}}
