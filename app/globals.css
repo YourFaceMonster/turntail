@@ -857,3 +857,6 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 @keyframes companion-consider{from{transform:rotate(-2deg) translateY(0)}to{transform:rotate(2deg) translateY(-3px)}}
 @media(prefers-reduced-motion:reduce){.world-held-tiles{animation:none}}
 .live-round-table{isolation:isolate}
+body:has(.turntale[data-impact="power"]) .live-table-scene{animation:viewport-power-impact .32s ease-out}
+body:has(.turntale[data-impact="finish"]) .live-table-scene{animation:viewport-finish-impact .62s ease-out}
+@media(prefers-reduced-motion:reduce){body:has(.turntale[data-impact]) .live-table-scene{animation:none!important;translate:0 0}}
