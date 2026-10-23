@@ -124,7 +124,7 @@ function GameEntrance({phase,resume,reduced,visible:pageVisible,game,rotation,on
   <div className="entry-view-rig">
   <div className="entry-room"><div className="entry-room-warmth"/><div className="entry-room-moonlight"/></div>
   <div className="entry-camera">
-  <div className="entry-table"><TableSurface/></div>
+  <div className="entry-table"><TableSurface withRim/></div>
   {!resume&&gpuStatus==='fallback'&&scene&&landings.length===60&&<div className="entry-deck">{cards.map(({landing,width:tileW,height:tileH,poses,depth},i)=>{
    const t=landing.target,kind=landing.item.kind;
    return <div key={i} ref={el=>{cardElements.current[i]=el;}} className={`deal-flying-card deal-${kind}`} style={{width:tileW,height:tileH,'--start-transform':shuffleTransform(poses![0],tileW,tileH,depth,scale,screen.width/2,screen.height/2),'--tile-depth':`${depth}px`,'--target-angle':`${t.angle}deg`,'--target-w':`${t.width}px`,'--target-h':`${t.height}px`,'--end-left':`${t.x-t.width/2}px`,'--end-top':`${t.y-t.height/2}px`,...landing.finish,'--flip-delay':`${ENTRANCE_MS.deal*.82}ms`,zIndex:i+1} as CSSProperties}>
