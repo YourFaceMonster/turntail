@@ -122,3 +122,8 @@
 - Covered lower tiles now use their existing full-size stack container for geometry while retaining the lower tile's own computed finish. Own/opponent/upper targets still require their actual elements.
 - Added regression coverage with zero-size lower layers for 2/3/4 seats and 0/±90° rotation, plus missing-layout guards.
 - Browser motion/touch verification remains unavailable; source integration, type checking and build are verified separately.
+
+## TURNTALE 4.0 — 2026-10-23
+- User approved the completed 0.3.11 experience and designated this release as 4.0.
+- Main menu, in-game header and footer now display 4.0; package version is 4.0.0.
+- Version metadata only; gameplay and animations match the approved 0.3.11 release.
