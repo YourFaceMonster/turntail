@@ -32,7 +32,7 @@ export function* planShuffle(seed:number,viewportWidth:number,viewportHeight:num
     if(tries%32===31)yield;
     const angle=random()*Math.PI*2,d=Math.sqrt(random())*(1-(largest+GAP)/Math.min(rx,ry));
     const p={x:Math.cos(angle)*rx*d,y:Math.sin(angle)*ry*d,angle:(random()-.5)*300};
-    if(points.every((q,j)=>Math.hypot(p.x-q.x,p.y-q.y)>=radii[i]+radii[j]+GAP)){
+    if(points.every((q,j)=>{const dx=p.x-q.x,dy=p.y-q.y,reach=radii[i]+radii[j]+GAP;return Math.abs(dx)>=reach||Math.abs(dy)>=reach||dx*dx+dy*dy>=reach*reach;})){
      points.push(p);found=true;break;
     }
    }
@@ -60,7 +60,9 @@ export function* planShuffle(seed:number,viewportWidth:number,viewportHeight:num
    let fx=-(p.y-vortexY)/ry*turn*2+Math.cos(headings[i]+progress*4)*1.1;
    let fy=(p.x-vortexX)/rx*turn*2+Math.sin(headings[i]+progress*4)*1.1;
    for(let j=0;j<points.length;j++)if(i!==j){
-    const dx=p.x-base[j].x,dy=p.y-base[j].y,d=Math.hypot(dx,dy),reach=radii[i]+radii[j]+largest*.55;
+    const dx=p.x-base[j].x,dy=p.y-base[j].y,reach=radii[i]+radii[j]+largest*.55;
+    if(Math.abs(dx)>=reach||Math.abs(dy)>=reach)continue;
+    const d=Math.hypot(dx,dy);
     if(d<reach&&d>0){const push=(reach-d)/largest*2.5;fx+=dx/d*push;fy+=dy/d*push;}
    }
    if(normal>.72){fx-=p.x/rx*(normal-.72)*14;fy-=p.y/ry*(normal-.72)*14;}
@@ -69,8 +71,10 @@ export function* planShuffle(seed:number,viewportWidth:number,viewportHeight:num
    v.x=vx*.62+fx/n*speed*.38;v.y=vy*.62+fy/n*speed*.38;
    // Deflect along contact normals instead of repeatedly stopping and jittering.
    for(let pass=0;pass<2;pass++)for(let j=0;j<points.length;j++)if(i!==j){
-    const dx=p.x-points[j].x,dy=p.y-points[j].y,d=Math.hypot(dx,dy);
-    if(d>0&&d<radii[i]+radii[j]+GAP+speed*2){
+    const dx=p.x-points[j].x,dy=p.y-points[j].y,reach=radii[i]+radii[j]+GAP+speed*2;
+    if(Math.abs(dx)>=reach||Math.abs(dy)>=reach)continue;
+    const d=Math.hypot(dx,dy);
+    if(d>0&&d<reach){
      const toward=(v.x*dx+v.y*dy)/d;
      if(toward<0){v.x-=dx/d*toward;v.y-=dy/d*toward;}
     }
@@ -79,9 +83,17 @@ export function* planShuffle(seed:number,viewportWidth:number,viewportHeight:num
     const q={x:p.x+v.x*fraction,y:p.y+v.y*fraction,angle:p.angle+spin[i]/FRAMES*envelope*(i%2?-1:1)};
     const inner=1-(largest+GAP)/Math.min(rx,ry);
     if(Math.hypot(q.x/rx,q.y/ry)>inner+1e-9)continue;
-    if(points.every((_,j)=>j===i||(
-     Math.hypot(q.x-points[j].x,q.y-points[j].y)>=radii[i]+radii[j]+GAP-1e-7&&
-     sweptDistance(prior[i],q,prior[j],points[j])>=radii[i]+radii[j]+.5))){points[i]=q;break;}
+    if(points.every((_,j)=>{
+     if(j===i)return true;
+     const reach=radii[i]+radii[j]+GAP-1e-7,dx=q.x-points[j].x,dy=q.y-points[j].y;
+     if(Math.abs(dx)<reach&&Math.abs(dy)<reach&&dx*dx+dy*dy<reach*reach)return false;
+     const sweptReach=radii[i]+radii[j]+.5;
+     if(Math.min(prior[i].x,q.x)-Math.max(prior[j].x,points[j].x)>=sweptReach||
+        Math.min(prior[j].x,points[j].x)-Math.max(prior[i].x,q.x)>=sweptReach||
+        Math.min(prior[i].y,q.y)-Math.max(prior[j].y,points[j].y)>=sweptReach||
+        Math.min(prior[j].y,points[j].y)-Math.max(prior[i].y,q.y)>=sweptReach)return true;
+     return sweptDistance(prior[i],q,prior[j],points[j])>=sweptReach;
+    })){points[i]=q;break;}
    }
   }
   points.forEach((p,i)=>tracks[i].poses.push({...p}));
