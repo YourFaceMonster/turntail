@@ -20,7 +20,7 @@ const appearances=new Set<string>(),names=new Set<string>(),backs=new Set<string
 for(let stage=1;stage<=10;stage++){
  const theme=stageTheme(stage);assert.equal(theme.stage,stage);theme.opponents.forEach(p=>names.add(p.name));
  const hub=renderToStaticMarkup(<StageHub active={game} start={noop} resume={noop} advance={noop} records={noop} abandon={noop} close={noop}/>);assert.equal((hub.match(/class="journey-node /g)||[]).length,10);assert.ok(hub.includes('/turntale-stage-map.png'));
- const face=renderToStaticMarkup(<StageVisuals stage={stage}><TileFace tile={{id:34,n:9,s:2}}/></StageVisuals>);appearances.add(face);assert.ok(face.includes('data-number="9"')&&face.includes('viewBox="0 0 100 132"'));assert.ok(face.includes('x="49" y="79"')&&face.includes('#d4a000'));
+ const face=renderToStaticMarkup(<StageVisuals stage={stage}><TileFace tile={{id:34,n:9,s:2}}/></StageVisuals>);appearances.add(face);assert.ok(face.includes('data-number="9"')&&face.includes('viewBox="0 0 100 132"'));assert.ok(face.includes('x="49" y="79"')&&face.includes('#f6c600'));
  const popup=renderToStaticMarkup(<StageDestinationDialog stage={stage} active={game} start={noop} resume={noop} advance={noop} abandon={noop} close={noop}/>);assert.ok(popup.includes('role="dialog"')&&popup.includes('journey-popup')&&popup.includes(theme.name)&&popup.includes('id="destination-title"'));theme.opponents.forEach(p=>assert.ok(popup.includes(p.name)));
  assert.ok(face.includes('/turntale-stage-materials-v2.webp'),'real material texture is part of the tile body');assert.ok(face.includes('stroke="#111720" stroke-width="2.7"'),'numbers have a dark edge');assert.ok(face.includes('scale(.60)'),'regular suits are enlarged');
  const cell=materialTextureCell(stage,2000,800);assert.ok(cell.x>=0&&cell.x+cell.width<=2000&&cell.y>=0&&cell.y+cell.height<=800);assert.equal(cell.width,400);assert.equal(cell.height,400);
@@ -30,4 +30,4 @@ for(let stage=1;stage<=10;stage++){
 }
 assert.equal(names.size,30);assert.equal(appearances.size,10);assert.equal(backs.size,10);assert.equal(new Set(STAGE_THEMES.map(t=>t.material)).size,10);
 const classic=renderToStaticMarkup(<TileFace tile={{id:1,n:9,s:2}}/>);assert.ok(!classic.includes('stage-material-tile'));
-console.log('PASS: 10 destination popups and map nodes, locked-stage entry guard, texture crops, outlined numbers, enlarged suits, 10 high-contrast secret-neutral backs, mode/save selection and unchanged classic art/progression.');
+console.log('PASS: 10 destination popups and map nodes, locked-stage entry guard, texture crops, outlined numbers, enlarged suits, 10 high-contrast secret-neutral backs, mode/save selection and approved classic layout and unchanged progression.');

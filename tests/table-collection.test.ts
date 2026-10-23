@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {TABLE_COLLECTION_KEY,defaultCollection,readTableCollection,reconcileTableCollection,selectTableSet,saveTableCollection} from '../lib/table-collection.ts';
+import {newStageRun} from '../lib/stage-challenge.ts';
+const data=new Map<string,string>(),storage={getItem:(k:string)=>data.get(k)||null,setItem:(k:string,v:string)=>{data.set(k,v);}};
+assert.deepEqual(readTableCollection(storage),defaultCollection());
+const run={...newStageRun('FIRST'),cleared:3,stage:4},earned=reconcileTableCollection(defaultCollection(),{active:{stageRun:run},records:[]});
+assert.deepEqual(earned.unlocked,[0,1,2,3]);assert.equal(earned.selected,0,'earning does not silently equip a different set');
+assert.throws(()=>selectTableSet(earned,4));
+const selected=selectTableSet(earned,2);saveTableCollection(storage,selected);assert.deepEqual(readTableCollection(storage),selected);
+const restarted=reconcileTableCollection(selected,{active:{stageRun:newStageRun('RETRY')},records:[]});assert.deepEqual(restarted,selected,'new challenge preserves permanently earned sets and equipped set');
+const all=reconcileTableCollection(defaultCollection(),{active:null,records:[{cleared:10},{cleared:5}]});assert.equal(all.unlocked.length,11);assert.equal(selectTableSet(all,10).selected,10);
+storage.setItem(TABLE_COLLECTION_KEY,JSON.stringify({version:1,selected:10,unlocked:[2,-1,'3',999,2]}));assert.deepEqual(readTableCollection(storage),{version:1,selected:0,unlocked:[0,2]});
+storage.setItem(TABLE_COLLECTION_KEY,'broken');assert.deepEqual(readTableCollection(storage),defaultCollection());
+assert.throws(()=>saveTableCollection({setItem:()=>{throw Error('quota');}},selected),'save failures propagate instead of pretending rewards were persisted');
+console.log('PASS: 11 sets, classic fallback, stage clear migration, lock enforcement, explicit equip, persistent unlocks after restart, reload recovery, malformed records and failed-save handling.');

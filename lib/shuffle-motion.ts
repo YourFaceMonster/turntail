@@ -1,7 +1,8 @@
+import {collideTiles,type RigidTile} from './shuffle-contacts.ts';
 export type ShufflePose={x:number,y:number,angle:number};
 export type ShuffleSize={width:number,height:number};
-export type ShuffleTrack={radius:number,poses:ShufflePose[]};
-export type ShuffleScene={width:number,height:number,tracks:ShuffleTrack[]};
+export type ShuffleTrack={radius:number,width?:number,height?:number,poses:ShufflePose[],contacts?:number[]};
+export type ShuffleScene={width:number,height:number,tracks:ShuffleTrack[],contacts?:number};
 const FRAMES=144,GAP=4;
 function rng(seed:number){let state=seed>>>0;return()=>{state=(state+0x6d2b79f5)>>>0;let n=state;n=Math.imul(n^(n>>>15),n|1);n^=n+Math.imul(n^(n>>>7),n|61);return ((n^(n>>>14))>>>0)/4294967296;};}
 /** Minimum centre distance for the WHOLE linear interval, not just its endpoints. */
@@ -43,63 +44,42 @@ export function* planShuffle(seed:number,viewportWidth:number,viewportHeight:num
   rx*=1.12;ry*=1.12;
  }
  if(points.length!==sizes.length)throw Error('Unable to place solid shuffle tiles');
- const tracks=points.map((p,i)=>({radius:radii[i],poses:[{...p}]}));
- const velocity=points.map(()=>({x:0,y:0})),headings=points.map(()=>random()*Math.PI*2),spin=points.map(()=>70+random()*90);
- const sweep=(t:number)=>{return .42*Math.sin(2*Math.PI*t)+.12*Math.sin(4*Math.PI*t);};
+ const physicalWidth=Math.max(...sizes.map(s=>s.width)),physicalHeight=Math.max(...sizes.map(s=>s.height));
+ const tracks:ShuffleTrack[]=points.map((p,i)=>({radius:radii[i],width:physicalWidth,height:physicalHeight,poses:[{...p}],contacts:[]}));
+ const bodies:RigidTile[]=points.map((p,i)=>({...p,width:physicalWidth,height:physicalHeight,vx:0,vy:0,spin:0})),phases=bodies.map(()=>random()*Math.PI*2);
+ let contacts=0;
  for(let frame=1;frame<=FRAMES;frame++){
-  const prior=points.map(p=>({...p})),progress=frame/FRAMES,envelope=Math.sin(Math.PI*progress);
-  const delta=sweep(progress)-sweep((frame-1)/FRAMES),c=Math.cos(delta),s=Math.sin(delta);
-  // Two gentle alternating hand sweeps reverse instead of rotating the pile
-  // like a carousel. Independent vortices mix neighbours between each sweep.
-  const base=prior.map(p=>({x:p.x*c-p.y*s,y:p.x*s+p.y*c,angle:p.angle+delta*180/Math.PI}));
-  points=base.map(p=>({...p}));
-  const order=points.map((_,i)=>(i+frame)%points.length);
-  for(const i of order){
-   const p=base[i],normal=Math.hypot(p.x/rx,p.y/ry),turn=Math.cos(progress*Math.PI*2);
-   const vortexX=(p.x<0?-1:1)*rx*.3,vortexY=Math.sin(progress*Math.PI*2)*ry*.18;
-   let fx=-(p.y-vortexY)/ry*turn*2+Math.cos(headings[i]+progress*5)*1.7;
-   let fy=(p.x-vortexX)/rx*turn*2+Math.sin(headings[i]+progress*5)*1.7;
-   for(let j=0;j<points.length;j++)if(i!==j){
-    const dx=p.x-base[j].x,dy=p.y-base[j].y,reach=radii[i]+radii[j]+largest*.55;
-    if(Math.abs(dx)>=reach||Math.abs(dy)>=reach)continue;
-    const d=Math.hypot(dx,dy);
-    if(d<reach&&d>0){const push=(reach-d)/largest*2.5;fx+=dx/d*push;fy+=dy/d*push;}
-   }
-   if(normal>.72){fx-=p.x/rx*(normal-.72)*14;fy-=p.y/ry*(normal-.72)*14;}
-   const v=velocity[i],vx=v.x*c-v.y*s,vy=v.x*s+v.y*c;
-   const speed=largest*.27*envelope,n=Math.max(1,Math.hypot(fx,fy));
-   v.x=vx*.62+fx/n*speed*.38;v.y=vy*.62+fy/n*speed*.38;
-   // Deflect along contact normals instead of repeatedly stopping and jittering.
-   for(let pass=0;pass<2;pass++)for(let j=0;j<points.length;j++)if(i!==j){
-    const dx=p.x-points[j].x,dy=p.y-points[j].y,reach=radii[i]+radii[j]+GAP+speed*2;
-    if(Math.abs(dx)>=reach||Math.abs(dy)>=reach)continue;
-    const d=Math.hypot(dx,dy);
-    if(d>0&&d<reach){
-     const toward=(v.x*dx+v.y*dy)/d;
-     if(toward<0){v.x-=dx/d*toward;v.y-=dy/d*toward;}
+  const t=frame/FRAMES,envelope=Math.sin(Math.PI*t),drive=largest*.038*envelope;
+  for(let i=0;i<bodies.length;i++){
+   const p=bodies[i],side=p.x<0?-1:1,cx=side*rx*.2,cy=Math.sin(t*Math.PI*2)*ry*.16;
+   const dx=p.x-cx,dy=p.y-cy,d=Math.max(largest,Math.hypot(dx,dy)),turn=Math.cos(t*Math.PI*2+side*.55);
+   const normal=Math.hypot(p.x,p.y)/rx,inward=Math.max(0,normal-.48)*4;
+   const fx=-dy/d*turn+Math.cos(phases[i]+t*5)*.55-p.x/rx*inward;
+   const fy=dx/d*turn+Math.sin(phases[i]+t*5)*.55-p.y/ry*inward;
+   p.vx=p.vx*.95+fx*drive;p.vy=p.vy*.95+fy*drive;p.spin=p.spin*.95+Math.sin(phases[i]+t*7)*.001*envelope;
+   const cap=largest*.24,spd=Math.hypot(p.vx,p.vy);if(spd>cap){p.vx*=cap/spd;p.vy*=cap/spd;}
+   if(t>.84){p.vx*=.84;p.vy*=.84;p.spin*=.78;}
+  }
+  // Four substeps and eight short constraint passes preserve contact while
+  // avoiding tunnelling. This entire simulation is prepared before playback.
+  for(let sub=0;sub<4;sub++){
+   for(const p of bodies){p.x+=p.vx/4;p.y+=p.vy/4;p.angle+=p.spin/4*180/Math.PI;}
+   for(let pass=0;pass<(frame===FRAMES?48:8);pass++){
+    for(let i=0;i<bodies.length;i++)for(let j=0;j<i;j++){
+     const a=bodies[i],b=bodies[j],reach=tracks[i].radius+tracks[j].radius;
+     if(Math.abs(a.x-b.x)>reach||Math.abs(a.y-b.y)>reach)continue;
+     if(collideTiles(a,b)){contacts++;if(pass===0){tracks[i].contacts!.push(frame);tracks[j].contacts!.push(frame);}}
+    }
+    for(let i=0;i<bodies.length;i++){
+     const p=bodies[i],d=Math.hypot(p.x,p.y),limit=rx-tracks[i].radius-2;
+     if(d>limit){const nx=p.x/d,ny=p.y/d;p.x=nx*limit;p.y=ny*limit;const v=p.vx*nx+p.vy*ny;if(v>0){p.vx-=nx*v*1.2;p.vy-=ny*v*1.2;p.spin*=.8;}}
     }
    }
-   for(const fraction of [1,.65,.3,0]){
-    const q={x:p.x+v.x*fraction,y:p.y+v.y*fraction,angle:p.angle+spin[i]/FRAMES*envelope*(i%2?-1:1)};
-    const inner=1-(largest+GAP)/Math.min(rx,ry);
-    if(Math.hypot(q.x/rx,q.y/ry)>inner+1e-9)continue;
-    if(points.every((_,j)=>{
-     if(j===i)return true;
-     const reach=radii[i]+radii[j]+GAP-1e-7,dx=q.x-points[j].x,dy=q.y-points[j].y;
-     if(Math.abs(dx)<reach&&Math.abs(dy)<reach&&dx*dx+dy*dy<reach*reach)return false;
-     const sweptReach=radii[i]+radii[j]+.5;
-     if(Math.min(prior[i].x,q.x)-Math.max(prior[j].x,points[j].x)>=sweptReach||
-        Math.min(prior[j].x,points[j].x)-Math.max(prior[i].x,q.x)>=sweptReach||
-        Math.min(prior[i].y,q.y)-Math.max(prior[j].y,points[j].y)>=sweptReach||
-        Math.min(prior[j].y,points[j].y)-Math.max(prior[i].y,q.y)>=sweptReach)return true;
-     return sweptDistance(prior[i],q,prior[j],points[j])>=sweptReach;
-    })){points[i]=q;break;}
-   }
+   yield;
   }
-  points.forEach((p,i)=>tracks[i].poses.push({...p}));
-  yield;
+  bodies.forEach((p,i)=>tracks[i].poses.push({x:p.x,y:p.y,angle:p.angle}));
  }
- return {width:rx*2,height:ry*2,tracks};
+ return {width:rx*2,height:ry*2,tracks,contacts};
 }
 /** Piecewise linear interpolation matches WAAPI; swept checks cover the in-betweens. */
 export function sampleShufflePose(poses:ShufflePose[],progress:number):ShufflePose{
@@ -109,33 +89,9 @@ export function sampleShufflePose(poses:ShufflePose[],progress:number):ShufflePo
 /** Close view uses actual measured tile dimensions; only the observer zooms. */
 export function frameShuffle(_scene:ShuffleScene,_width:number,_height:number){return 1;}
 export function overviewScale(scene:Pick<ShuffleScene,'width'|'height'>,width:number,height:number){return Math.min(1,width*.9/(scene.width+32),height*.78/(scene.height+32));}
-/** All 60 backs share these timestamps. Skip redundant frames only when the
- * interpolated motion remains close to the original and solid bodies clear. */
-export function shuffleFrameIndices(scene:ShuffleScene){
- const tracks=scene.tracks,last=(tracks[0]?.poses.length??1)-1,indices=[0];
- if(!tracks.length)return indices;
- const allowedError=Math.min(6,Math.min(...tracks.map(t=>t.radius))*.12);
- const safe=(a:number,b:number)=>{
-  for(let i=0;i<tracks.length;i++){
-   const track=tracks[i],p=track.poses;
-   for(let frame=a+1;frame<b;frame++){
-    const t=(frame-a)/(b-a),point=p[frame];
-    if(Math.hypot(point.x-p[a].x-(p[b].x-p[a].x)*t,point.y-p[a].y-(p[b].y-p[a].y)*t)>allowedError)return false;
-   }
-   for(let j=0;j<i;j++){
-    const other=tracks[j];
-    if(sweptDistance(p[a],p[b],other.poses[a],other.poses[b])<track.radius+other.radius+.5)return false;
-   }
-  }
-  return true;
- };
- for(let start=0;start<last;){
-  let end=Math.min(last,start+3);
-  while(end>start+1&&!safe(start,end))end--;
-  indices.push(end);start=end;
- }
- return indices;
-}
+/** Preserve each contact timestamp for both GPU and compositor playback. */
+export function shuffleFrameIndices(scene:ShuffleScene){return Array.from({length:scene.tracks[0]?.poses.length||1},(_,i)=>i);}
+
 export function shuffleKeyframes(poses:ShufflePose[],width:number,height:number,depth:number,scale:number,cx:number,cy:number,indices?:readonly number[]){
  return (indices??poses.map((_,i)=>i)).map(i=>({offset:i/(poses.length-1),transform:shuffleTransform(poses[i],width,height,depth,scale,cx,cy)}));
 }
