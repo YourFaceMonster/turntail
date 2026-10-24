@@ -11,7 +11,7 @@ export function stagePreviewLayout(width:number,height:number,above=false){
   const geometry=furnitureGeometry(diameter,cx,cy,stage);points.push(...geometry.cap,...geometry.faces.flatMap(f=>f.points));
   if(!above)for(const [index,p] of STAGE_THEMES[stage-1].opponents.slice(0,2).entries()){
    const seat=entranceSeatLayout(diameter,cx,cy,index,2,true,stage,{width,height,overview},p.portrait),y=seat.top+seat.height;
-   for(const x of [seat.left,seat.left+seat.width])for(const z of [-seat.support,seat.height-seat.support])points.push({x,y,z});
+   for(const x of [seat.left-seat.width*.02,seat.left+seat.width*1.02])for(const z of [-seat.support-seat.height*.02,seat.height*1.02-seat.support])points.push({x,y,z});
   }
  }
  const tilt=above?0:SEATED_TILT;

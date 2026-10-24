@@ -31,7 +31,7 @@ import {endgameLevel,ENTRANCE_MS,entranceDuration,nextEntrance,concealLiveTiles,
 import {shuffleSound} from '../lib/atmosphere-audio';
 import {playTileSound,type TileSoundDetail,type TileSoundKind} from '../lib/tile-audio';
 import Tutorial from './components/Tutorial';
-import {shouldShowPlayNotice} from '../lib/play-notices';
+import {shouldShowPlayNotice,playReviewDuration} from '../lib/play-notices';
 import TableNotice from './components/TableNotice';
 import HighScores from './components/HighScores';
 import {syncPersonalScores} from '../lib/score-sync';
@@ -117,7 +117,7 @@ export default function Home(){
  function chooseOrientation(next:"portrait"|"landscape"){armAudio();flyingIds.current.clear();setFlair(null);setFlights([]);setPlayedSize(null);setLayout(next);try{screen.orientation?.unlock?.();}catch{}}
  const [clock,setClock]=useState(0),[flair,setFlair]=useState<{id:string,label:string,red:boolean,two:boolean,rally:number}|null>(null);
  const openingReview=!!game&&game.phase==="playing"&&game.lastEvent?.type==="deal"&&clock<(game.turnReadyAt||0);
- const reviewing=!!game&&clock<(game.turnReadyAt||0),watchingPlay=reviewing&&game?.lastEvent?.type==="play";
+ const reviewing=!!game&&clock<(game.turnReadyAt||0),watchingPlay=reviewing&&game?.lastEvent?.type==="play"&&game.lastEvent.showNotice!==false;
  const leadReview=!!game&&game.phase==="playing"&&!game.trick.length&&game.lastEvent?.type!=="deal"&&reviewing;
  useEffect(()=>{if(entrance!=="idle"||!pageVisible)return;setClock(Date.now());if(!game||Date.now()>=Math.max(game.turnReadyAt||0,game.turnDeadline||0))return;const timer=setInterval(()=>setClock(Date.now()),80);return()=>clearInterval(timer);},[game?.turnReadyAt,game?.turnDeadline,entrance,pageVisible]);
  useEffect(()=>{if(!flair)return;const timer=setTimeout(()=>setFlair(null),2250);return()=>clearTimeout(timer);},[flair?.id]);
@@ -165,7 +165,7 @@ export default function Home(){
    const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
    flyingIds.current=new Set(reduce?[]:fs.map(f=>f.id));if(!reduce)setFlights(fs);
    const noticeRound=`${next.code}:${next.round}`;if(routineNotices.current.round!==noticeRound)routineNotices.current={round:noticeRound,seen:new Set<number>()};
-   const show=shouldShowPlayNotice(routineNotices.current.seen,ev.tiles?.length||1);
+   const fallbackShow=shouldShowPlayNotice(routineNotices.current.seen,ev.tiles?.length||1),show=ev.showNotice??fallbackShow;setBurst('');
    const red=isRedTwoSingle(ev.tiles||[]),two=(ev.tiles||[]).some(t=>t.n===2),rally=ev.rally||1;pendingFlair.current={id:ev.id,label:red?"빨간 2":ev.label||"싱글",red,two,rally,show};setFlair(reduce&&show?pendingFlair.current:null);if(reduce){landImpact(next);}
    if(show&&((ev.tiles?.length||0)>=3||red)){setBurst(ev.label||"NICE PLAY");setTimeout(()=>setBurst(""),2250);}playTension(rally,red);
   }else if(ev.type==="draw"){
@@ -180,12 +180,12 @@ export default function Home(){
  const ref=stageRect(document.querySelector('[data-hand-area] .tile.face')),h=ref?.height||f.sh||48,w=ref?.width||f.sw||36.48,board=stageRect(document.querySelector('.floor-stage'));
  return [{...f,ready:true,sw:w,sh:h,ex:f.who===current.current?.me?r.x:r.x+r.width/2-w/2,ey:f.who===current.current?.me?r.y:r.y+r.height/2-h/2,cx:(board?board.x+board.width/2:r.x)-w/2,cy:(board?board.y+board.height/2:r.y)-h/2}];}));},[flights]);
  function playTension(rally:number,red:boolean){const ctx=audio.current;if(!ctx||!preferences.current.sound||(!red&&rally<3))return;try{const now=ctx.currentTime;const notes=red?[196,392,587.33,783.99]:[110+Math.min(rally,10)*5,110+Math.min(rally,10)*5];notes.forEach((freq,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=red?"triangle":"sine";osc.frequency.value=freq;const at=now+i*(red?.11:.19);gain.gain.setValueAtTime(.0001,at);gain.gain.exponentialRampToValueAtTime(red?.055:.045,at+.025);gain.gain.exponentialRampToValueAtTime(.0001,at+(red?.65:.15));osc.connect(gain);gain.connect(effectOutput(ctx));osc.start(at);osc.stop(at+.75);});}catch{}}
- function finishFlight(f:Flight){flyingIds.current.delete(f.id);if(f.kind==="play"&&!flyingIds.current.size){const next=current.current;if(next&&next.lastEvent?.id===pendingFlair.current?.id){const ready=Date.now()+REVIEW_MS;next.turnReadyAt=Math.max(next.turnReadyAt,ready);setClock(Date.now());setGame({...next});setFlair(pendingFlair.current?.show?pendingFlair.current:null);landImpact(next);}}setFlights(all=>all.filter(x=>x.id!==f.id));}
+ function finishFlight(f:Flight){flyingIds.current.delete(f.id);if(f.kind==="play"&&!flyingIds.current.size){const next=current.current;if(next&&next.lastEvent?.id===pendingFlair.current?.id){const ready=Date.now()+(pendingFlair.current?.show?REVIEW_MS:0);next.turnReadyAt=Math.max(next.turnReadyAt,ready);setClock(Date.now());setGame({...next});setFlair(pendingFlair.current?.show?pendingFlair.current:null);landImpact(next);}}setFlights(all=>all.filter(x=>x.id!==f.id));}
  function accept(data:{game?:View,revision:number}){
   if(!data.game||data.revision<seen.current)return;const next=data.game,prior=current.current;
   if(next.lastEvent?.type==="deal"&&prior?.lastEvent?.id!==next.lastEvent.id&&Date.now()-(next.lastEvent.at||0)<DEAL_REVIEW_MS)next.turnReadyAt=Math.max(next.turnReadyAt,Date.now()+DEAL_REVIEW_MS);
   if(prior&&next.lastEvent?.id===prior.lastEvent?.id)next.turnReadyAt=Math.max(next.turnReadyAt,prior.turnReadyAt);
-  else if(prior&&["play","draw"].includes(next.lastEvent?.type||""))next.turnReadyAt=Math.max(next.turnReadyAt,Date.now()+(next.lastEvent?.type==="play"?PLAY_REVIEW_MS:DRAW_TRAVEL_MS));
+  else if(prior&&["play","draw"].includes(next.lastEvent?.type||""))next.turnReadyAt=Math.max(next.turnReadyAt,Date.now()+(next.lastEvent?.type==="play"?playReviewDuration(next.lastEvent):DRAW_TRAVEL_MS));
   if(next.phase==='ended'&&next.result&&!next.stageRun&&scoreSeen.current!==next.result.id){scoreSeen.current=next.result.id;
    const before=readJSON<HighScore[]>('turntale-highscores',[]),added=scoreEntries(next.result,next.me,next.practice?'single':'multi',next.capacity),merged=mergeScoreHistory(before,added);safeSet('turntale-highscores',JSON.stringify(merged));setScores(merged);if(next.practice&&added.length)void syncPersonalScores(profile.current,next.players[next.me].name,merged).catch(()=>{});
    const lines=added.flatMap(r=>{const prior=topScores(before,r.mode,r.size,r.kind),after=topScores(merged,r.mode,r.size,r.kind),at=after.findIndex(x=>x.id===r.id);return at<0?[]:[ `개인 ${r.kind==='ten'?'10판 합산':'단판'} ${!prior.length||r.score>prior[0].score?'NEW HIGH SCORE!':`TOP 10 · ${at+1}등`}`];});setAward(lines.join(' · '));
@@ -361,8 +361,9 @@ export default function Home(){
  const floorGestures=useTileGestures({kind:'floor',enabled:!!myTurn&&!busy&&!!game?.trick.length,rotation:gestureRotation,contextKey:gestureContext,
   canStart:()=>false,canCommit:index=>!!game?.stacks[index]?.available,
   onTap:index=>{armAudio();feel();setPick(pick===index?null:index);setSelected([]);},onCommit:takeFloorTile});
- const handGestures=useTileGestures({kind:'hand',enabled:!!myTurn&&!busy,rotation:gestureRotation,contextKey:`${gestureContext}:${selectionKey}:${sortBy}`,
-  canStart:id=>selected.includes(id),canCommit:id=>!!legal&&selected.includes(id),
+ function submitSingleTile(id:number){const tile=hand.find(t=>t.id===id);if(!myTurn||busy||pending.current||!tile||!beats([tile],game?.trick||[]))return;armAudio();feel('submit');void request('play',{ids:[id]});}
+ const handGestures=useTileGestures({kind:'hand',enabled:!!myTurn&&!busy,rotation:gestureRotation,contextKey:`${gestureContext}:${selectionKey}:${sortBy}`,tapContextKey:`${gestureContext}:${sortBy}`,
+  canStart:id=>selected.includes(id),canCommit:id=>!!legal&&selected.includes(id),canDoubleCommit:id=>selected.length<=1&&hand.some(t=>t.id===id&&beats([t],game?.trick||[])),onDoubleCommit:submitSingleTile,
   onTap:id=>{if(!playableIds.has(id))return;armAudio();feel();setSelected(old=>tapTileSelection(old,id,options,game?.trick.length||0,selectionMode));setPick(null);},onCommit:submitTiles});
  const optionTitle=(o:typeof options[number])=>o.tiles.length===1?`${suits[o.tiles[0].s]} ${o.tiles[0].n}`:o.tiles.length<5?`${o.tiles[0].n} · ${o.label}`:`${o.tiles.map(t=>t.n).join('·')}`;
  function chooseGroup(group:typeof options){if(!myTurn||busy)return;armAudio();feel();const at=group.findIndex(o=>o.id===selectionKey),next=group[(at+1)%group.length];setSelectionMode(next.tiles.length);setSelected(next.tiles.map(t=>t.id));setPick(null);}

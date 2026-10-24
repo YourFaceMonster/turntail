@@ -1,7 +1,7 @@
 'use client';
 import {useEffect,useRef,type PointerEvent,type MouseEvent,type DragEvent} from 'react';
 import {tableGestureDelta,tileSwipeReady,isTileDoubleTap,type TileGestureKind,type TileTap} from '../../lib/tile-gestures';
-type Config={kind:TileGestureKind,enabled:boolean,rotation:number,contextKey:string,canStart:(id:number)=>boolean,canCommit:(id:number)=>boolean,onTap:(id:number)=>void,onCommit:(id:number)=>void};
+type Config={kind:TileGestureKind,enabled:boolean,rotation:number,contextKey:string,tapContextKey?:string,canDoubleCommit?:(id:number)=>boolean,onDoubleCommit?:(id:number)=>void,canStart:(id:number)=>boolean,canCommit:(id:number)=>boolean,onTap:(id:number)=>void,onCommit:(id:number)=>void};
 type Drag={id:number,pointer:number,x:number,y:number,at:number,height:number,moved:boolean,context:string,button:HTMLButtonElement,tiles:HTMLElement[]};
 /** One pointer owns a gesture; click and swipe share the existing guarded actions. */
 export default function useTileGestures(config:Config){
@@ -9,7 +9,8 @@ export default function useTileGestures(config:Config){
  const drag=useRef<Drag|null>(null),tap=useRef<TileTap|null>(null),blocked=useRef<{id:number,until:number}|null>(null);
  function clear(){const d=drag.current;drag.current=null;if(!d)return;for(const tile of d.tiles){delete tile.dataset.tileDragging;delete tile.dataset.swipeReady;tile.style.removeProperty('--gesture-x');tile.style.removeProperty('--gesture-y');}try{if(d.button.hasPointerCapture(d.pointer))d.button.releasePointerCapture(d.pointer);}catch{}}
  function cancel(){const d=drag.current;if(d)blocked.current={id:d.id,until:Date.now()+500};tap.current=null;clear();}
- useEffect(()=>{cancel();},[config.contextKey,config.enabled]);
+ useEffect(()=>{clear();},[config.contextKey]);
+ useEffect(()=>{cancel();},[config.tapContextKey??config.contextKey,config.enabled]);
  useEffect(()=>{const hidden=()=>{if(document.hidden)cancel();},extra=(e:globalThis.PointerEvent)=>{if(drag.current&&e.pointerId!==drag.current.pointer)cancel();};window.addEventListener('blur',cancel);window.addEventListener('pagehide',cancel);window.addEventListener('pointerdown',extra,true);document.addEventListener('visibilitychange',hidden);return()=>{window.removeEventListener('blur',cancel);window.removeEventListener('pagehide',cancel);window.removeEventListener('pointerdown',extra,true);document.removeEventListener('visibilitychange',hidden);clear();};},[]);
  return {bind:(id:number)=>({
   onPointerDown:(e:PointerEvent<HTMLButtonElement>)=>{
@@ -42,7 +43,7 @@ export default function useTileGestures(config:Config){
    if(blocked.current?.id===id&&Date.now()<blocked.current.until){e.preventDefault();e.stopPropagation();blocked.current=null;return;}
    const c=latest.current;if(!c.enabled)return;
    const next={id,at:e.timeStamp,x:e.clientX,y:e.clientY};
-   if(c.kind==='floor'&&e.detail>0&&isTileDoubleTap(tap.current,next)&&c.canCommit(id)){tap.current=null;c.onCommit(id);return;}
+   if(e.detail>0&&isTileDoubleTap(tap.current,next)&&(c.kind==='floor'?c.canCommit(id):c.canDoubleCommit?.(id))){tap.current=null;(c.kind==='floor'?c.onCommit:c.onDoubleCommit)?.(id);return;}
    tap.current=e.detail>0?next:null;c.onTap(id);
   },
   onContextMenu:(e:MouseEvent<HTMLButtonElement>)=>{if(drag.current)e.preventDefault();},

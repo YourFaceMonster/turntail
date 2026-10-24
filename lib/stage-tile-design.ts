@@ -12,4 +12,4 @@ export const STAGE_TILE_DESIGNS:readonly StageTileDesign[]=[
  {name:'잿불 제단 · 흑요석 절단면',x:47,y:67,size:53,font:'Arial,sans-serif',suit:{x:74,y:112,scale:.53},panel:'M17 14L75 7L93 40L80 91L34 101L7 68ZM24 23L69 17L83 43L72 83L37 91L17 65Z'},
  {name:'붉은 세계수 · 용의 환문',x:50,y:69,size:55,font:'Georgia,serif',suit:{x:50,y:113,scale:.48},panel:'M16 83Q1 53 16 25L12 9L31 15Q50 1 69 15L88 9L84 25Q99 53 84 83L71 96L66 85Q90 54 74 29Q50 10 26 29Q10 54 34 85L29 96Z'}
 ];
-export function stageTileDesign(stage:number){return STAGE_TILE_DESIGNS[Math.max(0,Math.min(9,stage-1))];}
+export function stageTileDesign(stage:number,special=false){const design=STAGE_TILE_DESIGNS[Math.max(0,Math.min(9,stage-1))];return special?{...design,name:design.name+' · 특별한 2',x:26,y:39,size:34,font:'Georgia,serif',suit:{x:51,y:85,scale:.98}}:design;}

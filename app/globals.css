@@ -1359,3 +1359,27 @@ html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmo
 
 .scene-preview-geometry>.entry-view-rig{perspective:1000px;perspective-origin:50% 50%;transform:none!important;animation:none!important}
 .scene-preview-world .entry-camera{animation:none!important}
+
+/* 0.5.22: unabridged speech, restrained character motion and readable territories. */
+.turntale.table-v211.active-table.stage-mode .seat-banter{display:block;-webkit-line-clamp:unset;line-clamp:unset;overflow:visible;text-overflow:clip;white-space:normal;font-size:10.5px;line-height:1.22;padding:2px 4px;word-break:keep-all;overflow-wrap:anywhere}
+.turntale.table-v211.active-table.stage-mode .seat-banter[data-long-banter="true"]{font-size:10px}
+.turntale.table-v211.active-table.stage-mode .opponent-status-row{height:auto;min-height:40px;flex-shrink:0}
+.turntale.table-v211.active-table.stage-mode.landscape-table .seat-banter{font-size:9.5px;line-height:1.2}
+.turntale.table-v211.active-table.stage-mode.landscape-table .seat-banter[data-long-banter="true"]{font-size:9px}
+.turntale.table-v211.active-table.stage-mode.landscape-table .opponent-status-row{height:auto;min-height:30px}
+.stage-painted-model{overflow:visible}
+.stage-character-motion{width:100%;height:100%;transform-origin:50% 78%;animation:stage-character-breathe 5s ease-in-out infinite}
+.stage-character-motion>svg{display:block;width:100%;height:100%;overflow:hidden;transform-origin:center}
+@keyframes stage-character-breathe{0%,100%{transform:translateY(0) rotate(-.2deg) scale(1)}50%{transform:translateY(-.65%) rotate(.35deg) scale(1.008)}}
+.table-entrance[data-visible="false"] .stage-character-motion{animation-play-state:paused}
+.scene-preview-world[data-view="above"] .stage-character-motion{animation:none}
+.environment-landscape .environment-distance-drift{animation:painted-air-drift 12s ease-in-out infinite alternate}
+@keyframes painted-air-drift{from{transform:translate3d(-1px,0,0) scale(1.004)}to{transform:translate3d(2px,-2px,0) scale(1.009)}}
+.entry-painted-glaze{animation:painted-light-waver 6s ease-in-out infinite alternate}
+@keyframes painted-light-waver{from{opacity:.58}to{opacity:.9}}
+.table-entrance[data-stage] .intro-speech{font-size:clamp(14px,1.35vw,18px);line-height:1.35;min-height:0;padding:10px 14px}
+.journey-region-boundaries{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;overflow:visible}
+.journey-region-boundaries path{fill:#dfc99005;stroke:#f5deb3b8;stroke-width:1.3;stroke-dasharray:5 4;stroke-linejoin:round}
+.journey-region-boundaries .region-selected{fill:#ffe2a00c;stroke:#fff0c8;stroke-width:1.8;stroke-dasharray:6 4}
+.stage-material-tile .tile-art{shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:auto}
+@media(prefers-reduced-motion:reduce){.stage-character-motion,.environment-landscape .environment-distance-drift,.entry-painted-glaze{animation:none!important}}

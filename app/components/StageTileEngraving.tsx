@@ -13,13 +13,30 @@ function RegionLines({stage}:{stage:number}){
  default:return <><path d="M19 30L9 24L13 14L26 21M81 30L91 24L87 14L74 21M21 45L9 39M79 45L91 39M24 66L13 74M76 66L87 74M34 89L40 99M66 89L60 99"/><path d="M36 20Q50 7 64 20M33 29L40 23M67 29L60 23M15 107L24 102L33 107L24 112ZM67 107L76 102L85 107L76 112Z"/></>;
  }
 }
-/** Ten distinctly carved silhouettes; the four suit colours stay consistent. */
+const TWO_CRESTS=[
+ 'M9 118V48Q8 18 52 9Q92 22 91 47V118L74 126H25Z',
+ 'M8 48L53 7L93 48V112L52 128L8 111ZM17 55L52 22L84 55',
+ 'M9 119Q3 67 24 37Q49 13 87 8Q102 70 78 109L54 128Z',
+ 'M9 115L17 55L56 7L93 50L87 117L53 129ZM25 54L56 22L83 53',
+ 'M8 48L21 18L77 8L93 38V111L77 127H23L8 111ZM17 53L28 28H77L85 51',
+ 'M9 46L54 9L92 24V84Q87 112 52 129Q17 112 9 88Z',
+ 'M16 47Q30 6 78 10Q49 24 40 43M86 23Q105 79 64 121L48 129L22 117Q3 90 8 61',
+ 'M9 46L52 7L91 44L86 119L52 129L15 120ZM22 48L53 22L80 49',
+ 'M8 54L28 14L76 7L94 45L84 116L46 129L12 110ZM22 57L35 28L74 19L84 49',
+ 'M9 48L14 18L33 25L53 7L73 25L90 18L94 49L86 116L70 127L53 120L35 128L17 117Z'
+];
+/** Ordinary faces and the ceremonial number-two faces share their regional material only. */
 export default function StageTileEngraving({stage,s,special=false}:{stage:number,s:number,special?:boolean}){
- const design=stageTileDesign(stage),dark=[2,6,9,10].includes(stage),inlay=['#c7d5eb','#86d8ab','#f7bd70','#ff91a0'][s];
+ const design=stageTileDesign(stage,special),dark=[2,6,9,10].includes(stage),inlay=['#c7d5eb','#86d8ab','#f7bd70','#ff91a0'][s];
+ if(special)return <g data-region-engraving={`${stage}:${s}`} data-special-two={stage} data-number-geometry={design.name} style={dark?{color:inlay}:undefined} stroke="currentColor" strokeLinejoin="round">
+  <path d={TWO_CRESTS[stage-1]} fill="currentColor" fillOpacity=".12" strokeWidth="1.8"/>
+  <path d="M14 113Q52 137 88 113M63 20L68 29L78 27L75 16M68 29L88 32M19 121L25 113M79 121L74 113" fill="none" strokeWidth="1.35"/>
+  <circle cx="26" cy="27" r="19" fill="#fff4d8" fillOpacity={dark?.27:.48} strokeWidth="1.4"/><circle cx="26" cy="27" r="16.5" fill="none" strokeWidth=".65"/>
+  <path d="M51 46L56 40L61 46M19 70L13 77L19 84M83 70L89 77L83 84M45 123L51 117L57 123" fill="none" strokeWidth="1.4"/>
+ </g>;
  return <g data-region-engraving={`${stage}:${s}`} data-number-geometry={design.name} style={dark?{color:inlay}:undefined} stroke="currentColor" strokeLinejoin="round">
   <path d={design.panel} fill="currentColor" fillRule="evenodd" fillOpacity={stage===7?.64:.26} strokeWidth="1.25"/>
   <g fill="none" strokeWidth="1.4" opacity=".9"><RegionLines stage={stage}/></g>
-  {special&&<g fill="none" strokeWidth="1.6" opacity=".72"><path d="M6 23V8H24M76 8H94V23M6 109V125H24M76 125H94V109"/><path d="M8 10L14 16M92 10L86 16M8 123L14 117M92 123L86 117"/></g>}
   <g fill="currentColor" stroke="none" opacity=".68">{Array.from({length:s+1},(_,i)=><circle key={i} cx={10+i*4} cy="128" r=".8"/>)}</g>
  </g>;
 }

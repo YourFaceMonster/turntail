@@ -31,5 +31,5 @@ export default function CharacterBanter({game,enabled}:{game:BanterTable,enabled
  },[enabled,game.code,game.round]);
  useEffect(()=>{setHost(line?document.querySelector(`[data-seat-dialogue="${line.who}"]`):null);},[line]);
  if(!enabled||!line||!host)return null;
- return createPortal(<div className="seat-banter" data-speaker-seat={line.who} data-banter-kind={line.kind} style={{borderColor:seatAccent(line.who)}} role="status" aria-live="polite" title={line.text} key={line.id}>{line.text}</div>,host);
+ return createPortal(<div className="seat-banter" data-speaker-seat={line.who} data-banter-kind={line.kind} data-long-banter={line.text.length>24} style={{borderColor:seatAccent(line.who)}} role="status" aria-live="polite" title={line.text} key={line.id}>{line.text}</div>,host);
 }
