@@ -1,9 +1,12 @@
-import type {Tile} from './game';
-export type ImpactTier='single'|'power'|'finish';
-/** Final play wins precedence over a two or combination. Counts never depend on suit. */
+import {combo,type Tile} from './game';
+export type ImpactTier='single'|'combo'|'power'|'finish';
+/** Feedback follows the visible combination, never a concealed tile. */
 export function playImpact(tiles:readonly Tile[],phase:string):ImpactTier{
- return phase==='ended'?'finish':tiles.length>1||tiles.some(t=>t.n===2)?'power':'single';
+ if(phase==='ended')return 'finish';
+ if(tiles.length===5)return (combo([...tiles])?.key[0]||0)>=4?'finish':'power';
+ if(tiles.some(t=>t.n===2))return 'power';
+ return tiles.length>1?'combo':'single';
 }
 export function impactVibration(tier:ImpactTier):number|number[]{
- return tier==='finish'?[45,35,80,45,120]:tier==='power'?[20,24,32]:6;
+ return tier==='finish'?[38,28,68,32,90]:tier==='power'?[24,22,40]:tier==='combo'?[12,18,18]:6;
 }

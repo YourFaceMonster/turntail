@@ -802,11 +802,11 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
 .classic-tile-face{color:inherit}.classic-tile-face .tile-number,.classic-tile-face .special-number{font-variant-numeric:lining-nums}
 /* Art and lighting describe the destination; the chosen skin describes the tabletop. */
 .entrance-environment{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.environment-library{background:#151d22 url('/turntale-empty-room.webp') center center/cover no-repeat}
+.environment-library{background:#151d22 url('/turntale-room-0513.webp') center center/cover no-repeat}
 .table-entrance>.entry-room{background:#17252b!important;opacity:1!important;animation:none!important}
 .entry-room::after{content:'';position:absolute;inset:0;background:linear-gradient(#090e1720,transparent 48%,#07111655)}
 .entry-ground{background-color:#323c36;mask-image:radial-gradient(ellipse,#000 25%,#000a 60%,transparent 76%)}
-.table-entrance:not([data-stage]) .entry-ground{background-image:url('/turntale-walnut-051.webp');background-size:1254px 1254px;filter:brightness(.55)}
+.table-entrance:not([data-stage]) .entry-ground{background-image:url('/turntale-wood-0513.webp');background-size:1254px 1254px;filter:brightness(.55)}
 .entry-wall{visibility:hidden}
 .environment-water{animation:environment-flow 2.8s linear infinite}.environment-ember{animation:environment-glimmer 3.8s ease-in-out infinite alternate}
 @keyframes environment-flow{to{stroke-dashoffset:-60}}@keyframes environment-glimmer{to{opacity:.2;translate:0 -14px}}
@@ -877,11 +877,11 @@ body:has(.turntale[data-impact="finish"]) .live-table-scene{animation:viewport-f
 .tile.face .classic-tile-face{border-radius:inherit;overflow:hidden}.turntale.table-v211.active-table .tile.face:not(.stage-material-tile){background:#f5efdf!important;box-shadow:inset 0 1px 1px #fff9,0 1.5px 0 #a89d84,0 3px 4px #0005!important}
 .environment-landscape{background-size:cover;background-position:50% 48%;background-repeat:no-repeat}.environment-distance-haze{position:absolute;inset:0;background:linear-gradient(#0813220d,transparent 40%,#050b1338)}.environment-ground-mist{position:absolute;left:-10%;right:-10%;top:48%;height:32%;background:radial-gradient(ellipse,#c2e1e518,transparent 70%);animation:environment-mist-breathe 11s ease-in-out infinite alternate}.environment-lamp-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 12% 52%,#ffc16b15,transparent 32%)}@keyframes environment-mist-breathe{to{translate:4% 1%;opacity:.5}}
 .table-entrance>.entry-room{background:#111b22!important}.live-table-scene>.entrance-environment{opacity:.95}
-.entry-ground{background-image:linear-gradient(#26363166,#17212488),url('/turntale-stone-material-055.webp');background-size:100% 100%,1254px 1254px;mask-image:radial-gradient(ellipse,#000 12%,#0008 48%,transparent 72%);border:0!important}.table-entrance:not([data-stage]) .entry-ground{background-image:linear-gradient(#30231b44,#100e1488),url('/turntale-walnut-051.webp')}
+.entry-ground{background-image:linear-gradient(#26363166,#17212488),url('/turntale-stone-material-055.webp');background-size:100% 100%,1254px 1254px;mask-image:radial-gradient(ellipse,#000 12%,#0008 48%,transparent 72%);border:0!important}.table-entrance:not([data-stage]) .entry-ground{background-image:linear-gradient(#30231b44,#100e1488),url('/turntale-wood-0513.webp')}
 .entry-floor-light{position:absolute;transform:translateZ(calc(var(--support-height)*-1 + .1px));pointer-events:none;background:radial-gradient(ellipse,#ffcc7d1f,transparent 65%)}.entry-floor-light.cool{background:radial-gradient(ellipse,#86bdd629,transparent 65%)}
 .entry-contact-shadow{transform:translateZ(calc(var(--support-height)*-1 + .4px));background:radial-gradient(ellipse,#020608b0 12%,#05080785 35%,#0000 70%);filter:none!important}
-.world-platform-sides{position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none}.world-platform-side{position:absolute;transform-origin:0 0;background-color:var(--world-side);background-image:linear-gradient(#fff2,#0008 95%),url('/turntale-stone-material-055.webp');background-size:100% 100%,500px 500px;background-blend-mode:normal,multiply;backface-visibility:visible;box-shadow:inset 0 1px 1px #fff3,inset 0 -3px 4px #0006;border-inline:0}.world-platform-side.wood{background-image:linear-gradient(#fff1,#0009),url('/turntale-walnut-051.webp');background-size:100% 100%,540px 320px}
-.world-leg-shadow{position:absolute;transform-origin:50% 0;background:linear-gradient(#0007,#0000);filter:blur(5px);border-radius:50%;pointer-events:none}.world-root{position:absolute;transform-origin:0 50%;border-radius:14% 100% 100% 30%;background:linear-gradient(#d8ba7d22,#0005),url('/turntale-walnut-051.webp') center/450px 450px;box-shadow:0 4px 8px #0008,inset 0 2px 3px #d6ba8155}.world-altar-foot{position:absolute;border-radius:14%;background:var(--world-side);clip-path:polygon(15% 0,85% 0,100% 15%,100% 85%,85% 100%,15% 100%,0 85%,0 15%);box-shadow:inset 0 0 0 7px #090e1777}
+.world-platform-sides{position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none}.world-platform-side{position:absolute;transform-origin:0 0;background-color:var(--world-side);background-image:linear-gradient(#fff2,#0008 95%),url('/turntale-stone-material-055.webp');background-size:100% 100%,500px 500px;background-blend-mode:normal,multiply;backface-visibility:visible;box-shadow:inset 0 1px 1px #fff3,inset 0 -3px 4px #0006;border-inline:0}.world-platform-side.wood{background-image:linear-gradient(#fff1,#0009),url('/turntale-wood-0513.webp');background-size:100% 100%,540px 320px}
+.world-leg-shadow{position:absolute;transform-origin:50% 0;background:linear-gradient(#0007,#0000);filter:blur(5px);border-radius:50%;pointer-events:none}.world-root{position:absolute;transform-origin:0 50%;border-radius:14% 100% 100% 30%;background:linear-gradient(#d8ba7d22,#0005),url('/turntale-wood-0513.webp') center/450px 450px;box-shadow:0 4px 8px #0008,inset 0 2px 3px #d6ba8155}.world-altar-foot{position:absolute;border-radius:14%;background:var(--world-side);clip-path:polygon(15% 0,85% 0,100% 15%,100% 85%,85% 100%,15% 100%,0 85%,0 15%);box-shadow:inset 0 0 0 7px #090e1777}
 .table-entrance[data-world-kind="rock"] .entry-table,.table-entrance[data-world-kind="altar"] .entry-table,.table-entrance[data-world-kind="stone"] .entry-table{border:0;box-shadow:none!important}.table-entrance[data-world-kind="stump"] .entry-table{border:0;box-shadow:none!important}.live-table-scene:not([data-world-kind="table"]) .live-round-table{border:0;box-shadow:0 10px 20px #0006}
 .table-surface.surface-stone{background:#374048!important}.table-surface-light{background:radial-gradient(ellipse at 8% 12%,#f4c78918,transparent 46%),radial-gradient(ellipse at 90% 12%,#a6d4eb15,transparent 50%),linear-gradient(150deg,transparent 25%,#02061028)}.table-surface-bevel{position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 2px 2px #eef3df35,inset -2px -3px 4px #03060d55}.surface-region-4 .table-surface-light{background:linear-gradient(122deg,transparent 18%,#bedce51f 38%,transparent 48%),radial-gradient(ellipse at 25% 10%,#b0e2e928,transparent 67%)}.surface-region-9 .table-surface-light{background:linear-gradient(125deg,transparent 15%,#c0c9dc13 43%,transparent 54%),radial-gradient(ellipse at 8% 80%,#da805d18,transparent 35%)}
 /* Both intro paths use the same mesh; CSS solids are a WebGL fallback. */
@@ -1140,6 +1140,54 @@ body:has(.turntale[data-entry-mode="resume"][data-entrance="game-in"]) .live-tab
 .monster-foot-contact{position:absolute;left:19%;right:19%;bottom:1%;height:4%;border-radius:50%;background:radial-gradient(ellipse,#080d1370,transparent 70%)}
 .monster-seat .world-character-caption{top:40%;left:35%;right:35%;font-size:15px;background:#15252db3;transform:translateZ(8px)}
 
-.entry-world-seat.modeled-seat.monster-seat{transform:translateZ(calc(var(--seat-floor)*-1 + var(--monster-lift))) rotateX(-90deg)}
+
 
 .monster-seat .world-character-caption{display:none}
+
+/* 0.5.13: painterly cast seated behind the rim, with natural table occlusion. */
+.entry-world-seat.modeled-seat.monster-seat{transform:translateZ(calc(var(--seat-floor)*-1)) rotateX(-90deg)}
+.entry-world-seat .monster-model{clip-path:inset(0 0 0 0);transform-style:flat}
+.monster-model>img{transform:none}
+.entrance-greeting{position:absolute;left:5%;top:-12%;width:90%;padding:9px 12px;color:#fff5d9;background:#251d16ce;border:1px solid #ecd19c80;border-radius:13px;font-size:17px;line-height:1.4;font-weight:800;box-shadow:0 3px 12px #08070844;opacity:0;animation:opening-greeting var(--greeting-ms) var(--greeting-delay) ease both;pointer-events:none;transform:translateZ(5px)}
+@keyframes opening-greeting{0%{opacity:0;translate:0 4px}12%,85%{opacity:1;translate:0 0}100%{opacity:0;translate:0 -2px}}
+/* Status speech occupies its own reserved row and never overlays playing tiles. */
+.turntale.table-v211.active-table .opponent-status-row{display:flex;align-items:center;gap:7px;width:100%;height:40px;min-height:40px;padding:1px 3px}
+.seat-dialogue{flex:1;min-width:0;text-align:left;align-self:center}
+.seat-banter{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:11px;line-height:1.35;text-align:left;padding:3px 6px;border-left:2px solid;border-radius:5px;background:#1b1d23a6;color:#fff0d2;pointer-events:none;animation:seat-speech-in .18s ease-out}
+.turntale.table-v211.active-table .opponent-status-row .remaining-badge{margin:0 0 0 auto;justify-content:flex-start;gap:4px;text-align:left;min-width:45px;height:34px;min-height:34px;flex:none}
+.turntale.table-v211.active-table .opponent-status-row .remaining-tile{width:28px;height:32px;min-width:28px;min-height:32px;font-size:20px;line-height:1;transform:none}
+.turntale.table-v211.active-table .opponent-status-row .remaining-number{font-size:20px}
+.turntale.table-v211.active-table .opponent-status-row .remaining-badge>small{font-size:9px;max-width:18px;line-height:1.2}
+@keyframes seat-speech-in{from{opacity:0;translate:-3px 0}to{opacity:1;translate:0 0}}
+.turntale.table-v211.active-table.landscape-table .opponent-status-row{height:28px;min-height:28px;gap:3px;padding:0}
+.turntale.table-v211.active-table.landscape-table .seat-banter{font-size:9px;line-height:1.25;padding:1px 4px}
+.turntale.table-v211.active-table.landscape-table .opponent-status-row .remaining-tile{height:24px;min-height:24px;width:24px;min-width:24px}
+.turntale.table-v211.active-table.landscape-table .opponent-status-row .remaining-number{font-size:17px}
+.turntale.table-v211.active-table.landscape-table .opponent-status-row .remaining-badge{height:26px;min-height:26px;min-width:40px}
+.journey-node.available .map-current-badge{background:#ffe5a4!important;color:#38250b!important;border:1px solid #fff4cb;box-shadow:0 2px 12px #d6a72a70;font-size:12px}
+.journey-map-guide .primary{background:linear-gradient(135deg,#ffe4a5,#d9ac55);color:#30200e;border-color:#ffedb8}
+.journey-popup .destination-opponents{display:flex!important;justify-content:center;align-items:center;gap:22px;width:100%;text-align:center}
+.journey-popup .destination-opponents>div{flex:0 1 125px;display:flex;align-items:center;flex-direction:column;min-width:0}
+/* Four weights, with two-axis travel and a small independent roll. */
+.turntale[data-impact="single"] .trick-tiles{animation:none}
+.turntale[data-impact="single"] .trick-current .landed-tile{animation:tile-knock .19s ease-out}
+.turntale[data-impact="combo"] .trick-area{animation:region-knock .26s ease-out}
+.turntale[data-impact="power"]{animation:none}
+.turntale[data-impact="power"] .felt{animation:table-knock .36s ease-out!important}
+body:has(.turntale[data-impact="power"]) .live-table-scene{animation:table-knock .36s ease-out}
+.turntale[data-impact="finish"],body:has(.turntale[data-impact="finish"]) .live-table-scene{animation:scene-knock .52s ease-out}
+@keyframes tile-knock{0%,100%{translate:0 0;rotate:0deg}20%{translate:-1px 2px;rotate:-.8deg}45%{translate:2px -1px;rotate:.5deg}70%{translate:-1px 0;rotate:-.2deg}}
+@keyframes region-knock{0%,100%{translate:0 0;rotate:0deg}15%{translate:-2px 2px;rotate:-.3deg}35%{translate:3px -2px;rotate:.25deg}60%{translate:-2px 1px;rotate:-.1deg}80%{translate:1px -1px}}
+@keyframes table-knock{0%,100%{translate:0 0;rotate:0deg}14%{translate:-4px 3px;rotate:-.2deg}31%{translate:4px -3px;rotate:.2deg}51%{translate:-3px -1px;rotate:-.1deg}72%{translate:2px 2px;rotate:.06deg}88%{translate:-1px 0}}
+@keyframes scene-knock{0%,100%{translate:0 0;rotate:0deg}12%{translate:-6px 4px;rotate:-.3deg}26%{translate:6px -4px;rotate:.3deg}42%{translate:-4px -2px;rotate:-.2deg}59%{translate:3px 3px;rotate:.12deg}76%{translate:-2px -1px;rotate:-.05deg}90%{translate:1px 0}}
+@media(prefers-reduced-motion:reduce){.turntale[data-impact],.turntale[data-impact] .felt,.turntale[data-impact] .trick-area,.turntale[data-impact] .landed-tile,body:has(.turntale[data-impact]) .live-table-scene{animation:none!important;translate:0 0;rotate:0deg}.entrance-greeting{animation:none;opacity:1}.seat-banter{animation:none}}
+
+.table-entrance[data-visible="false"] .entrance-greeting{animation-play-state:paused}
+/* Each leg/shadow pair must retain depth instead of flattening onto z=0. */
+.world-leg-pair{position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none}
+.turntale.table-v211.active-table .opponent-status-row .remaining-number{font-size:20px!important;letter-spacing:-1px;overflow:visible;text-overflow:clip}
+.turntale.table-v211.active-table.landscape-table .opponent-status-row .remaining-number{font-size:17px!important}
+.table-entrance .entry-table{transform:translateZ(1px)!important;isolation:auto!important}
+.table-entrance .entry-world{isolation:isolate;transform-style:flat;z-index:0}
+.table-entrance .entry-table{z-index:1}
+.turntale[data-impact="combo"] .felt.slam-impact,.turntale[data-impact="finish"] .felt.slam-impact{animation:none!important}

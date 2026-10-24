@@ -1,7 +1,7 @@
 export const KOREAN_OPPONENTS=[
- {name:'청돌',title:'느긋한 청도깨비',portrait:0,src:'/monsters/blue-0512.webp',crop:{x:265,y:65,size:550}},
- {name:'불찬',title:'장난꾸러기 불도깨비',portrait:1,src:'/monsters/red-0512.webp',crop:{x:175,y:30,size:680}},
- {name:'돌해',title:'묵직한 해태 수호자',portrait:2,src:'/monsters/haetae-0512.webp',crop:{x:175,y:10,size:680}}
+ {name:'청돌',title:'느긋한 청도깨비',portrait:0,src:'/monsters/blue-0513.webp',crop:{x:265,y:65,size:550}},
+ {name:'불찬',title:'장난꾸러기 불도깨비',portrait:1,src:'/monsters/red-0513.webp',crop:{x:175,y:30,size:680}},
+ {name:'돌해',title:'묵직한 해태 수호자',portrait:2,src:'/monsters/haetae-0513.webp',crop:{x:175,y:10,size:680}}
 ] as const;
 /** Sample without replacement and avoid the previous table where possible. */
 export function chooseKoreanOpponents(count:number,previous:readonly string[]=[],random=()=>crypto.getRandomValues(new Uint32Array(1))[0]/4294967296){

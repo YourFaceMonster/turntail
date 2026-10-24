@@ -66,6 +66,6 @@ export default function TileFace({tile:t,small=false}:{tile:Tile,small?:boolean}
  <TileWear seed={t.id}/><ClassicTileOrnament s={t.s} special={special}/>
  <g stroke={t.s===2?'#8c3e08':undefined} strokeWidth={t.s===2?.65:undefined} paintOrder="stroke fill">
  <text className={special?'special-number':'tile-number'} x="45" y="65" textAnchor="middle" fontFamily="Georgia,serif" fontWeight="700" fontSize={t.n>9?51:60} letterSpacing={t.n>9?-3:-1}>{t.n}</text></g></g>
- <g className="engraved-suit-mark tile-suit-identity" fill={ink} color={ink} stroke={t.s===2?'#8c3e08':undefined} strokeWidth={t.s===2?.65:undefined} paintOrder="stroke fill" data-motif={`${t.s}:${t.n}`} transform={special?'translate(67 100) scale(.52)':'translate(72 106) scale(.58)'}>{special?<SpecialMotif s={t.s} n={t.n}/>:<Motif s={t.s}/>}</g>
+ <g className="engraved-suit-mark tile-suit-identity" fill={ink} color={ink} stroke={t.s===2?'#8c3e08':undefined} strokeWidth={t.s===2?.65:undefined} paintOrder="stroke fill" data-motif={`${t.s}:${t.n}`} transform={`translate(${special?67:72} ${special?100:106}) scale(${(special?.52:.58)*(t.s===1?1.35:t.s===2?.73:1)})`}>{special?<SpecialMotif s={t.s} n={t.n}/>:<Motif s={t.s}/>}</g>
  </svg></span>;
 }

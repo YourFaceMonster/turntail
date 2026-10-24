@@ -59,7 +59,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  useEffect(()=>{
   if(!screen.width)return;
   let cancelled=false;setAssetsReady(false);
-  const paths=[...(stage?[`/environments/stage-${stage}-055.webp`]:['/turntale-empty-room.webp']),'/monsters/blue-0512.webp','/monsters/red-0512.webp','/monsters/haetae-0512.webp','/turntale-ivory-material-055.webp','/turntale-stone-material-055.webp','/turntale-tile-back-gold.svg','/turntale-walnut-051.webp',...(stage||tableSet?['/turntale-stage-portraits.webp']:[]),...(tableSet?['/turntale-stage-materials-v2.webp']:[])];
+  const paths=[...(stage?[`/environments/stage-${stage}-055.webp`]:['/turntale-room-0513.webp']),'/monsters/blue-0513.webp','/monsters/red-0513.webp','/monsters/haetae-0513.webp','/turntale-ivory-material-055.webp','/turntale-stone-material-055.webp','/turntale-tile-back-gold.svg','/turntale-wood-0513.webp',...(stage||tableSet?['/turntale-stage-portraits.webp']:[]),...(tableSet?['/turntale-stage-materials-v2.webp']:[])];
   void Promise.all(paths.map(src=>new Promise<void>(resolve=>{const finish=()=>{clearTimeout(timer);resolve();},timer=setTimeout(finish,6000),img=new Image();img.onload=()=>{void img.decode().catch(()=>{}).then(finish);};img.onerror=finish;img.src=src;}))).then(()=>{if(!cancelled)setAssetsReady(true);});
   return()=>{cancelled=true;};
  },[screen.width>screen.height,!!screen.width,stage,tableSet]);
@@ -192,7 +192,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
   <div className="entry-view-rig">
   <div className="entry-camera" ref={cameraElement} style={{transform:cameraTransform(cameraStart)}}>
   <EntranceWorld diameter={diameter} cx={worldX} cy={worldY} stage={stage||0} supportsOnly/>
-  <EntranceSeats company={company} diameter={diameter} cx={worldX} cy={worldY} stage={stage||0}/>
+  <EntranceSeats greeting={phase==='shuffle'} company={company} diameter={diameter} cx={worldX} cy={worldY} stage={stage||0}/>
   <div className="entry-table" style={{left:worldX-diameter/2,top:worldY-diameter/2,width:diameter,height:diameter,borderRadius:"50%",clipPath:platformGeometry(diameter,stage||0).clip}}><TableSurface stage={stage||tableSet||undefined} withRim/></div>
   {resume&&gpuStatus!=='ready'&&<div className="entry-saved-table">{savedLandings.map(({item,target,baseTarget})=><EntranceSavedTile key={item.key} item={item} target={target} baseTarget={baseTarget}/>)}</div>}
   {!resume&&gpuStatus==='fallback'&&scene&&landings.length===60&&<div className="entry-deck">{cards.map(({landing,width:tileW,height:tileH,poses,depth},i)=>{

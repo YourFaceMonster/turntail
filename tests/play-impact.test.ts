@@ -6,9 +6,12 @@ for(let suit=0;suit<4;suit++){
  assert.equal(playImpact([tile(2,suit)],'playing'),'power');
  assert.equal(playImpact([tile(2,suit)],'ended'),'finish');
 }
-for(const combination of [[tile(7),tile(7,1)],[tile(3),tile(4),tile(5),tile(6),tile(7)]]){
- assert.equal(playImpact(combination,'playing'),'power');assert.equal(playImpact(combination,'ended'),'finish');
-}
-assert.equal(playImpact([tile(3)],'ended'),'finish','winning ordinary tile still gets final feedback');
-assert.equal(impactVibration('single'),6);assert.deepEqual(impactVibration('power'),[20,24,32]);assert.deepEqual(impactVibration('finish'),[45,35,80,45,120]);
-console.log('PASS: ordinary singles, every suit of two, combinations and winning plays have distinct landing feedback with final-play precedence.');
+assert.equal(playImpact([tile(7),tile(7,1)],'playing'),'combo');
+assert.equal(playImpact([tile(3),tile(4,1),tile(5),tile(6),tile(7)],'playing'),'power');
+assert.equal(playImpact([tile(3),tile(4),tile(5),tile(6),tile(7)],'playing'),'finish');
+assert.equal(playImpact([tile(3)],'ended'),'finish');
+assert.equal(impactVibration('single'),6);
+assert.deepEqual(impactVibration('combo'),[12,18,18]);
+assert.deepEqual(impactVibration('power'),[24,22,40]);
+assert.deepEqual(impactVibration('finish'),[38,28,68,32,90]);
+console.log('PASS: four impact tiers, five-card ranks and round-win precedence.');

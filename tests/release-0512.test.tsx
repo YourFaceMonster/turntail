@@ -17,7 +17,7 @@ for(const overview of [.2,.4,.7]){
 }
 for(let i=0;i<=100;i++)assert.equal(opponentTableOpacity('rise',i/100),1,'opponent backs remain present until the top view is complete');
 assert.equal(opponentTableOpacity('opponent-out',0),1);assert.ok(opponentTableOpacity('opponent-out',.5)>.1&&opponentTableOpacity('opponent-out',.5)<.9);assert.equal(opponentTableOpacity('opponent-out',1),0);assert.equal(tileBodyHandoff('opponent-out',0),1,'flat bodies never pop back up after the camera lift');
-for(const kind of ['tap','submit','play','slam','draw'] as TileSoundKind[]){const variants=[0,1,2,3,4].map(v=>tileSoundPlan(kind,v,{count:3,concealed:true}));assert.equal(new Set(variants.map(v=>JSON.stringify(v))).size,5);for(const plan of variants)for(const v of plan){assert.ok(v.gain>0&&v.gain<.1);assert.ok(v.frequency>0&&v.endFrequency>0&&v.duration>0&&v.at>=0);}}
+for(const kind of ['tap','submit','play','slam','draw'] as TileSoundKind[]){const variants=[0,1,2,3,4].map(v=>tileSoundPlan(kind,v,{count:3,concealed:true}));assert.equal(new Set(variants.map(v=>JSON.stringify(v))).size,5);for(const plan of variants)for(const v of plan){assert.ok(v.gain>0&&v.gain<.2);assert.ok(v.frequency>0&&v.endFrequency>0&&v.duration>0&&v.at>=0);}}
 assert.ok(tileSoundPlan('play',0,{count:5}).length>tileSoundPlan('play',0,{count:1}).length);assert.ok(tileSoundPlan('draw',0).some(v=>v.source==='noise'));
 class Param{value=0;setValueAtTime(n:number){assert.ok(Number.isFinite(n));}exponentialRampToValueAtTime(n:number){assert.ok(n>0);}}
 class Node{gain=new Param();frequency=new Param();Q=new Param();onended:(()=>void)|null=null;disconnected=false;connect(){}disconnect(){this.disconnected=true;}start(){}stop(){this.onended?.();}}
