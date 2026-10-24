@@ -1,6 +1,6 @@
 export type StageSetting={kind:'table'|'stone'|'rock'|'stump'|'altar',name:string,height:number,depth:number,edges:number,color:string,wood:boolean};
 const SETTINGS:StageSetting[]=[
- {kind:'table',name:'달빛 서재의 오래된 호두나무 원탁',height:240,depth:25,edges:64,color:'#68442e',wood:true},
+ {kind:'table',name:'달빛 서재의 원탁',height:240,depth:25,edges:64,color:'#68442e',wood:true},
  {kind:'stone',name:'관문의 석조 승부대',height:145,depth:145,edges:40,color:'#ada591',wood:false},
  {kind:'table',name:'야영지 통나무 판',height:205,depth:38,edges:56,color:'#735039',wood:true},
  {kind:'rock',name:'이끼 바위 평상',height:92,depth:92,edges:38,color:'#526a5e',wood:false},

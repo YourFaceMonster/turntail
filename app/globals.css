@@ -1422,11 +1422,3 @@ html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmo
 
 /* Hand growth never changes the floor, played area, or the space reserved for controls. */
 .turntale.active-table .hand-panel{--tile-h:var(--hand-tile-h);--tile-w:var(--hand-tile-w);--table-card-height:var(--hand-tile-h)}
-
-/* Heirloom walnut: thin stringing, a dark rubbed rim, and quiet grazing light. */
-.classic-table-inlay{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
-.surface-region-0 .table-surface-light{background:radial-gradient(ellipse at 27% 16%,#f2c47d0d,transparent 51%),linear-gradient(150deg,#25140c0d,transparent 45%,#0b070824)}
-.surface-region-0 .table-surface-rim{inset:1.4%;border:1px solid #c5a36b55;box-shadow:inset 0 0 0 4px #1b100b80,inset 0 1px 3px #c49b5866}
-.table-surface-viewport.viewport-walnut{background:#382116}
-.viewport-walnut .viewport-surface-light{background:radial-gradient(ellipse at 27% 15%,#ecc27c0b,transparent 55%),radial-gradient(ellipse at 50% 40%,transparent 38%,#0b080c2b)}
-.live-table-scene[data-scene-stage="0"] .live-round-table{border-color:#382416;box-shadow:0 12px 0 #20130d,0 20px 0 #170e0a,0 30px 30px #07060680}

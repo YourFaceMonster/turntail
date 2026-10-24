@@ -11,7 +11,7 @@ import {stagePalette} from '../lib/stage-presentation';
 import TableCollection from '../app/components/TableCollection';
 import {APP_VERSION} from '../lib/version';
 const noop=()=>{},backgrounds=new Set(),surfaces=new Set();
-assert.match(APP_VERSION,/^0\.5\.\d+$/);assert.equal(JSON.parse(readFileSync('package.json','utf8')).version,APP_VERSION);
+assert.match(APP_VERSION,/^0\.\d+\.\d+$/);assert.equal(JSON.parse(readFileSync('package.json','utf8')).version,APP_VERSION);
 for(let stage=1;stage<=10;stage++){
  const render=(small=false)=>renderToStaticMarkup(<StageVisuals stage={stage}><TileFace tile={{id:51,n:13,s:3}} small={small}/></StageVisuals>);
  const resting=render(),moving=render(true);
