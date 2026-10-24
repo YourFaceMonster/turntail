@@ -2,9 +2,9 @@
 import {APP_VERSION} from '../../lib/version';
 import RoomAmbience from './RoomAmbience';
 import {SuitEmblem} from './TileFace';
-import {BookOpen,Settings,Trophy,UserRound,ChevronRight} from 'lucide-react';
+import {BookOpen,Settings,Trophy,Award,UserRound,ChevronRight} from 'lucide-react';
 
-type Props={single:()=>void,multi:()=>void,tutorial:()=>void,scores:()=>void,settings:()=>void,profile:()=>void,resume:()=>void,canResume:boolean,name:string,avatar:string};
+type Props={single:()=>void,multi:()=>void,tutorial:()=>void,scores:()=>void,achievements:()=>void,settings:()=>void,profile:()=>void,resume:()=>void,canResume:boolean,name:string,avatar:string};
 
 export default function MainMenu(p:Props){return <section className="title-screen">
  <div className="title-atmosphere" aria-hidden="true"/>
@@ -24,7 +24,7 @@ export default function MainMenu(p:Props){return <section className="title-scree
   </div>
   <button className="menu-tutorial" onClick={p.tutorial}><BookOpen aria-hidden="true"/>튜토리얼<span aria-hidden="true">✦</span></button>
 
-  <nav className="title-tools" aria-label="메인 메뉴"><button onClick={p.scores}><span><Trophy aria-hidden="true"/></span>기록실</button><button onClick={p.settings}><span><Settings aria-hidden="true"/></span>설정</button></nav>
+  <nav className="title-tools" aria-label="메인 메뉴"><button onClick={p.scores}><span><Trophy aria-hidden="true"/></span>기록실</button><button onClick={p.achievements}><span><Award aria-hidden="true"/></span>업적 수첩</button><button onClick={p.settings}><span><Settings aria-hidden="true"/></span>설정</button></nav>
   <div className="title-ornament" aria-hidden="true"><span/>✧<span/></div>
  </div>
  <small className="title-version">TURNTALE · {APP_VERSION}</small>
