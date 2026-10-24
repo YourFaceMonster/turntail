@@ -1268,3 +1268,10 @@ body:has(.turntale[data-impact="power"]) .live-table-scene{animation:table-knock
 .highscore-board{max-height:42dvh;overflow:auto}
 html[data-game-paused="true"] *,html[data-game-paused="true"] *:before,html[data-game-paused="true"] *:after{animation-play-state:paused!important}
 html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmosphere){visibility:hidden}
+
+/* 0.5.17: gestures begin only on playable tiles, leaving the surrounding UI scrollable. */
+.turntale.active-table .stack:not(:disabled),.turntale.active-table .hand-tile.selected:not(:disabled){touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.turntale.active-table [data-tile-dragging="true"]{translate:var(--gesture-x,0px) var(--gesture-y,0px);z-index:30!important;transition:none!important;cursor:grabbing;will-change:translate;pointer-events:auto}
+.turntale.active-table [data-tile-dragging="true"][data-swipe-ready="true"]{filter:drop-shadow(0 0 7px #ffda7bc0)!important}
+.turntale.active-table .hand:has([data-tile-dragging="true"]),.turntale.active-table .wall:has([data-tile-dragging="true"]){z-index:20;position:relative;overflow:visible}
+.turntale.active-table .hand-panel:has([data-tile-dragging="true"]){overflow:visible;position:relative;z-index:25}
