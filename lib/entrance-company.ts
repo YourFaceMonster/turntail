@@ -21,9 +21,10 @@ export function entranceSeatLayout(diameter:number,cx:number,cy:number,index:num
  const width=monster?height*(stage?1:2/3):size*1.45,x=cx+seat.x*diameter,y=cy+(stage?seat.y-.12:-.53)*diameter,renderSupport=stage?height*.52:support;
  return {left:x-width/2,top:y-height,width,height,support:renderSupport,head:{x,y,z:height*.82-renderSupport}};
 }
-export function greetingPlacement(head:{x:number,y:number,z:number},viewport:CompanyViewport,index:number,count:number,text=''){
+export function greetingPlacement(head:{x:number,y:number,z:number},viewport:CompanyViewport,index:number,count:number,text='',symmetric=false){
  const p=projectEntrancePoint(head.x,head.y,head.z,{width:viewport.width,height:viewport.height,scale:seatedScale(viewport.overview),tilt:SEATED_TILT});
  const width=Math.min(330,Math.max(230,viewport.width*.26),viewport.width-24),leftSide=index<count/2;
- const desired=leftSide?p.x-width-28:p.x+28,left=Math.max(12,Math.min(viewport.width-width-12,desired)),lineCount=Math.max(2,Math.ceil(text.length/Math.max(10,Math.floor((width-32)/15)))),bubbleHeight=lineCount*21+26,top=Math.max(12,Math.min(viewport.height-bubbleHeight-16,p.y-bubbleHeight-64));
- return {left,top,width,tail:Math.max(24,Math.min(width-24,p.x-left)),headX:p.x,headY:p.y};
+ const side=index<(count-1)/2?'left':index>(count-1)/2?'right':'center',tail=symmetric?(side==='left'?24:side==='right'?width-24:width/2):undefined;
+ const desired=symmetric?p.x-tail!:(leftSide?p.x-width-28:p.x+28),left=Math.max(12,Math.min(viewport.width-width-12,desired)),lineCount=Math.max(2,Math.ceil(text.length/Math.max(10,Math.floor((width-32)/15)))),bubbleHeight=lineCount*21+26,top=Math.max(12,Math.min(viewport.height-bubbleHeight-16,p.y-bubbleHeight-64));
+ return {left,top,width,tail:tail??Math.max(24,Math.min(width-24,p.x-left)),side,headX:p.x,headY:p.y};
 }

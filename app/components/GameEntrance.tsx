@@ -26,7 +26,8 @@ import {matchShuffleTracks,planTableDealFlights,dealKeyframes} from '../../lib/d
 import {ENTRANCE_MS,entranceDuration,entranceCurtain,type EntrancePhase} from '../../lib/atmosphere';
 import {measureDealLayout,shuffleTileSize,type DealView,type DealItem,type DealTarget} from '../../lib/deal-animation';
 import {measureSavedTable,type SavedTableItem} from '../../lib/saved-table';
-import EntranceSharpTiles from './EntranceSharpTiles';
+import TableSurfaceViewport from './TableSurfaceViewport';
+import {nativeTableMaterial} from '../../lib/table-material';
 type Props={onWorldDiameter:(diameter:number)=>void,company:{name:string,avatar?:string,points:number,count:number}[],tableSet:number,stage?:number,phase:EntrancePhase,resume:boolean,migrated?:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void};
 function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migrated=false,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback}:Props){
  const [screen,setScreen]=useState({width:0,height:0}),[landings,setLandings]=useState<{item:DealItem,target:DealTarget,finish:Record<string,string>}[]>([]);
@@ -62,7 +63,8 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  useEffect(()=>{
   if(!screen.width)return;
   let cancelled=false;setAssetsReady(false);
-  const paths=[...(stage?[stageEnvironmentImage(stage)]:['/turntale-room-0513.webp']),...(stage?[]:['/monsters/blue-0513.webp','/monsters/red-0513.webp','/monsters/haetae-0513.webp']),'/turntale-ivory-material-055.webp','/turntale-stone-material-055.webp','/turntale-tile-back-gold.svg','/turntale-wood-0513.webp',...(stage?['/stage-company-0516.webp','/stage-table-materials-0518.webp']:[]),...(stage||tableSet?['/turntale-stage-materials-v2.webp']:[])];
+  const surfaceAsset=nativeTableMaterial(stage||tableSet||0);
+  const paths=[...(surfaceAsset?[surfaceAsset]:[]),...(stage?[stageEnvironmentImage(stage)]:['/turntale-room-0513.webp']),...(stage?[]:['/monsters/blue-0513.webp','/monsters/red-0513.webp','/monsters/haetae-0513.webp']),'/turntale-ivory-material-055.webp','/turntale-stone-material-055.webp','/turntale-tile-back-gold.svg','/turntale-wood-0513.webp',...(stage?['/stage-company-0516.webp','/stage-table-materials-0518.webp']:[]),...(stage||tableSet?['/turntale-stage-materials-v2.webp']:[])];
   void Promise.all(paths.map(src=>new Promise<void>(resolve=>{const finish=()=>{clearTimeout(timer);resolve();},timer=setTimeout(finish,6000),img=new Image();img.onload=()=>{void img.decode().catch(()=>{}).then(finish);};img.onerror=finish;img.src=src;}))).then(()=>{if(!cancelled)setAssetsReady(true);});
   return()=>{cancelled=true;};
  },[screen.width>screen.height,!!screen.width,stage,tableSet]);
@@ -211,7 +213,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
   {phase==='shuffle'&&<EntranceGreetings company={company} diameter={diameter} cx={worldX} cy={worldY} stage={stage||0} viewport={{width:screen.width,height:screen.height,overview}}/>}
   {resume&&phase!=='menu-out'&&savedLandings.length>0&&<ResumeGpuTiles rows={savedLandings} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
   {!resume&&!['menu-out','room-hold'].includes(phase)&&scene&&cards.length===60&&<EntranceGpuTiles painterly={!!stage} cards={cards} routes={dealRoutes} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
-  {!resume&&['opponent-out','settle','game-in'].includes(phase)&&<EntranceSharpTiles rows={landings}/>}
+  {!resume&&['opponent-out','settle','game-in'].includes(phase)&&<TableSurfaceViewport className="entry-surface-handoff" circle={{cx:worldX,cy:worldY,diameter}} width={screen.width} height={screen.height} stage={stage||tableSet||0}/>}
   {stage&&['approach','shuffle','deal'].includes(phase)&&<div className="entry-stage-arrival"><span>STAGE {String(stage).padStart(2,'0')}</span><strong>{stageTheme(stage).name}</strong></div>}
   <div className="entry-reunion"><div className="entry-return-note"><span>{resume?'WELCOME BACK':`${company.length+1} PLAYERS · TAKE YOUR SEAT`}</span><strong>{stage?`${stageTheme(stage).name}의 테이블`:resume?'익숙한 테이블로 돌아왔어요':'달빛 서재의 작은 승부'}</strong><small>{resume?migrated?'3인전으로 전환했어요. 스테이지와 점수는 이어지고, 진행 중이던 패는 다시 나눴어요.':'자리에 놓인 패 그대로, 승부를 이어갑니다.':'테이블에 둘러앉아 새로운 승부를 시작합니다.'}</small></div></div>
   {stage&&<div className="entry-painted-glaze"/>}<div className="entry-edge-shade"/>

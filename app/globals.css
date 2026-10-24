@@ -1381,17 +1381,20 @@ html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmo
 .stage-material-tile .tile-art{shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:auto}
 @media(prefers-reduced-motion:reduce){.stage-character-motion,.environment-landscape .environment-distance-drift,.entry-painted-glaze{animation:none!important}}
 
-/* 0.5.23: final-size vector faces gently replace the animated atlas at overhead. */
-.entry-sharp-tiles{position:absolute;inset:0;z-index:6;pointer-events:none;animation:sharp-tiles-in .42s ease-out both}
-.entry-sharp-tile{position:absolute;transform-origin:50% 50%}
-.entry-sharp-tile>.tile{width:100%!important;height:100%!important;margin:0!important;animation:none!important}
-.entry-sharp-tile.sharp-own>.tile{box-shadow:inset 0 1px 0 #fff9}
-.entry-sharp-tile.sharp-upper>.tile{box-shadow:inset 0 1px 0 #fff6}
-@keyframes sharp-tiles-in{from{opacity:0}to{opacity:1}}
 .table-entrance[data-stage] .intro-speech[data-bubble-side="left"]{--bubble-tail:24px!important}
 .classic-character-motion,.regional-character-body{position:absolute;inset:0;transform-style:preserve-3d}
 .classic-character-motion{transform-origin:50% 85%;animation:classic-character-sway 3.6s ease-in-out infinite}
 @keyframes classic-character-sway{0%,100%{transform:translateY(0) rotate(-1deg)}30%{transform:translateY(-1.8%) rotate(.5deg)}65%{transform:translateY(-.5%) rotate(1.2deg)}}
 .entry-world-seat .classic-character-motion .monster-model{clip-path:none;overflow:visible}
 .table-entrance[data-visible="false"] .classic-character-motion{animation-play-state:paused}
-@media(prefers-reduced-motion:reduce){.classic-character-motion,.entry-sharp-tiles{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.classic-character-motion{animation:none!important}}
+
+/* 0.5.24: the tabletop's grain is sampled in screen space after the camera stops. */
+.table-surface-viewport{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;background:#765037;isolation:isolate}
+.table-surface-viewport.viewport-sandstone{background:#b18b54}
+.table-surface-viewport>.table-native-grain{width:100%;height:100%;opacity:1;filter:none;transform:none}
+.viewport-surface-light{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,transparent 45%,#080c1620);pointer-events:none}
+.entry-surface-handoff{z-index:2;animation:native-surface-in .5s ease-out both}
+@keyframes native-surface-in{from{opacity:0}to{opacity:1}}
+.table-entrance:is(.entry-opponent-out,.entry-settle,.entry-game-in) .entry-painted-glaze{animation:none;opacity:0}
+@media(prefers-reduced-motion:reduce){.entry-surface-handoff{animation:none}}
