@@ -1,14 +1,13 @@
 import type {CSSProperties} from 'react';
-import KoreanPortrait from './KoreanPortrait';
-import {StagePortrait} from './StagePortrait';
+import SeatedCharacter from './SeatedCharacter';
+import {tableWorldGeometry} from './EntranceWorld';
 import {opponentSeats} from '../../lib/table-world';
 export type EntranceCompany={name:string,avatar?:string,points:number,count:number}[];
 /** Upright busts and chairs occupy world seats, rather than floating in screen UI. */
-export default function EntranceSeats({company,diameter,cx,cy}:{company:EntranceCompany,diameter:number,cx:number,cy:number}){
- const seats=opponentSeats(company.length),size=Math.max(120,Math.min(220,diameter*.18));
- return <div className="entry-world-company" data-player-count={company.length+1}>{company.map((p,i)=><div key={p.name+i} className="entry-world-seat" data-world-seat={i} style={{left:cx+seats[i].x*diameter-size/2,top:cy+seats[i].y*diameter-size*1.45,width:size,height:size*1.45,'--seat-color':['#526d74','#8c6b58','#61785b'][i]} as CSSProperties}>
- <div className="world-chair"/><div className="world-companion-body"><i/><b/></div>
- <div className="world-companion-portrait">{p.avatar?.startsWith('stage-portrait:')?<StagePortrait index={Number(p.avatar.split(':')[1])}/>:p.avatar?.startsWith('korean-portrait:')?<KoreanPortrait index={Number(p.avatar.split(':')[1])}/>:p.avatar?<img src={p.avatar} alt=""/>:<span>{['🦉','🐯','🐼'][i]}</span>}</div>
- <strong>{p.name}</strong><small>{p.points}점 · {p.count}장</small>
+export default function EntranceSeats({company,diameter,cx,cy,stage=0}:{company:EntranceCompany,diameter:number,cx:number,cy:number,stage?:number}){
+ const seats=opponentSeats(company.length),size=Math.max(150,Math.min(250,diameter*.18)),support=tableWorldGeometry(diameter,cx,cy,stage).height,height=support+size*1.25;
+ return <div className="entry-world-company" data-player-count={company.length+1}>{company.map((p,i)=><div key={p.name+i} className="entry-world-seat modeled-seat" data-world-seat={i} style={{left:cx+seats[i].x*diameter-size/2,top:cy+seats[i].y*diameter-height,width:size,height,'--seat-floor':`${support}px`} as CSSProperties}>
+ <SeatedCharacter name={p.name} avatar={p.avatar} index={i}/>
+ <span className="world-character-caption">{p.name}</span>
  </div>)}</div>;
 }

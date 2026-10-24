@@ -147,7 +147,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  const dealFrames=useMemo(()=>gpuStatus==='fallback'?dealRoutes.map(dealKeyframes):[],[dealRoutes,gpuStatus]);
  useLayoutEffect(()=>{
   if(gpuStatus!=='fallback'||!scene||!cards.length||reduced||resume||!['prepare','approach','shuffle'].includes(phase))return;
-  const indices=shuffleFrameIndices(scene);
+  const indices=shuffleFrameIndices(scene,60);
   running.current=cards.flatMap((card,i)=>{
    const el=cardElements.current[i];if(!el)return [];
    const animation=el.animate(shuffleKeyframes(card.poses!,card.width,card.height,card.depth,scale,screen.width/2,screen.height/2,indices),{duration:ENTRANCE_MS.shuffle,easing:'linear',fill:'both'});
@@ -187,7 +187,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
   <div className="entry-view-rig">
   <div className="entry-camera" ref={cameraElement} style={{transform:cameraTransform(cameraStart)}}>
   <EntranceWorld diameter={diameter} cx={worldX} cy={worldY} stage={stage||0} supportsOnly/>
-  <EntranceSeats company={company} diameter={diameter} cx={worldX} cy={worldY}/>
+  <EntranceSeats company={company} diameter={diameter} cx={worldX} cy={worldY} stage={stage||0}/>
   <div className="entry-table" style={{left:worldX-diameter/2,top:worldY-diameter/2,width:diameter,height:diameter,borderRadius:"50%",clipPath:platformGeometry(diameter,stage||0).clip}}><TableSurface stage={stage||tableSet||undefined} withRim/></div>
   {resume&&gpuStatus!=='ready'&&<div className="entry-saved-table">{savedLandings.map(({item,target,baseTarget})=><EntranceSavedTile key={item.key} item={item} target={target} baseTarget={baseTarget}/>)}</div>}
   {!resume&&gpuStatus==='fallback'&&scene&&landings.length===60&&<div className="entry-deck">{cards.map(({landing,width:tileW,height:tileH,poses,depth},i)=>{

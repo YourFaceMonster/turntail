@@ -94,7 +94,11 @@ export function sampleShufflePose(poses:ShufflePose[],progress:number):ShufflePo
 export function frameShuffle(_scene:ShuffleScene,_width:number,_height:number){return 1;}
 export function overviewScale(scene:Pick<ShuffleScene,'width'|'height'>,width:number,height:number){return Math.min(1,width*.9/(scene.width+32),height*.78/(scene.height+32));}
 /** Preserve each contact timestamp for both GPU and compositor playback. */
-export function shuffleFrameIndices(scene:ShuffleScene){return Array.from({length:scene.tracks[0]?.poses.length||1},(_,i)=>i);}
+export function shuffleFrameIndices(scene:ShuffleScene,maxHz=SHUFFLE_HZ){
+ const last=Math.max(0,(scene.tracks[0]?.poses.length||1)-1),count=Math.min(last,Math.max(1,Math.ceil(ENTRANCE_MS.shuffle/1000*maxHz)));
+ if(!last)return [0];
+ return Array.from({length:count+1},(_,i)=>Math.round(i*last/count));
+}
 
 export function shuffleKeyframes(poses:ShufflePose[],width:number,height:number,depth:number,scale:number,cx:number,cy:number,indices?:readonly number[]){
  return (indices??poses.map((_,i)=>i)).map(i=>({offset:i/(poses.length-1),transform:shuffleTransform(poses[i],width,height,depth,scale,cx,cy)}));

@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {banterPlacement} from '../lib/banter-layout.ts';
+import {opponentTableOpacity} from '../lib/entrance-fade.ts';
+import {seatedScale,SEATED_TILT,entranceCameraState} from '../lib/entrance-camera.ts';
+import {shuffleFrameIndices,shuffleKeyframes,type ShuffleScene} from '../lib/shuffle-motion.ts';
+import SeatedCharacter from '../app/components/SeatedCharacter';
+for(const [left,side] of [[300,'left'],[820,'right']] as const){const card={left,top:75,width:240,height:40},p=banterPlacement(card,{...card,height:80},1363);assert.equal(p.side,side);assert.equal(p.placement,'outside');if(side==='left')assert.ok(p.left+p.width<card.left);else assert.ok(p.left>card.left+card.width);assert.ok(p.left>=0&&p.left+p.width<=1363);}
+for(const left of [10,200]){const card={left,top:65,width:175,height:40},p=banterPlacement(card,{...card,height:80},390);assert.equal(p.placement,'below');assert.ok(p.left>=card.left&&p.left+p.width<=card.left+card.width);assert.ok(p.top>=145);}
+assert.equal(opponentTableOpacity('focus',1),1);assert.equal(opponentTableOpacity('rise',.28),1);assert.equal(opponentTableOpacity('rise',.94),0);
+let last=1;for(let i=0;i<=100;i++){const alpha=opponentTableOpacity('rise',i/100);assert.ok(alpha<=last&&alpha>=0);last=alpha;}assert.ok(opponentTableOpacity('rise',.5)>.2&&opponentTableOpacity('rise',.5)<.9,'opponent backs have a visible gradual fade, independent of body flattening');assert.equal(opponentTableOpacity('settle',0),0);
+assert.equal(SEATED_TILT,64*Math.PI/180);for(const overview of [.2,.4,.7])assert.ok(seatedScale(overview)>Math.max(.46,Math.min(.72,overview*1.3)),'framing starts closer than 0.5.10');
+assert.deepEqual(entranceCameraState('focus',1,.3),entranceCameraState('rise',0,.3));assert.deepEqual(entranceCameraState('rise',1,.3),entranceCameraState('settle',0,.3));
+const scene:ShuffleScene={width:900,height:900,tracks:[{radius:35,poses:Array.from({length:313},(_,i)=>({x:i,y:i/2,angle:i}))}]};const full=shuffleFrameIndices(scene),reduced=shuffleFrameIndices(scene,60);assert.equal(full.length,313);assert.equal(reduced.length,157);assert.equal(reduced[0],0);assert.equal(reduced.at(-1),312);const frames=shuffleKeyframes(scene.tracks[0].poses,42,56,12,1,300,400,reduced);assert.equal(frames[0].offset,0);assert.equal(frames.at(-1)?.offset,1);assert.deepEqual(shuffleFrameIndices({...scene,tracks:[]},60),[0]);
+for(const [name,index] of [['김복례',0],['강태오',4],['홍소리',7]] as const){const html=renderToStaticMarkup(<SeatedCharacter name={name} avatar={`korean-portrait:${index}`} index={0}/>);for(const part of ['torso','head','neck','upper-arm','forearm','hand','knee','shin','chair-back','chair-seat'])assert.ok(html.includes(`figure-${part}`));assert.ok(html.includes('volume-left')&&html.includes('volume-top')&&html.includes('figure-fingers'));assert.ok(html.includes('korean-portrait'));assert.ok(!html.includes('world-companion-body'),'new figures replace the old two-arm silhouette');}
+console.log('PASS: outward desktop bubbles and bounded phone bubbles, gradual opponent fade, closer seated camera with seamless lift, half-size fallback tracks with exact endpoints, and solid clothed seated figures.');
