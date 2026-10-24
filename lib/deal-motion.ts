@@ -72,6 +72,10 @@ export function sampleDealRoute(route:DealRoute,progress:number){
   z:progress<.18?lerp(route.depth*route.scale,route.ceiling,lift):lerp(route.ceiling,route.ground,land),
   opacity:1};
 }
+/** The visible opening slides low across the table instead of flying overhead. */
+export function planTableDealFlights(flights:DealFlight[]):DealRoute[]{
+ return planDealFlights(flights).map(route=>({...route,ceiling:Math.max(route.depth*route.scale,route.ground)+Math.min(24,route.body*1.2)}));
+}
 export function dealKeyframes(route:DealRoute){
  // Include the exact stage boundaries. No keyframe interval straddles stages.
  const stops=[0,.18,.82,1,...Array.from({length:37},(_,i)=>i/36)].sort((a,b)=>a-b).filter((t,i,a)=>!i||t!==a[i-1]);

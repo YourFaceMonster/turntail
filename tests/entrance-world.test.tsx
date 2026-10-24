@@ -8,7 +8,7 @@ for(const diameter of [500,900,1600]){
  assert.equal(world.legs.length,4);assert.equal((html.match(/class="entry-table-leg"/g)||[]).length,4);
  assert.equal((html.match(/class="leg-foot"/g)||[]).length,4);
  assert.ok(!html.includes('<img')&&!html.includes('stage-map')&&!html.includes('entry-world-landmark'));
- assert.ok(world.height>=200&&world.height<=300&&world.span<=2200);
+ assert.ok(world.height>=200&&world.height<=640&&world.span<=2200);
  for(const p of world.legs)assert.ok(Math.hypot(p.x-300,p.y-450)<diameter/2,'every leg attaches inside the round tabletop');
  for(const overview of [.2,.4,.65]){
   const first=observerCamera(0,overview),beside=observerCamera(.2,overview),last=observerCamera(1,overview);

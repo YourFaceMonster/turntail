@@ -10,15 +10,17 @@ import TileFace from './TileFace';
 import TableSurface from './TableSurface';
 import EntranceGpuTiles from './EntranceGpuTiles';
 import EntranceEnvironment from './EntranceEnvironment';
+import EntranceWorld from './EntranceWorld';
+import EntranceSeats from './EntranceSeats';
 import EntranceSavedTile from './EntranceSavedTile';
 import ResumeGpuTiles from './ResumeGpuTiles';
 import {entranceFrameCamera} from '../../lib/entrance-frame';
 import {tileBodyDepth} from '../../lib/tile-body';
 import {platformGeometry,stageSetting} from '../../lib/stage-setting';
-import {tableCircle} from '../../lib/table-world';
+import {tableCircle,opponentTableTarget} from '../../lib/table-world';
 import {observerCameraFrames,cameraTransform} from '../../lib/entrance-camera';
 import {planShuffle,frameShuffle,overviewScale,shuffleDepth,shuffleFrameIndices,shuffleKeyframes,shuffleTransform,type ShuffleScene} from '../../lib/shuffle-motion';
-import {matchShuffleTracks,planDealFlights,dealKeyframes,opponentExit} from '../../lib/deal-motion';
+import {matchShuffleTracks,planTableDealFlights,dealKeyframes} from '../../lib/deal-motion';
 import {ENTRANCE_MS,entranceDuration,entranceCurtain,type EntrancePhase} from '../../lib/atmosphere';
 import {measureDealLayout,shuffleTileSize,type DealView,type DealItem,type DealTarget} from '../../lib/deal-animation';
 import {measureSavedTable,type SavedTableItem} from '../../lib/saved-table';
@@ -131,13 +133,17 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  },[landings,own,screen.width,screen.height,preparing]);
  const scale=scene?frameShuffle(scene,screen.width,screen.height):1;
  const cards=useMemo(()=>{
-  const targets=landings.map(l=>l.item.kind==='opponent'&&own?{...opponentExit(l.target,screen.width,screen.height,90,Number(l.item.key.match(/\d+$/)?.[0]??0),Math.hypot(own.width,own.height)),width:own.width,height:own.height}:l.target);
+  const targets=landings.map(l=>{
+   if(l.item.kind!=='opponent'||!own||!game)return l.target;
+   const [,seatText,ordinalText]=l.item.key.split('-'),seat=Number(seatText),index=game.players.map((_,i)=>i).filter(i=>i!==game.me).indexOf(seat);
+   return opponentTableTarget(index,company.length,Number(ordinalText),game.players[seat].count,{cx:worldX,cy:worldY,diameter},own);
+  });
   const assignments=scene?matchShuffleTracks(scene.tracks.map(track=>{const p=track.poses.at(-1)!;return {...p,x:screen.width/2+p.x*scale,y:screen.height/2+p.y*scale};}),targets):[];
   return landings.map((landing,i)=>{
   const {width,height}=shuffleTileSize(landing.item.kind,landing.target,own!),poses=scene?.tracks[assignments[i]].poses,depth=shuffleDepth(height);
   return {landing:{...landing,target:targets[i]},width,height,poses,depth};
- });},[landings,screen.width,screen.height,own,scene,scale]);
- const dealRoutes=useMemo(()=>scene?planDealFlights(cards.map(card=>{const p=card.poses!.at(-1)!;return {key:card.landing.item.key,kind:card.landing.item.kind,width:card.width,height:card.height,depth:card.depth,scale,source:{...p,x:screen.width/2+p.x*scale,y:screen.height/2+p.y*scale},target:card.landing.target};})):[],[cards,scene,scale,screen.width,screen.height]);
+ });},[landings,screen.width,screen.height,own,scene,scale,worldX,worldY,diameter,company.length,game?.me]);
+ const dealRoutes=useMemo(()=>scene?planTableDealFlights(cards.map(card=>{const p=card.poses!.at(-1)!;return {key:card.landing.item.key,kind:card.landing.item.kind,width:card.width,height:card.height,depth:card.depth,scale,source:{...p,x:screen.width/2+p.x*scale,y:screen.height/2+p.y*scale},target:card.landing.target};})):[],[cards,scene,scale,screen.width,screen.height]);
  const dealFrames=useMemo(()=>gpuStatus==='fallback'?dealRoutes.map(dealKeyframes):[],[dealRoutes,gpuStatus]);
  useLayoutEffect(()=>{
   if(gpuStatus!=='fallback'||!scene||!cards.length||reduced||resume||!['prepare','approach','shuffle'].includes(phase))return;
@@ -180,6 +186,8 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
   <div className="entry-room"><EntranceEnvironment stage={stage}/></div>
   <div className="entry-view-rig">
   <div className="entry-camera" ref={cameraElement} style={{transform:cameraTransform(cameraStart)}}>
+  <EntranceWorld diameter={diameter} cx={worldX} cy={worldY} stage={stage||0} supportsOnly/>
+  <EntranceSeats company={company} diameter={diameter} cx={worldX} cy={worldY}/>
   <div className="entry-table" style={{left:worldX-diameter/2,top:worldY-diameter/2,width:diameter,height:diameter,borderRadius:"50%",clipPath:platformGeometry(diameter,stage||0).clip}}><TableSurface stage={stage||tableSet||undefined} withRim/></div>
   {resume&&gpuStatus!=='ready'&&<div className="entry-saved-table">{savedLandings.map(({item,target,baseTarget})=><EntranceSavedTile key={item.key} item={item} target={target} baseTarget={baseTarget}/>)}</div>}
   {!resume&&gpuStatus==='fallback'&&scene&&landings.length===60&&<div className="entry-deck">{cards.map(({landing,width:tileW,height:tileH,poses,depth},i)=>{

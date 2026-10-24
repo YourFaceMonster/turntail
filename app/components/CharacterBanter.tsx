@@ -2,6 +2,7 @@
 import {useEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {eventBanter,idleBanter,type Banter,type BanterTable} from '../../lib/character-banter';
+import {seatAccent} from '../../lib/seat-presentation';
 
 /** Purely decorative conversation: it never delays a turn or captures a tap. */
 export default function CharacterBanter({game,enabled}:{game:BanterTable,enabled:boolean}){
@@ -29,9 +30,10 @@ export default function CharacterBanter({game,enabled}:{game:BanterTable,enabled
   const timer=setInterval(tick,250);return()=>{clearInterval(timer);queue.current=[];current.current=null;setLine(null);};
  },[enabled,game.code,game.round]);
  useEffect(()=>{
-  if(!line)return;const update=()=>{const r=document.querySelector(`.opponents [data-seat="${line.who}"] .seat-card`)?.getBoundingClientRect();if(r){const width=Math.min(230,window.innerWidth-24),left=Math.max(12,Math.min(window.innerWidth-width-12,r.left+r.width/2-width/2));setPosition({left,top:r.bottom+5,width});}};
-  update();window.addEventListener('resize',update);return()=>window.removeEventListener('resize',update);
+  if(!line)return;const selector=`.opponents [data-seat="${line.who}"]`,card=document.querySelector(`${selector} .seat-card`),panel=document.querySelector(selector);
+  const update=()=>{const r=card?.getBoundingClientRect(),p=panel?.getBoundingClientRect();if(r&&p){const left=Math.max(0,r.left),right=Math.min(window.innerWidth,r.right);setPosition({left,top:p.bottom+3,width:Math.max(1,right-left)});}};
+  update();const observer=new ResizeObserver(update);if(card)observer.observe(card);window.addEventListener('resize',update);return()=>{observer.disconnect();window.removeEventListener('resize',update);};
  },[line]);
  if(!enabled||!line||!position||typeof document==='undefined')return null;
- return createPortal(<div className="character-banter" data-banter-kind={line.kind} style={position} role="status" aria-live="polite" key={line.id}><small>{game.players[line.who].name}</small><span>{line.text}</span></div>,document.body);
+ return createPortal(<div className="character-banter" data-speaker-seat={line.who} data-banter-kind={line.kind} style={{...position,borderColor:seatAccent(line.who)}} role="status" aria-live="polite" key={line.id}><small style={{color:seatAccent(line.who)}}>{game.players[line.who].name}</small><span>{line.text}</span></div>,document.body);
 }

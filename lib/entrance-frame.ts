@@ -12,7 +12,7 @@ export function writeEntranceFrame(data:Float32Array,tiles:EntranceRenderTile[],
  const landed=['focus','rise','settle','game-in'].includes(phase),t=clamp(elapsed/ENTRANCE_MS.deal),remaining=1-tileBodyHandoff(phase,elapsed/Math.max(1,ENTRANCE_MS[phase]));
  for(let i=0;i<tiles.length;i++){
   const tile=tiles[i];let x:number,y:number,z=tile.depth,sx=1,sy=1,angle:number,body=1,flip=0,visible=1;
-  if(landed){x=tile.target.x;y=tile.target.y;angle=tile.target.angle;sx=tile.target.width/tile.width;sy=tile.target.height/tile.height;body=remaining;z=tileBodyDepth(tile.target.height)*(tile.kind==='upper'?2:1)*remaining;flip=tile.kind==='own'||tile.kind==='lower'?Math.PI:0;visible=tile.kind==='opponent'?0:tile.kind==='lower'?remaining:1;}
+  if(landed){x=tile.target.x;y=tile.target.y;angle=tile.target.angle;sx=tile.target.width/tile.width;sy=tile.target.height/tile.height;body=remaining;z=tileBodyDepth(tile.target.height)*(tile.kind==='upper'?2:1)*remaining;flip=tile.kind==='own'||tile.kind==='lower'?Math.PI:0;visible=tile.kind==='opponent'||tile.kind==='lower'?remaining:1;}
   else if(phase==='deal'){
    const p=sampleDealRoute(routes[i],t);({x,y,z,sx,sy,angle}=p);body=1;
    if(tile.kind==='own'||tile.kind==='lower'){const u=clamp((t-.82)/.18);flip=Math.PI*u*u*(3-2*u);}

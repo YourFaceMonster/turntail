@@ -1024,3 +1024,23 @@ body:has(.turntale[data-entry-mode="resume"][data-entrance="game-in"]) .live-tab
 .turntale.active-table .hand-heading>div:first-child>strong{max-width:160px}
 .turntale.active-table .hand-heading .hand-tools{flex:none;justify-self:end;white-space:nowrap}
 .turntale.active-table .hand-heading .own-count{flex:none}
+
+/* 0.5.10: the outer rail identifies the acting seat, including the review. */
+.turntale.table-v211.active-table .play-column{border:2px solid var(--turn-ink)!important;border-radius:15px!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--turn-ink) 40%,transparent),0 0 12px color-mix(in srgb,var(--turn-ink) 25%,transparent),inset 0 0 0 1px color-mix(in srgb,var(--turn-ink) 15%,transparent)!important;transition:border-color .2s,box-shadow .2s}
+.turntale.table-v211.active-table.rally-tension .felt{animation:none!important}
+.turntale.active-table .rally-pressure{display:none!important}
+.turntale.table-v211.active-table .opponent.active>.seat-card{border-color:var(--persona)!important;box-shadow:0 0 10px color-mix(in srgb,var(--persona) 35%,transparent)!important}
+.turntale.table-v211.active-table .opponent.active .turn-flag{background:var(--persona)!important;color:#17232d!important;border-color:var(--persona)!important}
+.character-banter{background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;padding:7px 9px;border-width:1px;border-radius:10px;color:#fff5de;max-width:none;box-sizing:border-box;overflow-wrap:anywhere;word-break:keep-all;text-shadow:0 1px 2px #130c05,1px 0 2px #130c05,-1px 0 2px #130c05}
+.character-banter:before{content:'';position:absolute;width:9px;height:9px;left:16px;top:-5px;border-left:1px solid;border-top:1px solid;border-color:inherit;transform:rotate(45deg);background:transparent}
+.character-banter small{font-weight:850;font-size:10px}.character-banter span{font-size:12px;line-height:1.55}
+.entry-focus .entry-world-company,.entry-deal .entry-world-company{visibility:visible}
+.entry-rise .entry-world-seat{animation:seated-company-out var(--rise-ms) ease-in-out both}
+.entry-focus .deal-opponent,.entry-rise .deal-opponent{visibility:visible}
+.entry-rise .deal-opponent{animation:focus-tile-body var(--rise-ms) linear both,focus-body-sides var(--rise-ms) linear both}
+.entry-settle .deal-opponent,.entry-game-in .deal-opponent{visibility:hidden}
+@media(max-width:450px){.character-banter{padding:6px 7px}.character-banter span{font-size:11px}}
+
+.entry-world .entry-table-leg{transform:translateZ(calc(var(--support-top,27px)*-1))}
+.entry-world .entry-table-leg>span{height:calc(var(--support-height) - var(--support-top,27px))}
+.entry-world .entry-table-leg>.leg-foot{transform:translateZ(calc((var(--support-height) - var(--support-top,27px))*-1 + 1px))}
