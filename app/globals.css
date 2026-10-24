@@ -1313,7 +1313,7 @@ html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmo
 @media(max-width:600px){.scene-preview-header{padding:14px 12px}.scene-preview-header h2{font-size:20px}.scene-preview-header p{font-size:10px;max-width:190px;line-height:1.6}.scene-preview-actions{gap:5px}.scene-preview-actions button{padding:8px;font-size:11px}.scene-preview-cards>.tile{width:49px!important;height:65px!important}.scene-preview-regions{gap:4px}.scene-preview-regions button{min-width:30px;min-height:30px}.scene-preview-foot>small{font-size:10px}}
 
 /* The shared full-body atlas sits behind the rim; the lower body is occluded at the lap. */
-.stage-painted-model{clip-path:inset(0 0 42% 0);mask-image:linear-gradient(#000 0 54%,transparent 60%)}
+.stage-painted-model{clip-path:none;mask-image:none}
 
 /* Keep the collection scene present while the next location is decoded. */
 .scene-preview-loading{min-height:16px;font-size:11px;color:#f3d494}
@@ -1333,3 +1333,29 @@ html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmo
 .live-table-scene[data-scene-stage]:not([data-scene-stage="0"]) .environment-near-light{transform:translate3d(0,-26px,0) scale(1.08)}
 .table-entrance[data-stage] .entry-return-note{background:linear-gradient(90deg,transparent,#132333c9,transparent);text-shadow:0 2px 4px #06132788}
 @media(prefers-reduced-motion:reduce){.table-entrance[data-stage].entry-focus .entry-world-company{animation:none;opacity:0}.entry-painted-glaze{animation:none}}
+
+/* 0.5.21: preserve complete figures; frame the same-sized cast and all table silhouettes. */
+.stage-painted-model>svg{display:block;width:100%;height:100%;overflow:hidden;transform-origin:50% 50%}
+.stage-scene-preview{display:grid;grid-template-areas:"heading" "world" "controls";grid-template-rows:auto minmax(0,1fr) auto}
+.stage-scene-preview .scene-preview-header{grid-area:heading;position:relative;inset:auto;align-items:center;background:linear-gradient(#09121be8,#09121ba8);padding-block:12px}
+.stage-scene-preview .scene-preview-foot{grid-area:controls;position:relative;inset:auto;padding-top:10px;background:#07111be8;gap:6px}
+.scene-preview-frame{grid-area:world;position:relative;min-width:0;min-height:0;overflow:hidden}
+.stage-scene-preview .scene-preview-world{position:absolute;inset:0}
+.scene-preview-geometry{position:absolute;inset:0;pointer-events:none}
+.scene-preview-world[data-view="above"] .entry-world-company{visibility:hidden}
+.entry-stage-arrival{position:absolute;top:max(16px,env(safe-area-inset-top));left:50%;translate:-50% 0;z-index:13;display:grid;gap:5px;text-align:center;padding:9px 30px 12px;min-width:190px;color:#fff0d0;background:linear-gradient(90deg,transparent,#0c1b30bd 20% 80%,transparent);pointer-events:none;text-shadow:0 2px 5px #071019;animation:stage-arrival-in .45s ease-out both}
+.entry-stage-arrival>span{font-size:13px;font-weight:800;letter-spacing:3px;color:var(--stage-accent,#ead6a7)}
+.entry-stage-arrival>strong{font-size:clamp(16px,2.3vw,23px);white-space:nowrap}
+@keyframes stage-arrival-in{from{opacity:0;translate:-50% 6px}to{opacity:1;translate:-50% 0}}
+@media(orientation:landscape) and (max-height:600px){
+ .stage-scene-preview{grid-template-areas:"heading heading" "world controls";grid-template-columns:minmax(0,1fr) minmax(180px,25%);grid-template-rows:auto minmax(0,1fr)}
+ .stage-scene-preview .scene-preview-header{padding:7px 12px}.scene-preview-header h2{font-size:18px;margin:2px 0}.scene-preview-header p{font-size:10px}
+ .stage-scene-preview .scene-preview-foot{padding:8px;align-content:center;gap:7px;border-left:1px solid #d4be8a22}
+ .scene-preview-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.scene-preview-cards>.tile{width:38px!important;height:50px!important}
+ .scene-preview-regions{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;overflow:visible}.scene-preview-regions button{min-width:27px;min-height:27px;font-size:11px}
+ .scene-preview-foot>small{font-size:9px}.scene-preview-loading{font-size:10px;min-height:12px}.entry-stage-arrival{top:8px;padding:6px 24px;gap:2px}
+}
+@media(prefers-reduced-motion:reduce){.entry-stage-arrival{animation:none}}
+
+.scene-preview-geometry>.entry-view-rig{perspective:1000px;perspective-origin:50% 50%;transform:none!important;animation:none!important}
+.scene-preview-world .entry-camera{animation:none!important}
