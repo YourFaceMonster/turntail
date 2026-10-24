@@ -993,7 +993,8 @@ body:has(.turntale[data-impact="finish"]) .live-table-scene{animation:viewport-f
 @keyframes seated-company-out{0%,20%{opacity:1}100%{opacity:0}}
 
 /* 0.5.9: stable scenery, one zoom followed by a lift; resume is the live board. */
-.table-entrance .entry-room .environment-distance,.table-entrance .entry-room .environment-near-light{transform:none!important;animation:none!important;will-change:auto}
+.table-entrance .entry-room .environment-distance{transform:var(--environment-far-transform,none);animation:none;will-change:transform}
+.table-entrance .entry-room .environment-near-light{transform:var(--environment-near-transform,none);animation:none;will-change:transform}
 .table-entrance .entry-table{box-shadow:0 5px 0 #271b13,0 13px 22px #0004}
 .turntale[data-entry-mode="resume"][data-entrance="game-in"]{animation:saved-screen-in .85s ease-out both}
 body:has(.turntale[data-entry-mode="resume"][data-entrance="game-in"]) .live-table-scene{animation:saved-screen-in .85s ease-out both}
@@ -1114,3 +1115,31 @@ body:has(.turntale[data-entry-mode="resume"][data-entrance="game-in"]) .live-tab
 .seated-figure[data-build="broad"] .figure-torso{left:14%;width:72%}
 .entry-table{background:#4d392b}
 .entry-table>.table-surface{z-index:0}
+
+/* 0.5.12: the environment shares the table camera's zoom clock. */
+.environment-distance-drift{position:absolute;inset:0;animation:room-breath 24s ease-in-out infinite alternate;transform-origin:50% 65%}
+@keyframes room-breath{from{transform:translate3d(-2px,1px,0) scale(1.005)}to{transform:translate3d(2px,-2px,0) scale(1.009)}}
+.environment-firelight{position:absolute;inset:0;background:radial-gradient(ellipse at 7% 76%,#eaa64d1c,transparent 38%),radial-gradient(ellipse at 92% 29%,#a9cde311,transparent 38%);animation:room-firelight 7s ease-in-out infinite alternate;pointer-events:none}
+@keyframes room-firelight{0%,100%{opacity:.45}40%{opacity:.8}75%{opacity:.6}}
+.environment-motes{position:absolute;inset:0;overflow:hidden;pointer-events:none}.environment-motes>i{position:absolute;width:2px;height:2px;border-radius:50%;background:#f8dfab;animation:room-dust 22s ease-in-out infinite;opacity:0}
+@keyframes room-dust{0%,100%{opacity:0;transform:translate3d(0,18px,0)}30%,70%{opacity:.32}90%{transform:translate3d(13px,-30px,0);opacity:0}}
+.entry-contact-shadow{opacity:.72;background:radial-gradient(ellipse,#06090d66 18%,#0306092b 46%,transparent 72%)}
+.entry-rise .deal-opponent{opacity:1;animation:focus-tile-body var(--rise-ms) linear both}
+.entry-opponent-out .deal-flying-card{width:var(--target-w);height:var(--target-h);--tile-depth:var(--target-depth);transform:translate3d(var(--end-left),var(--end-top),0) rotate(var(--target-angle));animation:none}
+.entry-opponent-out .deal-body-side,.entry-opponent-out .deal-lower{visibility:hidden}
+.entry-opponent-out .deal-own .deal-flipper{transform:rotateY(180deg)}
+.entry-opponent-out .deal-opponent{visibility:visible;animation:opponents-after-top var(--opponent-out-ms) ease-in-out both}
+@keyframes opponents-after-top{from{opacity:1}to{opacity:0}}
+.entry-opponent-out .entry-world-company{visibility:hidden}
+.entry-opponent-out .entry-camera{animation:none!important}
+@media(prefers-reduced-motion:reduce){.environment-distance-drift,.environment-firelight,.environment-motes>i{animation:none!important}}
+
+.monster-portrait{display:inline-block;flex:none;background-repeat:no-repeat;background-color:#24343b;border:2px solid #d8bc83;border-radius:50%;overflow:hidden}
+.monster-model{position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none}
+.monster-model>img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;backface-visibility:visible;transform:translateZ(2px)}
+.monster-foot-contact{position:absolute;left:19%;right:19%;bottom:1%;height:4%;border-radius:50%;background:radial-gradient(ellipse,#080d1370,transparent 70%)}
+.monster-seat .world-character-caption{top:40%;left:35%;right:35%;font-size:15px;background:#15252db3;transform:translateZ(8px)}
+
+.entry-world-seat.modeled-seat.monster-seat{transform:translateZ(calc(var(--seat-floor)*-1 + var(--monster-lift))) rotateX(-90deg)}
+
+.monster-seat .world-character-caption{display:none}

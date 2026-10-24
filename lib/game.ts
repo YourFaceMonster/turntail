@@ -150,7 +150,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
  }else throw Error("지원하지 않는 동작이에요.");
  if(!automatic)p.timeouts=0;
  g.turn=(who+1)%g.players.length;
- if(g.lastBy===g.turn){g.rally=0;g.trick=[];g.lastBy=null;g.turnReadyAt=Math.max(now,g.turnReadyAt||0)+LEAD_REVIEW_MS;note(g,`${g.players[g.turn].name}이 선을 잡았습니다.`);}
+ if(g.lastBy===g.turn){g.rally=0;g.trick=[];g.tablePlay=null;g.lastBy=null;g.turnReadyAt=Math.max(now,g.turnReadyAt||0)+LEAD_REVIEW_MS;note(g,`${g.players[g.turn].name}이 선을 잡았습니다.`);}
  scheduleTurn(g,now);
 }
 export function view(g:Game,token:string){

@@ -10,7 +10,7 @@ export function entranceCameraState(phase:EntrancePhase,progress:number,overview
  if(phase==='rise')return observerCamera(progress,overview);
  if(phase==='focus')return {tilt:SEATED_TILT,scale:scale+(1-scale)*smooth(progress)};
  if(phase==='deal')return {tilt:SEATED_TILT,scale};
- if(['settle','game-in','idle'].includes(phase))return {tilt:0,scale:1};
+ if(['opponent-out','settle','game-in','idle'].includes(phase))return {tilt:0,scale:1};
  return {tilt:SEATED_TILT,scale};
 }
 export function cameraTransform(camera:{tilt:number,scale:number}){return `translateZ(${ENTRANCE_FOCAL-ENTRANCE_FOCAL/camera.scale}px) rotateX(${camera.tilt*180/Math.PI}deg)`;}
@@ -19,8 +19,8 @@ export function observerCameraFrames(overview:number,duration=ENTRANCE_MS.rise,p
  const frames=Math.max(1,Math.ceil(duration/1000*120));return Array.from({length:frames+1},(_,i)=>({offset:i/frames,transform:cameraTransform(entranceCameraState(phase,i/frames,overview))}));
 }
 export function environmentTransform(camera:{tilt:number,scale:number},overview:number,near=false){
- const tilt=camera.tilt/SEATED_TILT,travel=(1-camera.scale)/(1-seatedScale(overview));
- return `translate3d(0,${-(near?24:9)*tilt}px,0) scale(${1+Math.max(0,travel)*(near?.07:.035)})`;
+ const lift=1-camera.tilt/SEATED_TILT,zoom=camera.scale/seatedScale(overview);
+ return `translate3d(0,${-(near?46:34)*lift}px,0) scale(${1+(zoom-1)*(near?1.025:1)})`;
 }
 export function environmentCameraFrames(overview:number,duration=ENTRANCE_MS.rise,near=false,phase:EntrancePhase='rise'){
  const frames=Math.max(1,Math.ceil(duration/1000*120));return Array.from({length:frames+1},(_,i)=>({offset:i/frames,transform:environmentTransform(entranceCameraState(phase,i/frames,overview),overview,near)}));

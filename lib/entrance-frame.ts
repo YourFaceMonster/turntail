@@ -10,7 +10,7 @@ const clamp=(n:number)=>Math.max(0,Math.min(1,n));
 export function entranceFrameCamera(phase:EntrancePhase,elapsed:number,overview:number,resume=false){return entranceCameraState(phase,elapsed/Math.max(1,entranceDuration(phase,resume)),overview);}
 /** The original 60-body tracks and flight routes feed one instanced GPU draw. */
 export function writeEntranceFrame(data:Float32Array,tiles:EntranceRenderTile[],routes:DealRoute[],phase:EntrancePhase,elapsed:number,cx:number,cy:number){
- const landed=['focus','rise','settle','game-in'].includes(phase),t=clamp(elapsed/ENTRANCE_MS.deal),remaining=1-tileBodyHandoff(phase,elapsed/Math.max(1,ENTRANCE_MS[phase]));
+ const landed=['focus','rise','opponent-out','settle','game-in'].includes(phase),t=clamp(elapsed/ENTRANCE_MS.deal),remaining=1-tileBodyHandoff(phase,elapsed/Math.max(1,ENTRANCE_MS[phase]));
  for(let i=0;i<tiles.length;i++){
   const tile=tiles[i];let x:number,y:number,z=tile.depth,sx=1,sy=1,angle:number,body=1,flip=0,visible=1;
   if(landed){x=tile.target.x;y=tile.target.y;angle=tile.target.angle;sx=tile.target.width/tile.width;sy=tile.target.height/tile.height;body=remaining;z=tileBodyDepth(tile.target.height)*(tile.kind==='upper'?2:1)*remaining;flip=tile.kind==='own'||tile.kind==='lower'?Math.PI:0;visible=tile.kind==='opponent'?opponentTableOpacity(phase,elapsed/Math.max(1,ENTRANCE_MS[phase])):tile.kind==='lower'?remaining:1;}

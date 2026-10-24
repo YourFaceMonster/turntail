@@ -14,8 +14,9 @@ import GameEntrance from './components/GameEntrance';
 import Back from './components/TileBack';
 import {playImpact,impactVibration,type ImpactTier} from '../lib/play-impact';
 import {tablePresentation} from '../lib/table-play';
-import {chooseKoreanOpponents} from '../lib/korean-opponents';
+import {chooseKoreanOpponents,restoreMonsterOpponents} from '../lib/korean-opponents';
 import KoreanPortrait from './components/KoreanPortrait';
+import MonsterPortrait from './components/MonsterPortrait';
 import CharacterBanter from './components/CharacterBanter';
 import {seatAccent} from '../lib/seat-presentation';
 import ResultStandings from './components/ResultStandings';
@@ -24,6 +25,7 @@ import TableSurface from './components/TableSurface';
 import GameAtmosphere from './components/GameAtmosphere';
 import {endgameLevel,ENTRANCE_MS,entranceDuration,nextEntrance,concealLiveTiles,type EntrancePhase} from '../lib/atmosphere';
 import {tensionSound,shuffleSound} from '../lib/atmosphere-audio';
+import {playTileSound,type TileSoundDetail,type TileSoundKind} from '../lib/tile-audio';
 import Tutorial from './components/Tutorial';
 import TableNotice from './components/TableNotice';
 import HighScores from './components/HighScores';
@@ -47,7 +49,7 @@ const safeGet=(key:string)=>{try{return localStorage.getItem(key);}catch{return 
 const safeSet=(key:string,val:string)=>{try{localStorage.setItem(key,val);}catch{}};
 function readJSON<T>(key:string,fallback:T):T{try{return JSON.parse(safeGet(key)||"null")||fallback;}catch{return fallback;}}
 const personas=[{icon:"🦊",name:"여우",color:"coral"},{icon:"🦉",name:"부엉이",color:"sky"},{icon:"🐯",name:"호랑이",color:"amber"},{icon:"🐼",name:"판다",color:"violet"}];
-function SeatAvatar({seat,photo=""}:{seat:number,photo?:string}){if(photo.startsWith('stage-portrait:'))return <StagePortrait index={Number(photo.split(':')[1])}/>;if(photo.startsWith('korean-portrait:'))return <KoreanPortrait index={Number(photo.split(':')[1])}/>;const p=personas[seat%personas.length];return <span className={`avatar portrait persona-${p.color}`} aria-label={photo?"프로필 사진":`${p.name} 아바타`}>{photo?<img src={photo} alt=""/>:p.icon}</span>;}
+function SeatAvatar({seat,photo=""}:{seat:number,photo?:string}){if(photo.startsWith('korean-monster:'))return <MonsterPortrait index={Number(photo.split(':')[1])}/>;if(photo.startsWith('stage-portrait:'))return <StagePortrait index={Number(photo.split(':')[1])}/>;if(photo.startsWith('korean-portrait:'))return <KoreanPortrait index={Number(photo.split(':')[1])}/>;const p=personas[seat%personas.length];return <span className={`avatar portrait persona-${p.color}`} aria-label={photo?"프로필 사진":`${p.name} 아바타`}>{photo?<img src={photo} alt=""/>:p.icon}</span>;}
 const patternTier=(label:string)=>({"스트레이트":1,"플러시":2,"풀하우스":3,"포카드":4,"스트레이트 플러시":5}[label]||0);
 function PatternBadge({tiles}:{tiles:Tile[]}){const c=combo(tiles);return <span className={`pattern-badge pattern-${tiles.length} combo-tier-${patternTier(c?.label||"")}`}><b>{c?.label||"조합 미완성"}</b><small>{tiles.length}장</small></span>;}
 
@@ -126,16 +128,18 @@ export default function Home(){
  function syncMusic(enabled=preferences.current.music){const track=musicRef.current;if(!track)return;if(!enabled||!musicUnlocked.current||document.hidden){track.pause();return;}void track.play().catch(()=>{});}
  function toggleMusic(){musicUnlocked.current=true;syncMusic(!music);setMusic(!music);safeSet("jangseong-music",music?"off":"on");}
  function armAudio(){musicUnlocked.current=true;syncMusic();try{if(!audio.current){const C=window.AudioContext||(window as any).webkitAudioContext;if(C)audio.current=new C();}if(audio.current?.state!=='running')void audio.current?.resume().then(()=>setAudioEpoch(n=>n+1)).catch(()=>{});}catch{}}
- function feel(kind="tap",vibrate=true){
+ function feel(kind="tap",vibrate=true,detail:TileSoundDetail={}){
   try{if(vibrate&&preferences.current.haptic&&navigator.vibrate)navigator.vibrate(kind==="win"?[35,45,65,45,95]:kind==="two"?[12,32,12,32,65]:kind==="submit"?10:kind==="slam"?[28,22,58]:kind==="play"?[16,20,35]:kind==="draw"?22:kind==="turn"?[12,35,12]:8);}catch{}
   const ctx=audio.current;if(!ctx||!preferences.current.sound)return;
+  if(["tap","submit","play","slam","draw"].includes(kind)){try{playTileSound(ctx,kind as TileSoundKind,detail);}catch{}return;}
+  if(kind==="win"){try{playTileSound(ctx,"slam",detail);}catch{}}
   try{const now=ctx.currentTime;const notes=kind==="win"?[523,659,784,1046]:kind==="two"?[392,523,784]:kind==="submit"?[440]:kind==="slam"?[155,92]:kind==="play"?[330,660]:kind==="draw"?[240,390]:kind==="turn"?[660,880]:[520];
    notes.forEach((freq,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=kind==="play"||kind==="slam"?"triangle":"sine";osc.frequency.setValueAtTime(freq,now+i*.055);gain.gain.setValueAtTime(0,now+i*.055);gain.gain.linearRampToValueAtTime(.065,now+i*.055+.007);gain.gain.exponentialRampToValueAtTime(.001,now+i*.055+.14);osc.connect(gain);gain.connect(ctx.destination);osc.start(now+i*.055);osc.stop(now+i*.055+.16);});
   }catch{}
  }
  function landImpact(next:View){
   const ev=next.lastEvent;if(!ev)return;const tier=playImpact(ev.tiles||[],next.phase);
-  lastImpact.current=ev.id;setSlam({id:ev.id,tier});feel(tier==='finish'?'win':tier==='power'?'slam':'play',false);
+  lastImpact.current=ev.id;setSlam({id:ev.id,tier});feel(tier==='finish'?'win':tier==='power'?'slam':'play',false,{count:ev.tiles?.length||1,seed:ev.id});
   try{if(preferences.current.haptic&&navigator.vibrate)navigator.vibrate(impactVibration(tier));}catch{}
  }
  function animate(old:View|null,next:View){
@@ -152,11 +156,11 @@ export default function Home(){
    const red=isRedTwoSingle(ev.tiles||[]),two=(ev.tiles||[]).some(t=>t.n===2),rally=ev.rally||1;pendingFlair.current={id:ev.id,label:red?"빨간 2":ev.label||"싱글",red,two,rally};setFlair(reduce?pendingFlair.current:null);if(reduce){landImpact(next);}
    if((ev.tiles?.length||0)>=3||red){setBurst(ev.label||"NICE PLAY");setTimeout(()=>setBurst(""),2250);}playTension(rally,red);
   }else if(ev.type==="draw"){
-   if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){if(ev.who===next.me)feel("draw");return;}
+   feel("draw",ev.who===next.me,{concealed:ev.concealed,seed:ev.id});
+   if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
    const source=stageRect(document.querySelector(`[data-stack="${ev.index}"] ${old.stacks[ev.index!]?.upper?'.upper-tile':'.lower-tile'} .tile`));
    const ids=new Set(old.players[old.me]?.hand?.map(t=>t.id)),gained=ev.tiles?.[0]||(ev.who===next.me?next.players[next.me].hand?.find(t=>!ids.has(t.id)):old.stacks[ev.index!]?.lower||undefined);
    if(source){flyingIds.current=new Set([ev.id]);setFlights([{id:ev.id,kind:"draw",who:ev.who,concealed:ev.concealed??!!old.stacks[ev.index!]?.upper,tile:ev.concealed&&ev.who!==next.me?undefined:gained,ready:false,sx:source.x,sy:source.y,ex:source.x,ey:source.y,sw:source.width,sh:source.height,delay:0}]);}
-   if(ev.who===next.me)feel("draw");
   }
  }
  useLayoutEffect(()=>{if(!flights.some(f=>f.kind&&!f.ready))return;setFlights(all=>all.flatMap(f=>{if(!f.kind||f.ready)return [f];const el=f.kind==="play"?document.querySelector(`[data-arrival="${f.tile?.id}"] .tile`):document.querySelector(f.tile&&f.who===current.current?.me?`[data-hand="${f.tile.id}"] .tile.face`:`[data-seat="${f.who}"] .portrait`),r=stageRect(el);if(!r){flyingIds.current.delete(f.id);return [];}if(f.kind==="play")return [{...f,ready:true,ex:r.x,ey:r.y,ew:f.sw,eh:f.sh}];
@@ -281,6 +285,7 @@ export default function Home(){
   setSetupOpen(null);scoreSeen.current="";
   if(entranceIntent.current.kind==='resume'){
    const {game:saved,session:s}=entranceIntent.current,g=structuredClone(saved);
+   if(!g.stageRun){const cast=restoreMonsterOpponents(g.players.slice(1));g.players.slice(1).forEach((p,i)=>{p.name=cast[i].name;p.avatar=cast[i].avatar;});}
    if(g.phase==='playing')g.turnReadyAt=Math.max(g.turnReadyAt||0,Date.now()+(entranceReduced.current?0:ENTRANCE_MS['game-in']));
    sess.current=s;setSession(s);publishLocal(g);return;
   }

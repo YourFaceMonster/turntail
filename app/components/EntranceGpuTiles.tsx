@@ -39,7 +39,7 @@ function EntranceGpuTiles({cards,routes,phase,visible,width,height,overview,onSt
   let frame=0,last=performance.now();
   // The DOM table's animation clock keeps both projections in the same frame.
   const cameraAnimation=document.querySelector('.entry-camera')?.getAnimations().find(animation=>animation.id==='turntale-observer');
-  const moving=['shuffle','rise','deal','focus'].includes(phase);
+  const moving=['shuffle','rise','deal','focus','opponent-out'].includes(phase);
   function draw(now:number){
    clock.current.elapsed+=Math.max(0,now-last);last=now;
    const elapsed=clock.current.elapsed;

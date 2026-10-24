@@ -3,14 +3,14 @@ export function endgameLevel(phase:string|undefined,counts:readonly number[],ope
  if(phase!=='playing'||opening||counts.length<2||counts.some(n=>!Number.isInteger(n)||n<=0))return 0;
  const least=Math.min(...counts);return least===1?2:least<=3?1:0;
 }
-export type EntrancePhase='idle'|'menu-out'|'room-hold'|'approach'|'shuffle'|'prepare'|'rise'|'deal'|'focus'|'settle'|'game-in';
-export const ENTRANCE_MS:Record<EntrancePhase,number>={idle:0,'menu-out':480,'room-hold':160,approach:450,shuffle:2600,prepare:0,rise:1300,deal:1400,focus:950,settle:120,'game-in':650};
+export type EntrancePhase='idle'|'menu-out'|'room-hold'|'approach'|'shuffle'|'prepare'|'rise'|'deal'|'focus'|'opponent-out'|'settle'|'game-in';
+export const ENTRANCE_MS:Record<EntrancePhase,number>={idle:0,'menu-out':480,'room-hold':160,approach:450,shuffle:2600,prepare:0,rise:1300,deal:1400,focus:950,'opponent-out':850,settle:120,'game-in':650};
 export function nextEntrance(phase:EntrancePhase,resume=false):EntrancePhase{
  if(resume)return phase==='idle'||phase==='game-in'?'idle':'game-in';
- return ({idle:'idle','menu-out':'room-hold','room-hold':'prepare',prepare:'approach',approach:'shuffle',shuffle:'deal',deal:'focus',focus:'rise',rise:'settle',settle:'game-in','game-in':'idle'} as const)[phase];
+ return ({idle:'idle','menu-out':'room-hold','room-hold':'prepare',prepare:'approach',approach:'shuffle',shuffle:'deal',deal:'focus',focus:'rise',rise:'opponent-out','opponent-out':'settle',settle:'game-in','game-in':'idle'} as const)[phase];
 }
 /** The real board gets a full hidden paint before the curtain opens. */
-export function concealLiveTiles(phase:EntrancePhase){return ['prepare','approach','shuffle','rise','deal','focus'].includes(phase);}
+export function concealLiveTiles(phase:EntrancePhase){return ['prepare','approach','shuffle','rise','deal','focus','opponent-out'].includes(phase);}
 export function entranceCurtain(phase:EntrancePhase):'close'|'covered'|'open'|'clear'{
  if(phase==='menu-out')return 'close';
  if(['room-hold','prepare'].includes(phase))return 'covered';

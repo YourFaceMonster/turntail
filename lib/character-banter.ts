@@ -51,6 +51,13 @@ const stageReactions=[
 ] as const;
 export function characterLine(player:{name:string,avatar?:string},kind:BanterKind):string{
  const avatar=player.avatar||'';
+ if(avatar.startsWith('korean-monster:')){
+  const lines:Lines[]=[
+   {confident:'허허, 이 판은 내 방망이 장단이로군!',beaten:'어이쿠! 내 방망이보다 한 수 빠르네.',power:'금 나와라 뚝딱! 승부수 나간다!',draw:'허허, 복 주머니에 한 장 더 넣어볼까.',idle:'방망이 닳도록 기다리겠네. 한 수 두게~',finish:'허허! 오늘 복은 내 쪽으로 왔구먼!'},
+   {confident:'좋아! 이번엔 내 불씨가 먼저야!',beaten:'앗 뜨거! 내 불씨를 덮었잖아!',power:'아껴 둔 불꽃 한 수! 받아봐!',draw:'잠깐 쉼표 하나 찍고 갈게!',idle:'불씨 다 꺼지겠다! 얼른 한 수 줘~',finish:'얼쑤! 마지막까지 화끈했지?'},
+   {confident:'이 흐름은 내가 지켜보겠다.',beaten:'묵직한 수로구나. 인정하겠다.',power:'수호자의 한 수, 받아 보아라.',draw:'한 걸음 물러나 더 깊이 보겠다.',idle:'돌이 될 때까지 기다릴 셈인가? 허허.',finish:'좋은 승부였다. 다음에도 지켜보겠다.'}
+  ];return lines[Number(avatar.split(':')[1])]?.[kind]||lines[0][kind];
+ }
  if(avatar.startsWith('korean-portrait:'))return korean[Number(avatar.split(':')[1])]?.[kind]||korean[0][kind];
  const person=STAGE_THEMES.flatMap(s=>s.opponents).find(p=>p.name===player.name);
  if(person){const response=stageReactions[person.portrait];return kind==='beaten'?response[0]:kind==='idle'?response[1]:kind==='draw'?'잠시 물러나, 다음 수를 준비하지.':kind==='finish'?`${person.title}의 승부, 여기까지다.`:person.quote;}

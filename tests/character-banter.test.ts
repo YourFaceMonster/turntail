@@ -3,9 +3,9 @@ import {characterLine,eventBanter,idleBanter,type BanterTable,type BanterKind} f
 import {KOREAN_OPPONENTS} from '../lib/korean-opponents.ts';
 import {STAGE_THEMES} from '../lib/stage-theme.ts';
 const kinds:BanterKind[]=['confident','beaten','power','draw','idle','finish'];
-for(const p of KOREAN_OPPONENTS)for(const kind of kinds)assert.ok(characterLine({...p,avatar:`korean-portrait:${p.portrait}`},kind).length>4);
+for(const p of KOREAN_OPPONENTS)for(const kind of kinds)assert.ok(characterLine({...p,avatar:`korean-monster:${p.portrait}`},kind).length>4);
 for(const p of STAGE_THEMES.flatMap(s=>s.opponents))for(const kind of kinds)assert.ok(characterLine(p,kind).length>4);
-assert.equal(new Set(KOREAN_OPPONENTS.map(p=>characterLine({...p,avatar:`korean-portrait:${p.portrait}`},'idle'))).size,8,'eight distinct Korean voices');
+assert.equal(new Set(KOREAN_OPPONENTS.map(p=>characterLine({...p,avatar:`korean-monster:${p.portrait}`},'idle'))).size,3,'three distinct monster voices');
 assert.equal(new Set(STAGE_THEMES.flatMap(s=>s.opponents).map(p=>characterLine(p,'beaten'))).size,30,'challenge defeat reactions are individual');
 const before:BanterTable={code:'BANTER',round:1,phase:'playing',me:0,turn:0,lastBy:1,trick:[{id:3,n:3,s:0}],lastEvent:{id:'old',type:'play',who:1},players:[{name:'나',count:4},{name:'김복례',avatar:'korean-portrait:0',bot:true,count:3},{name:'강태오',avatar:'korean-portrait:4',bot:true,count:3}]};
 const next=structuredClone(before);next.lastBy=2;next.lastEvent={id:'new',type:'play',who:2,tiles:[{id:7,n:2,s:3}]};
@@ -17,4 +17,4 @@ next.phase='ended';next.lastEvent.who=2;assert.equal(eventBanter(before,next).at
 next.phase='playing';next.lastEvent={id:'draw',type:'draw',who:1,concealed:true};
 const hidden=eventBanter(before,next);next.lastEvent.tiles=[{id:56,n:15,s:2}];assert.deepEqual(eventBanter(before,next),hidden,'concealed draw identity has no effect');
 assert.equal(idleBanter(before,17999),null);assert.equal(idleBanter(before,18000)?.kind,'idle');assert.equal(idleBanter({...before,turn:1},99999),null);assert.equal(idleBanter({...before,phase:'ended'},99999),null);
-console.log('PASS: 38 character voices, public-only reactions, beaten/power/win priorities, no replay, and an 18-second human-turn tease.');
+console.log('PASS: monster and stage character voices, public-only reactions, beaten/power/win priorities, no replay, and an 18-second human-turn tease.');
