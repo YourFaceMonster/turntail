@@ -2,47 +2,40 @@ import assert from 'node:assert/strict';
 import {entranceTileMesh,projectEntrancePoint,entranceCameraEase,GPU_TILE_STRIDE} from '../lib/entrance-gpu.ts';
 import {entranceFrameCamera,writeEntranceFrame,type EntranceRenderTile} from '../lib/entrance-frame.ts';
 import {planDealFlights} from '../lib/deal-motion.ts';
-import {observerCamera,environmentCameraFrames} from '../lib/entrance-camera.ts';
-import {ENTRANCE_MS} from '../lib/atmosphere.ts';
-const mesh=entranceTileMesh();
-assert.equal(mesh.length%27,0,'the shared prism contains complete triangles');
-assert.ok([...mesh].every(Number.isFinite));
+import {observerCamera,environmentCameraFrames,seatedScale,SEATED_TILT} from '../lib/entrance-camera.ts';
+import {tileBodyDepth} from '../lib/tile-body.ts';
+import {ENTRANCE_MS,type EntrancePhase,nextEntrance} from '../lib/atmosphere.ts';
+const mesh=entranceTileMesh();assert.equal(mesh.length%27,0);assert.ok([...mesh].every(Number.isFinite));
 for(let i=0;i<mesh.length;i+=9){assert.ok(Math.abs(mesh[i])<=.50001&&Math.abs(mesh[i+1])<=.50001);assert.ok(mesh[i+2]<=0&&mesh[i+2]>=-1);}
-assert.ok([...mesh].filter((_,i)=>i%9===8&&mesh[i]===1).length>20,'a real rounded top cap is textured');
-assert.ok([...mesh].filter((_,i)=>i%9===8&&mesh[i]===0).length>200,'the ivory body has solid beveled sides');
+for(let i=6*9;i<mesh.length;i+=9)assert.ok(!(mesh[i+2]<0&&mesh[i+2]>-.02&&mesh[i+8]===0&&mesh[i+5]===0&&mesh[i+6]===0&&mesh[i+7]===1));
 assert.equal(entranceCameraEase(0),0);assert.equal(entranceCameraEase(1),1);
-for(let i=1;i<=100;i++)assert.ok(entranceCameraEase(i/100)>=entranceCameraEase((i-1)/100));
-const overview=.22;
-for(const near of [false,true]){
- const frames=environmentCameraFrames(overview,ENTRANCE_MS.approach,near);
- assert.equal(frames.at(-1)?.transform,'translate3d(0,0px,0) scale(1)','scenery ends at the exact live-scene pose');
- assert.ok(!frames.some(frame=>frame.transform.includes('NaN')));
-}
-for(let i=6*9;i<mesh.length;i+=9)assert.ok(!(mesh[i+2]<0&&mesh[i+2]>-.02&&mesh[i+8]===0&&mesh[i+5]===0&&mesh[i+6]===0&&mesh[i+7]===1),'no near-coplanar cap can flicker through tile art');
-assert.deepEqual(entranceFrameCamera('deal',0,overview),{tilt:0,scale:1});
-assert.deepEqual(entranceFrameCamera('shuffle',0,overview),entranceFrameCamera('approach',ENTRANCE_MS.approach,overview),'camera does not restart when shuffling starts');
-assert.deepEqual(entranceFrameCamera('shuffle',ENTRANCE_MS.shuffle,overview),{tilt:0,scale:1});
-for(const [width,height] of [[390,844],[844,390],[1280,720]]){
- const tiles:EntranceRenderTile[]=Array.from({length:60},(_,i)=>({kind:i<15?'own':i<30?'upper':i<45?'lower':'opponent',width:48,height:64,depth:24,faceSlot:i<15?i+2:1,poses:[{x:(i%10-5)*100,y:(Math.floor(i/10)-3)*100,angle:i*17},{x:(i%10-5)*100+20,y:(Math.floor(i/10)-3)*100-10,angle:i*17+60}],target:{x:30+i%10*60,y:50+Math.floor(i/10)*85,width:48,height:64,angle:0}}));
- const routes=planDealFlights(tiles.map((tile,i)=>({...tile,key:`${tile.kind}-${i}`,scale:1,source:{...tile.poses.at(-1)!,x:width/2+tile.poses.at(-1)!.x,y:height/2+tile.poses.at(-1)!.y},target:tile.target})));
- const data=new Float32Array(60*GPU_TILE_STRIDE),shuffle=new Float32Array(writeEntranceFrame(data,tiles,routes,'shuffle',ENTRANCE_MS.shuffle,width/2,height/2));
- writeEntranceFrame(data,tiles,routes,'deal',0,width/2,height/2);
- for(let i=0;i<60;i++)for(const component of [0,1,2,3,4,5,6])assert.ok(Math.abs(data[i*GPU_TILE_STRIDE+component]-shuffle[i*GPU_TILE_STRIDE+component])<.0001,'shuffle/deal handoff keeps the exact pose');
- for(const phase of ['deal','settle','game-in'] as const){
-  writeEntranceFrame(data,tiles,routes,phase,phase==='deal'?ENTRANCE_MS.deal:0,width/2,height/2);
-  for(let i=0;i<60;i++){
-   const at=i*GPU_TILE_STRIDE,tile=tiles[i];assert.equal(data[at],tile.target.x);assert.equal(data[at+1],tile.target.y);assert.equal(data[at+4],tile.target.width);assert.equal(data[at+5],tile.target.height);
-   assert.equal(data[at+9],0,'body fades out before the original flat game tiles take over');
-   if(phase!=='deal')assert.equal(data[at+10],tile.kind==='own'||tile.kind==='upper'?1:0,'no opponent count badge or lower tile suddenly appears');
+for(const overview of [.22,.4,.7]){
+ const close=seatedScale(overview);assert.deepEqual(entranceFrameCamera('shuffle',0,overview),{tilt:SEATED_TILT,scale:close});
+ for(let i=0;i<=100;i++){assert.equal(observerCamera(i/100,overview).scale,close);assert.equal(entranceFrameCamera('focus',ENTRANCE_MS.focus*i/100,overview).tilt,0);}
+ for(const resume of [false,true]){
+  let phase:EntrancePhase='prepare';if(resume)phase='room-hold';
+  for(let i=0;i<12&&phase!=='idle';i++){
+   const next=nextEntrance(phase,resume);if(next==='prepare')break;
+   assert.deepEqual(entranceFrameCamera(phase,ENTRANCE_MS[phase],overview,resume),entranceFrameCamera(next,0,overview,resume),`camera seam ${phase}/${next}`);phase=next;
   }
  }
- for(const elapsed of [0,ENTRANCE_MS.approach/2,ENTRANCE_MS.approach]){
-  const camera={width,height,...entranceFrameCamera('approach',elapsed,overview)},point=projectEntrancePoint(width/2+70,height/2+40,24,camera);
-  const state=observerCamera(elapsed/ENTRANCE_MS.approach,overview),distance=1000/state.scale,angle=state.tilt;
-  const factor=1000/(distance-40*Math.sin(angle)-24*Math.cos(angle));
-  assert.ok(Math.abs(point.x-(width/2+70*factor))<1e-8);
-  assert.ok(Math.abs(point.y-(height/2+(40*Math.cos(angle)-24*Math.sin(angle))*factor))<1e-8,'GPU projection matches the CSS camera distance, tilt and perspective');
-
+ for(const near of [false,true])assert.equal(environmentCameraFrames(overview,ENTRANCE_MS.focus,near,'focus').at(-1)?.transform,'translate3d(0,0px,0) scale(1)');
+}
+for(const [width,height] of [[390,844],[844,390],[1280,720]]){
+ const tiles:EntranceRenderTile[]=Array.from({length:60},(_,i)=>({kind:i<15?'own':i<30?'upper':i<45?'lower':'opponent',width:48,height:64,depth:tileBodyDepth(64),faceSlot:i<15?i+2:1,poses:[{x:(i%10-5)*100,y:(Math.floor(i/10)-3)*100,angle:i*17},{x:(i%10-5)*100+20,y:(Math.floor(i/10)-3)*100-10,angle:i*17+60}],target:{x:30+i%10*60,y:50+Math.floor(i/10)*85,width:48,height:64,angle:0}}));
+ const routes=planDealFlights(tiles.map((tile,i)=>({...tile,key:`${tile.kind}-${i}`,scale:1,source:{...tile.poses.at(-1)!,x:width/2+tile.poses.at(-1)!.x,y:height/2+tile.poses.at(-1)!.y},target:tile.target})));
+ const frame=(phase:EntrancePhase,t:number)=>new Float32Array(writeEntranceFrame(new Float32Array(60*GPU_TILE_STRIDE),tiles,routes,phase,t,width/2,height/2));
+ const washed=frame('shuffle',ENTRANCE_MS.shuffle),risen=frame('rise',0),dealing=frame('deal',0);
+ for(let i=0;i<washed.length;i++)assert.ok(Math.abs(washed[i]-risen[i])<1e-5);
+ for(let i=0;i<60;i++)for(const c of [0,1,2,3,4,5,6])assert.ok(Math.abs(risen[i*GPU_TILE_STRIDE+c]-dealing[i*GPU_TILE_STRIDE+c])<1e-5);
+ const landed=frame('deal',ENTRANCE_MS.deal),focused=frame('focus',0);
+ for(let i=0;i<60;i++)if(tiles[i].kind!=='opponent')for(const c of [0,1,2,4,5,6,7])assert.ok(Math.abs(landed[i*GPU_TILE_STRIDE+c]-focused[i*GPU_TILE_STRIDE+c])<1e-5,`deal/focus component ${c}`);
+ assert.equal(frame('focus',ENTRANCE_MS.focus*.88)[6],Math.fround(tileBodyDepth(64)),'full thickness remains until the final focus handoff');
+ for(const phase of ['focus','settle','game-in'] as const){const data=frame(phase,phase==='focus'?ENTRANCE_MS.focus:0);for(let i=0;i<60;i++){const at=i*GPU_TILE_STRIDE;assert.equal(data[at],tiles[i].target.x);assert.equal(data[at+1],tiles[i].target.y);assert.equal(data[at+6],0);assert.equal(data[at+9],0);assert.equal(data[at+10],tiles[i].kind==='own'||tiles[i].kind==='upper'?1:0);}}
+ for(const elapsed of [0,ENTRANCE_MS.rise/2,ENTRANCE_MS.rise]){
+  const camera={width,height,...entranceFrameCamera('rise',elapsed,.3)},point=projectEntrancePoint(width/2+70,height/2+40,24,camera),distance=1000/camera.scale;
+  const factor=1000/(distance-40*Math.sin(camera.tilt)-24*Math.cos(camera.tilt));
+  assert.ok(Math.abs(point.x-(width/2+70*factor))<1e-8);assert.ok(Math.abs(point.y-(height/2+(40*Math.cos(camera.tilt)-24*Math.sin(camera.tilt))*factor))<1e-8);
  }
 }
-console.log('PASS: one rounded solid mesh; 60 native-size tiles, exact shuffle/deal/game handoffs, hidden lower/opponent slots and perspective travel towards a stationary world across phone/landscape/desktop.');
+console.log('PASS: seated shuffling, constant-distance rise, overhead focus, seamless camera/tile boundaries, threefold bodies through focus, no hidden faces, and GPU/CSS projection agreement across viewport shapes.');

@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {room,player,start,act,view} from '../lib/game.ts';
+import {tablePresentation} from '../lib/table-play.ts';
+import {savedTablePlan} from '../lib/saved-table.ts';
+const g=room('KEEP-PLAY',player('나'),true,3);g.players.push(player('상대1',true),player('상대2',true));start(g,0);g.turn=0;
+const first=g.players[0].hand[0];act(g,0,'play',[first.id],-1,10000);
+assert.deepEqual(tablePresentation(view(g,g.players[0].token))?.tiles,[first]);
+act(g,1,'draw',[],0,20000);assert.deepEqual(g.trick,[first],'a draw does not change the live combination');
+act(g,2,'draw',[],0,30000);assert.equal(g.turn,0);assert.deepEqual(g.trick,[],'all opponents passing still returns the lead under the existing rules');
+let visible=view(g,g.players[0].token);assert.equal(tablePresentation(visible)?.previous,true);assert.deepEqual(tablePresentation(visible)?.tiles,[first],'last play stays visible after draws return the lead');
+assert.ok(savedTablePlan(visible).some(row=>row.key===`trick-${first.id}`),'saved entrances include the retained public tiles');
+const restored=JSON.parse(JSON.stringify(g));assert.deepEqual(tablePresentation(view(restored,restored.players[0].token))?.tiles,[first]);
+const next=g.players[0].hand[0];act(g,0,'play',[next.id],-1,40000);assert.deepEqual(tablePresentation(view(g,g.players[0].token))?.tiles,[next]);
+start(g,50000);assert.equal(tablePresentation(view(g,g.players[0].token)),null,'new rounds clear the prior table');
+console.log('PASS: taking tiles preserves the last play, including after a full pass cycle, resume, and replacement by the next submission; lead rules remain unchanged.');

@@ -13,6 +13,9 @@ import {defaultCollection,readTableCollection,reconcileTableCollection,selectTab
 import GameEntrance from './components/GameEntrance';
 import Back from './components/TileBack';
 import {playImpact,impactVibration,type ImpactTier} from '../lib/play-impact';
+import {tablePresentation} from '../lib/table-play';
+import {chooseKoreanOpponents} from '../lib/korean-opponents';
+import KoreanPortrait from './components/KoreanPortrait';
 import ResultStandings from './components/ResultStandings';
 import LiveTableScene from './components/LiveTableScene';
 import TableSurface from './components/TableSurface';
@@ -42,7 +45,7 @@ const safeGet=(key:string)=>{try{return localStorage.getItem(key);}catch{return 
 const safeSet=(key:string,val:string)=>{try{localStorage.setItem(key,val);}catch{}};
 function readJSON<T>(key:string,fallback:T):T{try{return JSON.parse(safeGet(key)||"null")||fallback;}catch{return fallback;}}
 const personas=[{icon:"🦊",name:"여우",color:"coral"},{icon:"🦉",name:"부엉이",color:"sky"},{icon:"🐯",name:"호랑이",color:"amber"},{icon:"🐼",name:"판다",color:"violet"}];
-function SeatAvatar({seat,photo=""}:{seat:number,photo?:string}){if(photo.startsWith('stage-portrait:'))return <StagePortrait index={Number(photo.split(':')[1])}/>;const p=personas[seat%personas.length];return <span className={`avatar portrait persona-${p.color}`} aria-label={photo?"프로필 사진":`${p.name} 아바타`}>{photo?<img src={photo} alt=""/>:p.icon}</span>;}
+function SeatAvatar({seat,photo=""}:{seat:number,photo?:string}){if(photo.startsWith('stage-portrait:'))return <StagePortrait index={Number(photo.split(':')[1])}/>;if(photo.startsWith('korean-portrait:'))return <KoreanPortrait index={Number(photo.split(':')[1])}/>;const p=personas[seat%personas.length];return <span className={`avatar portrait persona-${p.color}`} aria-label={photo?"프로필 사진":`${p.name} 아바타`}>{photo?<img src={photo} alt=""/>:p.icon}</span>;}
 const patternTier=(label:string)=>({"스트레이트":1,"플러시":2,"풀하우스":3,"포카드":4,"스트레이트 플러시":5}[label]||0);
 function PatternBadge({tiles}:{tiles:Tile[]}){const c=combo(tiles);return <span className={`pattern-badge pattern-${tiles.length} combo-tier-${patternTier(c?.label||"")}`}><b>{c?.label||"조합 미완성"}</b><small>{tiles.length}장</small></span>;}
 
@@ -137,7 +140,7 @@ export default function Home(){
   const ev=next.lastEvent;if(!old||!ev||old.lastEvent?.id===ev.id)return;
   const center=(el:Element|null)=>{const r=stageRect(el);return r?{x:r.x+r.width/2,y:r.y+r.height/2}:null;};
   const target=center(document.querySelector('[data-trick]'));
-  if(ev.type==="play"&&target){setPreviousPlay(old.trick);pendingBeat.current=old.trick.length>0;
+  if(ev.type==="play"&&target){setPreviousPlay(tablePresentation(old)?.tiles||[]);pendingBeat.current=old.trick.length>0;
    const reference=stageRect(document.querySelector('[data-hand-area] .tile.face'));
    const fs=(ev.tiles||[]).map((t,i)=>{const source=stageRect(document.querySelector(ev.who===next.me?`[data-hand="${t.id}"] .tile.face`:`[data-seat="${ev.who}"] .portrait`));const w=ev.who===next.me?(source?.width||44):(reference?.width||44),h=ev.who===next.me?(source?.height||56):(reference?.height||56);
     return {id:ev.id+":"+i,tile:{...t},kind:"play" as const,ready:false,sx:source?.x??target.x,sy:source?.y??target.y,sw:w,sh:h,ex:target.x,ey:target.y,ew:w,eh:h,delay:i*25};});
@@ -281,7 +284,8 @@ export default function Home(){
   }
   if(entranceIntent.current.stageGame){const g=structuredClone(entranceIntent.current.stageGame),s={code:g.code,token:g.players[0].token,local:true};sess.current=s;setSession(s);publishLocal(g);return;}
   const p=player(name||"나");p.avatar=avatar;const g=room("AI-"+uid().slice(0,6).toUpperCase(),p,true,size,{challenge:challengeMode});
-  for(let i=1;i<size;i++)g.players.push(player(["달빛","해솔","별하"][i-1],true));start(g,Date.now()+(entranceReduced.current?0:ENTRANCE_MS['game-in']));
+  const priorOpponents=readJSON<string[]>('turntale-last-korean-opponents',[]),lineup=chooseKoreanOpponents(size-1,priorOpponents);
+  for(const person of lineup){const ai=player(person.name,true);ai.avatar=person.avatar;g.players.push(ai);}safeSet('turntale-last-korean-opponents',JSON.stringify(lineup.map(p=>p.name)));start(g,Date.now()+(entranceReduced.current?0:ENTRANCE_MS['game-in']));
   const s={code:g.code,token:p.token,local:true};sess.current=s;setSession(s);setResumeAvailable(true);safeSet("jangseong-session",JSON.stringify(s));safeSet("jangseong-name",name);publishLocal(g);
  }
  function resume(){if(pending.current||entranceBusy.current)return;armAudio();refreshSaves();setResumeOpen(true);}
@@ -335,6 +339,7 @@ export default function Home(){
  const entrancePreview=entranceIntent.current.kind==='resume'?entranceIntent.current.game:entranceIntent.current.stageGame;
  const entranceStage=entrance!=='idle'?(entrancePreview?.stageRun?.stage||game?.stageRun?.stage):game?.stageRun?.stage;
  const entranceCompany=entrancePreview?entrancePreview.players.slice(1).map(p=>({name:p.name,avatar:p.avatar,points:p.points||0,count:p.hand.length})):game?.players.filter((_,i)=>i!==game.me).map(p=>({name:p.name,avatar:p.avatar,points:p.points||0,count:p.count}))||[];
+ const displayedPlay=game?tablePresentation(game):null;
  const activeSeat=reviewing?game?.lastEvent?.who:game?.turn;
  const historyGroups:LineupHistory[]=historyMode==="practice"?practiceGroups:onlineHistory?.groups||[];
  const rows:RecordRow[]=historyMode==="practice"?localRecords:onlineHistory?.records||[];
@@ -356,9 +361,9 @@ export default function Home(){
  </section><section className={`trick-area ${!game.trick.length?"has-lead":""}`} data-trick style={{"--play-cols":game.trick.length===1?1:2} as CSSProperties}>
 
  <div className="trick-label">{game.trick.length?<><span className="trick-owner"><SeatAvatar seat={game.lastBy!} photo={game.players[game.lastBy!]?.avatar}/><strong>{game.players[game.lastBy!]?.name}</strong></span><PatternBadge tiles={game.trick}/></>:<span className={`lead-label ${game.turn===game.me?"my-lead":""}`} key={`${game.round}:${game.lastEvent?.id}`} role="status">✦ {game.turn===game.me?"내가 선!":`${game.players[game.turn].name} · 선`}</span>}</div>
- <div className="trick-tiles" key={game.trick.map(t=>t.id).join(',')}>
+ <div className="trick-tiles" data-active-trick={!!game.trick.length} key={displayedPlay?.tiles.map(t=>t.id).join(',')}>
  {!!game.trick.length&&!!previousPlay.length&&(watchingPlay||flights.some(f=>f.kind==="play"))&&<div className="previous-trick" aria-hidden="true">{previousPlay.map(t=><TileFace key={t.id} tile={t}/>)}</div>}
- <div className="trick-current">{game.trick.length?game.trick.map(t=><span data-arrival={t.id} className="landed-tile" style={{visibility:flights.some(f=>f.kind==="play"&&f.tile?.id===t.id)?"hidden":"visible"}} key={t.id}><TileFace tile={t}/></span>):<span className="new-trick">{game.lastEvent?.type==="deal"?"첫 선 · 원하는 조합으로 시작하세요":game.turn===game.me?"선을 잡았습니다 · 원하는 조합을 내세요":`${game.players[game.turn].name}님이 선을 잡았습니다`}</span>}</div>
+ {displayedPlay?.previous&&<span className="last-play-caption">마지막 제출 패 · 새 선에서는 원하는 조합을 내세요</span>}<div className="trick-current">{displayedPlay?displayedPlay.tiles.map(t=><span data-arrival={t.id} className="landed-tile" style={{visibility:flights.some(f=>f.kind==="play"&&f.tile?.id===t.id)?"hidden":"visible"}} key={t.id}><TileFace tile={t}/></span>):<span className="new-trick">{game.lastEvent?.type==="deal"?"첫 선 · 원하는 조합으로 시작하세요":game.turn===game.me?"선을 잡았습니다 · 원하는 조합을 내세요":`${game.players[game.turn].name}님이 선을 잡았습니다`}</span>}</div>
  </div>
  </section>
  <section className={`hand-panel panel ${mine?.replaced?"ai-takeover":""} ${myTurn?"my-active-turn":""}`} data-seat={game.me}><div className="hand-heading"><div><button className="own-avatar" onClick={openProfile} aria-label="내 프로필 설정"><SeatAvatar seat={game.me} photo={mine?.avatar}/></button><span className={`turn-dot ${myTurn?"on":""}`}/><strong>{mine?.replaced?"AI가 대신 진행 중":openingReview?"손패 확인 · 곧 시작해요":game.turn===game.me&&game.turnDeadline>0&&clock>=game.turnDeadline?"시간 초과 · AI 처리 중":watchingPlay?"낸 패를 확인하는 중":leadReview&&!flights.length?game.turn===game.me?"내가 선 · 곧 시작해요":`${game.players[game.turn].name}이 선`:reviewing?"패가 이동하는 중":myTurn?"내 차례 · 진행 중":game.phase==="ended"?"라운드 종료":`${game.players[game.turn].name} 차례`}</strong><span className={`muted own-count ${visibleCount(game.me)<5?"low-hand":""} ${visibleCount(game.me)===1?"last-tile":""}`}>내 패 <b>{visibleCount(game.me)}장{visibleCount(game.me)===1?" !":""}</b></span></div><div className="hand-tools"><button className="text-btn" disabled={!myTurn||busy} onClick={hint}>자동 선택</button><button className="text-btn" onClick={()=>{feel();setSortBy(sortBy==="number"?"suit":"number");}}>{sortBy==="number"?"숫자순":"문양순"} ⇅</button></div></div>

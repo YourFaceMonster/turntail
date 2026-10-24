@@ -10,17 +10,17 @@ assert.equal(endgameLevel('ended',[0,1,2]),0,'settlement returns to normal light
 assert.equal(endgameLevel('lobby',[1,1]),0);
 assert.equal(endgameLevel('playing',[1,2],true),0,'intro and opening hand review stay calm');
 for(const invalid of [[],[1],[0,1],[NaN,1],[-1,2],[1.5,2]])assert.equal(endgameLevel('playing',invalid),0);
-function sequence(resume:boolean){let phase:EntrancePhase='menu-out';const seen:EntrancePhase[]=[];for(let i=0;i<10&&phase!=='idle';i++){seen.push(phase);phase=nextEntrance(phase,resume);}assert.equal(phase,'idle');return seen;}
+function sequence(resume:boolean){let phase:EntrancePhase='menu-out';const seen:EntrancePhase[]=[];for(let i=0;i<12&&phase!=='idle';i++){seen.push(phase);phase=nextEntrance(phase,resume);}assert.equal(phase,'idle');return seen;}
 const fresh=sequence(false),resume=sequence(true);
 assert.ok(fresh.indexOf('approach')<fresh.indexOf('shuffle'));
 assert.ok(fresh.indexOf('prepare')<fresh.indexOf('approach'));
 assert.ok(fresh.indexOf('prepare')<fresh.indexOf('deal'));
-assert.equal(fresh[fresh.indexOf('deal')+1],'settle','dealt backs stay visible during the board handoff');
+assert.ok(fresh.indexOf('shuffle')<fresh.indexOf('rise'));assert.ok(fresh.indexOf('rise')<fresh.indexOf('deal'));assert.equal(fresh[fresh.indexOf('deal')+1],'focus');
 assert.equal(resume.includes('prepare'),false);assert.equal(resume.includes('deal'),false);
 assert.equal(resume.includes('shuffle'),false,'a saved hand is not visually redealt');
 for(const phases of [fresh,resume]){
  const swap=phases.indexOf('settle');
- assert.equal(phases[swap-1],phases===fresh?'deal':'approach');
+ assert.equal(phases[swap-1],'focus');
  assert.equal(entranceCurtain(phases[swap]),'clear');
  assert.equal(phases[swap+1],'game-in');assert.equal(entranceCurtain('game-in'),'clear');
  assert.ok(ENTRANCE_MS.settle>=100,'live board gets a stationary paint interval');
@@ -41,5 +41,5 @@ g.players[1].hand[0]={id:59,n:15,s:3};const b=view(g,g.players[0].token);
 assert.equal(endgameLevel(a.phase,a.players.map(p=>p.count)),endgameLevel(b.phase,b.players.map(p=>p.count)));
 console.log('PASS: public-only tension thresholds/recovery, no hidden-hand inference, safe empty states, new/resume seamless entrance ordering, stationary handoff interval, duration budget, full opening review lock.');
 
-assert.ok(entranceDuration("approach",true)>=entranceDuration("approach")*1.4,"resume leaves time to recognize the saved opponents");
+assert.equal(entranceDuration("rise",true),entranceDuration("rise"),"resume follows the same seated-to-overhead movement");
 assert.ok(entranceDuration("game-in",true)>entranceDuration("game-in"),"saved table has a gradual handoff");

@@ -16,7 +16,7 @@ for(let stage=1;stage<=10;stage++){
  for(let i=0;i<sides.length;i++){const a=sides[i],b=vertices[(i+1)%vertices.length],angle=a.angle*Math.PI/180;assert.ok(Math.abs(a.x+Math.cos(angle)*a.width-b.x)<1e-7);assert.ok(Math.abs(a.y+Math.sin(angle)*a.width-b.y)<1e-7);}
 }
 assert.equal(stageSetting(3).kind,'rock');assert.equal(stageSetting(6).kind,'altar');assert.equal(stageSetting(10).kind,'stump');
-for(const h of [32,50,80,100]){assert.equal(shuffleDepth(h),tileBodyDepth(h));assert.ok(tileBodyDepth(h)/h<=.08,'resume and shuffled tiles have realistic matching proportions');}
+for(const h of [32,50,80,100]){assert.equal(shuffleDepth(h),tileBodyDepth(h));assert.equal(tileBodyDepth(h),3*Math.max(2.5,Math.min(7.5,h*.075)),'both opening paths use the requested threefold body thickness');}
 const bounds={left:280,top:90,width:780,height:820},world=tableCircle(bounds,1363,935);assert.ok(world.diameter<1500,'desktop scenery remains visible around the surface');assert.equal(tableCircle(bounds,1363,935,1600).diameter,1600,'large physical shuffle can reserve the same permanent surface');
 const game={me:0,players:[{hand:[]}],stacks:[{upper:true,lowerPresent:true}],trick:[]},rows=measureSavedTable(game,0,s=>s.includes('upper')?{left:100,top:100,width:40,height:53}:{left:103,top:104,width:40,height:53});assert.equal(rows[0].baseTarget?.x,123);assert.equal(rows[0].target.x,120,'resume preserves the measured offset between covered lower and upper tile bodies');
 console.log('PASS: ten atmospheric assets, joined solid side geometry, region-specific rock/altar/root supports, thin shared tile bodies, matched permanent surface size and measured two-piece resume stacks.');

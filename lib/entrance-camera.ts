@@ -1,24 +1,27 @@
-import {ENTRANCE_MS} from './atmosphere.ts';
+import {ENTRANCE_MS,type EntrancePhase} from './atmosphere.ts';
 const smooth=(t:number)=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
 export const ENTRANCE_FOCAL=1000;
-/** Walk at eye level first; only lean over the table after arriving beside it. */
-export function observerCamera(progress:number,overview:number){
- const p=Math.max(0,Math.min(1,progress)),walk=smooth(p/.7),lean=smooth((p-.7)/.3);
- const far=ENTRANCE_FOCAL/Math.max(.05,overview),beside=ENTRANCE_FOCAL*1.35;
- const distance=p<.7?far+(beside-far)*walk:beside+(ENTRANCE_FOCAL-beside)*lean;
- return {tilt:72*Math.PI/180*(1-lean),scale:ENTRANCE_FOCAL/distance};
+export const SEATED_TILT=58*Math.PI/180;
+export function seatedScale(overview:number){return Math.max(.46,Math.min(.72,overview*1.3));}
+/** Start beside the table. Rising changes the viewing angle, never the distance. */
+export function observerCamera(progress:number,overview:number){return {tilt:SEATED_TILT*(1-smooth(progress)),scale:seatedScale(overview)};}
+export function entranceCameraState(phase:EntrancePhase,progress:number,overview:number){
+ const scale=seatedScale(overview);
+ if(phase==='rise')return observerCamera(progress,overview);
+ if(phase==='focus')return {tilt:0,scale:scale+(1-scale)*smooth(progress)};
+ if(phase==='deal')return {tilt:0,scale};
+ if(['settle','game-in','idle'].includes(phase))return {tilt:0,scale:1};
+ return observerCamera(0,overview);
 }
-/** The same sampled perspective transform drives the compositor and GPU clock. */
-export function observerCameraFrames(overview:number,duration=ENTRANCE_MS.approach){const frames=Math.max(1,Math.ceil(duration/1000*120));return Array.from({length:frames+1},(_,i)=>{
- const camera=observerCamera(i/frames,overview);
- return {offset:i/frames,transform:`translateZ(${ENTRANCE_FOCAL-ENTRANCE_FOCAL/camera.scale}px) rotateX(${camera.tilt*180/Math.PI}deg)`};
-});}
-/** Distant scenery moves less than the physical floor, and finishes at the
- * exact live-scene transform. All layers share the observer animation clock. */
-export function environmentCameraFrames(overview:number,duration=ENTRANCE_MS.approach,near=false){
- return observerCameraFrames(overview,duration).map((frame,i,frames)=>{
-  const p=i/(frames.length-1),camera=observerCamera(p,overview),tilt=camera.tilt/(72*Math.PI/180);
-  const travel=(1-camera.scale)/(1-Math.min(.999,overview));
-  return {offset:frame.offset,transform:`translate3d(0,${-(near?30:12)*tilt}px,0) scale(${1+Math.max(0,travel)*(near?.12:.055)})`};
- });
+export function cameraTransform(camera:{tilt:number,scale:number}){return `translateZ(${ENTRANCE_FOCAL-ENTRANCE_FOCAL/camera.scale}px) rotateX(${camera.tilt*180/Math.PI}deg)`;}
+/** GPU and compositor sample the same seated -> overhead -> final framing path. */
+export function observerCameraFrames(overview:number,duration=ENTRANCE_MS.rise,phase:EntrancePhase='rise'){
+ const frames=Math.max(1,Math.ceil(duration/1000*120));return Array.from({length:frames+1},(_,i)=>({offset:i/frames,transform:cameraTransform(entranceCameraState(phase,i/frames,overview))}));
+}
+export function environmentTransform(camera:{tilt:number,scale:number},overview:number,near=false){
+ const tilt=camera.tilt/SEATED_TILT,travel=(1-camera.scale)/(1-seatedScale(overview));
+ return `translate3d(0,${-(near?24:9)*tilt}px,0) scale(${1+Math.max(0,travel)*(near?.07:.035)})`;
+}
+export function environmentCameraFrames(overview:number,duration=ENTRANCE_MS.rise,near=false,phase:EntrancePhase='rise'){
+ const frames=Math.max(1,Math.ceil(duration/1000*120));return Array.from({length:frames+1},(_,i)=>({offset:i/frames,transform:environmentTransform(entranceCameraState(phase,i/frames,overview),overview,near)}));
 }

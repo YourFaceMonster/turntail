@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {planShuffle,frameShuffle,shuffleDepth,shuffleKeyframes} from '../lib/shuffle-motion.ts';
 import {matchShuffleTracks,planDealFlights,sampleDealRoute,dealKeyframes,routeDistance,opponentExit,type DealRoute} from '../lib/deal-motion.ts';
+import {tileBodyDepth} from '../lib/tile-body.ts';
 import {dealPlan,shuffleTileSize} from '../lib/deal-animation.ts';
 import {room,player,start,view} from '../lib/game.ts';
 function intersects(a:DealRoute,b:DealRoute,t:number){
@@ -52,7 +53,7 @@ for(const capacity of [2,3,4])for(const [width,height] of [[390,844],[844,390]])
  for(let frame=0;frame<=120;frame++)for(let i=0;i<60;i++)for(let j=0;j<i;j++)assert.equal(intersects(routes[i],routes[j],frame/120),false,`solid dealing bodies intersect: ${capacity}p ${width}×${height} ${rotation}° ${items[i].key}/${items[j].key} t=${frame/120}`);
  for(const route of routes.filter(r=>r.kind==='upper')){
   const lower=routes.find(r=>r.key===route.key.replace('upper-','lower-'))!;
-  assert.ok(route.tier>lower.tier);assert.ok(route.ground-lower.ground>=route.body+4,'upper floor body rests above the lower body');
+  assert.ok(route.tier>lower.tier);assert.ok(route.ground-lower.ground>=tileBodyDepth(route.target.height)-1e-6,'upper floor body rests above the lower body');
  }
 }
 // Matching really minimises travel rather than using round-robin DOM order.

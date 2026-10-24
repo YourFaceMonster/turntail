@@ -1,3 +1,4 @@
+import {tileBodyDepth} from './tile-body.ts';
 import {sweptDistance,type ShufflePose} from './shuffle-motion.ts';
 export type DealFlight={key:string,kind:'own'|'opponent'|'lower'|'upper',width:number,height:number,depth:number,scale:number,source:ShufflePose,target:ShufflePose&{width:number,height:number}};
 const lerp=(a:number,b:number,t:number)=>t===0?a:t===1?b:a+(b-a)*t;
@@ -53,7 +54,7 @@ export function planDealFlights(flights:DealFlight[]):DealRoute[]{
   });
   const lower=flight.kind==='upper'?routes.find(other=>other.key===flight.key.replace(/^upper-/,'lower-')):undefined;
   let tier=lower?lower.tier+1:0;while(conflicts.some(other=>other.tier===tier))tier++;
-  routes.push({...flight,tier,body,ceiling:(tier+4)*step,ground:flight.kind==='upper'?body*2+4:body});
+  routes.push({...flight,tier,body,ceiling:(tier+4)*step,ground:tileBodyDepth(flight.target.height)*(flight.kind==='upper'?2:1)});
  }
  return routes;
 }

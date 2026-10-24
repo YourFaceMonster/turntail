@@ -6,7 +6,7 @@ import type {ShufflePose} from '../../lib/shuffle-motion';
 import type {DealRoute} from '../../lib/deal-motion';
 import type {DealItem,DealTarget} from '../../lib/deal-animation';
 import {useStageVisual,MATERIAL_COLORS} from './StageVisuals';
-import {ENTRANCE_MS,type EntrancePhase} from '../../lib/atmosphere';
+import {ENTRANCE_MS,entranceDuration,type EntrancePhase} from '../../lib/atmosphere';
 type Card={width:number,height:number,depth:number,poses?:ShufflePose[],landing:{item:DealItem,target:DealTarget}};
 type Props={cards:Card[],routes:DealRoute[],phase:EntrancePhase,visible:boolean,width:number,height:number,overview:number,onStatus:(status:'ready'|'fallback')=>void};
 function EntranceGpuTiles({cards,routes,phase,visible,width,height,overview,onStatus}:Props){
@@ -39,13 +39,13 @@ function EntranceGpuTiles({cards,routes,phase,visible,width,height,overview,onSt
   let frame=0,last=performance.now();
   // The DOM table's animation clock keeps both projections in the same frame.
   const cameraAnimation=document.querySelector('.entry-camera')?.getAnimations().find(animation=>animation.id==='turntale-observer');
-  const moving=phase==='approach'||phase==='shuffle'||phase==='deal';
+  const moving=['shuffle','rise','deal','focus'].includes(phase);
   function draw(now:number){
    clock.current.elapsed+=Math.max(0,now-last);last=now;
    const elapsed=clock.current.elapsed;
    let camera=entranceFrameCamera(phase,elapsed,overview);
-   if(cameraAnimation&&typeof cameraAnimation.currentTime==='number'&&phase==='approach')camera=entranceFrameCamera('approach',cameraAnimation.currentTime,overview);
-   try{engine.current?.draw(writeEntranceFrame(data,tiles,routes,phase,elapsed,width/2,height/2),{width,height,...camera});}
+   if(cameraAnimation&&typeof cameraAnimation.currentTime==='number'&&['rise','focus'].includes(phase))camera=entranceFrameCamera(phase,cameraAnimation.currentTime,overview);
+   try{engine.current?.draw(writeEntranceFrame(data,tiles,routes,phase,cameraAnimation&&typeof cameraAnimation.currentTime==='number'&&['rise','focus'].includes(phase)?cameraAnimation.currentTime:elapsed,width/2,height/2),{width,height,...camera});}
    catch{latest.current.onStatus('fallback');return;}
    // Never quantise to 16.7ms: the display's rAF clock may be 60/90/120/144Hz.
    if(moving&&elapsed<ENTRANCE_MS[phase])frame=requestAnimationFrame(draw);

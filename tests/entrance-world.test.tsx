@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {renderToStaticMarkup} from 'react-dom/server';
 import EntranceWorld,{tableWorldGeometry} from '../app/components/EntranceWorld';
-import {observerCamera,observerCameraFrames} from '../lib/entrance-camera';
+import {observerCamera,observerCameraFrames,SEATED_TILT,seatedScale} from '../lib/entrance-camera';
 import {projectEntrancePoint} from '../lib/entrance-gpu';
 for(const diameter of [500,900,1600]){
  const world=tableWorldGeometry(diameter,300,450),html=renderToStaticMarkup(<EntranceWorld diameter={diameter} cx={300} cy={450}/>);
@@ -12,8 +12,8 @@ for(const diameter of [500,900,1600]){
  for(const p of world.legs)assert.ok(Math.hypot(p.x-300,p.y-450)<diameter/2,'every leg attaches inside the round tabletop');
  for(const overview of [.2,.4,.65]){
   const first=observerCamera(0,overview),beside=observerCamera(.2,overview),last=observerCamera(1,overview);
-  assert.equal(first.tilt,72*Math.PI/180);assert.equal(first.tilt,beside.tilt,'the table does not tilt during the first walking segment');
-  assert.ok(beside.scale>first.scale);assert.deepEqual(last,{tilt:0,scale:1});
+  assert.equal(first.tilt,SEATED_TILT);assert.ok(beside.tilt<first.tilt,'the observer rises directly from the seated angle');
+  assert.equal(beside.scale,first.scale);assert.deepEqual(last,{tilt:0,scale:seatedScale(overview)});
   const camera={width:600,height:900,...first},top=projectEntrancePoint(360,490,0,camera),foot=projectEntrancePoint(360,490,-world.height,camera);
   assert.ok(Math.hypot(top.x-foot.x,top.y-foot.y)>25,'tabletop and floor contact visibly separate in the establishing view');
   for(const duration of [2400,3600]){const frames=observerCameraFrames(overview,duration);assert.equal(frames.length,Math.ceil(duration/1000*120)+1);assert.equal(frames[0].offset,0);assert.equal(frames.at(-1)!.offset,1);}
