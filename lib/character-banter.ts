@@ -1,10 +1,11 @@
+import {isHiboringji,hiboringjiLine} from './hiboringji';
 import {combo,isRedTwoSingle,type Tile,type GameEvent} from './game.ts';
 import {STAGE_THEMES} from './stage-theme.ts';
 
 export type BanterKind='confident'|'beaten'|'power'|'draw'|'idle'|'finish';
 export type Banter={who:number,kind:BanterKind,text:string,id:string};
 // Public counts and submitted tiles only. Never pass an opponent's hand here.
-export type BanterTable={code:string,round:number,phase:string,me:number,turn:number,lastBy:number|null,trick:Tile[],lastEvent?:GameEvent,players:{name:string,avatar?:string,bot?:boolean,replaced?:boolean,count:number}[]};
+export type BanterTable={code:string,round:number,phase:string,me:number,turn:number,lastBy:number|null,trick:Tile[],lastEvent?:GameEvent,roundActions?:number,players:{name:string,avatar?:string,bot?:boolean,replaced?:boolean,count:number}[]};
 type Lines=Record<BanterKind,string>;
 const korean:Lines[]=[
  {confident:'이 판 장사는 내가 잘했네!',beaten:'어머나, 내 흥정을 받아쳤어?',power:'밑지는 장사는 안 하지! 받아봐!',draw:'좋은 물건 하나 골라볼까.',idle:'아이고, 장 다 서겠다! 한 수 둬봐~',finish:'오늘 장사, 아주 잘됐네!'},
@@ -49,7 +50,8 @@ const stageReactions=[
  ['어둠의 틈을 베었군. 다음은 다르다.','그림자도 움직이는데, 네 수는 아직인가?'],
  ['뿌리 깊은 수로구나. 기억하겠다.','세계수의 잎이 흔들린다. 이제 네 차례야.']
 ] as const;
-export function characterLine(player:{name:string,avatar?:string},kind:BanterKind):string{
+export function characterLine(player:{name:string,avatar?:string},kind:BanterKind,actions=0,key=''):string{
+ if(isHiboringji(player))return hiboringjiLine(kind,actions,key);
  const avatar=player.avatar||'';
  if(avatar.startsWith('korean-monster:')){
   const lines:Lines[]=[
@@ -66,7 +68,7 @@ export function characterLine(player:{name:string,avatar?:string},kind:BanterKin
 function ai(g:BanterTable,i:number){return i!==g.me&&!!g.players[i]&&(g.players[i].bot||g.players[i].replaced);}
 export function eventBanter(before:BanterTable,next:BanterTable):Banter[]{
  const e=next.lastEvent;if(!e||before.code!==next.code||before.round!==next.round||e.id===before.lastEvent?.id)return [];
- const result:Banter[]=[],add=(who:number,kind:BanterKind)=>{if(ai(next,who))result.push({who,kind,text:characterLine(next.players[who],kind),id:`${e.id}:${who}:${kind}`});};
+ const result:Banter[]=[],add=(who:number,kind:BanterKind)=>{if(ai(next,who))result.push({who,kind,text:characterLine(next.players[who],kind,next.roundActions,`${next.code}:${next.round}:${e.id}:${who}`),id:`${e.id}:${who}:${kind}`});};
  if(e.type==='play'){
   if(before.trick.length&&before.lastBy!==null&&before.lastBy!==e.who)add(before.lastBy,'beaten');
   const power=isRedTwoSingle(e.tiles||[])||(combo(e.tiles||[])?.key[0]||0)>=2||(e.tiles||[]).some(t=>t.n===2);
@@ -76,6 +78,6 @@ export function eventBanter(before:BanterTable,next:BanterTable):Banter[]{
 }
 export function idleBanter(g:BanterTable,waitedMs:number):Banter|null{
  if(g.phase!=='playing'||g.turn!==g.me||waitedMs<18000)return null;
- const who=g.players.findIndex((_,i)=>ai(g,i));
- return who<0?null:{who,kind:'idle',text:characterLine(g.players[who],'idle'),id:`idle:${g.code}:${g.round}:${g.lastEvent?.id}`};
+ const featured=g.players.findIndex((p,i)=>ai(g,i)&&isHiboringji(p)),who=featured>=0?featured:g.players.findIndex((_,i)=>ai(g,i));
+ return who<0?null:{who,kind:'idle',text:characterLine(g.players[who],'idle',g.roundActions,`${g.code}:${g.round}:${g.lastEvent?.id}`),id:`idle:${g.code}:${g.round}:${g.lastEvent?.id}`};
 }

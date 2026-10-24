@@ -16,5 +16,6 @@ export default function EntranceSeats({company,diameter,cx,cy,stage=0,viewport}:
 
 export function openingGreeting(avatar:string|undefined,_name:string){
  if(avatar?.startsWith('stage-portrait:'))return STAGE_THEMES.flatMap(t=>t.opponents).find(p=>p.portrait===Number(avatar.split(':')[1]))?.quote||'좋습니다. 한 수 겨뤄 보지요.';
+ if(avatar==='korean-monster:3')return '히히. 빨리 끝내자. 나 성질 더럽다?';
  return avatar==='korean-monster:0'?'허허, 느긋하게 한 판 해볼까?':avatar==='korean-monster:1'?'좋아! 오늘은 내가 먼저 간다!':avatar==='korean-monster:2'?'끝까지 지켜보겠다. 시작하지.':'좋습니다. 한 수 겨뤄 보지요.';
 }

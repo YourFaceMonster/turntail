@@ -1,6 +1,7 @@
 import {shouldShowPlayNotice,QUICK_PLAY_MS,ANNOUNCED_PLAY_MS} from './play-notices.ts';
 import {accessibleStack} from './table-access.ts';
 import {chooseStrategicAction} from './bot.ts';
+import {isHiboringji,hiboringjiAction,hiboringjiTemperament} from './hiboringji';
 import {newChallenge,advanceChallenge,type Challenge} from './challenge.ts';
 import type {TablePlay} from './table-play';
 import {settleStageRun,type StageRun} from './stage-challenge.ts';
@@ -9,7 +10,7 @@ export type Player = {id:string,token:string,name:string,hand:Tile[],wins:number
 export type RoundResult = {id:string,at:number,round:number,players:{id:string,name:string,count:number,place:number,delta:number,total:number,winner:boolean}[],transfers:{from:number,to:number,points:number}[],voided?:boolean,voidReason?:string,challenge?:Challenge|null,stageRun?:StageRun|null};
 export type GameEvent = {id:string,type:string,who:number,index?:number,tiles?:Tile[],label?:string,at?:number,rally?:number,concealed?:boolean,showNotice?:boolean,reviewMs?:number};
 export type ChatMessage={id:string,who:number,name:string,text:string,at:number};
-export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],tablePlay?:TablePlay|null,log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number,playedTiles?:Tile[],publicDraws?:Record<string,Tile[]>,turnDeadline?:number,turnStartedAt?:number,aiAssisted?:boolean,matchMode?:"unlimited"|"target",targetScore?:number,matchWinner?:number|null,matchNo?:number,matchRoundOffset?:number,turnRuleVersion?:number,challenge?:Challenge|null,stageRun?:StageRun|null,revealedHands?:string[],announcedCombos?:number[]};
+export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],tablePlay?:TablePlay|null,log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number,playedTiles?:Tile[],publicDraws?:Record<string,Tile[]>,turnDeadline?:number,turnStartedAt?:number,aiAssisted?:boolean,matchMode?:"unlimited"|"target",targetScore?:number,matchWinner?:number|null,matchNo?:number,matchRoundOffset?:number,turnRuleVersion?:number,roundActions?:number,challenge?:Challenge|null,stageRun?:StageRun|null,revealedHands?:string[],announcedCombos?:number[]};
 export function uid(){if(typeof crypto.randomUUID==="function")return crypto.randomUUID();const a=new Uint8Array(16);crypto.getRandomValues(a);a[6]=(a[6]&15)|64;a[8]=(a[8]&63)|128;const h=Array.from(a,n=>n.toString(16).padStart(2,"0")).join("");return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;}
 export const suits = ["구름","별","달","해"];
 export const symbols = ["☁","✦","☾","☀"];
@@ -98,7 +99,7 @@ export function start(g:Game,now=Date.now()){
  const stacks=deck.length/2;g.stacks=Array.from({length:stacks},()=>[deck.shift()!,deck.shift()!]);
  g.cols=capacity(g)===2?6:capacity(g)===4?4:5;g.rows=Math.ceil(stacks/g.cols);
  g.opening=lowestHandLead(g.players);g.turn=g.opening.who;
- g.turnReadyAt=now+DEAL_REVIEW_MS;g.aiAssisted=!g.practice&&g.players.some(automated);g.rally=0;g.playedTiles=[];g.publicDraws={};g.phase="playing";g.trick=[];g.tablePlay=null;g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
+ g.turnReadyAt=now+DEAL_REVIEW_MS;g.aiAssisted=!g.practice&&g.players.some(automated);g.rally=0;g.roundActions=0;g.playedTiles=[];g.publicDraws={};g.phase="playing";g.trick=[];g.tablePlay=null;g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
  g.announcedCombos=[];g.revealedHands=[];g.lastEvent={id:uid(),type:"deal",who:g.turn,at:now};scheduleTurn(g,now);
 }
 export function restartMatch(g:Game,now=Date.now()){
@@ -132,6 +133,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   if(!ids.length||new Set(ids).size!==ids.length)throw Error("낼 타일을 선택해 주세요.");
   const ts=ids.map(id=>p.hand.find(t=>t.id===id));if(ts.some(t=>!t))throw Error("손패를 다시 확인해 주세요.");
   const tiles=ts as Tile[];if(!beats(tiles,g.trick))throw Error("같은 개수의 더 높은 조합을 내야 해요.");
+  g.roundActions=(g.roundActions??(g.playedTiles?.length||0))+1;
   p.hand=p.hand.filter(t=>!ids.includes(t.id));g.playedTiles=[...(g.playedTiles||[]),...tiles];if(g.publicDraws?.[p.id])g.publicDraws[p.id]=g.publicDraws[p.id].filter(t=>!ids.includes(t.id));g.trick=tiles;g.lastBy=who;
   const introductions=new Set(g.announcedCombos??[1,2,3].filter(n=>g.log.some(line=>line.includes(`· ${['싱글','페어','트리플'][n-1]} ${n}개 제출`))));
   const showNotice=shouldShowPlayNotice(introductions,tiles.length),reviewMs=showNotice?PLAY_REVIEW_MS:QUICK_PLAY_MS;g.announcedCombos=[...introductions];
@@ -143,12 +145,12 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
  }else if(action==="draw"){
   if(!g.trick.length)throw Error("선을 잡은 차례에는 패를 반드시 내야 해요.");
   if(!Number.isInteger(index)||!accessible(g,index))throw Error("밝게 표시된 외곽 타일만 가져올 수 있어요.");
-  const z=g.stacks[index][1]?1:0,t=g.stacks[index][z]!;g.stacks[index][z]=null;p.hand=sorted([...p.hand,t]);
+  g.roundActions=(g.roundActions??(g.playedTiles?.length||0))+1;const z=g.stacks[index][1]?1:0,t=g.stacks[index][z]!;g.stacks[index][z]=null;p.hand=sorted([...p.hand,t]);
   g.publicDraws=g.publicDraws||{};if(z===0)g.publicDraws[p.id]=[...(g.publicDraws[p.id]||[]),t];
   g.turnReadyAt=now+DRAW_TRAVEL_MS;g.lastEvent={id:uid(),type:"draw",who,index,tiles:[t],concealed:z===1,at:now};note(g,`${p.name} · ${z===1?"위층 비공개":"아래층 공개"} 패 1개 가져오기`);
  }else if(action==="pass"){
   if(g.stacks.some(s=>s[0]||s[1]))throw Error("바닥 패가 남아 있으면 내거나 가져와야 해요.");
-  if(!g.trick.length)throw Error("새 선에서는 타일을 내야 해요.");g.turnReadyAt=0;g.lastEvent={id:uid(),type:"pass",who,at:now};note(g,`${p.name} · 패스`);
+  if(!g.trick.length)throw Error("새 선에서는 타일을 내야 해요.");g.roundActions=(g.roundActions??(g.playedTiles?.length||0))+1;g.turnReadyAt=0;g.lastEvent={id:uid(),type:"pass",who,at:now};note(g,`${p.name} · 패스`);
  }else throw Error("지원하지 않는 동작이에요.");
  if(!automatic)p.timeouts=0;
  g.turn=(who+1)%g.players.length;
@@ -158,7 +160,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
 export function view(g:Game,token:string){
  const me=g.players.findIndex(p=>p.token===token);if(me<0)throw Error("입장 정보가 없어요. 방 코드로 다시 입장해 주세요.");
  const event=g.lastEvent;const lastEvent=event?.type==="draw"&&event.concealed&&event.who!==me?{...event,tiles:undefined}:event;
- return {code:g.code,phase:g.phase,matchMode:g.matchMode||"unlimited",targetScore:g.targetScore||0,matchWinner:g.matchWinner??null,matchNo:g.matchNo||1,displayRound:g.round-(g.matchRoundOffset||0),capacity:capacity(g),...dimensions(g),turn:g.turn,turnDeadline:g.turnDeadline||0,turnStartedAt:g.turnStartedAt||0,host:hostSeat(g),turnReadyAt:g.turnReadyAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,tablePlay:g.tablePlay||null,log:g.log,winner:g.winner,round:g.round,practice:g.practice,challenge:g.challenge||null,stageRun:g.stageRun||null,revealedHands:g.revealedHands||[],played:g.playedTiles||g.trick,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent,me,
+ return {code:g.code,phase:g.phase,roundActions:g.roundActions??(g.playedTiles?.length||0),matchMode:g.matchMode||"unlimited",targetScore:g.targetScore||0,matchWinner:g.matchWinner??null,matchNo:g.matchNo||1,displayRound:g.round-(g.matchRoundOffset||0),capacity:capacity(g),...dimensions(g),turn:g.turn,turnDeadline:g.turnDeadline||0,turnStartedAt:g.turnStartedAt||0,host:hostSeat(g),turnReadyAt:g.turnReadyAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,tablePlay:g.tablePlay||null,log:g.log,winner:g.winner,round:g.round,practice:g.practice,challenge:g.challenge||null,stageRun:g.stageRun||null,revealedHands:g.revealedHands||[],played:g.playedTiles||g.trick,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent,me,
  players:g.players.map((p,i)=>({id:p.id,name:p.name,avatar:p.avatar||"",count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,replaced:!!p.replaced,timeouts:p.timeouts||0,known:g.publicDraws?.[p.id]||[],hand:i===me||(g.phase==="ended"&&(g.practice||!!g.revealedHands?.includes(p.id)))?p.hand:undefined})),
  stacks:g.stacks.map((s,i)=>({lower:s[1]?null:s[0],lowerPresent:!!s[0],upper:!!s[1],available:!!g.trick.length&&accessible(g,i)}))};
 }
@@ -206,6 +208,11 @@ export function legalOptions(hand:Tile[],trick:Tile[]):LegalOption[]{
 export type BotPosition=ReturnType<typeof view>;
 export type BotAction={type:'play',tiles:Tile[]}|{type:'draw',index:number}|{type:'pass'};
 /** Shared single-player and timeout policy. Only the public seat view is accepted. */
-export function chooseBotAction(position:BotPosition):BotAction{return chooseStrategicAction(position,position.stageRun?.stage);}
+export function chooseBotAction(position:BotPosition):BotAction{
+ if(!position.stageRun&&isHiboringji(position.players[position.me])){
+  const best=chooseStrategicAction(position,hiboringjiTemperament(position.roundActions).level);return hiboringjiAction(position,best);
+ }
+ return chooseStrategicAction(position,position.stageRun?.stage);
+}
 export function revealHand(g:Game,who:number,show:boolean){if(g.practice||g.phase!=='ended'||g.winner===who)throw Error('멀티 종료 후 패배한 참가자만 자신의 패를 공개할 수 있어요.');g.revealedHands=(g.revealedHands||[]).filter(id=>id!==g.players[who].id);if(show)g.revealedHands.push(g.players[who].id);}
 export function resetChallenge(g:Game){if(g.phase!=='ended'||!g.challenge?.complete)throw Error('10판 완료 후 새 도전을 시작해 주세요.');g.challenge=newChallenge(uid(),capacity(g));g.players.forEach(p=>p.points=0);g.matchWinner=null;start(g);}

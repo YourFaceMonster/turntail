@@ -5,7 +5,7 @@ import {STAGE_THEMES} from '../lib/stage-theme.ts';
 const kinds:BanterKind[]=['confident','beaten','power','draw','idle','finish'];
 for(const p of KOREAN_OPPONENTS)for(const kind of kinds)assert.ok(characterLine({...p,avatar:`korean-monster:${p.portrait}`},kind).length>4);
 for(const p of STAGE_THEMES.flatMap(s=>s.opponents))for(const kind of kinds)assert.ok(characterLine(p,kind).length>4);
-assert.equal(new Set(KOREAN_OPPONENTS.map(p=>characterLine({...p,avatar:`korean-monster:${p.portrait}`},'idle'))).size,3,'three distinct monster voices');
+assert.equal(new Set(KOREAN_OPPONENTS.map(p=>characterLine({...p,avatar:`korean-monster:${p.portrait}`},'idle'))).size,4,'four distinct opponent voices');
 assert.equal(new Set(STAGE_THEMES.flatMap(s=>s.opponents).map(p=>characterLine(p,'beaten'))).size,30,'challenge defeat reactions are individual');
 const before:BanterTable={code:'BANTER',round:1,phase:'playing',me:0,turn:0,lastBy:1,trick:[{id:3,n:3,s:0}],lastEvent:{id:'old',type:'play',who:1},players:[{name:'나',count:4},{name:'김복례',avatar:'korean-portrait:0',bot:true,count:3},{name:'강태오',avatar:'korean-portrait:4',bot:true,count:3}]};
 const next=structuredClone(before);next.lastBy=2;next.lastEvent={id:'new',type:'play',who:2,tiles:[{id:7,n:2,s:3}]};

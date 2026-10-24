@@ -1422,3 +1422,19 @@ html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmo
 
 /* Hand growth never changes the floor, played area, or the space reserved for controls. */
 .turntale.active-table .hand-panel{--tile-h:var(--hand-tile-h);--tile-w:var(--hand-tile-w);--table-card-height:var(--hand-tile-h)}
+
+/* 0.6.1: a single static cutout; no extra animation or furniture work. */
+.monster-model[data-monster="3"]>img{object-position:center top}
+.opponent-picker{margin:12px 0;padding:12px;border:1px solid #a88b5c66;border-radius:10px;background:#110e1b66}
+.opponent-picker-label{display:block;font-size:12px;color:#e9d2aa;font-weight:800}
+.setup-modal .opponent-picker .segmented{margin:9px 0 0}
+.setup-modal .opponent-picker .segmented button{font-size:13px;padding:10px 6px}
+.featured-rival{display:flex;gap:10px;align-items:center;margin-top:12px;text-align:left}
+.featured-rival>.portrait{width:64px;height:64px}
+.featured-rival>div{flex:1;min-width:0}
+.featured-rival strong{font-size:15px;color:#ffe1b0}.featured-rival strong small{font-size:10px;color:#efae8e;white-space:nowrap}
+.featured-rival p,.featured-rival q{display:block;font-size:11px;line-height:1.65;margin:3px 0;color:#d6c9be;word-break:keep-all;overflow-wrap:normal}
+.featured-rival q{color:#f0c785}
+.hiboringji-mood{display:block;margin-top:1px;font-size:9px;line-height:1.2;color:#b8ddaa;word-break:keep-all}
+.hiboringji-mood[data-temper="1"]{color:#ffd18b}.hiboringji-mood[data-temper="2"]{color:#ffae85}.hiboringji-mood[data-temper="3"]{color:#ff8c96}
+@media(orientation:landscape) and (max-height:600px){.hiboringji-mood{font-size:8px}.featured-rival>.portrait{width:48px;height:48px}}
