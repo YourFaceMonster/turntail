@@ -1237,3 +1237,18 @@ body:has(.turntale[data-impact="power"]) .live-table-scene{animation:table-knock
 .unified-settings .settings-links{display:flex;gap:10px;margin-top:12px}
 .unified-settings .settings-links button{flex:1;font-size:12px;padding:8px;min-height:38px}
 @media(prefers-reduced-motion:reduce){.intro-speech{animation:none;opacity:1}}
+
+/* 0.5.15: explicit white/black lettering overrides the map's dark inherited text. */
+.journey-node.available .map-current-badge{color:#fff!important;-webkit-text-fill-color:#fff!important;-webkit-text-stroke:1px #10131a!important;paint-order:stroke fill;font-size:14px!important;font-weight:900!important;letter-spacing:.2px;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 2px 3px #0008!important;background:#d6ad60ee!important}
+/* Speech is anchored to each projected face, with a visible comic tail. */
+.entrance-greetings{position:absolute;inset:0;left:0;bottom:0;transform:none;width:100%;height:100%;pointer-events:none;z-index:8}
+.intro-speech{position:absolute;inset:auto;display:block;height:auto;min-height:68px;padding:13px 16px;background:#fff1dbeF;border:2px solid #29231e;border-radius:20px;color:#241c17;font-size:clamp(16px,1.55vw,21px);font-weight:900;line-height:1.45;text-align:left;box-shadow:0 4px 0 var(--speaker-ink),0 10px 22px #08090955;transform-origin:var(--bubble-tail) 100%;animation:character-greeting-pop var(--greeting-ms) var(--greeting-delay) ease-out both}
+.intro-speech:before,.intro-speech:after{content:'';position:absolute;left:var(--bubble-tail);width:0;height:0;transform:translateX(-50%);border-style:solid}
+.intro-speech:before{bottom:-17px;border-width:16px 11px 0;border-color:#29231e transparent transparent}
+.intro-speech:after{bottom:-12px;border-width:13px 8px 0;border-color:#fff1db transparent transparent}
+@keyframes character-greeting-pop{0%{opacity:0;transform:translateY(8px) scale(.9)}12%{opacity:1;transform:translateY(-2px) scale(1.025)}23%,86%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-4px) scale(.98)}}
+@media(prefers-reduced-motion:reduce){.intro-speech{animation:character-greeting-still var(--greeting-ms) var(--greeting-delay) linear both}}
+@keyframes character-greeting-still{0%,100%{opacity:0}8%,90%{opacity:1}}
+
+.intro-speech:before,.intro-speech:after{transform:translateX(-50%) skewX(var(--tail-angle,0deg));transform-origin:50% 0}
+.journey-route polyline.route-cleared{stroke-width:.28;stroke:#eacd87;opacity:.8;stroke-linecap:round;stroke-linejoin:round}

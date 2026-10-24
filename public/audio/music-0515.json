@@ -1,0 +1,62 @@
+[
+  {
+    "scene": "menu",
+    "bpm": 116,
+    "bars": 16,
+    "seconds": 33.1,
+    "bytes": 531117,
+    "parts": [
+      "lead phrase",
+      "answer chimes",
+      "offbeat chord comp",
+      "walking bass",
+      "tonal drums"
+    ],
+    "sections": "A / A variation / B reed bridge / returning layered A"
+  },
+  {
+    "scene": "table",
+    "bpm": 128,
+    "bars": 16,
+    "seconds": 30.0,
+    "bytes": 481581,
+    "parts": [
+      "lead phrase",
+      "answer chimes",
+      "offbeat chord comp",
+      "walking bass",
+      "tonal drums"
+    ],
+    "sections": "A / A variation / B reed bridge / returning layered A"
+  },
+  {
+    "scene": "victory",
+    "bpm": 136,
+    "bars": 16,
+    "seconds": 28.24,
+    "bytes": 453357,
+    "parts": [
+      "lead phrase",
+      "answer chimes",
+      "offbeat chord comp",
+      "walking bass",
+      "tonal drums"
+    ],
+    "sections": "A / A variation / B reed bridge / returning layered A"
+  },
+  {
+    "scene": "reflection",
+    "bpm": 104,
+    "bars": 16,
+    "seconds": 36.92,
+    "bytes": 592173,
+    "parts": [
+      "lead phrase",
+      "answer chimes",
+      "offbeat chord comp",
+      "walking bass",
+      "tonal drums"
+    ],
+    "sections": "A / A variation / B reed bridge / returning layered A"
+  }
+]

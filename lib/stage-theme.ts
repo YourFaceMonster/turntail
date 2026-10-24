@@ -164,7 +164,7 @@ export const STAGE_THEMES:StageTheme[]=[
   "accent": "#bba486",
   "position": [
    49,
-   51
+   43
   ],
   "opponents": [
    {
@@ -202,7 +202,7 @@ export const STAGE_THEMES:StageTheme[]=[
   "accent": "#af9fcc",
   "position": [
    80,
-   44
+   40
   ],
   "opponents": [
    {

@@ -206,7 +206,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
   </div>
   </div>
   <EntranceFurniture diameter={diameter} cx={worldX} cy={worldY} stage={stage||0} width={screen.width} height={screen.height} overview={overview} phase={phase} visible={pageVisible}/>
-  {phase==='shuffle'&&<EntranceGreetings company={company}/>}
+  {phase==='shuffle'&&<EntranceGreetings company={company} diameter={diameter} cx={worldX} cy={worldY} stage={stage||0} viewport={{width:screen.width,height:screen.height,overview}}/>}
   {resume&&phase!=='menu-out'&&savedLandings.length>0&&<ResumeGpuTiles rows={savedLandings} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
   {!resume&&!['menu-out','room-hold'].includes(phase)&&scene&&cards.length===60&&<EntranceGpuTiles cards={cards} routes={dealRoutes} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
   <div className="entry-reunion"><div className="entry-return-note"><span>{resume?'WELCOME BACK':`${company.length+1} PLAYERS · TAKE YOUR SEAT`}</span><strong>{stage?`${stageTheme(stage).name}의 테이블`:resume?'익숙한 테이블로 돌아왔어요':'달빛 서재의 작은 승부'}</strong><small>{resume?migrated?'3인전으로 전환했어요. 스테이지와 점수는 이어지고, 진행 중이던 패는 다시 나눴어요.':'자리에 놓인 패 그대로, 승부를 이어갑니다.':'테이블에 둘러앉아 새로운 승부를 시작합니다.'}</small></div></div>
