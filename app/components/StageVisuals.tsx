@@ -2,6 +2,7 @@
 import {createContext,useContext,useId,type ReactNode} from 'react';
 import TileWear from './TileWear';
 import TileCartoon from './TileCartoon';
+import RegionalSuit from './RegionalSuit';
 export const StageVisualContext=createContext<number|undefined>(undefined);
 export const useStageVisual=()=>useContext(StageVisualContext);
 export function StageVisuals({stage,children}:{stage?:number,children:ReactNode}){return <StageVisualContext.Provider value={stage}>{children}</StageVisualContext.Provider>;}
@@ -23,16 +24,7 @@ export function StageMaterial({stage,id,seed=0}:{stage:number,id:string,seed?:nu
  {stage===10&&<><path d="M45 -5Q17 44 59 72L39 136M59 72L91 91M41 47L72 24M52 93L13 112" stroke="#d99c35" strokeWidth="1.8" fill="none"/><path d="M53 1L63 25L44 57L73 111L69 132" stroke="#ee3d36" strokeWidth="3" fill="none"/></>}
  </g><TileWear seed={seed+stage*7} dark={dark}/><TileCartoon seed={seed} dark={dark}/><rect x="1" y="1" width="98" height="130" rx="9" fill={`url(#${id}-glint)`} stroke={dark?'#c6ad7980':'#ffffff90'} strokeWidth="1.5"/></>;
 }
-const clouds=['M-30 8Q-43-6-24-14Q-23-32-4-24Q12-38 26-17Q43-14 34 8Z','M-32 7C-43-8-26-19-19-13C-20-33 10-34 18-18C39-25 46 7 25 10H-23Z','M-35 7L-28-11L-16-10L-8-27L9-29L21-15L33-10L35 8Z','M-33 8Q-41-2-25-13Q-21-34 0-23Q19-37 28-11Q45-4 30 10Z'];
-const stars=['M0-25L7-8L24-4L11 8L14 26L0 15L-17 26L-12 7L-25-5L-7-9Z','M0-29L7-8L27 0L8 8L0 29L-8 8L-27 0L-8-8Z','M0-29L10-10L28 0L9 9L0 29L-9 9L-28 0L-10-10Z'];
-export function StageMotif({stage,s,outline}:{stage:number,s:number,outline?:{color:string,width:number}}){
- const edge=outline?.color||'currentColor',weight=(n:number)=>outline?.width??n;
- const angular=[3,4,6,9].includes(stage),delicate=[7,8].includes(stage);
- if(s===0)return <><path d={clouds[stage%4]}/>{[4,7,9,10].includes(stage)&&<path d="M-27 5Q-12-7-4 2T27 1" stroke={edge} strokeWidth={weight(2)} fill="none"/>}</>;
- if(s===1)return <><path d={stars[angular?stage%2+1:0]}/>{stage===10&&<path d="M0-31L-4-40M12 11L27 24M-12 10L-26 22" stroke={edge} strokeWidth={weight(2)}/>}</>;
- if(s===2)return <><path d={angular?'M12-30L-10-25L-29-6L-24 17L-5 30L16 25L29 12L6 16L-8 2L-6-17Z':'M12-30C-27-34-39 14-12 29C5 39 25 26 30 13C-3 26-22-10 12-30Z'}/>{delicate&&<path d="M-26-12Q-36 24-1 35" fill="none" stroke={edge} strokeWidth={weight(1.2)}/>}</>;
- return <><circle r={stage===5?16:18} fill={stage===5?'none':'currentColor'} stroke={edge} strokeWidth={weight(3)}/>{stage===5&&<circle r="11" fill="none" stroke={edge} strokeWidth={weight(2)}/>}{Array.from({length:stage===1?11:stage===9?13:12},(_,i)=><path key={i} transform={`rotate(${i*360/(stage===1?11:stage===9?13:12)})`} d={angular?'M-2-24L1-39L4-27':'M0-25L0-35'} stroke={edge} strokeWidth={weight(delicate?1.5:3)} fill="none" strokeLinecap={stage===1?'butt':'round'}/>)}</>;
-}
+export function StageMotif(props:{stage:number,s:number,outline?:{color:string,width:number}}){return <RegionalSuit {...props}/>;}
 export const BACK_PALETTES=[['#172c49','#ffe5ae'],['#3d171f','#ffd38b'],['#15392c','#c6f4d2'],['#122d53','#bceeff'],['#3b2c1b','#f5dfb1'],['#18202d','#f0d19b'],['#192341','#e0f6ff'],['#42220d','#ffe5a1'],['#221929','#ffc7c4'],['#360f1b','#ffe09b']];
 const BACK_MOTIFS=[
  'M29 100V51Q50 22 71 51V100M34 100V54Q50 31 66 54V100M24 101H76M50 36L53 26L56 36L66 39L56 42L53 52L50 42L40 39ZM38 74H62M50 62V85',

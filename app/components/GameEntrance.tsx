@@ -60,7 +60,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  useEffect(()=>{
   if(!screen.width)return;
   let cancelled=false;setAssetsReady(false);
-  const paths=[...(stage?[`/environments/stage-${stage}-055.webp`]:['/turntale-room-0513.webp']),'/monsters/blue-0513.webp','/monsters/red-0513.webp','/monsters/haetae-0513.webp','/turntale-ivory-material-055.webp','/turntale-stone-material-055.webp','/turntale-tile-back-gold.svg','/turntale-wood-0513.webp',...(stage||tableSet?['/turntale-stage-portraits.webp']:[]),...(tableSet?['/turntale-stage-materials-v2.webp']:[])];
+  const paths=[...(stage?[`/environments/stage-${stage}-055.webp`]:['/turntale-room-0513.webp']),...(stage?[]:['/monsters/blue-0513.webp','/monsters/red-0513.webp','/monsters/haetae-0513.webp']),'/turntale-ivory-material-055.webp','/turntale-stone-material-055.webp','/turntale-tile-back-gold.svg','/turntale-wood-0513.webp',...(stage?['/stage-company-0516.webp','/stage-table-materials-0518.webp']:[]),...(stage||tableSet?['/turntale-stage-materials-v2.webp']:[])];
   void Promise.all(paths.map(src=>new Promise<void>(resolve=>{const finish=()=>{clearTimeout(timer);resolve();},timer=setTimeout(finish,6000),img=new Image();img.onload=()=>{void img.decode().catch(()=>{}).then(finish);};img.onerror=finish;img.src=src;}))).then(()=>{if(!cancelled)setAssetsReady(true);});
   return()=>{cancelled=true;};
  },[screen.width>screen.height,!!screen.width,stage,tableSet]);
@@ -205,7 +205,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
   })}</div>}
   </div>
   </div>
-  <EntranceFurniture diameter={diameter} cx={worldX} cy={worldY} stage={stage||0} width={screen.width} height={screen.height} overview={overview} phase={phase} visible={pageVisible}/>
+  {!['menu-out','room-hold','prepare'].includes(phase)&&<EntranceFurniture diameter={diameter} cx={worldX} cy={worldY} stage={stage||0} width={screen.width} height={screen.height} overview={overview} phase={phase} visible={pageVisible}/>}
   {phase==='shuffle'&&<EntranceGreetings company={company} diameter={diameter} cx={worldX} cy={worldY} stage={stage||0} viewport={{width:screen.width,height:screen.height,overview}}/>}
   {resume&&phase!=='menu-out'&&savedLandings.length>0&&<ResumeGpuTiles rows={savedLandings} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
   {!resume&&!['menu-out','room-hold'].includes(phase)&&scene&&cards.length===60&&<EntranceGpuTiles cards={cards} routes={dealRoutes} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}

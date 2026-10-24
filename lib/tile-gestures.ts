@@ -6,7 +6,8 @@ export function tableGestureDelta(start:GesturePoint,end:GesturePoint,rotation:n
  return rotation===90?{x:y,y:-x}:rotation===-90?{x:-y,y:x}:{x,y};
 }
 export function tileSwipeReady(kind:TileGestureKind,delta:GesturePoint,height:number,elapsed:number){
- const threshold=Math.max(44,Math.min(78,height*.85)),forward=kind==='floor'?delta.y:-delta.y;
+ if(kind==='floor')return false;
+ const threshold=Math.max(44,Math.min(78,height*.85)),forward=-delta.y;
  return Number.isFinite(elapsed)&&elapsed>=0&&forward>=threshold&&forward>=Math.abs(delta.x)*1.4;
 }
 export type TileTap={id:number,at:number,x:number,y:number};

@@ -1270,8 +1270,47 @@ html[data-game-paused="true"] *,html[data-game-paused="true"] *:before,html[data
 html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmosphere){visibility:hidden}
 
 /* 0.5.17: gestures begin only on playable tiles, leaving the surrounding UI scrollable. */
-.turntale.active-table .stack:not(:disabled),.turntale.active-table .hand-tile.selected:not(:disabled){touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.turntale.active-table .hand-tile.selected:not(:disabled){touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .turntale.active-table [data-tile-dragging="true"]{translate:var(--gesture-x,0px) var(--gesture-y,0px);z-index:30!important;transition:none!important;cursor:grabbing;will-change:translate;pointer-events:auto}
 .turntale.active-table [data-tile-dragging="true"][data-swipe-ready="true"]{filter:drop-shadow(0 0 7px #ffda7bc0)!important}
 .turntale.active-table .hand:has([data-tile-dragging="true"]),.turntale.active-table .wall:has([data-tile-dragging="true"]){z-index:20;position:relative;overflow:visible}
 .turntale.active-table .hand-panel:has([data-tile-dragging="true"]){overflow:visible;position:relative;z-index:25}
+
+/* 0.5.18: Korean words stay together, including the compact in-game dialogue. */
+:is(.seat-banter,.intro-speech,.destination-quote){word-break:keep-all;overflow-wrap:normal;line-break:strict;white-space:normal}
+.seat-banter{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;max-height:none;overflow:hidden;font-size:clamp(10px,1.05vw,12px)}
+.seat-dialogue{min-height:0}
+.turntale.active-table .stack{touch-action:manipulation}
+.entry-menu-out>:not(.entry-curtain),.entry-room-hold>:not(.entry-curtain),.entry-prepare>:not(.entry-curtain):not(.entry-preparing-note){visibility:hidden!important}
+.table-entrance[data-stage] .entry-table{border:0;background:transparent;box-shadow:none}
+.table-surface[class*="surface-region-"]:not(.surface-region-0) .table-surface-bevel{background:none;box-shadow:inset 0 0 12px #090b1033}
+
+.map-living-details{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden}
+.map-water-stream{animation-duration:.95s}.map-water-ripple{animation-duration:3.1s}
+.map-bridge-sway{animation:map-bridge-swing 4s ease-in-out infinite alternate;will-change:transform}
+@keyframes map-bridge-swing{0%{transform:translateY(-.8px) rotate(-.18deg)}50%{transform:translateY(1.6px) rotate(.12deg)}100%{transform:translateY(.5px) rotate(.2deg)}}
+.map-lantern-breathe{transform-origin:0 0;animation:map-fire-breathe 1.3s ease-in-out infinite alternate}
+.map-lantern-flame{transform-origin:0 4px;animation:map-flame-sway .72s ease-in-out infinite alternate}
+.map-lantern-heart{animation:map-fire-breathe .47s ease-in-out infinite alternate}
+@keyframes map-fire-breathe{0%{opacity:.58;transform:scale(.9,.95)}36%{opacity:.95;transform:scale(1.06,.96)}70%{opacity:.73;transform:scale(.94,1.09)}100%{opacity:1;transform:scale(1.03,1.08)}}
+@keyframes map-flame-sway{from{transform:skewX(-8deg) scaleY(.92)}to{transform:skewX(9deg) scaleY(1.13)}}
+.map-bird-flight{animation:map-birds-cross 25s linear infinite;opacity:0}.map-bird-wings{transform-origin:0 0;animation:map-wingbeat .56s ease-in-out infinite alternate}
+@keyframes map-birds-cross{0%{transform:translate(-220px,45px);opacity:0}8%,85%{opacity:.85}48%{transform:translate(370px,-80px)}100%{transform:translate(1100px,-25px);opacity:0}}
+@keyframes map-wingbeat{from{transform:scaleY(.2) rotate(-4deg)}to{transform:scaleY(1.1) rotate(4deg)}}
+.map-firefly{animation:map-firefly-wander 4s ease-in-out infinite}
+@keyframes map-firefly-wander{0%,100%{opacity:0;transform:translate(0,0)}35%{opacity:.95;transform:translate(6px,-11px)}70%{opacity:.35;transform:translate(14px,-5px)}}
+
+.stage-scene-preview{position:fixed;inset:0;z-index:12000;background:#101a23;color:#fff1d4;overflow:hidden}
+.stage-scene-preview .scene-preview-world{z-index:0;pointer-events:none}
+.scene-table-tile{position:absolute;transform-style:preserve-3d;border-radius:9px;box-shadow:0 8px 0 #61574b,0 12px 8px #0a080866}
+.scene-table-tile>.tile{display:block;width:100%!important;height:100%!important;padding:0;border:0;background:transparent}.scene-table-tile svg{width:100%;height:100%;display:block}
+.scene-preview-header{position:absolute;inset:0 0 auto;z-index:3;display:flex;justify-content:space-between;gap:12px;padding:18px 25px;background:linear-gradient(#09121bee,#09121b77,transparent)}
+.scene-preview-header h2{font-size:26px;margin:5px 0;color:#fff0cf}.scene-preview-header p{font-size:12px;color:#d4d5cd}
+.scene-preview-actions{display:flex;gap:9px;align-items:flex-start}.scene-preview-actions button{border:1px solid #cbb28388;border-radius:8px;color:#fff0cf;background:#1d2936d9;padding:10px 14px;min-height:42px}
+.scene-preview-foot{position:absolute;inset:auto 0 0;z-index:3;display:grid;justify-items:center;gap:9px;padding:18px 12px 14px;background:linear-gradient(transparent,#07111bce 27%,#07111bf5)}
+.scene-preview-cards{display:flex;gap:11px}.scene-preview-cards>.tile{width:56px!important;height:74px!important;display:block;padding:0;border-radius:9px;box-shadow:0 4px 0 #978362,0 7px 8px #0007;background:#efe2c7;border:1px solid #bca882}.scene-preview-cards svg{width:100%;height:100%}
+.scene-preview-regions{display:flex;gap:7px;max-width:100%;overflow:auto;padding:5px}.scene-preview-regions button{min-width:35px;min-height:35px;border-radius:50%;background:#172c3ee6;border:1px solid #708091;color:#d4dfdf;font-weight:800}.scene-preview-regions button[aria-pressed=true]{border-color:var(--stage-accent);background:#665132;color:#fff0c3;box-shadow:0 0 0 2px #e9cd9225}.scene-preview-foot>small{font-size:11px;color:#a9beca}
+@media(max-width:600px){.scene-preview-header{padding:14px 12px}.scene-preview-header h2{font-size:20px}.scene-preview-header p{font-size:10px;max-width:190px;line-height:1.6}.scene-preview-actions{gap:5px}.scene-preview-actions button{padding:8px;font-size:11px}.scene-preview-cards>.tile{width:49px!important;height:65px!important}.scene-preview-regions{gap:4px}.scene-preview-regions button{min-width:30px;min-height:30px}.scene-preview-foot>small{font-size:10px}}
+
+/* The shared full-body atlas sits behind the rim; the lower body is occluded at the lap. */
+.stage-painted-model{clip-path:inset(0 0 42% 0);mask-image:linear-gradient(#000 0 54%,transparent 60%)}

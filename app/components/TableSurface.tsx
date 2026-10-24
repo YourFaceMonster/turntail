@@ -1,11 +1,13 @@
 "use client";
 import {useId} from 'react';
+import StageTableMaterial from './StageTableMaterial';
 import {useStageVisual} from './StageVisuals';
 import {stagePalette} from '../../lib/stage-presentation';
 import {stageSetting} from '../../lib/stage-setting';
 /** Native-size photographed grain is mirrored across repeat seams, never stretched from tile art. */
 export default function TableSurface({withRim=false,stage:explicitStage}:{withRim?:boolean,stage?:number}){
  const contextualStage=useStageVisual(),stage=explicitStage??contextualStage??0,id=useId().replace(/:/g,''),setting=stageSetting(stage);
+ if(stage>0)return <StageTableMaterial stage={stage}/>;
  const wood=setting.wood,palette=stagePalette(stage||2),size=wood?1254:627,src=wood?'/turntale-wood-0513.webp':'/turntale-stone-material-055.webp';
  return <div className={`table-surface ${wood?'surface-wood':'surface-stone'} surface-region-${stage}`} data-surface-stage={stage} aria-hidden="true">
   <svg className="table-surface-material"><defs><pattern id={`${id}-surface`} patternUnits="userSpaceOnUse" width={size*2} height={size*2}>
