@@ -25,5 +25,5 @@ for(const [width,height] of [[390,844],[844,390],[1366,936]]){
  }
 }
 assert.ok(stageSceneAssets(1).includes(TABLE_GRAIN_ASSETS.stone),'stone is decoded before scene entry');
-assert.equal(renderToStaticMarkup(<TableSurfaceViewport circle={{cx:10,cy:10,diameter:100}} width={300} height={300} stage={2}/>),'','other regional materials keep their own rendering');
+assert.equal(renderToStaticMarkup(<TableSurfaceViewport circle={{cx:10,cy:10,diameter:100}} width={300} height={300} stage={11}/>),'','invalid regions have no material');
 console.log('PASS: mirrored left/right classic speech, native-pitch wood and sandstone in camera/live surfaces, viewport-aligned origins in three orientations, and decoded stage-one material readiness.');

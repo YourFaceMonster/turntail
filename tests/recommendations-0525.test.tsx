@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {legalOptions,combo,type Tile,type LegalOption} from '../lib/game';
+import {patternOptions,nextRecommendation,recommendationNumbers,tapSelectableTileIds,tapTileSelection} from '../lib/selection';
+import LegalRecommendations from '../app/components/LegalRecommendations';
+const t=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
+const hand=[t(3),t(3,1),t(7),t(7,1),t(7,2),t(10),t(10,1),t(10,2),t(5),t(9),t(12)];
+const options=legalOptions(hand,[]),groups=[...new Set(options.map(o=>o.label))].map(label=>[label,patternOptions(options,label)] as [string,LegalOption[]]);
+let family:string|null=null,mode=0,selected:number[]=[];
+const key=()=>[...selected].sort((a,b)=>a-b).join(',');
+const choose=(choices:LegalOption[])=>{const next=nextRecommendation(choices,key())!;family=next.label;mode=next.tiles.length;selected=next.tiles.map(t=>t.id);};
+const enabled=()=>tapSelectableTileIds(selected,patternOptions(options,family),0,mode);
+choose(patternOptions(options,'플러시'));assert.equal(family,'플러시');assert.equal(mode,5);assert.ok(!enabled().has(t(3,1).id));
+choose(patternOptions(options,'페어'));assert.equal(mode,2);assert.ok(!enabled().has(t(5).id));assert.ok(!enabled().has(t(9).id));assert.ok(enabled().has(t(3,1).id)&&enabled().has(t(10,2).id));
+selected=tapTileSelection(selected,t(10,2).id,patternOptions(options,family),0,mode);assert.equal(combo(hand.filter(t=>selected.includes(t.id)))?.label,'페어');assert.ok(selected.every(id=>hand.find(t=>t.id===id)!.n===10));
+choose(patternOptions(options,'트리플'));assert.ok(!enabled().has(t(3).id));assert.ok(!enabled().has(t(5).id));assert.ok(enabled().has(t(7,2).id));
+choose(patternOptions(options,'싱글'));assert.equal(mode,1);selected=tapTileSelection(selected,t(12).id,patternOptions(options,family),0,mode);assert.deepEqual(selected,[t(12).id]);
+assert.deepEqual(recommendationNumbers(patternOptions(options,'페어')).map(([n])=>n),[3,7,10]);assert.deepEqual(recommendationNumbers(patternOptions(options,'트리플')).map(([n])=>n),[7,10]);
+const seven=recommendationNumbers(patternOptions(options,'페어')).find(([n])=>n===7)![1];selected=[];const seen=new Set<string>();for(let i=0;i<seven.length;i++){choose(seven);seen.add(key());}assert.equal(seen.size,seven.length,'all suit variants cycle within the visible rank');
+const html=renderToStaticMarkup(<LegalRecommendations groups={groups} family={family} selectionKey={key()} disabled={false} choose={choose}/>);
+for(const label of ['페어','트리플']){const chunk=html.split(`data-recommendation-family="${label}"`)[1].split('data-recommendation-family=')[0];for(const [n] of recommendationNumbers(patternOptions(options,label)))assert.ok(chunk.includes(`data-recommendation-number="${n}"`));}
+const singles=html.split('data-recommendation-family="싱글"')[1].split('data-recommendation-family=')[0];assert.ok(singles.includes('싱글 선택'));assert.ok(!singles.includes('data-recommendation-number='));
+console.log('PASS: flush → pair → triple → single switches eligibility immediately, non-family tiles stay unavailable, all distinct ranks are shown, suit variants cycle, and single recommendations carry no number.');

@@ -18,3 +18,7 @@ const faces=[
  [87,1111,135],[371,1106,123],[643,1136,132],[923,1115,131]
 ];
 export function stageModel(index:number){let at=ids.indexOf(index);if(at<0)at=ids.indexOf(index-index%3);return {rect:rects[Math.max(0,at)],face:faces[Math.max(0,at)]};}
+/** Cache only this figure's source pixels on its plane; motion never re-rasterises the full atlas. */
+export function paintStageModel(ctx:CanvasRenderingContext2D,image:CanvasImageSource,index:number){
+ const [x,y,w,h]=stageModel(index).rect;ctx.canvas.width=w;ctx.canvas.height=h;ctx.clearRect(0,0,w,h);ctx.drawImage(image,x,y,w,h,0,0,w,h);
+}

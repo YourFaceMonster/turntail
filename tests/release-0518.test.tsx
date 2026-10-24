@@ -9,13 +9,13 @@ import {platformGeometry} from '../lib/stage-setting';
 import {entranceSeatLayout} from '../lib/entrance-company';
 import {SEATED_TILT,seatedScale} from '../lib/entrance-camera';
 import {stageTableCell,STAGE_TABLE_ATLAS} from '../lib/stage-table-material';
-import {TABLE_GRAIN_ASSETS} from '../lib/table-material';
+import {nativeTableMaterial} from '../lib/table-material';
 import {paintFurnitureFace} from '../lib/furniture-paint';
 import MapAtmosphere from '../app/components/MapAtmosphere';
 import {tileSwipeReady,isTileDoubleTap} from '../lib/tile-gestures';
 const emblems=new Set<string>(),frames=new Set<string>();
 for(let stage=1;stage<=10;stage++){
- const surface=renderToStaticMarkup(<TableSurface stage={stage}/>);assert.ok(surface.includes(stage===1?TABLE_GRAIN_ASSETS.stone:STAGE_TABLE_ATLAS)&&surface.includes(`data-painted-table="${stage}"`));
+ const surface=renderToStaticMarkup(<TableSurface stage={stage}/>);assert.ok(surface.includes(nativeTableMaterial(stage)!)&&surface.includes(`data-painted-table="${stage}"`));
  const cell=stageTableCell(stage,1983,793);assert.ok(cell.x>=0&&cell.y>=0&&cell.x+cell.width<=1983.001&&cell.y+cell.height<=793.001);
  const geometry=furnitureGeometry(1900,681,468,stage),platform=platformGeometry(1900,stage);assert.equal(geometry.cap.length,platform.vertices.length);assert.ok(geometry.depth>=25);assert.ok(geometry.faces.every(f=>f.points.every(p=>p.z<0)));
  if(platform.setting.kind!=='table'){assert.ok(geometry.depth>=platform.setting.height&&geometry.depth===geometry.height,'regional rock/root supports extend to the ground at their authored height');assert.equal(geometry.legs.length,0);}if(platform.setting.kind==='stump')assert.ok(geometry.faces.some(f=>f.part==='root'));if(platform.setting.kind==='altar')assert.ok(geometry.faces.some(f=>f.part==='plinth'));

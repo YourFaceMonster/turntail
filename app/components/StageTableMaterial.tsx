@@ -1,12 +1,11 @@
 import TableMaterialGrain from './TableMaterialGrain';
-import {STAGE_TABLE_ATLAS} from '../../lib/stage-table-material';
 import {stageSetting} from '../../lib/stage-setting';
 import {stagePalette} from '../../lib/stage-presentation';
 /** Regional surface materials retain their own painted character and restrained relief. */
 export default function StageTableMaterial({stage}:{stage:number}){
- const n=stage-1,setting=stageSetting(stage),stone=!setting.wood,accent=stagePalette(stage).accent;
+ const setting=stageSetting(stage),stone=!setting.wood,accent=stagePalette(stage).accent;
  return <div className={`table-surface ${stone?'surface-stone':'surface-wood'} surface-region-${stage}`} data-surface-stage={stage} data-painted-table={stage} aria-hidden="true">
-  {stage===1?<TableMaterialGrain stage={1}/>:<svg className="table-surface-material" viewBox="0 0 1000 1000" preserveAspectRatio="none"><image href={STAGE_TABLE_ATLAS} x={-(n%5)*1000} y={-Math.floor(n/5)*1000} width="5000" height="2000" preserveAspectRatio="none"/><rect width="1000" height="1000" fill={stagePalette(stage).floor} opacity=".08"/></svg>}
+  <TableMaterialGrain stage={stage}/>
   <svg className="table-surface-patina" viewBox="0 0 1000 1000" preserveAspectRatio="none"><g fill="none" stroke={stone?'#211f22':'#170f13'} opacity=".2" strokeWidth="2">
    {Array.from({length:11},(_,i)=>{const a=(i*137.5+stage*19)*Math.PI/180,x=500+Math.cos(a)*455,y=500+Math.sin(a)*455;return <path key={i} d={`M${x} ${y}l${-Math.cos(a)*45} ${-Math.sin(a)*35}l${-Math.cos(a+.7)*22} ${-Math.sin(a+.7)*22}`}/>;})}</g>
    {[1,6,8].includes(stage)&&<g fill="none" stroke={accent} opacity={stage===8?.32:.16} strokeWidth="3"><path d="M160 285V190H260M170 200H205V235H170M740 190H840V285M795 200H830V235H795M160 715V810H260M740 810H840V715"/><circle cx="500" cy="500" r="443" strokeDasharray="9 16 3 12"/></g>}

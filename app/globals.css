@@ -1398,3 +1398,24 @@ html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmo
 @keyframes native-surface-in{from{opacity:0}to{opacity:1}}
 .table-entrance:is(.entry-opponent-out,.entry-settle,.entry-game-in) .entry-painted-glaze{animation:none;opacity:0}
 @media(prefers-reduced-motion:reduce){.entry-surface-handoff{animation:none}}
+
+/* Every pair/triple rank is visible alongside its family. */
+.legal-family{display:flex;align-items:center;flex:none;gap:2px;padding:1px 3px;border:1px solid #ac956b55;border-radius:7px;background:#201e1a55;min-width:0}
+.turntale .legal-options .legal-family button{flex:none;min-width:0;margin:0;height:26px;min-height:26px;padding:3px 6px;border-color:transparent;background:transparent;white-space:nowrap;gap:3px}
+.turntale .legal-options .legal-family .legal-family-number{min-width:24px;font-weight:850;font-variant-numeric:tabular-nums}
+.turntale .legal-options .legal-family .chosen{background:#806238;border-color:#f3cf85;color:#fff0c9}
+.legal-family.family-active{border-color:#e5bc76}
+.legal-family-name b{font-size:inherit}
+.turntale .legal-options .legal-family button small{position:static;display:inline;font-size:10px;margin:0}
+
+/* Composite each painted figure as one stable bitmap plane, with clearer body movement. */
+.table-entrance[data-stage] .entry-world-seat{filter:none}
+.table-entrance[data-stage].entry-focus .entry-world-company{animation:none;opacity:1}
+.table-entrance[data-stage].entry-focus .stage-character-art{animation:painted-company-lift var(--focus-ms) linear both}
+.regional-character-body{transform-style:flat}
+.stage-character-motion{transform-style:flat;will-change:transform;backface-visibility:visible}
+.stage-character-art,.stage-character-art>svg,.stage-character-bitmap{display:block;width:100%;height:100%;object-fit:contain;backface-visibility:visible;transform-style:flat}
+@keyframes stage-character-breathe{0%,100%{transform:translateY(0) rotate(-.85deg)}30%{transform:translateY(-1.9%) rotate(.4deg)}65%{transform:translateY(-.55%) rotate(1.15deg)}}
+.scene-preview-world[data-view="above"] .stage-character-motion{will-change:auto}
+.table-entrance[data-visible="false"] .stage-character-motion{will-change:auto}
+@media(prefers-reduced-motion:reduce){.stage-character-motion{will-change:auto}}

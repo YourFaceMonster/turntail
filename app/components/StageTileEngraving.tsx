@@ -27,7 +27,7 @@ const TWO_CRESTS=[
 ];
 /** Ordinary faces and the ceremonial number-two faces share their regional material only. */
 export default function StageTileEngraving({stage,s,special=false}:{stage:number,s:number,special?:boolean}){
- const design=stageTileDesign(stage,special),dark=[2,6,9,10].includes(stage),inlay=['#c7d5eb','#86d8ab','#f7bd70','#ff91a0'][s];
+ const design=stageTileDesign(stage,special),dark=[6,9,10].includes(stage),inlay=['#c7d5eb','#86d8ab','#f7bd70','#ff91a0'][s];
  if(special)return <g data-region-engraving={`${stage}:${s}`} data-special-two={stage} data-number-geometry={design.name} style={dark?{color:inlay}:undefined} stroke="currentColor" strokeLinejoin="round">
   <path d={TWO_CRESTS[stage-1]} fill="currentColor" fillOpacity=".12" strokeWidth="1.8"/>
   <path d="M14 113Q52 137 88 113M63 20L68 29L78 27L75 16M68 29L88 32M19 121L25 113M79 121L74 113" fill="none" strokeWidth="1.35"/>

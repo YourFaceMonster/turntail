@@ -15,4 +15,4 @@ const multi=room('123ABC',player('one'),false,2,{challenge:true});multi.players.
 const full=room('CHALLENGE',player('me'),true,2,{challenge:true});full.players.push(player('bot',true));for(let i=0;i<10;i++){start(full);full.turn=0;full.trick=[];full.players[0].hand=[t(4)];full.players[1].hand=[t(3),t(5)];act(full,0,'play',[t(4).id]);assert.equal(full.challenge!.completed,i+1);}assert.equal(full.challenge!.scores[0],20);assert.throws(()=>start(full));const oldId=full.challenge!.id;resetChallenge(full);assert.notEqual(full.challenge!.id,oldId);assert.equal(full.challenge!.completed,0);assert.equal(full.players[0].points,0);assert.equal(full.phase,'playing');
 console.log('PASS: signed ten-round scoring, void replay, exact-once results, ties, 12 independent buckets, direct 1→2→3→4+kicker selection, minimum legal pair, red-two finish, opt-in reveal/retraction, ten-round completion/restart.');
 
-assert.equal(tapTileSelection([four[0].id],four[1].id,opts,0,1).length,2,'a recommended single on lead can still grow into a pair');
+assert.deepEqual(tapTileSelection([four[0].id],four[1].id,opts,0,1),[four[1].id],'a chosen single recommendation stays a single');

@@ -2,6 +2,7 @@
 import {useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {sceneImage} from '../../lib/scene-assets';
 import {STAGE_TABLE_ATLAS,stageTableCell} from '../../lib/stage-table-material';
+import {nativeTableMaterial} from '../../lib/table-material';
 import {paintFurnitureFace} from '../../lib/furniture-paint';
 import {stageSetting} from '../../lib/stage-setting';
 import {projectEntrancePoint} from '../../lib/entrance-gpu';
@@ -12,7 +13,7 @@ const materialTiles=new Map<number,HTMLCanvasElement>();
 /** One projected drawing keeps the legs and slab visible without CSS 3D flattening artifacts. */
 export default function EntranceFurniture({diameter,cx,cy,stage=0,width,height,phase,visible,overview,cameraOverride}:{diameter:number,cx:number,cy:number,stage?:number,width:number,height:number,phase:EntrancePhase,visible:boolean,overview:number,cameraOverride?:{tilt:number,scale:number}}){
  const [texture,setTexture]=useState<HTMLCanvasElement|null>(null);
- useEffect(()=>{let stopped=false;if(!stage){setTexture(null);return;}const cached=materialTiles.get(stage);if(cached){setTexture(cached);return;}void sceneImage(STAGE_TABLE_ATLAS).then(image=>{if(stopped)return;const cell=stageTableCell(stage,image.naturalWidth,image.naturalHeight),tile=document.createElement('canvas');tile.width=tile.height=512;tile.getContext('2d')?.drawImage(image,cell.x,cell.y,cell.width,cell.height,0,0,512,512);materialTiles.set(stage,tile);setTexture(tile);}).catch(()=>{});return()=>{stopped=true;};},[stage]);
+ useEffect(()=>{let stopped=false;if(!stage){setTexture(null);return;}const cached=materialTiles.get(stage);if(cached){setTexture(cached);return;}const source=nativeTableMaterial(stage);void sceneImage(source||STAGE_TABLE_ATLAS).then(image=>{if(stopped)return;const cell=source?{x:0,y:0,width:image.naturalWidth,height:image.naturalHeight}:stageTableCell(stage,image.naturalWidth,image.naturalHeight),tile=document.createElement('canvas');tile.width=tile.height=768;const ctx=tile.getContext('2d');if(ctx){ctx.imageSmoothingQuality='high';ctx.drawImage(image,cell.x,cell.y,cell.width,cell.height,0,0,768,768);}materialTiles.set(stage,tile);if(materialTiles.size>2)materialTiles.delete(materialTiles.keys().next().value!);setTexture(tile);}).catch(()=>{});return()=>{stopped=true;};},[stage]);
  const canvas=useRef<HTMLCanvasElement>(null),clock=useRef({phase,elapsed:0});
  useLayoutEffect(()=>{
   if(clock.current.phase!==phase)clock.current={phase,elapsed:0};
