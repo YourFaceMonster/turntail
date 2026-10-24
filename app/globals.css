@@ -1252,3 +1252,19 @@ body:has(.turntale[data-impact="power"]) .live-table-scene{animation:table-knock
 
 .intro-speech:before,.intro-speech:after{transform:translateX(-50%) skewX(var(--tail-angle,0deg));transform-origin:50% 0}
 .journey-route polyline.route-cleared{stroke-width:.28;stroke:#eacd87;opacity:.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* 0.5.16: soft painted solids, centred larger portraits, simple clean speech. */
+.intro-speech{box-shadow:none}
+.stage-painted-model{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.stage-painted-model>img{position:absolute;max-width:none;display:block}
+.turntale.table-v211.active-table .seat-card{align-items:center!important;min-height:42px;padding-block:3px!important}
+.turntale.table-v211.active-table .seat-card>.portrait{width:36px!important;height:36px!important;min-width:36px!important;flex:0 0 36px;align-self:center!important;margin-block:0!important;background-repeat:no-repeat}
+.turntale.table-v211.active-table.landscape-table .seat-card>.portrait{width:30px!important;height:30px!important;min-width:30px!important;flex-basis:30px}
+.turntale.table-v211.active-table.landscape-table .seat-card{min-height:36px}
+.turntale.table-v211.active-table :is(.tile.face,.tile.back){border-radius:16% 13% 17% 14% / 11% 14% 12% 13%!important;border:1px solid #73634d!important;box-shadow:0 2px 0 #b7a27a,0 3px 2px #17161466!important}
+.turntale.table-v211.active-table .tile.face:not(.stage-material-tile){background:#ebdaba!important}
+.tile.face .classic-tile-face{border-radius:inherit;background:#f1e2c1}
+.tile-main-art text{paint-order:stroke fill;stroke-linejoin:round}
+.highscore-board{max-height:42dvh;overflow:auto}
+html[data-game-paused="true"] *,html[data-game-paused="true"] *:before,html[data-game-paused="true"] *:after{animation-play-state:paused!important}
+html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmosphere){visibility:hidden}

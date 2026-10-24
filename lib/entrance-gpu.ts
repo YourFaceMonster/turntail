@@ -104,10 +104,11 @@ void main(){
   vec2 backUV=clamp(v_uv,.002,.998)/u_atlasGrid;
   color=mix(texture(u_atlas,backUV),texture(u_atlas,uv),v_faceBlend);color.a*=v_alpha;
  }else{
-  float light=.79+.21*max(0.,dot(normalize(v_normal),normalize(vec3(-.5,-.7,.8))));
-  float grain=(.5+.5*sin(v_surface.x*19.+v_surface.z*3.)*sin(v_surface.y*23.));
-  float bevel=pow(max(0.,dot(normalize(v_normal),normalize(vec3(-.35,-.45,1.)))),18.)*.11;
-  color=vec4(u_body*(light+(grain-.5)*.018)+vec3(bevel*.95,bevel*.89,bevel*.75),v_alpha);
+  float diffuse=max(0.,dot(normalize(v_normal),normalize(vec3(-.5,-.7,.8))));
+  float light=diffuse>.65?.94:diffuse>.25?.84:.74;
+  float grain=step(.68,fract(sin(dot(floor(v_surface.xy*22.),vec2(12.9898,78.233)))*43758.5453));
+  float bevel=pow(max(0.,dot(normalize(v_normal),normalize(vec3(-.35,-.45,1.)))),18.)*.025;
+  color=vec4(u_body*(light+(grain-.5)*.035)+vec3(bevel*.95,bevel*.89,bevel*.75),v_alpha);
  }
  if(color.a<.005)discard;
 }`;

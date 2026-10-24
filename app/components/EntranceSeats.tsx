@@ -1,13 +1,14 @@
 import type {CSSProperties} from 'react';
 import SeatedCharacter from './SeatedCharacter';
 import MonsterModel from './MonsterModel';
+import StageModel from './StageModel';
 import {STAGE_THEMES} from '../../lib/stage-theme';
 import {entranceSeatLayout} from '../../lib/entrance-company';
 export type EntranceCompany={name:string,avatar?:string,points:number,count:number}[];
 /** Opponents sit beyond the rear rim, so the tabletop naturally occludes their lower bodies. */
 export default function EntranceSeats({company,diameter,cx,cy,stage=0,viewport}:{company:EntranceCompany,diameter:number,cx:number,cy:number,stage?:number,viewport?:{width:number,height:number,overview:number}}){
- return <div className="entry-world-company" data-player-count={company.length+1}>{company.map((p,i)=>{const monster=!!p.avatar?.startsWith('korean-monster:'),seat=entranceSeatLayout(diameter,cx,cy,i,company.length,monster,stage,viewport);return <div key={p.name+i} className={`entry-world-seat modeled-seat ${monster?'monster-seat':''}`} data-world-seat={i} style={{left:seat.left,top:seat.top,width:seat.width,height:seat.height,'--seat-floor':`${seat.support}px`} as CSSProperties}>
- {monster?<MonsterModel index={Number(p.avatar!.split(':')[1])}/>:<SeatedCharacter name={p.name} avatar={p.avatar} index={i}/>}
+ return <div className="entry-world-company" data-player-count={company.length+1}>{company.map((p,i)=>{const monster=!!p.avatar?.startsWith('korean-monster:'),painted=monster||!!p.avatar?.startsWith('stage-portrait:'),seat=entranceSeatLayout(diameter,cx,cy,i,company.length,painted,stage,viewport);return <div key={p.name+i} className={`entry-world-seat modeled-seat ${painted?'monster-seat':''}`} data-world-seat={i} style={{left:seat.left,top:seat.top,width:seat.width,height:seat.height,'--seat-floor':`${seat.support}px`} as CSSProperties}>
+ {monster?<MonsterModel index={Number(p.avatar!.split(':')[1])}/>:p.avatar?.startsWith('stage-portrait:')?<StageModel index={Number(p.avatar.split(':')[1])}/>:<SeatedCharacter name={p.name} avatar={p.avatar} index={i}/>}
  
  <span className="world-character-caption">{p.name}</span>
  </div>;})}</div>;

@@ -8,7 +8,7 @@ export function entranceSeatLayout(diameter:number,cx:number,cy:number,index:num
  let height=desired;
  if(viewport){const camera={width:viewport.width,height:viewport.height,scale:seatedScale(viewport.overview),tilt:SEATED_TILT};let lo=support+size,hi=desired;for(let j=0;j<20;j++){const mid=(lo+hi)/2,head=projectEntrancePoint(cx,cy-.53*diameter,mid-support,camera);if(head.y<viewport.height*.09)hi=mid;else lo=mid;}height=lo;}
  height=monster?height:support+size*1.6;
- const width=monster?height*2/3:size*1.45,x=cx+seat.x*diameter,y=cy-.53*diameter;
+ const width=monster?height*(stage?1:2/3):size*1.45,x=cx+seat.x*diameter,y=cy-.53*diameter;
  return {left:x-width/2,top:y-height,width,height,support,head:{x,y,z:height*.82-support}};
 }
 export function greetingPlacement(head:{x:number,y:number,z:number},viewport:CompanyViewport,index:number,count:number){

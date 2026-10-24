@@ -1,7 +1,7 @@
 import type {HighScore} from './challenge';
 export type LeaderboardEntry={rank:number,name:string,score:number,at:number,isMe:boolean};
 export type Leaderboard={rows:LeaderboardEntry[],total:number,mine:LeaderboardEntry|null,page:number,pageSize:number};
-export const PAGE_SIZE=20;
+export const PAGE_SIZE=10;
 export function sharedScores(input:unknown,now=Date.now()):HighScore[]{
  if(!Array.isArray(input)||input.length>18)throw Error('동기화할 기록을 확인해 주세요.');
  return input.map((r:any)=>{
@@ -10,23 +10,11 @@ export function sharedScores(input:unknown,now=Date.now()):HighScore[]{
   return {id:r.id,mode:'single',size:r.size,kind:r.kind,score:r.score,at:r.at};
  });
 }
-// Multiplayer comes directly from authoritative settled matches, including old records.
-// Offline single-player records are device-reported and bounded on upload.
-export const LEADERBOARD_CTE=`WITH candidates AS (
- SELECT device,name,score,at,entry_id AS entryId FROM shared_scores WHERE mode=? AND size=? AND kind=?
- UNION ALL
- SELECT r.device,r.name,
-  CASE WHEN ?='ten' THEN CAST(json_extract(r.result,'$.challenge.scores[' || p.key || ']') AS INTEGER) ELSE r.points END AS score,
-  r.at,r.id AS entryId
- FROM match_records r JOIN json_each(r.result,'$.players') p
- WHERE ?='multi' AND r.size=? AND r.id=json_extract(r.result,'$.id') || ':' || json_extract(p.value,'$.id')
-  AND COALESCE(json_extract(r.result,'$.voided'),0)=0
-  AND (?='single' OR (json_extract(r.result,'$.challenge.complete')=1 AND json_extract(r.result,'$.challenge.completed')=10
-   AND COALESCE(json_extract(r.result,'$.challenge.abandoned'),0)=0
-   AND EXISTS (SELECT 1 FROM json_each(r.result,'$.challenge.roundIds') ids WHERE ids.value=json_extract(r.result,'$.id'))))
-), unique_events AS (
- SELECT *,ROW_NUMBER() OVER (PARTITION BY device,entryId ORDER BY score DESC,at ASC,entryId ASC) AS best FROM candidates
-), ranked AS (
- SELECT device,name,score,at,ROW_NUMBER() OVER (ORDER BY score DESC,at ASC,entryId ASC,device ASC) AS rank FROM unique_events WHERE best=1
+// Persisted scores are already bounded to the best ten in each category.
+export const LEADERBOARD_CTE=`WITH ranked AS (
+ SELECT device,name,score,at,ROW_NUMBER() OVER(ORDER BY score DESC,at ASC,entry_id ASC,device ASC) AS rank
+ FROM shared_scores WHERE mode=? AND size=? AND kind=?
 ) `;
-export function boardArgs(mode:string,size:number,kind:string){return [mode,size,kind,kind,mode,size,kind];}
+export function boardArgs(mode:string,size:number,kind:string){return [mode,size,kind];}
+export const PRUNE_SCORES_SQL='DELETE FROM shared_scores WHERE id NOT IN (WITH unique_events AS (SELECT id,mode,size,kind,score,at,entry_id,device,ROW_NUMBER() OVER(PARTITION BY device,mode,size,kind,entry_id ORDER BY score DESC,at ASC,id ASC) AS best FROM shared_scores),ranked AS (SELECT id,ROW_NUMBER() OVER(PARTITION BY mode,size,kind ORDER BY score DESC,at ASC,entry_id ASC,device ASC) AS place FROM unique_events WHERE best=1) SELECT id FROM ranked WHERE place<=10)';
+export const PRUNE_MATCHES_SQL="DELETE FROM match_records WHERE id IN (SELECT id FROM (SELECT id,ROW_NUMBER() OVER(PARTITION BY device ORDER BY at DESC,id DESC) AS place FROM match_records) WHERE place>10)";

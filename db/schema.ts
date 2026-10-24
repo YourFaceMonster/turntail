@@ -10,3 +10,5 @@ export const sharedScores = sqliteTable("shared_scores", {
  mode:text("mode").notNull(),size:integer("size").notNull(),kind:text("kind").notNull(),
  score:integer("score").notNull(),at:integer("at").notNull(),entryId:text("entry_id").notNull()
 });
+
+export const recordRetention=sqliteTable('record_retention',{id:text('id').primaryKey(),cursor:text('cursor').notNull().default(''),complete:integer('complete').notNull().default(0)});

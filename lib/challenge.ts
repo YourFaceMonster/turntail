@@ -7,7 +7,7 @@ export function advanceChallenge(c:Challenge,result:{id:string,voided?:boolean,p
  const completed=c.completed+1;return {...c,completed,complete:completed===10,roundIds:[...c.roundIds,result.id],scores:c.scores.map((n,i)=>n+result.players[i].delta)};
 }
 export function topScores(rows:HighScore[],mode:HighScore['mode'],size:number,kind:HighScore['kind']):HighScore[]{
- const seen=new Set<string>();return rows.filter(r=>{if(r.mode!==mode||r.size!==size||r.kind!==kind||seen.has(r.id))return false;seen.add(r.id);return Number.isFinite(r.score)&&Number.isFinite(r.at);}).sort((a,b)=>b.score-a.score||a.at-b.at).slice(0,3);
+ const seen=new Set<string>();return rows.filter(r=>{if(r.mode!==mode||r.size!==size||r.kind!==kind||seen.has(r.id))return false;seen.add(r.id);return Number.isFinite(r.score)&&Number.isFinite(r.at);}).sort((a,b)=>b.score-a.score||a.at-b.at).slice(0,10);
 }
 export function mergeScores(old:HighScore[],added:HighScore[]):HighScore[]{const all=[...old,...added];return (['single','multi'] as const).flatMap(mode=>[2,3,4].flatMap(size=>(['single','ten'] as const).flatMap(kind=>topScores(all,mode,size,kind))));}
 export function scoreEntries(result:{id:string,at:number,voided?:boolean,players:{delta:number}[],challenge?:Challenge|null,stageRun?:unknown},me:number,mode:HighScore['mode'],size:number):HighScore[]{
@@ -16,9 +16,5 @@ export function scoreEntries(result:{id:string,at:number,voided?:boolean,players
  if(c&&c.complete&&c.completed===10&&!c.abandoned&&c.roundIds.includes(result.id))rows.push({id:`${mode}:ten:${c.id}`,mode,size,kind:'ten',score:c.scores[me],at:result.at});return rows;
 }
 
-// Keep every completed event for upload; TOP 3 is a display-only projection.
-export function mergeScoreHistory(old:HighScore[],added:HighScore[]):HighScore[]{
- const unique=new Map<string,HighScore>();
- for(const row of [...old,...added]){const key=`${row.mode}:${row.size}:${row.kind}:${row.id}`;if(!unique.has(key)&&Number.isFinite(row.score)&&Number.isFinite(row.at))unique.set(key,row);}
- return [...unique.values()].sort((a,b)=>a.at-b.at||a.id.localeCompare(b.id));
-}
+/** Only each category's best ten events survive in device storage and upload. */
+export function mergeScoreHistory(old:HighScore[],added:HighScore[]):HighScore[]{return mergeScores(old,added);}

@@ -1,9 +1,10 @@
+import {maintainRecords} from '../../../lib/record-retention';
 import { env } from "cloudflare:workers";
 import {act,assertTurnReady,botMove,player,room,start,view,capacity,advanceRoom,hostSeat,restartMatch,revealHand,resetChallenge,type Game} from "../../../lib/game";
 import {avatarImage,updateProfile,sendChat} from "../../../lib/social";
 import {scoreEntries,mergeScores,type HighScore} from "../../../lib/challenge";
 import {LINEUP_SUMMARY_SQL,LINEUP_PLAYERS_SQL} from "../../../lib/history";
-import {sharedScores,LEADERBOARD_CTE,boardArgs,PAGE_SIZE} from "../../../lib/leaderboard";
+import {sharedScores,LEADERBOARD_CTE,boardArgs,PAGE_SIZE,PRUNE_SCORES_SQL,PRUNE_MATCHES_SQL} from "../../../lib/leaderboard";
 export const dynamic="force-dynamic";
 function reply(x:unknown,status=200){return Response.json(x,{status,headers:{"Cache-Control":"no-store"}});}
 async function deviceKey(secret:unknown){
@@ -15,16 +16,18 @@ export async function POST(req:Request){try{
  const origin=req.headers.get("origin");if(origin&&origin!==new URL(req.url).origin)return reply({error:"접속 주소를 확인해 주세요."},403);
  const b=await req.json() as any;const db=env.DB;if(!db)throw Error("게임 저장소에 연결하지 못했어요.");
  const profile=await deviceKey(b.profileToken);
+ const retentionReady=await maintainRecords(db);
  if(b.action==="syncScores"){
   if(!profile)return reply({error:"기기 기록을 확인하지 못했어요."},400);
   const rows=sharedScores(b.scores),name=String(b.name||"플레이어").replace(/[\u0000-\u001f\u007f]/g,"").trim().slice(0,12)||"플레이어";
   const statements=rows.map(r=>db.prepare("INSERT INTO shared_scores (id,device,name,mode,size,kind,score,at,entry_id) VALUES (?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO NOTHING").bind(`${profile}:${r.size}:${r.id}`,profile,name,'single',r.size,r.kind,r.score,r.at,r.id));
   statements.push(db.prepare("UPDATE shared_scores SET name=? WHERE device=?").bind(name,profile));
+  statements.push(db.prepare(PRUNE_SCORES_SQL));
   await db.batch(statements);return reply({synced:true});
  }
  if(b.action==="leaderboard"){
   const mode=b.mode,kind=b.kind,size=Number(b.size),page=Number(b.page??0);
-  if(!['single','multi'].includes(mode)||!['single','ten'].includes(kind)||![2,3,4].includes(size)||!Number.isInteger(page)||page<0||page>100000)return reply({error:"순위 부문을 확인해 주세요."},400);
+  if(!['single','multi'].includes(mode)||!['single','ten'].includes(kind)||![2,3,4].includes(size)||!Number.isInteger(page)||page<0||page>0)return reply({error:"순위 부문을 확인해 주세요."},400);
   const args=boardArgs(mode,size,kind);
   const [rows,total,mine]=await Promise.all([
    db.prepare(LEADERBOARD_CTE+"SELECT name,score,at,rank,CASE WHEN device=? THEN 1 ELSE 0 END AS isMe FROM ranked ORDER BY rank LIMIT ? OFFSET ?").bind(...args,profile||'',PAGE_SIZE,page*PAGE_SIZE).all(),
@@ -35,15 +38,14 @@ export async function POST(req:Request){try{
  }
  if(b.action==="highscores"){
   if(!profile)return reply({error:"기기 기록을 확인하지 못했어요."},400);
-  let scores:HighScore[]=[];
-  const rows=await db.prepare("SELECT id,size,result FROM match_records WHERE device=? ORDER BY at ASC").bind(profile).all();
-  for(const row of rows.results as any[]){const result=JSON.parse(row.result),me=result.players.findIndex((p:any)=>row.id===result.id+':'+p.id);if(me>=0)scores=mergeScores(scores,scoreEntries(result,me,'multi',row.size));}
+  const rows=await db.prepare("SELECT entry_id AS id,mode,size,kind,score,at FROM shared_scores WHERE device=? AND mode='multi' ORDER BY score DESC,at ASC").bind(profile).all();
+  const scores=rows.results;
   return reply({scores});
  }
  if(b.action==="history"){
   if(!profile)return reply({error:"기기 기록을 확인하지 못했어요."},400);
   const summary=await db.prepare("SELECT COUNT(*) AS games,COALESCE(SUM(win),0) AS wins,COALESCE(SUM(points),0) AS points FROM match_records WHERE device=?").bind(profile).first();
-  const records=await db.prepare("SELECT id,at,win,points,size,result FROM match_records WHERE device=? ORDER BY at DESC LIMIT 40").bind(profile).all();
+  const records=await db.prepare("SELECT id,at,win,points,size,result FROM match_records WHERE device=? ORDER BY at DESC LIMIT 10").bind(profile).all();
   const [lineups,participants]=await Promise.all([db.prepare(LINEUP_SUMMARY_SQL).bind(profile).all(),db.prepare(LINEUP_PLAYERS_SQL).bind(profile).all()]);
   const groups=lineups.results.map((g:any)=>({key:g.lineup,names:JSON.parse(g.lineup),size:g.size,games:g.games,wins:g.wins,points:g.points,lastAt:g.lastAt,players:participants.results.filter((p:any)=>p.lineup===g.lineup&&p.size===g.size).map((p:any)=>({name:p.name,occurrence:p.occurrence,games:p.games,wins:p.wins,losses:p.losses,points:p.points}))}));
   return reply({summary,groups,records:records.results.map((r:any)=>({...r,result:JSON.parse(r.result)}))});
@@ -92,7 +94,11 @@ export async function POST(req:Request){try{
    for(let i=0;i<g.players.length;i++){
     const p=g.players[i],r=g.result.players[i];if(!p.profile||p.bot)continue;
     statements.push(db.prepare("INSERT OR IGNORE INTO match_records (id,device,name,at,win,points,size,result) SELECT ?,?,?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM rooms WHERE code=? AND revision=? AND json_extract(state,'$.lastEvent.id')=?)").bind(`${g.code}:${g.round}:${p.id}`,p.profile,p.name,g.result.at,Number(r.winner),r.delta,capacity(g),JSON.stringify(g.result),code,row.revision+1,eventId));
+    for(const entry of scoreEntries(g.result,i,'multi',capacity(g))){
+     statements.push(db.prepare("INSERT OR IGNORE INTO shared_scores (id,device,name,mode,size,kind,score,at,entry_id) SELECT ?,?,?,?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM rooms WHERE code=? AND revision=? AND json_extract(state,'$.lastEvent.id')=?)").bind(`${p.profile}:${entry.id}`,p.profile,p.name,entry.mode,entry.size,entry.kind,entry.score,entry.at,entry.id,code,row.revision+1,eventId));
+    }
    }
+   statements.push(db.prepare(PRUNE_SCORES_SQL));if(retentionReady)statements.push(db.prepare(PRUNE_MATCHES_SQL));
   }
   const updates=await db.batch(statements);
   if(updates[0].meta.changes)return reply({token,game:view(g,token),revision:row.revision+1,...(skipped&&b.action!=="bot"?{error:"시간 초과 또는 AI 진행으로 차례가 바뀌었어요."}:{})},skipped&&b.action!=="bot"?409:200);

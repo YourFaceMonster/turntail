@@ -116,7 +116,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  const own=landings.find(row=>row.item.kind==='own')?.target;
  const preparing=phase==='prepare'&&!resume&&!reduced;
  useEffect(()=>{
-  if(!preparing||!own||landings.length!==60||!screen.width)return;
+  if(!pageVisible||!preparing||!own||landings.length!==60||!screen.width)return;
   let cancelled=false,timer=0,worker:Worker|undefined,startedFallback=false;
   const sizes=landings.map(l=>shuffleTileSize(l.item.kind,l.target,own)),planner=planShuffle(shuffleSeed.current,screen.width,screen.height,sizes);
   function advance(){
@@ -136,7 +136,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
    timer=window.setTimeout(fallback,8000);
   }catch{fallback();}
   return()=>{cancelled=true;clearTimeout(timer);worker?.terminate();planner.return(null!);};
- },[landings,own,screen.width,screen.height,preparing]);
+ },[landings,own,screen.width,screen.height,preparing,pageVisible]);
  const scale=scene?frameShuffle(scene,screen.width,screen.height):1;
  const cards=useMemo(()=>{
   const targets=landings.map(l=>{
@@ -188,7 +188,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  if(phase==='idle'||reduced||typeof document==='undefined')return null;
 
  const curtain=phase==='menu-out'?ENTRANCE_MS['menu-out']:phase==='game-in'?entranceDuration('game-in',resume):ENTRANCE_MS.approach,cameraStart=entranceFrameCamera(phase,0,overview,resume);
- return createPortal(<StageVisuals stage={tableSet||undefined}><div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${gpuStatus==='ready'?'entry-gpu-ready':''}`} aria-hidden="true" data-stage={stage} data-world-kind={stageSetting(stage||0).kind} data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--stage-accent':stage?stagePalette(stage).accent:undefined,'--stage-side':tableSet?MATERIAL_COLORS[tableSet-1]:undefined,'--camera-ms':`${entranceDuration('approach',resume)}ms`,'--camera-far':`${(1-1/Math.max(.001,overview))*1000}px`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--focus-ms':`${ENTRANCE_MS.focus}ms`,'--rise-ms':`${ENTRANCE_MS.rise}ms`,'--opponent-out-ms':`${ENTRANCE_MS['opponent-out']}ms`,'--environment-far-transform':environmentTransform(cameraStart,overview),'--environment-near-transform':environmentTransform(cameraStart,overview,true),'--curtain-ms':`${curtain}ms`} as CSSProperties}>
+ return createPortal(<StageVisuals stage={stage||tableSet||undefined}><div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${gpuStatus==='ready'?'entry-gpu-ready':''}`} aria-hidden="true" data-stage={stage} data-world-kind={stageSetting(stage||0).kind} data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--stage-accent':stage?stagePalette(stage).accent:undefined,'--stage-side':tableSet?MATERIAL_COLORS[tableSet-1]:undefined,'--camera-ms':`${entranceDuration('approach',resume)}ms`,'--camera-far':`${(1-1/Math.max(.001,overview))*1000}px`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--focus-ms':`${ENTRANCE_MS.focus}ms`,'--rise-ms':`${ENTRANCE_MS.rise}ms`,'--opponent-out-ms':`${ENTRANCE_MS['opponent-out']}ms`,'--environment-far-transform':environmentTransform(cameraStart,overview),'--environment-near-transform':environmentTransform(cameraStart,overview,true),'--curtain-ms':`${curtain}ms`} as CSSProperties}>
   <div className="entry-room"><EntranceEnvironment stage={stage}/></div>
   <div className="entry-view-rig">
   <div className="entry-camera" ref={cameraElement} style={{transform:cameraTransform(cameraStart)}}>
