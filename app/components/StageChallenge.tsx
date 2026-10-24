@@ -9,6 +9,7 @@ import type {Game,view} from '../../lib/game';
 import {stageConfig,type StageRecord} from '../../lib/stage-challenge';
 import TileFace from './TileFace';
 import MapAtmosphere from './MapAtmosphere';
+import {warmStageScenes} from '../../lib/scene-assets';
 import StageScenePreview from './StageScenePreview';
 import ResultStandings from './ResultStandings';
 import {stageMapScrollTop,STAGE_ROUTE_SEGMENTS,stageRoutePoints} from '../../lib/stage-map';
@@ -38,6 +39,7 @@ export function StageDestinationDialog({stage,active,error='',start,resume,advan
 }
 export function StageHub({active,start,resume,advance,records,abandon,close,error=''}:{active:Game|null,start:()=>void,resume:()=>void,advance:()=>void,records:()=>void,abandon:()=>void,close:()=>void,error?:string}){
  const run=active?.stageRun,next=run?.status==='stage-clear'?Math.min(10,run.stage+1):run?.stage||1;
+ useEffect(()=>{let cancelled=false;void warmStageScenes(next,()=>cancelled);return()=>{cancelled=true;};},[next]);
  const [preview,setPreview]=useState(false);
  const [selected,setSelected]=useState(next),[infoOpen,setInfoOpen]=useState(false),theme=stageTheme(selected);
  const viewport=useRef<HTMLDivElement>(null);

@@ -31,6 +31,7 @@ import {endgameLevel,ENTRANCE_MS,entranceDuration,nextEntrance,concealLiveTiles,
 import {shuffleSound} from '../lib/atmosphere-audio';
 import {playTileSound,type TileSoundDetail,type TileSoundKind} from '../lib/tile-audio';
 import Tutorial from './components/Tutorial';
+import {shouldShowPlayNotice} from '../lib/play-notices';
 import TableNotice from './components/TableNotice';
 import HighScores from './components/HighScores';
 import {syncPersonalScores} from '../lib/score-sync';
@@ -126,7 +127,8 @@ export default function Home(){
  useEffect(()=>{if(!slam)return;const t=setTimeout(()=>setSlam(null),720);return()=>clearTimeout(t);},[slam]);
  const [playedSize,setPlayedSize]=useState<{width:number,height:number}|null>(null),[resumeAvailable,setResumeAvailable]=useState(false);
  const outcomePlayed=useRef(""),turnAnnounced=useRef(""),lastImpact=useRef("");
- const flyingIds=useRef(new Set<string>()),pendingFlair=useRef<{id:string,label:string,red:boolean,two:boolean,rally:number}|null>(null);
+ const flyingIds=useRef(new Set<string>()),pendingFlair=useRef<{id:string,label:string,red:boolean,two:boolean,rally:number,show:boolean}|null>(null);
+ const routineNotices=useRef({round:"",seen:new Set<number>()});
  const [rackSize,setRackSize]=useState({width:326,height:126});
  const tableRef=useRef<HTMLElement|null>(null),[tableSize,setTableSize]=useState({width:342,height:573});
  const floorRef=useRef<HTMLDivElement|null>(null),[floorSize,setFloorSize]=useState({width:320,height:150});
@@ -162,8 +164,10 @@ export default function Home(){
    if(fs[0])setPlayedSize({width:fs[0].sw,height:fs[0].sh});
    const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
    flyingIds.current=new Set(reduce?[]:fs.map(f=>f.id));if(!reduce)setFlights(fs);
-   const red=isRedTwoSingle(ev.tiles||[]),two=(ev.tiles||[]).some(t=>t.n===2),rally=ev.rally||1;pendingFlair.current={id:ev.id,label:red?"빨간 2":ev.label||"싱글",red,two,rally};setFlair(reduce?pendingFlair.current:null);if(reduce){landImpact(next);}
-   if((ev.tiles?.length||0)>=3||red){setBurst(ev.label||"NICE PLAY");setTimeout(()=>setBurst(""),2250);}playTension(rally,red);
+   const noticeRound=`${next.code}:${next.round}`;if(routineNotices.current.round!==noticeRound)routineNotices.current={round:noticeRound,seen:new Set<number>()};
+   const show=shouldShowPlayNotice(routineNotices.current.seen,ev.tiles?.length||1);
+   const red=isRedTwoSingle(ev.tiles||[]),two=(ev.tiles||[]).some(t=>t.n===2),rally=ev.rally||1;pendingFlair.current={id:ev.id,label:red?"빨간 2":ev.label||"싱글",red,two,rally,show};setFlair(reduce&&show?pendingFlair.current:null);if(reduce){landImpact(next);}
+   if(show&&((ev.tiles?.length||0)>=3||red)){setBurst(ev.label||"NICE PLAY");setTimeout(()=>setBurst(""),2250);}playTension(rally,red);
   }else if(ev.type==="draw"){
    feel("draw",ev.who===next.me,{concealed:ev.concealed,seed:ev.id});
    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
@@ -176,7 +180,7 @@ export default function Home(){
  const ref=stageRect(document.querySelector('[data-hand-area] .tile.face')),h=ref?.height||f.sh||48,w=ref?.width||f.sw||36.48,board=stageRect(document.querySelector('.floor-stage'));
  return [{...f,ready:true,sw:w,sh:h,ex:f.who===current.current?.me?r.x:r.x+r.width/2-w/2,ey:f.who===current.current?.me?r.y:r.y+r.height/2-h/2,cx:(board?board.x+board.width/2:r.x)-w/2,cy:(board?board.y+board.height/2:r.y)-h/2}];}));},[flights]);
  function playTension(rally:number,red:boolean){const ctx=audio.current;if(!ctx||!preferences.current.sound||(!red&&rally<3))return;try{const now=ctx.currentTime;const notes=red?[196,392,587.33,783.99]:[110+Math.min(rally,10)*5,110+Math.min(rally,10)*5];notes.forEach((freq,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=red?"triangle":"sine";osc.frequency.value=freq;const at=now+i*(red?.11:.19);gain.gain.setValueAtTime(.0001,at);gain.gain.exponentialRampToValueAtTime(red?.055:.045,at+.025);gain.gain.exponentialRampToValueAtTime(.0001,at+(red?.65:.15));osc.connect(gain);gain.connect(effectOutput(ctx));osc.start(at);osc.stop(at+.75);});}catch{}}
- function finishFlight(f:Flight){flyingIds.current.delete(f.id);if(f.kind==="play"&&!flyingIds.current.size){const next=current.current;if(next&&next.lastEvent?.id===pendingFlair.current?.id){const ready=Date.now()+REVIEW_MS;next.turnReadyAt=Math.max(next.turnReadyAt,ready);setClock(Date.now());setGame({...next});setFlair(pendingFlair.current);landImpact(next);}}setFlights(all=>all.filter(x=>x.id!==f.id));}
+ function finishFlight(f:Flight){flyingIds.current.delete(f.id);if(f.kind==="play"&&!flyingIds.current.size){const next=current.current;if(next&&next.lastEvent?.id===pendingFlair.current?.id){const ready=Date.now()+REVIEW_MS;next.turnReadyAt=Math.max(next.turnReadyAt,ready);setClock(Date.now());setGame({...next});setFlair(pendingFlair.current?.show?pendingFlair.current:null);landImpact(next);}}setFlights(all=>all.filter(x=>x.id!==f.id));}
  function accept(data:{game?:View,revision:number}){
   if(!data.game||data.revision<seen.current)return;const next=data.game,prior=current.current;
   if(next.lastEvent?.type==="deal"&&prior?.lastEvent?.id!==next.lastEvent.id&&Date.now()-(next.lastEvent.at||0)<DEAL_REVIEW_MS)next.turnReadyAt=Math.max(next.turnReadyAt,Date.now()+DEAL_REVIEW_MS);

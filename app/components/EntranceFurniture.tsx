@@ -1,14 +1,16 @@
 'use client';
 import {useEffect,useLayoutEffect,useRef,useState} from 'react';
+import {sceneImage} from '../../lib/scene-assets';
 import {STAGE_TABLE_ATLAS,stageTableCell} from '../../lib/stage-table-material';
 import {paintFurnitureFace} from '../../lib/furniture-paint';
 import {projectedFurniture} from '../../lib/entrance-furniture';
 import {entranceFrameCamera} from '../../lib/entrance-frame';
 import {ENTRANCE_MS,type EntrancePhase} from '../../lib/atmosphere';
+const materialTiles=new Map<number,HTMLCanvasElement>();
 /** One projected drawing keeps the legs and slab visible without CSS 3D flattening artifacts. */
 export default function EntranceFurniture({diameter,cx,cy,stage=0,width,height,phase,visible,overview,cameraOverride}:{diameter:number,cx:number,cy:number,stage?:number,width:number,height:number,phase:EntrancePhase,visible:boolean,overview:number,cameraOverride?:{tilt:number,scale:number}}){
  const [texture,setTexture]=useState<HTMLCanvasElement|null>(null);
- useEffect(()=>{let stopped=false;setTexture(null);if(!stage)return;const image=new Image();image.onload=()=>{if(stopped)return;const cell=stageTableCell(stage,image.naturalWidth,image.naturalHeight),tile=document.createElement('canvas');tile.width=tile.height=512;tile.getContext('2d')?.drawImage(image,cell.x,cell.y,cell.width,cell.height,0,0,512,512);setTexture(tile);};image.src=STAGE_TABLE_ATLAS;return()=>{stopped=true;};},[stage]);
+ useEffect(()=>{let stopped=false;if(!stage){setTexture(null);return;}const cached=materialTiles.get(stage);if(cached){setTexture(cached);return;}void sceneImage(STAGE_TABLE_ATLAS).then(image=>{if(stopped)return;const cell=stageTableCell(stage,image.naturalWidth,image.naturalHeight),tile=document.createElement('canvas');tile.width=tile.height=512;tile.getContext('2d')?.drawImage(image,cell.x,cell.y,cell.width,cell.height,0,0,512,512);materialTiles.set(stage,tile);setTexture(tile);}).catch(()=>{});return()=>{stopped=true;};},[stage]);
  const canvas=useRef<HTMLCanvasElement>(null),clock=useRef({phase,elapsed:0});
  useLayoutEffect(()=>{
   if(clock.current.phase!==phase)clock.current={phase,elapsed:0};

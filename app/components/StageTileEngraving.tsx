@@ -25,14 +25,14 @@ const accents=[
 /** Forty regional number medallions, keeping the four suits immediately recognizable. */
 export default function StageTileEngraving({stage,s,special=false}:{stage:number,s:number,special?:boolean}){
  const count=8+stage%5,radius=s===2?31:32;
- return <g data-region-engraving={`${stage}:${s}`} fill="none" stroke="currentColor" strokeLinejoin="round" opacity={special?.52:.68}>
-  <path d={frames[stage-1]} strokeWidth="1.5"/><path d={accents[stage-1]} strokeWidth="1.9" strokeLinecap="round"/>
+ return <g data-region-engraving={`${stage}:${s}`} fill="none" stroke="currentColor" strokeLinejoin="round" opacity={special?.48:.56}>
+  <path d={frames[stage-1]} strokeWidth="1"/><path d={accents[stage-1]} strokeWidth="1.35" strokeLinecap="round"/>
   {!special&&<g transform="translate(45 47)">
    {s===0?<><path d={`M-30-9Q-41-${25+stage} -20-24Q-9-${35+stage} 5-27Q27-37 32-15Q43-4 31 16Q30 34 9 33Q-11 43-28 26Q-41 19-30-9Z`} strokeWidth="1.9"/><path d="M-25-20Q-37-9-24-7M24-20Q38-13 27-5M-22 24Q-34 14-22 12" strokeWidth=".8"/></>:
    s===1?<path d={Array.from({length:count*2},(_,i)=>{const a=(i*Math.PI/count)-Math.PI/2,r=i%2?27:37;return `${i?'L':'M'}${Math.cos(a)*r} ${Math.sin(a)*r}`;}).join('')+'Z'} strokeWidth="1.8"/>:
    s===2?<><path d={`M15-${radius+2}C-39-45-49 34 2 37Q30 37 39 11C5 36-30-5 15-${radius+2}Z`} fill="currentColor" fillOpacity=".13" strokeWidth="1.5"/><path d="M-27 29Q5 48 30 25" strokeWidth=".8"/></>:
    <>{Array.from({length:count+4},(_,i)=><path key={i} transform={`rotate(${i*360/(count+4)})`} d={stage%2?'M-2-31Q-8-37 0-44Q7-35 3-30':'M-2-32L0-43L3-31'} strokeWidth="1"/>)}<circle r="31" strokeWidth="1.5"/></>}
-   <circle r={s===2?26:27} fill="#fff6df" fillOpacity=".19" strokeWidth=".85"/><circle r="24.5" strokeWidth=".45" opacity=".65"/>
+   <circle r={s===2?26:27} fill="#fff6df" fillOpacity=".08" stroke="none"/>
   </g>}
   <path d={stage%2?'M37 11L45 15L53 11M35 118L44 113L52 118':'M40 11L45 7L50 11L45 15ZM39 118H51'} strokeWidth="1"/>
  </g>;
