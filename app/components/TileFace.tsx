@@ -54,10 +54,10 @@ function SpecialMotif({s,n}:{s:number,n:number}){
 export default function TileFace({tile:t,small=false}:{tile:Tile,small?:boolean}){
  const special=t.n===2,ink=colors[t.s],stage=useStageVisual(),artId=useId().replace(/:/g,'');
  if(stage){
-  const dark=[2,6,9,10].includes(stage),numberProps={x:special?15:45,y:special?43:65,textAnchor:special?'start' as const:'middle' as const,fontFamily:'Arial,sans-serif',fontWeight:800,fontSize:special?42:t.n>9?51:60,letterSpacing:special?0:-4};
+  const dark=[2,6,9,10].includes(stage),numberProps={x:45,y:65,textAnchor:'middle' as const,fontFamily:'Trebuchet MS,Arial,sans-serif',fontWeight:900,fontSize:t.n>9?51:60,letterSpacing:t.n>9?-3:-1};
   return <span data-tile-id={t.id} data-number={t.n} data-suit={t.s} className={`tile face stage-material-tile suit${t.s} ${small?'small':''}`} style={{color:ink}}><svg className="tile-art" style={{color:ink}} viewBox="0 0 100 132" aria-hidden="true" focusable="false"><defs><clipPath id={`${artId}-cartoon`}><path d={CARTOON_TILE_PATH}/></clipPath></defs><g clipPath={`url(#${artId}-cartoon)`}><g className="tile-main-art"><StageMaterial stage={stage} id={`material-${artId}`} seed={t.id}/><StageTileEngraving stage={stage} s={t.s} special={special}/>
   <g fill={ink} paintOrder="stroke" strokeLinejoin="round"><text {...numberProps} stroke="#fff1d5" strokeWidth="3" aria-hidden="true">{t.n}</text><text {...numberProps} stroke="#111720" strokeWidth="1.1">{t.n}</text></g></g>
-  <g className="tile-suit-identity" transform={special?'translate(50 91) scale(.88)':'translate(70 103) scale(.70)'} fill={ink} paintOrder="stroke" strokeLinejoin="round" stroke={dark?'#f9e8c4':'#fff6df'} strokeWidth="3.2"><StageMotif stage={stage} s={t.s}/></g><TileCartoon seed={t.id} dark={dark}/></g></svg></span>;
+  <g className="tile-suit-identity" transform={special?'translate(67 100) scale(.52)':'translate(72 106) scale(.58)'} fill={ink} paintOrder="stroke" strokeLinejoin="round" stroke={dark?'#f9e8c4':'#fff6df'} strokeWidth="3.2"><StageMotif stage={stage} s={t.s}/></g><TileCartoon seed={t.id} dark={dark}/></g></svg></span>;
  }
  return <span data-tile-id={t.id} data-number={t.n} data-suit={t.s} className={`tile face suit${t.s} ${small?'small':''} ${special?`special-${t.n===1?'one':'two'}`:''}`} style={{color:ink}}>
  <svg className="tile-art classic-tile-face" viewBox="0 0 100 132" aria-hidden="true" focusable="false" fill={ink} style={{color:ink}}>
