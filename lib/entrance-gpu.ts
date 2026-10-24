@@ -145,7 +145,13 @@ export class EntranceGpu{
  destroy(){const gl=this.gl;gl.deleteTexture(this.texture);gl.deleteBuffer(this.mesh);gl.deleteBuffer(this.instances);gl.deleteVertexArray(this.vao);gl.deleteProgram(this.program);}
 }
 
-function image(src:string){return new Promise<HTMLImageElement>((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src;});}
+const materialImages=new Map<string,Promise<HTMLImageElement>>();
+function image(src:string){
+ const cached=materialImages.get(src);if(cached)return cached;
+ const pending=new Promise<HTMLImageElement>((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>{materialImages.delete(src);reject(Error('Tile artwork unavailable'));};img.src=src;});
+ // Reuse decoded local materials, never transient face blobs or private hand art.
+ if(src.startsWith('/'))materialImages.set(src,pending);return pending;
+}
 /** Rasterise the approved SVG art once, before any camera or tile starts moving. */
 export async function entranceTileAtlas(faces:(SVGSVGElement|null)[],backSvg?:SVGSVGElement|null){
  const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');if(!ctx)throw Error('Tile atlas unavailable');

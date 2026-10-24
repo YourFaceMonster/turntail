@@ -1,5 +1,7 @@
 export type StageOpponent={name:string,title:string,appearance:string,bio:string,quote:string,portrait:number};
 export type StageTheme={stage:number,name:string,material:string,intro:string,short:string,accent:string,position:number[],opponents:StageOpponent[]};
+/** Keep the region's principal guardian and one companion at a three-seat table. */
+export function stageOpponents(stage:number){return stageTheme(stage).opponents.slice(0,2);}
 export const STAGE_THEMES:StageTheme[]=[
  {
   "stage": 1,

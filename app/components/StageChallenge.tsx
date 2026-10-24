@@ -1,8 +1,8 @@
 "use client";
-import {useState,useEffect,useRef,type CSSProperties} from 'react';
+import {useState,useEffect,useLayoutEffect,useRef,type CSSProperties} from 'react';
 import {createPortal} from 'react-dom';
 import {stagePalette} from '../../lib/stage-presentation';
-import {stageTheme,STAGE_THEMES} from '../../lib/stage-theme';
+import {stageTheme,STAGE_THEMES,stageOpponents} from '../../lib/stage-theme';
 import {StageBackArt} from './StageVisuals';
 import {StagePortrait} from './StagePortrait';
 import type {Game,view} from '../../lib/game';
@@ -10,6 +10,7 @@ import {stageConfig,type StageRecord} from '../../lib/stage-challenge';
 import TileFace from './TileFace';
 import MapAtmosphere from './MapAtmosphere';
 import ResultStandings from './ResultStandings';
+import {stageMapScrollTop} from '../../lib/stage-map';
 import StageProgressSummary from './StageProgressSummary';
 import StageClearReveal from './StageClearReveal';
 type View=ReturnType<typeof view>;
@@ -28,21 +29,32 @@ export function StageDestinationDialog({stage,active,error='',start,resume,advan
  return <div className="modal-shade journey-popup-shade" onClick={close}><section ref={dialog} tabIndex={-1} className="modal journey-destination journey-popup" role="dialog" aria-modal="true" aria-labelledby="destination-title" onClick={e=>e.stopPropagation()} data-region={stage} style={{'--stage-accent':stagePalette(stage).accent,'--stage-base':stagePalette(stage).base,'--stage-light':stagePalette(stage).light,'--destination-image':`url('/environments/stage-${stage}-055.webp')`} as CSSProperties}>
  <button className="close" onClick={close} aria-label="스테이지 정보 닫기">×</button><span className="eyebrow">{stage===10?'THE FINAL TABLE':`DESTINATION ${String(stage).padStart(2,'0')}`} · {stage>next?'미개방':stage<next?'돌파한 거점':'다음 여정'}</span><h3 id="destination-title">{theme.name}</h3><p className="destination-story">{theme.short}</p>
  <div className="destination-material"><span>이번 테이블의 패</span><strong>{theme.material}</strong><div className={`material-preview material-${stage}`} aria-hidden="true"><StageBackArt stage={stage}/></div></div>
- <div className="destination-opponents">{theme.opponents.map(p=><div key={p.name}><StagePortrait index={p.portrait}/><strong>{p.name}<small>{p.title}</small></strong></div>)}</div><p className="destination-quote">“{theme.opponents[0].quote}”</p><div className="destination-objective"><span>클리어 목표</span><strong>{number(stageConfig(stage).target)}점</strong><small>또는 AI 한 명 0점 이하 · AI 시작 각 200점</small></div>
+ <div className="destination-opponents">{stageOpponents(stage).map(p=><div key={p.name}><StagePortrait index={p.portrait}/><strong>{p.name}<small>{p.title}</small></strong></div>)}</div><p className="destination-quote">“{theme.opponents[0].quote}”</p><div className="destination-objective"><span>클리어 목표</span><strong>{number(stageConfig(stage).target)}점</strong><small>또는 AI 한 명 0점 이하 · AI 시작 각 200점</small></div>
  {error&&<p role="alert" className="stage-error">{error}</p>}
  {!run?<button className="primary full" disabled={stage!==1||!!error} onClick={()=>go(start)}>{stage===1?'별빛 관문 · 첫 여정 시작 →':'앞선 거점부터 차례로 열려요'}</button>:<button className="primary full" disabled={!enterable&&!current||!!error} onClick={()=>go(run.status==='stage-clear'&&stage===next?advance:resume)}>{run.status==='stage-clear'&&stage===next?'이 거점으로 출발 →':current?'저장된 승부 이어하기 →':stage<next?'이미 지나온 거점이에요':'앞선 거점을 돌파해 주세요'}</button>}
- <details className="destination-lore"><summary>장소 이야기 · 여정 규칙</summary><p>{theme.intro}</p><p>200점으로 시작 · 내 점수가 0점 미만이면 종료. 다음 스테이지에도 내 점수는 이어지고 AI 3명은 새로 시작해요.</p>{run&&<button className="text-btn" onClick={()=>go(abandon)}>현재 도전 포기</button>}</details>
+ <details className="destination-lore"><summary>장소 이야기 · 여정 규칙</summary><p>{theme.intro}</p><p>200점으로 시작 · 내 점수가 0점 미만이면 종료. 다음 스테이지에도 내 점수는 이어지고 AI 2명은 새로 시작해요.</p>{run&&<button className="text-btn" onClick={()=>go(abandon)}>현재 도전 포기</button>}</details>
  <button className="text-btn full destination-return" onClick={close}>← 지도로 돌아가기</button></section></div>;
 }
 export function StageHub({active,start,resume,advance,records,abandon,close,error=''}:{active:Game|null,start:()=>void,resume:()=>void,advance:()=>void,records:()=>void,abandon:()=>void,close:()=>void,error?:string}){
  const run=active?.stageRun,next=run?.status==='stage-clear'?Math.min(10,run.stage+1):run?.stage||1;
  const [selected,setSelected]=useState(next),[infoOpen,setInfoOpen]=useState(false),theme=stageTheme(selected);
- const open=(stage:number)=>{setSelected(stage);setInfoOpen(true);};
+ const viewport=useRef<HTMLDivElement>(null);
+ useLayoutEffect(()=>{
+  const el=viewport.current;if(!el)return;let frame=0,key='';
+  const center=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{
+   const node=el.querySelector<HTMLElement>(`[data-stage-node="${next}"]`);if(!node)return;
+   const size=`${el.clientWidth}:${el.clientHeight}:${el.scrollHeight}`;if(size===key||!el.clientHeight)return;key=size;
+   el.scrollTop=stageMapScrollTop(node.offsetTop+node.offsetHeight/2,el.clientHeight,el.scrollHeight);
+  });};
+  center();const observer=new ResizeObserver(center);observer.observe(el);const map=el.querySelector('.journey-map');if(map)observer.observe(map);
+  return()=>{observer.disconnect();cancelAnimationFrame(frame);};
+ },[next]);
+ const open=(stage:number)=>{if(stage>next)return;setSelected(stage);setInfoOpen(true);};
  return <><div className="modal-shade stage-map-shade" onClick={close}><section className="modal stage-hub stage-map-hub" role="dialog" aria-modal={!infoOpen} aria-labelledby="stage-map-title" onClick={e=>e.stopPropagation()} inert={infoOpen} style={{'--stage-accent':theme.accent} as CSSProperties}>
   <header className="stage-map-header"><div><span className="eyebrow">THE FLOATING ISLES · STAGE CHALLENGE</span><h2 id="stage-map-title">공중섬의 열 가지 이야기</h2><p>{run?`저장된 여정 · ${run.score.toLocaleString()}점 · ${run.cleared}개 거점 돌파`:'별빛 관문에서 붉은 세계수까지, 한 수씩 오르는 여정.'}</p></div><button className="close" aria-label="도전 모드 닫기" onClick={close}>×</button></header>
-  <div className="stage-map-layout"><div className="journey-map-viewport"><div className="journey-map"><img src="/turntale-stage-map.png" alt="별빛 관문에서 야영지와 폭포, 고목과 성소를 거쳐 붉은 세계수로 오르는 공중섬 지도" width="1024" height="1536"/><MapAtmosphere paused={infoOpen}/><svg className="journey-route" viewBox="0 0 100 150" preserveAspectRatio="none" aria-hidden="true"><polyline points={STAGE_THEMES.map(t=>`${t.position[0]},${t.position[1]*1.5}`).join(' ')}/>{STAGE_THEMES.slice(0,Math.min(10,(run?.cleared||0)+1)).map((t,i,arr)=>i<arr.length-1?<line key={t.stage} className="route-cleared" x1={t.position[0]} y1={t.position[1]*1.5} x2={arr[i+1].position[0]} y2={arr[i+1].position[1]*1.5}/>:null)}</svg>
-  {STAGE_THEMES.map(t=>{const cleared=!!run&&t.stage<=run.cleared,locked=t.stage>next;return <button key={t.stage} type="button" className={`journey-node ${cleared?'cleared':''} ${t.stage===next?'available':''} ${selected===t.stage?'selected':''} ${locked?'locked':''}`} style={{left:`${t.position[0]}%`,top:`${t.position[1]}%`}} aria-label={`${t.stage}스테이지 ${t.name} · ${cleared?'클리어':locked?'미개방':'진행 가능'}`} aria-haspopup="dialog" aria-pressed={selected===t.stage} onClick={()=>open(t.stage)}><span>{cleared?'✓':t.stage}</span><small>{t.name}</small>{locked&&<i aria-hidden="true">·</i>}</button>;})}</div></div>
-  <aside className="journey-map-guide"><span className="eyebrow">YOUR NEXT DESTINATION</span><h3>{stageTheme(next).name}</h3><p>원형 거점을 누르면<br/>장소와 상대 정보를 바로 볼 수 있어요.</p><button className="primary full" onClick={()=>open(next)}>{run?'현재 여정 열기 →':'첫 거점 살펴보기 →'}</button>{error&&<p role="alert" className="stage-error">{error}</p>}<button className="secondary full" onClick={records}>도전 전적</button>{run&&<button className="text-btn full" onClick={start}>1스테이지부터 새로 시작</button>}<small>진행은 자동 저장돼요.<br/>일반모드의 저장·전적과 따로 유지해요.</small></aside></div>
+  <div className="stage-map-layout"><div className="journey-map-viewport" ref={viewport}><div className="journey-map" style={{'--current-x':`${stageTheme(next).position[0]}%`,'--current-y':`${stageTheme(next).position[1]}%`} as CSSProperties}><img src="/turntale-stage-map.png" alt="별빛 관문에서 야영지와 폭포, 고목과 성소를 거쳐 붉은 세계수로 오르는 공중섬 지도" width="1024" height="1536"/><MapAtmosphere paused={infoOpen}/><div className="map-unopened-shade" aria-hidden="true"/><svg className="journey-route" viewBox="0 0 100 150" preserveAspectRatio="none" aria-hidden="true"><polyline points={STAGE_THEMES.map(t=>`${t.position[0]},${t.position[1]*1.5}`).join(' ')}/>{STAGE_THEMES.slice(0,Math.min(10,(run?.cleared||0)+1)).map((t,i,arr)=>i<arr.length-1?<line key={t.stage} className="route-cleared" x1={t.position[0]} y1={t.position[1]*1.5} x2={arr[i+1].position[0]} y2={arr[i+1].position[1]*1.5}/>:null)}</svg>
+  {STAGE_THEMES.map(t=>{const cleared=!!run&&t.stage<=run.cleared,locked=t.stage>next;return <button key={t.stage} type="button" data-stage-node={t.stage} disabled={locked} className={`journey-node ${cleared?'cleared':''} ${t.stage===next?'available':''} ${selected===t.stage?'selected':''} ${locked?'locked':''}`} style={{left:`${t.position[0]}%`,top:`${t.position[1]}%`}} aria-label={`${t.stage}스테이지 ${t.name} · ${cleared?'클리어':locked?'미개방':'진행 가능'}`} aria-haspopup="dialog" aria-pressed={selected===t.stage} onClick={()=>open(t.stage)}><span>{cleared?'✓':t.stage}</span><small>{t.name}</small>{t.stage===next&&<b className="map-current-badge">{run?'현재 여정':'여기서 시작'}</b>}{locked&&<i aria-hidden="true">·</i>}</button>;})}</div></div>
+  <aside className="journey-map-guide"><span className="eyebrow">YOUR NEXT DESTINATION</span><h3>{stageTheme(next).name}</h3><p className="map-current-hint">{next}스테이지부터 {run?'여정을 이어가세요.':'시작하세요.'}<br/>다음 지역은 차례로 열려요.</p><button className="primary full" onClick={()=>open(next)}>{run?'현재 여정 열기 →':'첫 거점 살펴보기 →'}</button>{error&&<p role="alert" className="stage-error">{error}</p>}<button className="secondary full" onClick={records}>도전 전적</button>{run&&<button className="text-btn full" onClick={start}>1스테이지부터 새로 시작</button>}<small>진행은 자동 저장돼요.<br/>일반모드의 저장·전적과 따로 유지해요.</small></aside></div>
  </section></div>{infoOpen&&typeof document!=='undefined'&&createPortal(<StageDestinationDialog stage={selected} active={active} error={error} start={start} resume={resume} advance={advance} abandon={abandon} close={()=>setInfoOpen(false)}/>,document.body)}</>;
 }
 export function StageRecords({records,close}:{records:StageRecord[],close:()=>void}){

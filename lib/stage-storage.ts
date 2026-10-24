@@ -6,7 +6,8 @@ export type StageArchive={version:1,active:Game|null,records:StageRecord[]};
 export function readStageArchive(storage:StoragePort):StageArchive{
  const raw=storage.getItem(STAGE_STORAGE_KEY);if(!raw)return {version:1,active:null,records:[]};
  let saved:StageArchive;try{saved=JSON.parse(raw);}catch{throw Error('도전 저장 데이터를 읽지 못했어요. 기존 데이터는 보존했어요.');}
- if(!saved||saved.version!==1||!Array.isArray(saved.records)||saved.active&&(!saved.active.stageRun||saved.active.stageRun.rulesVersion!==1||saved.active.players.length!==4))throw Error('도전 저장 데이터의 형식을 확인해 주세요.');
+ const active=saved?.active,run=active?.stageRun;
+ if(!saved||saved.version!==1||!Array.isArray(saved.records)||active&&(!run||!Array.isArray(active.players)||active.players.length!==(run.rulesVersion===1?4:run.rulesVersion===2?3:0)))throw Error('도전 저장 데이터의 형식을 확인해 주세요.');
  return saved;
 }
 /** Full game and its separate run record are one atomic localStorage write. */

@@ -4,7 +4,7 @@ import {createStageGame,startStageRound,abandonStageGame} from '../lib/stage-gam
 import {readStageArchive,saveStageGame,STAGE_STORAGE_KEY} from '../lib/stage-storage.ts';
 import {act,settle,view,chooseBotAction,type Game,type Tile} from '../lib/game.ts';
 import {scoreEntries} from '../lib/challenge.ts';
-const result=(id:string,scores:number[])=>({id,at:1000,players:scores.map((total,i)=>({name:['나','달빛','해솔','별하'][i],total}))});
+const result=(id:string,scores:number[])=>({id,at:1000,players:scores.slice(0,3).map((total,i)=>({name:['나','달빛','해솔','별하'][i],total}))});
 let run=newStageRun('boundary',1);
 assert.equal(settleStageRun(run,result('299',[299,100,100,100])).status,'playing');
 assert.equal(settleStageRun(run,result('300',[300,100,100,100])).status,'stage-clear');
@@ -18,11 +18,11 @@ run={...newStageRun('drop'),stage:5,cleared:4,score:1100,peakScore:1100};next=se
 run={...newStageRun('ten'),stage:10,cleared:9};next=settleStageRun(run,result('final',[3450,100,100,100]));assert.equal(next.status,'complete');assert.equal(next.cleared,10);assert.throws(()=>enterNextStage(next));assert.deepEqual(STAGE_TARGETS,[300,450,650,900,1200,1550,1950,2400,2900,3450]);for(let i=1;i<=10;i++)assert.equal(stageConfig(i).aiScore,200);
 
 const tile=(id:number):Tile=>({id,n:Math.floor(id/4)+1,s:id%4});
-function finish(g:Game,counts=[0,4,5,6]){let id=0;g.players.forEach((p,i)=>{p.hand=Array.from({length:counts[i]},()=>tile(id++));});g.phase='ended';g.winner=0;g.result=null;return settle(g);}
-let game=createStageGame('나','',10);assert.equal(game.players.length,4);assert.equal(game.players.filter(p=>p.bot).length,3);assert.ok(game.players.every(p=>p.points===200));assert.equal(game.challenge,null);
+function finish(g:Game,counts=[0,4,7]){let id=0;g.players.forEach((p,i)=>{p.hand=Array.from({length:counts[i]},()=>tile(id++));});g.phase='ended';g.winner=0;g.result=null;return settle(g);}
+let game=createStageGame('나','',10);assert.equal(game.players.length,3);assert.equal(game.players.filter(p=>p.bot).length,2);assert.ok(game.players.every(p=>p.points===200));assert.equal(game.challenge,null);
 assert.equal(new Set([...game.players.flatMap(p=>p.hand),...game.stacks.flat().filter(Boolean)].map(t=>t!.id)).size,60);
-const classic=structuredClone(game);delete classic.stageRun;const ordinary=finish(classic),stage=finish(game);assert.deepEqual(stage.players.map(p=>p.delta),ordinary.players.map(p=>p.delta),'existing round scoring is unchanged');assert.equal(scoreEntries(stage,0,'single',4).length,0,'stage rounds never become ordinary single/ten high scores');
-startStageRound(game,100);const originalRound=game.round;game.players[0].points=290;game.stageRun!.score=290;game.phase='playing';game.result=null;finish(game);assert.equal(game.stageRun!.status,'stage-clear');const humanPoints=game.players[0].points,oldAi=game.players.slice(1).map(p=>p.id);startStageRound(game,5000);assert.equal(game.stageRun!.stage,2);assert.equal(game.players[0].points,humanPoints);assert.ok(game.players.slice(1).every((p,i)=>p.points===200&&p.id!==oldAi[i]));assert.equal(game.round,originalRound+1);assert.equal(game.players.length,4);
+const classic=structuredClone(game);delete classic.stageRun;const ordinary=finish(classic),stage=finish(game);assert.deepEqual(stage.players.map(p=>p.delta),ordinary.players.map(p=>p.delta),'existing round scoring is unchanged');assert.equal(scoreEntries(stage,0,'single',3).length,0,'stage rounds never become ordinary single/ten high scores');
+startStageRound(game,100);const originalRound=game.round;game.players[0].points=290;game.stageRun!.score=290;game.phase='playing';game.result=null;finish(game);assert.equal(game.stageRun!.status,'stage-clear');const humanPoints=game.players[0].points,oldAi=game.players.slice(1).map(p=>p.id);startStageRound(game,5000);assert.equal(game.stageRun!.stage,2);assert.equal(game.players[0].points,humanPoints);assert.ok(game.players.slice(1).every((p,i)=>p.points===200&&p.id!==oldAi[i]));assert.equal(game.round,originalRound+1);assert.equal(game.players.length,3);
 finish(game);const balances=game.players.map(p=>p.points),ids=game.players.map(p=>p.id);assert.equal(game.stageRun!.status,'playing');startStageRound(game);assert.deepEqual(game.players.map(p=>p.points),balances,'within-stage balances carry into the next round');assert.deepEqual(game.players.map(p=>p.id),ids);
 const memory=new Map<string,string>([['jangseong-practice-records','classic-records'],['jangseong-practice-game','classic-game'],['jangseong-session','classic-session']]);
 const storage={getItem:(key:string)=>memory.get(key)??null,setItem:(key:string,value:string)=>{memory.set(key,value);}};
@@ -36,5 +36,5 @@ while(played.phase==='playing'&&turns++<600){
  const a=chooseBotAction(view(played,played.players[played.turn].token));act(played,played.turn,a.type,a.type==='play'?a.tiles.map(t=>t.id):[],a.type==='draw'?a.index:-1,10000+turns*5000,true);
  const archive=saveStageGame(storage,played);if(archive.active)played=readStageArchive(storage).active!;
 }
-assert.equal(played.phase,'ended','a full stage-mode round can finish through real play');assert.equal(played.stageRun!.rounds,1);assert.equal(played.players.reduce((sum,p)=>sum+(p.points||0),0),800);assert.equal(scoreEntries(played.result!,0,'single',4).length,0);
-console.log('PASS: 299/300, both bankruptcy boundaries, one-stage overflow, all 10 targets, unchanged scoring, new 4-seat AI lineups, carried balances, exact full-state/action recovery, atomic independent records, no duplicate settlement, failed-save guard and fresh restart after abandonment.');
+assert.equal(played.phase,'ended','a full stage-mode round can finish through real play');assert.equal(played.stageRun!.rounds,1);assert.equal(played.players.reduce((sum,p)=>sum+(p.points||0),0),600);assert.equal(scoreEntries(played.result!,0,'single',3).length,0);
+console.log('PASS: 299/300, both bankruptcy boundaries, one-stage overflow, all 10 targets, unchanged scoring, new 3-seat AI lineups, carried balances, exact full-state/action recovery, atomic independent records, no duplicate settlement, failed-save guard and fresh restart after abandonment.');

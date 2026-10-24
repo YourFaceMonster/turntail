@@ -22,8 +22,8 @@ import {matchShuffleTracks,planDealFlights,dealKeyframes,opponentExit} from '../
 import {ENTRANCE_MS,entranceDuration,entranceCurtain,type EntrancePhase} from '../../lib/atmosphere';
 import {measureDealLayout,shuffleTileSize,type DealView,type DealItem,type DealTarget} from '../../lib/deal-animation';
 import {measureSavedTable,type SavedTableItem} from '../../lib/saved-table';
-type Props={onWorldDiameter:(diameter:number)=>void,company:{name:string,avatar?:string,points:number,count:number}[],tableSet:number,stage?:number,phase:EntrancePhase,resume:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void};
-function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback}:Props){
+type Props={onWorldDiameter:(diameter:number)=>void,company:{name:string,avatar?:string,points:number,count:number}[],tableSet:number,stage?:number,phase:EntrancePhase,resume:boolean,migrated?:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void};
+function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migrated=false,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback}:Props){
  const [screen,setScreen]=useState({width:0,height:0}),[landings,setLandings]=useState<{item:DealItem,target:DealTarget,finish:Record<string,string>}[]>([]);
  const [scene,setScene]=useState<ShuffleScene|null>(null),[assetsReady,setAssetsReady]=useState(false);
  const [gpuStatus,setGpuStatus]=useState<'pending'|'ready'|'fallback'>('pending');
@@ -115,8 +115,8 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,reduc
  const preparing=phase==='prepare'&&!resume&&!reduced;
  useEffect(()=>{
   if(!preparing||!own||landings.length!==60||!screen.width)return;
-  let cancelled=false,timer=0;
-  const planner=planShuffle(shuffleSeed.current,screen.width,screen.height,landings.map(l=>shuffleTileSize(l.item.kind,l.target,own)));
+  let cancelled=false,timer=0,worker:Worker|undefined,startedFallback=false;
+  const sizes=landings.map(l=>shuffleTileSize(l.item.kind,l.target,own)),planner=planShuffle(shuffleSeed.current,screen.width,screen.height,sizes);
   function advance(){
    if(cancelled)return;
    try{
@@ -125,8 +125,15 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,reduc
     timer=window.setTimeout(advance,0);
    }catch{callbacks.current.onFallback();}
   }
-  timer=window.setTimeout(advance,0);
-  return()=>{cancelled=true;clearTimeout(timer);planner.return(null!);};
+  const fallback=()=>{if(cancelled||startedFallback)return;startedFallback=true;clearTimeout(timer);worker?.terminate();timer=window.setTimeout(advance,0);};
+  try{
+   worker=new Worker(new URL('../../lib/shuffle-worker.ts',import.meta.url),{type:'module'});
+   worker.onmessage=({data}:{data:{scene?:ShuffleScene,error?:string}})=>{if(cancelled)return;if(data.scene){clearTimeout(timer);setScene(data.scene);worker?.terminate();}else fallback();};
+   worker.onerror=(event)=>{event.preventDefault();fallback();};
+   worker.postMessage({seed:shuffleSeed.current,width:screen.width,height:screen.height,sizes});
+   timer=window.setTimeout(fallback,8000);
+  }catch{fallback();}
+  return()=>{cancelled=true;clearTimeout(timer);worker?.terminate();planner.return(null!);};
  },[landings,own,screen.width,screen.height,preparing]);
  const scale=scene?frameShuffle(scene,screen.width,screen.height):1;
  const cards=useMemo(()=>{
@@ -194,9 +201,10 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,reduc
   </div>
   {resume&&phase!=='menu-out'&&savedLandings.length>0&&<ResumeGpuTiles rows={savedLandings} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
   {!resume&&scene&&cards.length===60&&<EntranceGpuTiles cards={cards} routes={dealRoutes} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
-  <div className="entry-reunion"><div className="entry-return-note"><span>{resume?'WELCOME BACK':`${company.length+1} PLAYERS · TAKE YOUR SEAT`}</span><strong>{stage?`${stageTheme(stage).name}의 테이블`:resume?'익숙한 테이블로 돌아왔어요':'달빛 서재의 작은 승부'}</strong><small>{resume?'자리에 놓인 패 그대로, 승부를 이어갑니다.':'테이블에 둘러앉아 새로운 승부를 시작합니다.'}</small></div></div>
+  <div className="entry-reunion"><div className="entry-return-note"><span>{resume?'WELCOME BACK':`${company.length+1} PLAYERS · TAKE YOUR SEAT`}</span><strong>{stage?`${stageTheme(stage).name}의 테이블`:resume?'익숙한 테이블로 돌아왔어요':'달빛 서재의 작은 승부'}</strong><small>{resume?migrated?'3인전으로 전환했어요. 스테이지와 점수는 이어지고, 진행 중이던 패는 다시 나눴어요.':'자리에 놓인 패 그대로, 승부를 이어갑니다.':'테이블에 둘러앉아 새로운 승부를 시작합니다.'}</small></div></div>
   <div className="entry-edge-shade"/>
   <div className="entry-curtain"/>
+  {['prepare','room-hold'].includes(phase)&&<div className="entry-preparing-note"><i/><strong>{resume?'저장된 테이블을 불러오고 있어요':'새로운 승부를 준비하고 있어요'}</strong><small>잠시만 기다려 주세요</small></div>}
  </div></StageVisuals>,document.body);
 }
 
