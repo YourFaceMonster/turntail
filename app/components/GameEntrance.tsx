@@ -9,16 +9,14 @@ import TileBack from './TileBack';
 import TileFace from './TileFace';
 import TableSurface from './TableSurface';
 import EntranceGpuTiles from './EntranceGpuTiles';
-import EntranceWorld from './EntranceWorld';
 import EntranceEnvironment from './EntranceEnvironment';
-import EntranceSeats from './EntranceSeats';
 import EntranceSavedTile from './EntranceSavedTile';
 import ResumeGpuTiles from './ResumeGpuTiles';
 import {entranceFrameCamera} from '../../lib/entrance-frame';
 import {tileBodyDepth} from '../../lib/tile-body';
 import {platformGeometry,stageSetting} from '../../lib/stage-setting';
 import {tableCircle} from '../../lib/table-world';
-import {observerCameraFrames,environmentCameraFrames,cameraTransform,environmentTransform} from '../../lib/entrance-camera';
+import {observerCameraFrames,cameraTransform} from '../../lib/entrance-camera';
 import {planShuffle,frameShuffle,overviewScale,shuffleDepth,shuffleFrameIndices,shuffleKeyframes,shuffleTransform,type ShuffleScene} from '../../lib/shuffle-motion';
 import {matchShuffleTracks,planDealFlights,dealKeyframes,opponentExit} from '../../lib/deal-motion';
 import {ENTRANCE_MS,entranceDuration,entranceCurtain,type EntrancePhase} from '../../lib/atmosphere';
@@ -42,12 +40,6 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
   if(!['rise','focus'].includes(phase)||reduced||!cameraElement.current)return;
   const duration=entranceDuration(phase,resume),motion=cameraElement.current.animate(observerCameraFrames(overview,duration,phase),{duration,easing:'linear',fill:'both'});
   motion.id='turntale-observer';cameraMotion.current=motion;
-  const root=cameraElement.current.closest('.table-entrance');
-  environmentMotions.current=['.environment-distance','.environment-near-light'].flatMap((selector,i)=>{
-   const el=root?.querySelector(selector);if(!el)return [];
-   const animation=el.animate(environmentCameraFrames(overview,duration,i===1,phase),{duration,easing:'linear',fill:'both'});
-   animation.startTime=motion.startTime;return [animation];
-  });
   if(!pageVisible)[motion,...environmentMotions.current].forEach(a=>a.pause());
   return()=>{motion.cancel();environmentMotions.current.forEach(a=>a.cancel());environmentMotions.current=[];cameraMotion.current=null;};
  },[phase,resume,reduced,overview]);
@@ -184,12 +176,10 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  if(phase==='idle'||reduced||typeof document==='undefined')return null;
 
  const curtain=phase==='menu-out'?ENTRANCE_MS['menu-out']:phase==='game-in'?entranceDuration('game-in',resume):ENTRANCE_MS.approach,cameraStart=entranceFrameCamera(phase,0,overview,resume);
- return createPortal(<StageVisuals stage={tableSet||undefined}><div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${gpuStatus==='ready'?'entry-gpu-ready':''}`} aria-hidden="true" data-stage={stage} data-world-kind={stageSetting(stage||0).kind} data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--stage-accent':stage?stagePalette(stage).accent:undefined,'--stage-side':tableSet?MATERIAL_COLORS[tableSet-1]:undefined,'--camera-ms':`${entranceDuration('approach',resume)}ms`,'--camera-far':`${(1-1/Math.max(.001,overview))*1000}px`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--focus-ms':`${ENTRANCE_MS.focus}ms`,'--environment-far-transform':environmentTransform(cameraStart,overview),'--environment-near-transform':environmentTransform(cameraStart,overview,true),'--curtain-ms':`${curtain}ms`} as CSSProperties}>
+ return createPortal(<StageVisuals stage={tableSet||undefined}><div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${gpuStatus==='ready'?'entry-gpu-ready':''}`} aria-hidden="true" data-stage={stage} data-world-kind={stageSetting(stage||0).kind} data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--stage-accent':stage?stagePalette(stage).accent:undefined,'--stage-side':tableSet?MATERIAL_COLORS[tableSet-1]:undefined,'--camera-ms':`${entranceDuration('approach',resume)}ms`,'--camera-far':`${(1-1/Math.max(.001,overview))*1000}px`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--focus-ms':`${ENTRANCE_MS.focus}ms`,'--rise-ms':`${ENTRANCE_MS.rise}ms`,'--curtain-ms':`${curtain}ms`} as CSSProperties}>
   <div className="entry-room"><EntranceEnvironment stage={stage}/></div>
   <div className="entry-view-rig">
   <div className="entry-camera" ref={cameraElement} style={{transform:cameraTransform(cameraStart)}}>
-  <EntranceWorld diameter={diameter} cx={worldX} cy={worldY} stage={stage||0}/>
-  <EntranceSeats company={company} diameter={diameter} cx={worldX} cy={worldY}/>
   <div className="entry-table" style={{left:worldX-diameter/2,top:worldY-diameter/2,width:diameter,height:diameter,borderRadius:"50%",clipPath:platformGeometry(diameter,stage||0).clip}}><TableSurface stage={stage||tableSet||undefined} withRim/></div>
   {resume&&gpuStatus!=='ready'&&<div className="entry-saved-table">{savedLandings.map(({item,target,baseTarget})=><EntranceSavedTile key={item.key} item={item} target={target} baseTarget={baseTarget}/>)}</div>}
   {!resume&&gpuStatus==='fallback'&&scene&&landings.length===60&&<div className="entry-deck">{cards.map(({landing,width:tileW,height:tileH,poses,depth},i)=>{

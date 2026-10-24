@@ -4,9 +4,10 @@ export function endgameLevel(phase:string|undefined,counts:readonly number[],ope
  const least=Math.min(...counts);return least===1?2:least<=3?1:0;
 }
 export type EntrancePhase='idle'|'menu-out'|'room-hold'|'approach'|'shuffle'|'prepare'|'rise'|'deal'|'focus'|'settle'|'game-in';
-export const ENTRANCE_MS:Record<EntrancePhase,number>={idle:0,'menu-out':480,'room-hold':160,approach:600,shuffle:3000,prepare:0,rise:1600,deal:1500,focus:1300,settle:160,'game-in':650};
+export const ENTRANCE_MS:Record<EntrancePhase,number>={idle:0,'menu-out':480,'room-hold':160,approach:450,shuffle:2600,prepare:0,rise:1300,deal:1400,focus:950,settle:120,'game-in':650};
 export function nextEntrance(phase:EntrancePhase,resume=false):EntrancePhase{
- return ({idle:'idle','menu-out':'room-hold','room-hold':resume?'approach':'prepare',prepare:'approach',approach:resume?'rise':'shuffle',shuffle:'rise',rise:resume?'focus':'deal',deal:'focus',focus:'settle',settle:'game-in','game-in':'idle'} as const)[phase];
+ if(resume)return phase==='idle'||phase==='game-in'?'idle':'game-in';
+ return ({idle:'idle','menu-out':'room-hold','room-hold':'prepare',prepare:'approach',approach:'shuffle',shuffle:'deal',deal:'focus',focus:'rise',rise:'settle',settle:'game-in','game-in':'idle'} as const)[phase];
 }
 /** The real board gets a full hidden paint before the curtain opens. */
 export function concealLiveTiles(phase:EntrancePhase){return ['prepare','approach','shuffle','rise','deal','focus'].includes(phase);}
@@ -17,5 +18,5 @@ export function entranceCurtain(phase:EntrancePhase):'close'|'covered'|'open'|'c
  return 'clear';
 }
 
-/** Returning players get time to recognize their opponents and saved table. */
+/** Resume uses only a short fade over the actual saved board. */
 export function entranceDuration(phase:EntrancePhase,resume=false){return resume&&phase==='game-in'?850:ENTRANCE_MS[phase];}

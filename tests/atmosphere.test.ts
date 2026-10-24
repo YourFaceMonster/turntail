@@ -15,16 +15,11 @@ const fresh=sequence(false),resume=sequence(true);
 assert.ok(fresh.indexOf('approach')<fresh.indexOf('shuffle'));
 assert.ok(fresh.indexOf('prepare')<fresh.indexOf('approach'));
 assert.ok(fresh.indexOf('prepare')<fresh.indexOf('deal'));
-assert.ok(fresh.indexOf('shuffle')<fresh.indexOf('rise'));assert.ok(fresh.indexOf('rise')<fresh.indexOf('deal'));assert.equal(fresh[fresh.indexOf('deal')+1],'focus');
-assert.equal(resume.includes('prepare'),false);assert.equal(resume.includes('deal'),false);
-assert.equal(resume.includes('shuffle'),false,'a saved hand is not visually redealt');
-for(const phases of [fresh,resume]){
- const swap=phases.indexOf('settle');
- assert.equal(phases[swap-1],'focus');
- assert.equal(entranceCurtain(phases[swap]),'clear');
- assert.equal(phases[swap+1],'game-in');assert.equal(entranceCurtain('game-in'),'clear');
- assert.ok(ENTRANCE_MS.settle>=100,'live board gets a stationary paint interval');
-}
+assert.deepEqual(fresh,['menu-out','room-hold','prepare','approach','shuffle','deal','focus','rise','settle','game-in']);
+assert.deepEqual(resume,['menu-out','game-in'],'resume bypasses all 3D preparation, shuffle and camera phases');
+assert.equal(fresh[fresh.indexOf('settle')-1],'rise');
+assert.equal(entranceCurtain('settle'),'clear');
+assert.ok(ENTRANCE_MS.settle>=100,'live board gets a stationary paint interval');
 assert.equal(concealLiveTiles('deal'),true);
 assert.equal(concealLiveTiles('settle'),false,'real tile paint is ready under stationary copies');
 assert.equal(concealLiveTiles('game-in'),false);
@@ -41,5 +36,5 @@ g.players[1].hand[0]={id:59,n:15,s:3};const b=view(g,g.players[0].token);
 assert.equal(endgameLevel(a.phase,a.players.map(p=>p.count)),endgameLevel(b.phase,b.players.map(p=>p.count)));
 console.log('PASS: public-only tension thresholds/recovery, no hidden-hand inference, safe empty states, new/resume seamless entrance ordering, stationary handoff interval, duration budget, full opening review lock.');
 
-assert.equal(entranceDuration("rise",true),entranceDuration("rise"),"resume follows the same seated-to-overhead movement");
+assert.equal(entranceDuration("rise",true),entranceDuration("rise"),"shared legacy scene duration remains defined");
 assert.ok(entranceDuration("game-in",true)>entranceDuration("game-in"),"saved table has a gradual handoff");

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {SHUFFLE_HZ,SHUFFLE_FRAMES,planShuffle,frameShuffle,overviewScale,sampleShufflePose,shuffleDepth,shuffleFrameIndices,shuffleKeyframes} from '../lib/shuffle-motion.ts';
 import {tileContact,collideTiles,type RigidTile} from '../lib/shuffle-contacts.ts';
-assert.equal(SHUFFLE_HZ,120);assert.equal(SHUFFLE_FRAMES,360);
+assert.equal(SHUFFLE_HZ,120);assert.equal(SHUFFLE_FRAMES,312);
 function plan(seed:number,width:number,height:number,w:number,h:number){const iterator=planShuffle(seed,width,height,Array.from({length:60},()=>({width:w,height:h})));let result=iterator.next();while(!result.done)result=iterator.next();return result.value;}
 for(const [width,height] of [[390,844],[844,390],[1280,720]])for(const [w,h] of [[42,56],[64,84]])for(const seed of [1,27381]){
  const scene=plan(seed,width,height,w,h),tracks=scene.tracks,overview=overviewScale(scene,width,height);
