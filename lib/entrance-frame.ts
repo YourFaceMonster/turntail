@@ -7,7 +7,7 @@ import {entranceCameraState} from './entrance-camera.ts';
 import {opponentTableOpacity} from './entrance-fade.ts';
 export type EntranceRenderTile={width:number,height:number,depth:number,poses:ShufflePose[],faceSlot:number,kind:'own'|'opponent'|'lower'|'upper',target:{x:number,y:number,width:number,height:number,angle:number}};
 const clamp=(n:number)=>Math.max(0,Math.min(1,n));
-export function entranceFrameCamera(phase:EntrancePhase,elapsed:number,overview:number,resume=false){return entranceCameraState(phase,elapsed/Math.max(1,entranceDuration(phase,resume)),overview);}
+export function entranceFrameCamera(phase:EntrancePhase,elapsed:number,overview:number,resume=false,painterly=false){return entranceCameraState(phase,elapsed/Math.max(1,entranceDuration(phase,resume)),overview,painterly);}
 /** The original 60-body tracks and flight routes feed one instanced GPU draw. */
 export function writeEntranceFrame(data:Float32Array,tiles:EntranceRenderTile[],routes:DealRoute[],phase:EntrancePhase,elapsed:number,cx:number,cy:number){
  const landed=['focus','rise','opponent-out','settle','game-in'].includes(phase),t=clamp(elapsed/ENTRANCE_MS.deal),remaining=1;

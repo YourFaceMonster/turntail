@@ -1,3 +1,4 @@
+import {stageEnvironmentImage} from '../../lib/stage-art';
 import {StageVisuals} from './StageVisuals';
 import {StagePortrait} from './StagePortrait';
 import TileFace from './TileFace';
@@ -9,7 +10,7 @@ import type {CSSProperties} from 'react';
 /** One destination-specific reveal appears only on a stage clear, never every round. */
 export default function StageClearReveal({stage,reason,complete=false}:{stage:number,reason:string,complete?:boolean}){
  const theme=stageTheme(stage),next=stage<10?stageTheme(stage+1):null;
- return <div className={`stage-clear-reveal ${complete?'journey-complete':''}`} data-cleared-stage={stage} style={{'--clear-accent':theme.accent,'--clear-base':stagePalette(stage).base,'--clear-image':`url('/environments/stage-${stage}-055.webp')`} as CSSProperties}>
+ return <div className={`stage-clear-reveal ${complete?'journey-complete':''}`} data-cleared-stage={stage} style={{'--clear-accent':theme.accent,'--clear-base':stagePalette(stage).base,'--clear-image':`url('${stageEnvironmentImage(stage)}')`} as CSSProperties}>
   <div className="clear-destination-art" aria-hidden="true"/><div className="clear-stardust" aria-hidden="true">{Array.from({length:12},(_,i)=><i key={i} style={{left:`${8+(i*37)%87}%`,top:`${12+(i*23)%65}%`,animationDelay:`${i*.16}s`}}/>)}</div>
   <span className="clear-stage-stamp">{String(stage).padStart(2,'0')}<small>REGION CLEARED</small></span>
   <div className="clear-reveal-copy"><span className="eyebrow">{complete?'THE JOURNEY IS COMPLETE':'A NEW CHAPTER OPENS'}</span><h2>{complete?'붉은 세계수, 여정의 완성':`${theme.name} 클리어`}</h2><p>{reason}</p></div>

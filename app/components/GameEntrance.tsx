@@ -3,6 +3,7 @@ import {createPortal} from 'react-dom';
 import {memo,useMemo,useEffect,useLayoutEffect,useRef,useState,useCallback,type CSSProperties} from 'react';
 import {StagePortrait} from './StagePortrait';
 import {stagePalette} from '../../lib/stage-presentation';
+import {stageEnvironmentImage} from '../../lib/stage-art';
 import {stageTheme} from '../../lib/stage-theme';
 import {MATERIAL_COLORS,StageVisuals} from './StageVisuals';
 import TileBack from './TileBack';
@@ -41,16 +42,16 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  const worldX=circle?.cx??screen.width/2,worldY=circle?.cy??screen.height/2;
  useLayoutEffect(()=>{
   if(!['rise','focus'].includes(phase)||reduced||!cameraElement.current)return;
-  const duration=entranceDuration(phase,resume),motion=cameraElement.current.animate(observerCameraFrames(overview,duration,phase),{duration,easing:'linear',fill:'both'});
+  const duration=entranceDuration(phase,resume),motion=cameraElement.current.animate(observerCameraFrames(overview,duration,phase,!!stage),{duration,easing:'linear',fill:'both'});
   motion.id=`turntale-observer-${phase}`;cameraMotion.current=motion;
   const root=cameraElement.current.closest('.table-entrance');
   environmentMotions.current=['.environment-distance','.environment-near-light'].flatMap((selector,i)=>{
    const el=root?.querySelector(selector);if(!el)return [];
-   const animation=el.animate(environmentCameraFrames(overview,duration,i===1,phase),{duration,easing:'linear',fill:'both'});animation.startTime=motion.startTime;return [animation];
+   const animation=el.animate(environmentCameraFrames(overview,duration,i===1,phase,!!stage),{duration,easing:'linear',fill:'both'});animation.startTime=motion.startTime;return [animation];
   });
   if(!pageVisible)[motion,...environmentMotions.current].forEach(a=>a.pause());
   return()=>{motion.cancel();environmentMotions.current.forEach(a=>a.cancel());environmentMotions.current=[];cameraMotion.current=null;};
- },[phase,resume,reduced,overview]);
+ },[phase,resume,reduced,overview,stage]);
  useEffect(()=>{const motion=cameraMotion.current;if(motion)[motion,...environmentMotions.current].forEach(a=>pageVisible?a.play():a.pause());},[pageVisible,phase]);
  const activePhase=useRef(phase);activePhase.current=phase;
  const gpuPrepared=useCallback((status:'ready'|'fallback')=>{setGpuStatus(status);if(status==='fallback'&&!['idle','menu-out','room-hold'].includes(activePhase.current))callbacks.current.onFallback();},[]);
@@ -60,7 +61,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  useEffect(()=>{
   if(!screen.width)return;
   let cancelled=false;setAssetsReady(false);
-  const paths=[...(stage?[`/environments/stage-${stage}-055.webp`]:['/turntale-room-0513.webp']),...(stage?[]:['/monsters/blue-0513.webp','/monsters/red-0513.webp','/monsters/haetae-0513.webp']),'/turntale-ivory-material-055.webp','/turntale-stone-material-055.webp','/turntale-tile-back-gold.svg','/turntale-wood-0513.webp',...(stage?['/stage-company-0516.webp','/stage-table-materials-0518.webp']:[]),...(stage||tableSet?['/turntale-stage-materials-v2.webp']:[])];
+  const paths=[...(stage?[stageEnvironmentImage(stage)]:['/turntale-room-0513.webp']),...(stage?[]:['/monsters/blue-0513.webp','/monsters/red-0513.webp','/monsters/haetae-0513.webp']),'/turntale-ivory-material-055.webp','/turntale-stone-material-055.webp','/turntale-tile-back-gold.svg','/turntale-wood-0513.webp',...(stage?['/stage-company-0516.webp','/stage-table-materials-0518.webp']:[]),...(stage||tableSet?['/turntale-stage-materials-v2.webp']:[])];
   void Promise.all(paths.map(src=>new Promise<void>(resolve=>{const finish=()=>{clearTimeout(timer);resolve();},timer=setTimeout(finish,6000),img=new Image();img.onload=()=>{void img.decode().catch(()=>{}).then(finish);};img.onerror=finish;img.src=src;}))).then(()=>{if(!cancelled)setAssetsReady(true);});
   return()=>{cancelled=true;};
  },[screen.width>screen.height,!!screen.width,stage,tableSet]);
@@ -187,8 +188,8 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  },[phase,pageVisible,dealFrames,gpuStatus]);
  if(phase==='idle'||reduced||typeof document==='undefined')return null;
 
- const curtain=phase==='menu-out'?ENTRANCE_MS['menu-out']:phase==='game-in'?entranceDuration('game-in',resume):ENTRANCE_MS.approach,cameraStart=entranceFrameCamera(phase,0,overview,resume);
- return createPortal(<StageVisuals stage={stage||tableSet||undefined}><div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${gpuStatus==='ready'?'entry-gpu-ready':''}`} aria-hidden="true" data-stage={stage} data-world-kind={stageSetting(stage||0).kind} data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--stage-accent':stage?stagePalette(stage).accent:undefined,'--stage-side':tableSet?MATERIAL_COLORS[tableSet-1]:undefined,'--camera-ms':`${entranceDuration('approach',resume)}ms`,'--camera-far':`${(1-1/Math.max(.001,overview))*1000}px`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--focus-ms':`${ENTRANCE_MS.focus}ms`,'--rise-ms':`${ENTRANCE_MS.rise}ms`,'--opponent-out-ms':`${ENTRANCE_MS['opponent-out']}ms`,'--environment-far-transform':environmentTransform(cameraStart,overview),'--environment-near-transform':environmentTransform(cameraStart,overview,true),'--curtain-ms':`${curtain}ms`} as CSSProperties}>
+ const curtain=phase==='menu-out'?ENTRANCE_MS['menu-out']:phase==='game-in'?entranceDuration('game-in',resume):ENTRANCE_MS.approach,cameraStart=entranceFrameCamera(phase,0,overview,resume,!!stage);
+ return createPortal(<StageVisuals stage={stage||tableSet||undefined}><div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${gpuStatus==='ready'?'entry-gpu-ready':''}`} aria-hidden="true" data-stage={stage} data-world-kind={stageSetting(stage||0).kind} data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--stage-accent':stage?stagePalette(stage).accent:undefined,'--stage-side':tableSet?MATERIAL_COLORS[tableSet-1]:undefined,'--camera-ms':`${entranceDuration('approach',resume)}ms`,'--camera-far':`${(1-1/Math.max(.001,overview))*1000}px`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--focus-ms':`${ENTRANCE_MS.focus}ms`,'--rise-ms':`${ENTRANCE_MS.rise}ms`,'--scene-key-light':stage?stagePalette(stage).accent:undefined,'--opponent-out-ms':`${ENTRANCE_MS['opponent-out']}ms`,'--environment-far-transform':environmentTransform(cameraStart,overview,false,!!stage),'--environment-near-transform':environmentTransform(cameraStart,overview,true,!!stage),'--curtain-ms':`${curtain}ms`} as CSSProperties}>
   <div className="entry-room"><EntranceEnvironment stage={stage}/></div>
   <div className="entry-view-rig">
   <div className="entry-camera" ref={cameraElement} style={{transform:cameraTransform(cameraStart)}}>
@@ -208,9 +209,9 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
   {!['menu-out','room-hold','prepare'].includes(phase)&&<EntranceFurniture diameter={diameter} cx={worldX} cy={worldY} stage={stage||0} width={screen.width} height={screen.height} overview={overview} phase={phase} visible={pageVisible}/>}
   {phase==='shuffle'&&<EntranceGreetings company={company} diameter={diameter} cx={worldX} cy={worldY} stage={stage||0} viewport={{width:screen.width,height:screen.height,overview}}/>}
   {resume&&phase!=='menu-out'&&savedLandings.length>0&&<ResumeGpuTiles rows={savedLandings} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
-  {!resume&&!['menu-out','room-hold'].includes(phase)&&scene&&cards.length===60&&<EntranceGpuTiles cards={cards} routes={dealRoutes} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
+  {!resume&&!['menu-out','room-hold'].includes(phase)&&scene&&cards.length===60&&<EntranceGpuTiles painterly={!!stage} cards={cards} routes={dealRoutes} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
   <div className="entry-reunion"><div className="entry-return-note"><span>{resume?'WELCOME BACK':`${company.length+1} PLAYERS · TAKE YOUR SEAT`}</span><strong>{stage?`${stageTheme(stage).name}의 테이블`:resume?'익숙한 테이블로 돌아왔어요':'달빛 서재의 작은 승부'}</strong><small>{resume?migrated?'3인전으로 전환했어요. 스테이지와 점수는 이어지고, 진행 중이던 패는 다시 나눴어요.':'자리에 놓인 패 그대로, 승부를 이어갑니다.':'테이블에 둘러앉아 새로운 승부를 시작합니다.'}</small></div></div>
-  <div className="entry-edge-shade"/>
+  {stage&&<div className="entry-painted-glaze"/>}<div className="entry-edge-shade"/>
   <div className="entry-curtain"/>
   {['prepare','room-hold'].includes(phase)&&<div className="entry-preparing-note"><i/><strong>{resume?'저장된 테이블을 불러오고 있어요':'새로운 승부를 준비하고 있어요'}</strong><small>잠시만 기다려 주세요</small></div>}
  </div></StageVisuals>,document.body);

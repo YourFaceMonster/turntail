@@ -1,4 +1,5 @@
 "use client";
+import {stageEnvironmentImage} from '../../lib/stage-art';
 import {useState,useEffect,useLayoutEffect,useRef,type CSSProperties} from 'react';
 import {createPortal} from 'react-dom';
 import {stagePalette} from '../../lib/stage-presentation';
@@ -28,7 +29,7 @@ export function StageDestinationDialog({stage,active,error='',start,resume,advan
  },[]);
  const run=active?.stageRun,next=run?.status==='stage-clear'?Math.min(10,run.stage+1):run?.stage||1,theme=stageTheme(stage),current=stage===run?.stage,enterable=stage===next;
  const go=(action:()=>void)=>{close();action();};
- return <div className="modal-shade journey-popup-shade" onClick={close}><section ref={dialog} tabIndex={-1} className="modal journey-destination journey-popup" role="dialog" aria-modal="true" aria-labelledby="destination-title" onClick={e=>e.stopPropagation()} data-region={stage} style={{'--stage-accent':stagePalette(stage).accent,'--stage-base':stagePalette(stage).base,'--stage-light':stagePalette(stage).light,'--destination-image':`url('/environments/stage-${stage}-055.webp')`} as CSSProperties}>
+ return <div className="modal-shade journey-popup-shade" onClick={close}><section ref={dialog} tabIndex={-1} className="modal journey-destination journey-popup" role="dialog" aria-modal="true" aria-labelledby="destination-title" onClick={e=>e.stopPropagation()} data-region={stage} style={{'--stage-accent':stagePalette(stage).accent,'--stage-base':stagePalette(stage).base,'--stage-light':stagePalette(stage).light,'--destination-image':`url('${stageEnvironmentImage(stage)}')`} as CSSProperties}>
  <button className="close" onClick={close} aria-label="스테이지 정보 닫기">×</button><span className="eyebrow">{stage===10?'THE FINAL TABLE':`DESTINATION ${String(stage).padStart(2,'0')}`} · {stage>next?'미개방':stage<next?'돌파한 거점':'다음 여정'}</span><h3 id="destination-title">{theme.name}</h3><p className="destination-story">{theme.short}</p>
  <div className="destination-material"><span>이번 테이블의 패</span><strong>{theme.material}</strong><div className={`material-preview material-${stage}`} aria-hidden="true"><StageBackArt stage={stage}/></div></div>
  <div className="destination-opponents">{stageOpponents(stage).map(p=><div key={p.name}><StagePortrait index={p.portrait}/><strong>{p.name}<small>{p.title}</small></strong></div>)}</div><p className="destination-quote">“{theme.opponents[0].quote}”</p><div className="destination-objective"><span>클리어 목표</span><strong>{number(stageConfig(stage).target)}점</strong><small>또는 AI 한 명 0점 이하 · AI 시작 각 200점</small></div>

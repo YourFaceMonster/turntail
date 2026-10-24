@@ -1315,11 +1315,21 @@ html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmo
 /* The shared full-body atlas sits behind the rim; the lower body is occluded at the lap. */
 .stage-painted-model{clip-path:inset(0 0 42% 0);mask-image:linear-gradient(#000 0 54%,transparent 60%)}
 
-/* Calm edges, distinctive region props, and an uninterrupted collection scene. */
-.stage-world-details{position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none}
-.stage-world-prop{position:absolute;transform-origin:50% 100%;color:#615c4b;filter:drop-shadow(0 5px 8px #0005)}
-.stage-world-prop svg{width:100%;height:100%;overflow:visible}
-.stage-world-prop .world-prop-light{fill:var(--prop-ink);stroke:var(--prop-ink);opacity:.8}
-.prop-2{color:#776045}.prop-3{color:#436451}.prop-4{color:#536f62}.prop-5{color:#76624b}.prop-6{color:#51415e}.prop-7{color:#4e6571}.prop-8{color:#a08a56}.prop-9{color:#45404a}.prop-10{color:#593b3d}
+/* Keep the collection scene present while the next location is decoded. */
 .scene-preview-loading{min-height:16px;font-size:11px;color:#f3d494}
 .scene-preview-cards>.tile{border-radius:10px!important}
+
+/* 0.5.20: painted locations, restrained parallax, and a continuous seated-to-overhead lift. */
+.table-entrance[data-stage] .entry-world-seat{filter:drop-shadow(-2px 4px 3px #0b18215c)}
+.table-entrance[data-stage].entry-focus .entry-world-company{visibility:visible;animation:painted-company-lift var(--focus-ms) linear both}
+.table-entrance[data-stage].entry-rise .entry-world-company{visibility:hidden}
+@keyframes painted-company-lift{0%,14%{opacity:1}62%,100%{opacity:0}}
+.table-entrance[data-stage] .entry-room:after{background:linear-gradient(#132b4d08,transparent 42%,#0a192740)}
+.table-entrance[data-stage] .entry-table{box-shadow:0 3px 0 #121c2855,0 14px 24px #0a152744}
+.entry-painted-glaze{position:absolute;inset:0;z-index:7;pointer-events:none;background:radial-gradient(ellipse at 10% 25%,#ffcf7624,transparent 42%),linear-gradient(115deg,#ffc98908,transparent 45%,#16356420);mix-blend-mode:soft-light}
+.table-entrance[data-stage] .entry-edge-shade{background:radial-gradient(ellipse at 50% 46%,transparent 45%,#07162c40 100%)}
+.environment-landscape .environment-distance{image-rendering:auto;filter:saturate(1.03)}
+.live-table-scene[data-scene-stage]:not([data-scene-stage="0"]) .environment-distance{transform:translate3d(0,-18px,0) scale(1.06)}
+.live-table-scene[data-scene-stage]:not([data-scene-stage="0"]) .environment-near-light{transform:translate3d(0,-26px,0) scale(1.08)}
+.table-entrance[data-stage] .entry-return-note{background:linear-gradient(90deg,transparent,#132333c9,transparent);text-shadow:0 2px 4px #06132788}
+@media(prefers-reduced-motion:reduce){.table-entrance[data-stage].entry-focus .entry-world-company{animation:none;opacity:0}.entry-painted-glaze{animation:none}}

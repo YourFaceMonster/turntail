@@ -9,8 +9,8 @@ import type {DealItem,DealTarget} from '../../lib/deal-animation';
 import {useStageVisual,MATERIAL_COLORS} from './StageVisuals';
 import {ENTRANCE_MS,entranceDuration,type EntrancePhase} from '../../lib/atmosphere';
 type Card={width:number,height:number,depth:number,poses?:ShufflePose[],landing:{item:DealItem,target:DealTarget}};
-type Props={cards:Card[],routes:DealRoute[],phase:EntrancePhase,visible:boolean,width:number,height:number,overview:number,onStatus:(status:'ready'|'fallback')=>void};
-function EntranceGpuTiles({cards,routes,phase,visible,width,height,overview,onStatus}:Props){
+type Props={painterly?:boolean,cards:Card[],routes:DealRoute[],phase:EntrancePhase,visible:boolean,width:number,height:number,overview:number,onStatus:(status:'ready'|'fallback')=>void};
+function EntranceGpuTiles({painterly=false,cards,routes,phase,visible,width,height,overview,onStatus}:Props){
  const stage=useStageVisual();
  const canvas=useRef<HTMLCanvasElement>(null),flatCanvas=useRef<HTMLCanvasElement>(null),engine=useRef<EntranceGpu|EntranceCanvas|null>(null),[ready,setReady]=useState(false),[renderer,setRenderer]=useState<'gpu'|'canvas'>('gpu');
  const latest=useRef({phase,onStatus});latest.current={phase,onStatus};
@@ -31,12 +31,12 @@ function EntranceGpuTiles({cards,routes,phase,visible,width,height,overview,onSt
     try{gpu=new EntranceGpu(node,atlas,tiles.length,width,height,body);setRenderer('gpu');}
     catch{if(!flatCanvas.current)throw Error('Opening canvas missing');gpu=new EntranceCanvas(flatCanvas.current,atlas,width,height,body);setRenderer('canvas');}
     engine.current=gpu;
-    gpu.draw(writeEntranceFrame(data,tiles,routes,'prepare',0,width/2,height/2),{width,height,...entranceFrameCamera('prepare',0,overview)});
+    gpu.draw(writeEntranceFrame(data,tiles,routes,'prepare',0,width/2,height/2),{width,height,...entranceFrameCamera('prepare',0,overview,false,painterly)});
     setReady(true);latest.current.onStatus('ready');
    }catch(error){if(!cancelled){console.warn('Opening tile renderer fell back:',error);latest.current.onStatus('fallback');}}
   })();
   return()=>{cancelled=true;node.removeEventListener('webglcontextlost',lost);engine.current?.destroy();engine.current=null;};
- },[cards,tiles,routes,width,height,overview,data,stage]);
+ },[cards,tiles,routes,width,height,overview,data,stage,painterly]);
  useLayoutEffect(()=>{if(clock.current.phase!==phase)clock.current={phase,elapsed:0};},[phase]);
  useLayoutEffect(()=>{
   if(!ready||!visible)return;
@@ -48,15 +48,15 @@ function EntranceGpuTiles({cards,routes,phase,visible,width,height,overview,onSt
    clock.current.elapsed+=Math.max(0,now-last);last=now;
    const elapsed=Math.min(clock.current.elapsed,ENTRANCE_MS[phase]);
    const cameraAnimation=document.querySelector('.entry-camera')?.getAnimations().find(animation=>animation.id===`turntale-observer-${phase}`);
-   let camera=entranceFrameCamera(phase,elapsed,overview);
-   if(cameraAnimation&&typeof cameraAnimation.currentTime==='number'&&['rise','focus'].includes(phase))camera=entranceFrameCamera(phase,cameraAnimation.currentTime,overview);
+   let camera=entranceFrameCamera(phase,elapsed,overview,false,painterly);
+   if(cameraAnimation&&typeof cameraAnimation.currentTime==='number'&&['rise','focus'].includes(phase))camera=entranceFrameCamera(phase,cameraAnimation.currentTime,overview,false,painterly);
    try{engine.current?.draw(writeEntranceFrame(data,tiles,routes,phase,cameraAnimation&&typeof cameraAnimation.currentTime==='number'&&['rise','focus'].includes(phase)?cameraAnimation.currentTime:elapsed,width/2,height/2),{width,height,...camera});}
    catch{latest.current.onStatus('fallback');return;}
    // Never quantise to 16.7ms: the display's rAF clock may be 60/90/120/144Hz.
    if(moving&&elapsed<ENTRANCE_MS[phase])frame=requestAnimationFrame(draw);
   }
   draw(last);return()=>cancelAnimationFrame(frame);
- },[ready,visible,phase,data,tiles,routes,width,height,overview]);
+ },[ready,visible,phase,data,tiles,routes,width,height,overview,painterly]);
  return <><canvas className="entry-gpu-tiles" ref={canvas} aria-hidden="true" style={{visibility:ready&&renderer==='gpu'?'visible':'hidden'}}/><canvas className="entry-gpu-tiles entry-canvas-tiles" data-tile-renderer="canvas" ref={flatCanvas} aria-hidden="true" style={{visibility:ready&&renderer==='canvas'?'visible':'hidden'}}/></>;
 }
 export default memo(EntranceGpuTiles);
