@@ -9,7 +9,7 @@ import {entranceCameraState,environmentTransform,seatedScale} from '../lib/entra
 import {opponentTableOpacity} from '../lib/entrance-fade.ts';
 import {tileBodyHandoff} from '../lib/tile-body.ts';
 import {tileSoundPlan,playTileSound,type TileSoundKind} from '../lib/tile-audio.ts';
-for(const p of KOREAN_OPPONENTS){assert.ok(existsSync(`public${p.src}`));const model=renderToStaticMarkup(<MonsterModel index={p.portrait}/>),portrait=renderToStaticMarkup(<MonsterPortrait index={p.portrait}/>);assert.ok(model.includes(p.src)&&portrait.includes(p.src),'avatar is cropped from the exact full-body asset');assert.ok(p.crop.x+p.crop.size<=p.width&&p.crop.y+p.crop.size<=p.height);}
+for(const p of KOREAN_OPPONENTS){assert.ok(existsSync(`public${p.src}`));const model=renderToStaticMarkup(<MonsterModel index={p.portrait}/>),portrait=renderToStaticMarkup(<MonsterPortrait index={p.portrait}/>);assert.ok(model.includes('modelSrc' in p?p.modelSrc:p.src)&&portrait.includes(p.src),'avatar is cropped from the exact full-body asset');assert.ok(p.crop.x+p.crop.size<=p.width&&p.crop.y+p.crop.size<=p.height);}
 const legacy=[{name:'김복례',avatar:'korean-portrait:0',hand:[3,7],points:42},{name:'돌해',avatar:'korean-monster:2',hand:[8],points:-11}],copy=structuredClone(legacy),cast=restoreMonsterOpponents(legacy);assert.deepEqual(legacy,copy);assert.equal(cast[1].avatar,'korean-monster:2');assert.equal(new Set(cast.map(p=>p.avatar)).size,2);
 for(const overview of [.2,.4,.7]){
  const s=seatedScale(overview),scale=(phase:'shuffle'|'focus',t:number)=>Number(environmentTransform(entranceCameraState(phase,t,overview),overview).match(/scale\(([^)]+)\)/)?.[1]);
