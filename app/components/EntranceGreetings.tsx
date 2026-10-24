@@ -10,7 +10,7 @@ export default function EntranceGreetings({company,diameter=1900,cx=681,cy=468,s
    const box=figure.getBoundingClientRect();let speech=node.getBoundingClientRect(),top=box.top-speech.height-28;
    if(top<8){
     // Short landscape viewports use the outer margin instead of covering a face.
-    node.style.width=`${Math.min(210,viewport.width-24)}px`;node.style.fontSize='12px';speech=node.getBoundingClientRect();
+    const sideSpace=i<company.length/2?box.left-24:viewport.width-box.right-24;node.style.width=`${Math.max(96,Math.min(210,sideSpace,viewport.width-24))}px`;node.style.fontSize=sideSpace<140?'11px':'12px';speech=node.getBoundingClientRect();
     const preferred=i<company.length/2?box.left-speech.width-12:box.right+12,left=Math.max(12,Math.min(viewport.width-speech.width-12,preferred));
     node.style.left=`${left}px`;node.style.setProperty('--bubble-tail',`${Math.max(20,Math.min(speech.width-20,box.left+box.width/2-left))}px`);top=8;
    }
