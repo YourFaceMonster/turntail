@@ -51,7 +51,10 @@ for(const kind of Object.keys(HIBORINGJI_LINES) as (keyof typeof HIBORINGJI_LINE
 assert.ok(openingGreeting(HIBORINGJI.avatar,HIBORINGJI.name).includes('성질'));
 const portrait=monsterCharacter(3);assert.ok(existsSync('public'+portrait.src));
 assert.ok(renderToStaticMarkup(<MonsterPortrait index={3}/>).includes(portrait.src));assert.ok(renderToStaticMarkup(<MonsterModel index={3}/>).includes('modelSrc' in portrait?portrait.modelSrc:portrait.src));
-const name=renderToStaticMarkup(<OpponentName name={HIBORINGJI.name} bot/>);assert.ok(name.includes('opponent-name-full')&&name.includes('<wbr')&&name.replace(/<[^>]*>/g,'').includes('히보링지'));
+const name=renderToStaticMarkup(<OpponentName name={HIBORINGJI.name} bot/>);assert.ok(name.includes('opponent-name-full')&&!name.includes('<wbr')&&name.replace(/<[^>]*>/g,'').includes('히보')&&!name.includes('링지'));
 assert.ok(!name.includes('…')&&!name.includes('...'));
+assert.equal(HIBORINGJI.name,'히보');assert.equal(monsterCharacter(3).name,'히보');
+assert.equal(restoreMonsterOpponents([{name:'히보링지',avatar:HIBORINGJI.avatar}])[0].name,'히보','old saves adopt the short name without changing identity');
+const legacyName=renderToStaticMarkup(<OpponentName name="히보링지" bot/>);assert.ok(!legacyName.includes('링지')&&legacyName.includes('히보'));
 const seen=new Set<string>();for(let i=0;i<100;i++){let seed=i+1;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};chooseKoreanOpponents(1,[],random).forEach(p=>seen.add(p.name));}assert.equal(seen.size,4,'random ordinary games can draw any of the four opponents');
 console.log(`PASS: Hiboringji artwork, selection, saved identity, strong opening, four anger stages, legal mistakes ${mistakes.join('/')} per 400 seeds, public-only deterministic decisions, round reset, and contextual dialogue.`);

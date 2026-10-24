@@ -1423,14 +1423,11 @@ html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmo
 /* Hand growth never changes the floor, played area, or the space reserved for controls. */
 .turntale.active-table .hand-panel{--tile-h:var(--hand-tile-h);--tile-w:var(--hand-tile-w);--table-card-height:var(--hand-tile-h)}
 
-/* 0.6.1: a single static cutout; no extra animation or furniture work. */
-.monster-model[data-monster="3"]>img{object-position:center top}
 .hiboringji-mood{display:block;margin-top:1px;font-size:9px;line-height:1.2;color:#b8ddaa;word-break:keep-all}
 .hiboringji-mood[data-temper="1"]{color:#ffd18b}.hiboringji-mood[data-temper="2"]{color:#ffae85}.hiboringji-mood[data-temper="3"]{color:#ff8c96}
 @media(orientation:landscape) and (max-height:600px){.hiboringji-mood{font-size:8px}}
 
-/* Full names use the reserved seat width; paired syllables wrap on narrow phones. */
-.turntale.table-v211.active-table .seat-card .op-info>strong.opponent-name-full{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:normal;word-break:keep-all;max-width:none;padding-right:0;font-size:14px!important;line-height:1.1}
-.opponent-name-text>span{display:inline-block}
+/* Hibo uses the same seated model frame as the other classic opponents. */
+.turntale.table-v211.active-table .seat-card .op-info>strong.opponent-name-full{white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:normal;word-break:keep-all;max-width:none;padding-right:0;font-size:14px!important;line-height:1.1}
 .turntale.table-v211.active-table .seat-card:has(.opponent-name-full) .op-info{min-width:0;max-width:100%}
 .turntale.table-v211.active-table:is(.players-4,.landscape-table) .seat-card .op-info>strong.opponent-name-full{font-size:12px!important}

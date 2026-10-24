@@ -1,6 +1,6 @@
 import {legalOptions,rank,suitRank,type BotPosition,type BotAction} from './game';
 
-export const HIBORINGJI={name:'히보링지',avatar:'korean-monster:3',title:'실력은 고수 · 성질은 시한폭탄'} as const;
+export const HIBORINGJI={name:'히보',avatar:'korean-monster:3',title:'실력은 고수 · 성질은 시한폭탄'} as const;
 export const isHiboringji=(p:{avatar?:string})=>p.avatar===HIBORINGJI.avatar;
 export function hiboringjiTemperament(actions=0){
  const turns=Math.max(0,Number.isFinite(actions)?actions:0);
