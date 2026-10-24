@@ -35,8 +35,8 @@ export default function StageTileEngraving({stage,s,special=false}:{stage:number
   <path d="M51 46L56 40L61 46M19 70L13 77L19 84M83 70L89 77L83 84M45 123L51 117L57 123" fill="none" strokeWidth="1.4"/>
  </g>;
  return <g data-region-engraving={`${stage}:${s}`} data-number-geometry={design.name} style={dark?{color:inlay}:undefined} stroke="currentColor" strokeLinejoin="round">
-  <path d={design.panel} fill="currentColor" fillRule="evenodd" fillOpacity={stage===7?.64:.26} strokeWidth="1.25"/>
-  <g fill="none" strokeWidth="1.4" opacity=".9"><RegionLines stage={stage}/></g>
+  <path d={design.panel} fill="currentColor" fillRule="evenodd" fillOpacity={stage===7?.3:stage===2?.09:.16} strokeWidth="1.25"/>
+  <g fill="none" strokeWidth="1.4" opacity=".55"><RegionLines stage={stage}/></g>
   <g fill="currentColor" stroke="none" opacity=".68">{Array.from({length:s+1},(_,i)=><circle key={i} cx={10+i*4} cy="128" r=".8"/>)}</g>
  </g>;
 }

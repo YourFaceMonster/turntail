@@ -1,3 +1,4 @@
+import {scoutBotDraw} from './items';
 import {isHiboringji,hiboringjiAction} from './hiboringji';
 import {act,legalOptions,view,type Game} from './game';
 /** Search belongs off the UI thread. Unsupported workers use a bounded simple move. */
@@ -9,7 +10,8 @@ export function runLocalBot(game:Game,signal:AbortSignal):Promise<Game>{
   const fallback=()=>{cleanup();if(signal.aborted){abort();return;}try{
    const p=game.players[game.turn],position=view(game,p.token),options=legalOptions(p.hand,game.trick),finish=options.find(o=>o.tiles.length===p.hand.length),move=finish||options[0];
    const index=position.stacks.findIndex(s=>s.available),simple=move?{type:'play' as const,tiles:move.tiles}:index>=0?{type:'draw' as const,index}:{type:'pass' as const};
-   const decision=isHiboringji(p)?hiboringjiAction(position,simple):simple;
+   let decision=isHiboringji(p)?hiboringjiAction(position,simple):simple;
+   if(game.itemRun&&decision.type==='draw')decision={type:'draw',index:scoutBotDraw(game,game.turn,decision.index)};
    act(game,game.turn,decision.type,decision.type==='play'?decision.tiles.map(t=>t.id):[],decision.type==='draw'?decision.index:-1,Date.now(),true);
    resolve(game);
   }catch(e){reject(e);}};

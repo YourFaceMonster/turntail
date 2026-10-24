@@ -1,3 +1,5 @@
+import {newItemRun,itemView,scoutBotDraw,type ItemRun} from './items';
+import {chooseKoreanOpponents} from './korean-opponents';
 import {shouldShowPlayNotice,QUICK_PLAY_MS,ANNOUNCED_PLAY_MS} from './play-notices.ts';
 import {accessibleStack} from './table-access.ts';
 import {chooseStrategicAction} from './bot.ts';
@@ -10,7 +12,7 @@ export type Player = {id:string,token:string,name:string,hand:Tile[],wins:number
 export type RoundResult = {id:string,at:number,round:number,players:{id:string,name:string,count:number,place:number,delta:number,total:number,winner:boolean}[],transfers:{from:number,to:number,points:number}[],voided?:boolean,voidReason?:string,challenge?:Challenge|null,stageRun?:StageRun|null};
 export type GameEvent = {id:string,type:string,who:number,index?:number,tiles?:Tile[],label?:string,at?:number,rally?:number,concealed?:boolean,showNotice?:boolean,reviewMs?:number};
 export type ChatMessage={id:string,who:number,name:string,text:string,at:number};
-export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],tablePlay?:TablePlay|null,log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number,playedTiles?:Tile[],publicDraws?:Record<string,Tile[]>,turnDeadline?:number,turnStartedAt?:number,aiAssisted?:boolean,matchMode?:"unlimited"|"target",targetScore?:number,matchWinner?:number|null,matchNo?:number,matchRoundOffset?:number,turnRuleVersion?:number,roundActions?:number,challenge?:Challenge|null,stageRun?:StageRun|null,revealedHands?:string[],announcedCombos?:number[]};
+export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],tablePlay?:TablePlay|null,log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number,playedTiles?:Tile[],publicDraws?:Record<string,Tile[]>,turnDeadline?:number,turnStartedAt?:number,aiAssisted?:boolean,matchMode?:"unlimited"|"target",targetScore?:number,matchWinner?:number|null,matchNo?:number,matchRoundOffset?:number,turnRuleVersion?:number,roundActions?:number,challenge?:Challenge|null,stageRun?:StageRun|null,revealedHands?:string[],announcedCombos?:number[],itemRun?:ItemRun};
 export function uid(){if(typeof crypto.randomUUID==="function")return crypto.randomUUID();const a=new Uint8Array(16);crypto.getRandomValues(a);a[6]=(a[6]&15)|64;a[8]=(a[8]&63)|128;const h=Array.from(a,n=>n.toString(16).padStart(2,"0")).join("");return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;}
 export const suits = ["구름","별","달","해"];
 export const symbols = ["☁","✦","☾","☀"];
@@ -48,9 +50,10 @@ export function matchRules(mode:unknown="unlimited",target:unknown=100){
  const score=Number(target);if(mode==="target"&&(!Number.isInteger(score)||score<1||score>10000))throw Error("목표 점수는 1~10,000 사이 정수로 정해 주세요.");
  return {matchMode:mode,targetScore:mode==="target"?score:0} as const;
 }
-export function room(code:string,p:Player,practice=false,size=3,rules:{matchMode?:unknown,targetScore?:unknown,challenge?:boolean}={}):Game{
+export function room(code:string,p:Player,practice=false,size=3,rules:{matchMode?:unknown,targetScore?:unknown,challenge?:boolean,itemMode?:boolean}={}):Game{
+ if(rules.itemMode&&(!practice||!rules.challenge))throw Error('아이템전은 싱글 10판 도전에서만 시작할 수 있어요.');
  if(![2,3,4].includes(size))throw Error("2·3·4인 중 선택해 주세요.");
- return {code,phase:"lobby",players:[p],stacks:[],turn:0,lastBy:null,trick:[],log:[],winner:null,round:0,practice,capacity:size,result:null,...matchRules(rules.matchMode,rules.targetScore),matchWinner:null,matchNo:1,challenge:rules.challenge?newChallenge(uid(),size):null};
+ return {code,phase:"lobby",players:[p],stacks:[],turn:0,lastBy:null,trick:[],log:[],winner:null,round:0,practice,capacity:size,result:null,...matchRules(rules.matchMode,rules.targetScore),matchWinner:null,matchNo:1,challenge:rules.challenge?{...newChallenge(uid(),size),...(rules.itemMode?{itemMode:true}:{})}:null,...(rules.itemMode&&rules.challenge&&practice?{itemRun:newItemRun(size)}:{})};
 }
 export function lowestHandLead(players:Player[]){
  const candidates=players.flatMap((p,who)=>p.hand.map(tile=>({who,tile})));
@@ -74,7 +77,7 @@ export function advanceRoom(g:Game,now=Date.now()){
  if(g.phase!=="playing"||g.practice)return false;
  const p=g.players[g.turn];
  if(!automated(p)&&g.turnRuleVersion!==2){scheduleTurn(g,now);return true;}
- if(automated(p)){if(now<Math.max(g.turnReadyAt||0,g.turnStartedAt||0)+450)return false;g.aiAssisted=true;botMove(g,now);return true;}
+ if(automated(p)){if(now<Math.max(g.turnReadyAt||0,g.turnStartedAt||0)+450)return false;if(p.replaced)g.aiAssisted=true;botMove(g,now);return true;}
  if(!g.turnDeadline){scheduleTurn(g,now);return true;} // Safely start clocks for rooms created by older versions.
  if(now<g.turnDeadline)return false;
  g.aiAssisted=true;p.timeouts=(p.timeouts||0)+1;if(p.timeouts>=3)p.replaced=true;
@@ -99,7 +102,7 @@ export function start(g:Game,now=Date.now()){
  const stacks=deck.length/2;g.stacks=Array.from({length:stacks},()=>[deck.shift()!,deck.shift()!]);
  g.cols=capacity(g)===2?6:capacity(g)===4?4:5;g.rows=Math.ceil(stacks/g.cols);
  g.opening=lowestHandLead(g.players);g.turn=g.opening.who;
- g.turnReadyAt=now+DEAL_REVIEW_MS;g.aiAssisted=!g.practice&&g.players.some(automated);g.rally=0;g.roundActions=0;g.playedTiles=[];g.publicDraws={};g.phase="playing";g.trick=[];g.tablePlay=null;g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
+ g.turnReadyAt=now+DEAL_REVIEW_MS;g.aiAssisted=!g.practice&&g.players.some(p=>p.replaced);g.rally=0;g.roundActions=0;g.playedTiles=[];g.publicDraws={};g.phase="playing";g.trick=[];g.tablePlay=null;g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
  g.announcedCombos=[];g.revealedHands=[];g.lastEvent={id:uid(),type:"deal",who:g.turn,at:now};scheduleTurn(g,now);
 }
 export function restartMatch(g:Game,now=Date.now()){
@@ -160,7 +163,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
 export function view(g:Game,token:string){
  const me=g.players.findIndex(p=>p.token===token);if(me<0)throw Error("입장 정보가 없어요. 방 코드로 다시 입장해 주세요.");
  const event=g.lastEvent;const lastEvent=event?.type==="draw"&&event.concealed&&event.who!==me?{...event,tiles:undefined}:event;
- return {code:g.code,phase:g.phase,roundActions:g.roundActions??(g.playedTiles?.length||0),matchMode:g.matchMode||"unlimited",targetScore:g.targetScore||0,matchWinner:g.matchWinner??null,matchNo:g.matchNo||1,displayRound:g.round-(g.matchRoundOffset||0),capacity:capacity(g),...dimensions(g),turn:g.turn,turnDeadline:g.turnDeadline||0,turnStartedAt:g.turnStartedAt||0,host:hostSeat(g),turnReadyAt:g.turnReadyAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,tablePlay:g.tablePlay||null,log:g.log,winner:g.winner,round:g.round,practice:g.practice,challenge:g.challenge||null,stageRun:g.stageRun||null,revealedHands:g.revealedHands||[],played:g.playedTiles||g.trick,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent,me,
+ return {code:g.code,phase:g.phase,roundActions:g.roundActions??(g.playedTiles?.length||0),matchMode:g.matchMode||"unlimited",targetScore:g.targetScore||0,matchWinner:g.matchWinner??null,matchNo:g.matchNo||1,displayRound:g.round-(g.matchRoundOffset||0),capacity:capacity(g),...dimensions(g),turn:g.turn,turnDeadline:g.turnDeadline||0,turnStartedAt:g.turnStartedAt||0,host:hostSeat(g),turnReadyAt:g.turnReadyAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,tablePlay:g.tablePlay||null,log:g.log,winner:g.winner,round:g.round,practice:g.practice,challenge:g.challenge||null,stageRun:g.stageRun||null,revealedHands:g.revealedHands||[],played:g.playedTiles||g.trick,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent,me,items:itemView(g,me),
  players:g.players.map((p,i)=>({id:p.id,name:p.name,avatar:p.avatar||"",count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,replaced:!!p.replaced,timeouts:p.timeouts||0,known:g.publicDraws?.[p.id]||[],hand:i===me||(g.phase==="ended"&&(g.practice||!!g.revealedHands?.includes(p.id)))?p.hand:undefined})),
  stacks:g.stacks.map((s,i)=>({lower:s[1]?null:s[0],lowerPresent:!!s[0],upper:!!s[1],available:!!g.trick.length&&accessible(g,i)}))};
 }
@@ -174,8 +177,9 @@ export function findMove(hand:Tile[],trick:Tile[]):Tile[]|null{
 }
 export function botMove(g:Game,now=Date.now()){
  const p=g.players[g.turn];if(!p||!automated(p)||g.phase!=="playing")return;
- if(!g.practice)g.aiAssisted=true;
- const decision=chooseBotAction(view(g,p.token));
+ if(!g.practice&&!p.bot)g.aiAssisted=true;
+ let decision=chooseBotAction(view(g,p.token));
+ if(g.itemRun&&decision.type==='draw')decision={type:'draw',index:scoutBotDraw(g,g.turn,decision.index)};
  if(decision.type==="play")act(g,g.turn,"play",decision.tiles.map(t=>t.id),-1,now,true);
  else if(decision.type==="draw")act(g,g.turn,"draw",[],decision.index,now,true);
  else act(g,g.turn,"pass",[],-1,now,true);
@@ -215,4 +219,12 @@ export function chooseBotAction(position:BotPosition):BotAction{
  return chooseStrategicAction(position,position.stageRun?.stage);
 }
 export function revealHand(g:Game,who:number,show:boolean){if(g.practice||g.phase!=='ended'||g.winner===who)throw Error('멀티 종료 후 패배한 참가자만 자신의 패를 공개할 수 있어요.');g.revealedHands=(g.revealedHands||[]).filter(id=>id!==g.players[who].id);if(show)g.revealedHands.push(g.players[who].id);}
-export function resetChallenge(g:Game){if(g.phase!=='ended'||!g.challenge?.complete)throw Error('10판 완료 후 새 도전을 시작해 주세요.');g.challenge=newChallenge(uid(),capacity(g));g.players.forEach(p=>p.points=0);g.matchWinner=null;start(g);}
+export function resetChallenge(g:Game){if(g.phase!=='ended'||!g.challenge?.complete)throw Error('10판 완료 후 새 도전을 시작해 주세요.');const itemMode=!!g.challenge.itemMode;g.challenge={...newChallenge(uid(),capacity(g)),...(itemMode?{itemMode:true}:{})};if(itemMode)g.itemRun=newItemRun(capacity(g));g.players.forEach(p=>p.points=0);g.matchWinner=null;start(g);}
+
+/** Human host controls one optional AI seat before a three-seat friend game starts. */
+export function changeLobbyAI(g:Game,who:number,add:boolean){
+ if(g.practice||g.phase!=='lobby'||capacity(g)!==3||who!==hostSeat(g))throw Error('3인 대기실의 방장만 AI 자리를 설정할 수 있어요.');
+ const bots=g.players.filter(p=>p.bot);
+ if(add){if(bots.length||g.players.length>=3)throw Error('빈 자리 하나에만 AI를 추가할 수 있어요.');const cast=chooseKoreanOpponents(1)[0],ai=player(cast.name,true);ai.avatar=cast.avatar;g.players.push(ai);}
+ else{if(!bots.length)throw Error('참여 중인 AI가 없어요.');g.players=g.players.filter(p=>!p.bot);}
+}

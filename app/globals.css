@@ -1474,3 +1474,40 @@ html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmo
 @keyframes achievement-arrive{from{opacity:0;translate:0 -12px}to{opacity:1;translate:0 0}}
 @media(max-width:520px){.achievement-list{grid-template-columns:minmax(0,1fr)}.turntale .achievements-modal{padding:22px 16px}.achievement-card{padding:12px}.achievement-filters{gap:5px}.turntale .achievement-filters>button{flex:1;padding-inline:8px}}
 @media(prefers-reduced-motion:reduce){.achievement-toast{animation:none}}
+
+/* 0.6.5: a full-height hand rack; the played strip belongs only under the floor. */
+.turntale.table-v211.active-table.landscape-table{position:relative}
+.turntale.table-v211.active-table.landscape-table>.room-bar{position:absolute;left:50%;top:0;transform:translateX(-50%);width:auto;max-width:40%;height:36px!important;min-height:36px!important;display:flex;align-items:center;justify-content:center;gap:12px;z-index:4;white-space:nowrap}
+.turntale.table-v211.active-table.landscape-table>.room-bar .room-code,.turntale.table-v211.active-table.landscape-table>.room-bar .room-actions>button{display:none}
+.turntale.table-v211.active-table.landscape-table .play-column{grid-template-areas:"board hand" "played hand"!important;grid-template-columns:minmax(0,1.24fr) minmax(0,1fr)!important;grid-template-rows:minmax(0,1fr) calc(var(--table-card-height) + var(--trick-chrome))!important}
+.turntale.table-v211.active-table.landscape-table .play-column>.trick-area{grid-template-columns:minmax(86px,28%) minmax(0,1fr)!important;padding:3px 6px!important;gap:5px!important}
+.turntale.table-v211.active-table.landscape-table .trick-label{flex-direction:column;align-items:flex-start;gap:4px!important}
+.turntale.table-v211.active-table.landscape-table .trick-current,.turntale.table-v211.active-table.landscape-table .previous-trick{gap:5px!important}
+.turntale.table-v211.active-table.landscape-table .trick-owner strong{max-width:95px}
+.turntale.table-v211.active-table.landscape-table .trick-label .pattern-badge{white-space:normal;flex-wrap:wrap;font-size:9px}
+.turntale.table-v211.active-table.landscape-table .last-play-caption{font-size:8px;white-space:normal;line-height:1.1;max-width:100%;bottom:0}
+.turntale.table-v211.active-table.landscape-table .seat-card{gap:4px!important;min-height:34px!important;height:34px!important;padding:2px 4px!important}
+.turntale.table-v211.active-table.landscape-table .seat-card .op-info{flex-wrap:nowrap;flex-direction:column;align-items:flex-start;gap:0!important;line-height:1.1}
+.turntale.table-v211.active-table.landscape-table .seat-card .op-info>strong{font-size:11px!important}.turntale.table-v211.active-table.landscape-table .seat-card .seat-points{font-size:10px!important}
+.turntale.table-v211.active-table.landscape-table .seat-card>.portrait{width:27px!important;height:27px!important;min-width:27px!important;flex-basis:27px}
+.turntale.table-v211.active-table.landscape-table .seat-card .hiboringji-mood{display:none}
+.seat-inline-count{display:flex;align-items:baseline;justify-content:center;gap:2px;flex:none;background:#f2e1bd;color:#281e14;border:1px solid #d4bc83;border-radius:5px;padding:3px 4px;margin-left:auto;min-width:29px}
+.seat-inline-count b{font-size:19px;line-height:1;font-variant-numeric:tabular-nums}.seat-inline-count small{font-size:8px}.last-tile .seat-inline-count{background:#ffccd1;color:#a81735}
+.turntale.table-v211.active-table.landscape-table .opponent-status-row{height:20px!important;min-height:20px!important;align-items:flex-start}
+.turntale.table-v211.active-table.landscape-table .opponent-status-row .remaining-badge{display:none!important}
+.turntale.table-v211.active-table.landscape-table .seat-banter{font-size:9px!important;line-height:1.12;padding:1px 3px}
+.turntale.table-v211.active-table.landscape-table .seat-card .turn-flag{top:0!important;right:2px!important;font-size:6px!important;padding:1px 2px!important;transform:translateY(-50%)}
+.turntale.table-v211.active-table.landscape-table .hand-heading .own-score-badge{display:none}
+.turntale.table-v211.active-table.landscape-table .hand-tools button{font-size:9px}
+.turntale.table-v211.active-table.landscape-table .hand-heading>div>strong{font-size:10px;white-space:nowrap}
+.turntale.table-v211.active-table.landscape-table .hand-panel{border-bottom-left-radius:12px!important}
+.turntale.table-v211.active-table.landscape-table .new-trick{font-size:10px}
+.turntale.table-v211.active-table.landscape-table .top-actions{gap:5px}.turntale.table-v211.active-table.landscape-table .top-actions .text-btn{font-size:10px}
+.turntale.table-v211.active-table .tile.face.stage-material-tile{box-shadow:0 2px 0 #655039,1px 3px 1px #100c0b70!important}
+.item-shade{z-index:231!important}.turntale .item-pouch,.turntale .item-records{max-width:720px;width:100%;background:linear-gradient(140deg,#33332b,#14232a);border:1px solid #b9a16c}
+.item-pouch>p,.item-records>p{color:#bfc8bc;font-size:12px;line-height:1.7}
+.item-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}.turntale .item-cards>button{display:flex;flex-direction:column;align-items:stretch;text-align:left;gap:9px;padding:15px 12px;border:1px solid #c2a56b99;border-radius:10px;background:#14232bd9;min-height:185px;color:#f6deb0}.item-cards>button>span{font-size:30px;color:#eac888}.item-cards strong{font-size:14px;display:flex;gap:7px;align-items:baseline;justify-content:space-between}.item-cards strong small{font-size:11px;color:#b5c6bc}.item-cards p{font-size:11px;line-height:1.65;color:#b8c5c5;margin:0;flex:1;word-break:keep-all}.item-cards b{font-size:11px;color:#ebc77f}.item-cards button:disabled{opacity:.45;cursor:default}
+.item-intel{border:1px solid #c4aa6c;border-radius:10px;background:#594b252e;padding:15px;margin:14px 0}.item-intel>strong{font-size:13px;color:#f2d79f}.item-intel>p{font-size:12px;color:#dde5cf;line-height:1.7}.item-scout{display:flex;align-items:center;gap:15px;margin-top:14px}.item-scout>.tile{width:54px!important;height:72px!important;flex:none;--tile-w:54px;--tile-h:72px}.item-scout>span{font-size:14px;color:#f7e1ac}.item-scout small{display:block;margin-top:8px;font-size:10px;color:#a9c3c0}.item-rule{font-size:10px!important;color:#c4b78f!important}.item-ledger{margin-top:12px}.item-ledger p{display:flex;gap:15px;font-size:11px;line-height:1.6;margin:7px 0}.item-ledger b{width:28px;flex:none;color:#f1ddae}.item-ledger span{color:#cbd4c6;word-break:keep-all}
+.item-records h3{font-size:14px;margin:24px 0 12px;color:#e8cc94}.item-match-records{padding-left:28px}.item-match-records li{padding:9px 0;color:#f0dcaf}.item-match-records span{font-size:11px;color:#a8bdba;margin-left:15px}.item-recent-records>div{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #baa16633;font-size:12px}.item-recent-records span{color:#a8bdba;font-size:11px;flex:1}.item-recent-records b{color:#f2d39b}
+.lobby-ai-controls{margin:18px auto;max-width:350px}.lobby-ai-controls>p{font-size:11px;color:#a9c1ba;line-height:1.7}.item-mode-choice{border:1px solid #c7a66d88;padding:4px;border-radius:9px;background:#24343588}
+@media(max-width:520px){.item-cards{grid-template-columns:1fr}.turntale .item-cards>button{min-height:0;display:grid;grid-template-columns:30px minmax(0,1fr);gap:7px 12px}.item-cards p,.item-cards b{grid-column:2}.item-cards>button>span{grid-row:1/4}.item-scout>span{font-size:12px}}

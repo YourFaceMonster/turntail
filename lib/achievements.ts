@@ -11,7 +11,7 @@ export const ACHIEVEMENTS:Achievement[]=[
  {id:'ten-wins',title:'승부의 감각',description:'누적 10승 달성',icon:'♛',goal:10,value:s=>s.wins},
  {id:'regular',title:'늘 앉던 자리',description:'누적 25판 완료',icon:'◈',goal:25,value:s=>s.rounds},
  {id:'streak',title:'세 번의 흐름',description:'3연승 달성',icon:'⚑',goal:3,value:s=>s.bestStreak},
- {id:'all-seats',title:'어떤 자리에서도',description:'2인·3인·4인전 각각 1판 완료',icon:'♧',goal:3,value:s=>s.sizes.length},
+ {id:'all-seats',title:'어떤 자리에서도',description:'3인·4인전 각각 1판 완료',icon:'♧',goal:2,value:s=>s.sizes.filter(n=>n===3||n===4).length},
  {id:'pairs',title:'둘이서 한 수',description:'페어 누적 10회 제출',icon:'Ⅱ',goal:10,value:pattern('페어')},
  {id:'triple',title:'셋의 약속',description:'트리플 1회 제출',icon:'Ⅲ',goal:1,value:pattern('트리플')},
  {id:'straight',title:'이어지는 이야기',description:'스트레이트 1회 제출',icon:'↗',goal:1,value:pattern('스트레이트')},
@@ -34,10 +34,11 @@ type StoragePort=Pick<Storage,'getItem'|'setItem'>;
 export function readAchievements(storage:StoragePort):AchievementState{
  try{const raw=JSON.parse(storage.getItem(ACHIEVEMENTS_KEY)||'null');if(raw?.version!==1||!raw.stats||!Array.isArray(raw.settled)||!raw.active||!raw.unlocked)return emptyAchievements();return {...raw,stats:{...emptyAchievements().stats,...raw.stats}};}catch{return emptyAchievements();}
 }
-type AchievementView={code:string,round:number,me:number,phase:string,capacity?:number,players:{id:string,bot?:boolean,replaced?:boolean,name:string,avatar?:string}[],lastEvent?:GameEvent,result?:RoundResult|null,roundActions?:number};
+type AchievementView={code:string,round:number,me:number,phase:string,capacity?:number,players:{id:string,bot?:boolean,replaced?:boolean,name:string,avatar?:string}[],lastEvent?:GameEvent,result?:RoundResult|null,roundActions?:number,items?:unknown};
 /** Commit progress only on valid results: an eventual AI takeover never earns awards. */
 export function observeAchievements(before:AchievementState,game:AchievementView):{state:AchievementState,earned:Achievement[]}{
  const key=JSON.stringify([game.code,game.players.map(p=>p.id),game.round,game.me]);
+ if(game.items)return {state:before,earned:[]};
  if(!game.round||game.phase==='lobby'||before.settled.includes(key)||!game.players[game.me]||game.players[game.me].bot)return {state:before,earned:[]};
  const ev=game.lastEvent,prior=before.active[key];
  if(game.phase!=='ended'&&(!ev||prior?.seen.includes(ev.id)))return {state:before,earned:[]};

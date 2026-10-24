@@ -5,7 +5,7 @@ for(const [width,height,landscape] of [[342,573,false],[372,777,false],[782,1050
  const baseline=tileLayout({...common,handWidth,handCount:players===2?12:10});let last=Infinity;
  for(let handCount=0;handCount<=54;handCount++){
   const next=tileLayout({...common,handWidth,handCount});assert.equal(next.floorHeight,baseline.floorHeight);assert.equal(next.floorWidth,baseline.floorWidth);assert.equal(next.baseColumns,baseline.baseColumns);
-  assert.ok(next.height<=last);last=next.height;assert.ok(next.height<=next.floorHeight);assert.ok(next.width*next.columns+(next.columns-1)*next.gap+4<=handWidth);
+  assert.ok(next.height<=last);last=next.height;if(!landscape)assert.ok(next.height<=next.floorHeight);assert.ok(next.width*next.columns+(next.columns-1)*next.gap+4<=handWidth);
  }
  const narrowHand=tileLayout({...common,handWidth:handWidth*.7,handCount:40});assert.equal(narrowHand.floorHeight,baseline.floorHeight,'a narrowing hand column cannot shrink the floor');
 }

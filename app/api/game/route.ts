@@ -1,6 +1,6 @@
 import {maintainRecords} from '../../../lib/record-retention';
 import { env } from "cloudflare:workers";
-import {act,assertTurnReady,botMove,player,room,start,view,capacity,advanceRoom,hostSeat,restartMatch,revealHand,resetChallenge,type Game} from "../../../lib/game";
+import {act,assertTurnReady,botMove,player,room,start,view,capacity,advanceRoom,hostSeat,restartMatch,revealHand,resetChallenge,changeLobbyAI,type Game} from "../../../lib/game";
 import {avatarImage,updateProfile,sendChat} from "../../../lib/social";
 import {scoreEntries,mergeScores,type HighScore} from "../../../lib/challenge";
 import {LINEUP_SUMMARY_SQL,LINEUP_PLAYERS_SQL} from "../../../lib/history";
@@ -51,7 +51,7 @@ export async function POST(req:Request){try{
   return reply({summary,groups,records:records.results.map((r:any)=>({...r,result:JSON.parse(r.result)}))});
  }
  if(b.action==="create"){
-  const size=Number(b.size||3);if(![2,3,4].includes(size))throw Error("2·3·4인 중 선택해 주세요.");
+  const size=Number(b.size||3);if(![3,4].includes(size))throw Error("3·4인 중 선택해 주세요.");
   const p=player(String(b.name||"플레이어"));p.avatar=avatarImage(b.avatar);if(profile)p.profile=profile;
   for(let k=0;k<5;k++){
    const code=crypto.randomUUID().replaceAll("-","").slice(0,6).toUpperCase();const g=room(code,p,!!b.practice,size,{matchMode:b.challenge?"unlimited":b.matchMode,targetScore:b.targetScore,challenge:!!b.challenge});
@@ -81,6 +81,7 @@ export async function POST(req:Request){try{
    else if(b.action==="abandon"){if(g.challenge&&!g.challenge.complete)g.challenge.abandoned=true;}
    else if(b.action==="newChallenge"){if(me!==hostSeat(g))throw Error("방장만 시작할 수 있어요.");resetChallenge(g);}
    else if(b.action==="profile")updateProfile(g.players[me],b.name,b.avatar);
+   else if(b.action==="addAI"||b.action==="removeAI")changeLobbyAI(g,me,b.action==="addAI");
    else if(b.action==="start"){if(me!==hostSeat(g))throw Error("방장만 시작할 수 있어요.");if(g.phase==="playing")throw Error("이미 진행 중이에요.");start(g);}
    else if(b.action==="restart"){if(me!==hostSeat(g))throw Error("방장만 새 매치를 시작할 수 있어요.");restartMatch(g);}
    else if(b.action==="bot"){assertTurnReady(g);if(!g.practice)throw Error("AI 차례는 자동으로 진행됩니다.");botMove(g);}
