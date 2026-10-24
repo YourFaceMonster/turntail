@@ -1,12 +1,13 @@
-import {tileBodyDepth} from './tile-body.ts';
 import {ENTRANCE_MS} from './atmosphere.ts';
+import {tileBodyDepth} from './tile-body.ts';
 import {collideTiles,type RigidTile} from './shuffle-contacts.ts';
 export type ShufflePose={x:number,y:number,angle:number};
 export type ShuffleSize={width:number,height:number};
 export type ShuffleTrack={radius:number,width?:number,height?:number,poses:ShufflePose[],contacts?:number[]};
 export type ShuffleScene={width:number,height:number,tracks:ShuffleTrack[],contacts?:number};
 export const SHUFFLE_HZ=120;
-export const SHUFFLE_FRAMES=Math.round(ENTRANCE_MS.shuffle/1000*SHUFFLE_HZ);
+/** A fixed planning budget; extra greeting time stretches playback, not preparation work. */
+export const SHUFFLE_FRAMES=312;
 const FRAMES=SHUFFLE_FRAMES,GAP=4,DT=144/FRAMES;
 function rng(seed:number){let state=seed>>>0;return()=>{state=(state+0x6d2b79f5)>>>0;let n=state;n=Math.imul(n^(n>>>15),n|1);n^=n+Math.imul(n^(n>>>7),n|61);return ((n^(n>>>14))>>>0)/4294967296;};}
 /** Minimum centre distance for the WHOLE linear interval, not just its endpoints. */

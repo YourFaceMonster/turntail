@@ -1,3 +1,4 @@
+import {effectOutput} from './audio-mixer';
 export type TileSoundKind='tap'|'submit'|'play'|'slam'|'draw';
 export type TileSoundDetail={count?:number,concealed?:boolean,seed?:string};
 export type TileSoundVoice={source:'tone'|'noise',at:number,duration:number,gain:number,frequency:number,endFrequency:number,wave?:OscillatorType};
@@ -25,7 +26,7 @@ export function playTileSound(ctx:AudioContext,kind:TileSoundKind,detail:TileSou
  let history=lastVariant.get(ctx);if(!history){history=new Map();lastVariant.set(ctx,history);}
  let hash=0;for(const c of detail.seed||String(ctx.currentTime))hash=(hash*31+c.charCodeAt(0))>>>0;
  let variant=hash%5;if(variant===history.get(kind))variant=(variant+1)%5;history.set(kind,variant);
- const plan=tileSoundPlan(kind,variant,detail),master=ctx.createGain();master.gain.value=.95/Math.sqrt(kind==='play'||kind==='slam'?Math.min(5,Math.max(1,detail.count||1)):1);master.connect(ctx.destination);let playing=plan.length;
+ const plan=tileSoundPlan(kind,variant,detail),master=ctx.createGain();master.gain.value=.95/Math.sqrt(kind==='play'||kind==='slam'?Math.min(5,Math.max(1,detail.count||1)):1);master.connect(effectOutput(ctx));let playing=plan.length;
  let buffer=cachedNoise.get(ctx);if(!buffer){buffer=ctx.createBuffer(1,Math.ceil(ctx.sampleRate*.5),ctx.sampleRate);const samples=buffer.getChannelData(0);for(let i=0;i<samples.length;i++)samples[i]=(Math.random()*2-1)*.72;cachedNoise.set(ctx,buffer);}
  for(const voice of plan){
   const at=ctx.currentTime+.008+voice.at,gain=ctx.createGain(),filter=ctx.createBiquadFilter();filter.type=voice.source==='noise'?'bandpass':'lowpass';filter.Q.value=voice.source==='noise'?.7:.45;filter.frequency.setValueAtTime(voice.source==='noise'?voice.frequency:4200,at);

@@ -10,7 +10,8 @@ import TileFace from './TileFace';
 import TableSurface from './TableSurface';
 import EntranceGpuTiles from './EntranceGpuTiles';
 import EntranceEnvironment from './EntranceEnvironment';
-import EntranceWorld from './EntranceWorld';
+import EntranceFurniture from './EntranceFurniture';
+import EntranceGreetings from './EntranceGreetings';
 import EntranceSeats from './EntranceSeats';
 import EntranceSavedTile from './EntranceSavedTile';
 import ResumeGpuTiles from './ResumeGpuTiles';
@@ -41,7 +42,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  useLayoutEffect(()=>{
   if(!['rise','focus'].includes(phase)||reduced||!cameraElement.current)return;
   const duration=entranceDuration(phase,resume),motion=cameraElement.current.animate(observerCameraFrames(overview,duration,phase),{duration,easing:'linear',fill:'both'});
-  motion.id='turntale-observer';cameraMotion.current=motion;
+  motion.id=`turntale-observer-${phase}`;cameraMotion.current=motion;
   const root=cameraElement.current.closest('.table-entrance');
   environmentMotions.current=['.environment-distance','.environment-near-light'].flatMap((selector,i)=>{
    const el=root?.querySelector(selector);if(!el)return [];
@@ -52,7 +53,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  },[phase,resume,reduced,overview]);
  useEffect(()=>{const motion=cameraMotion.current;if(motion)[motion,...environmentMotions.current].forEach(a=>pageVisible?a.play():a.pause());},[pageVisible,phase]);
  const activePhase=useRef(phase);activePhase.current=phase;
- const gpuPrepared=useCallback((status:'ready'|'fallback')=>{setGpuStatus(status);if(status==='fallback'&&['shuffle','rise','deal','focus'].includes(activePhase.current))callbacks.current.onFallback();},[]);
+ const gpuPrepared=useCallback((status:'ready'|'fallback')=>{setGpuStatus(status);if(status==='fallback'&&!['idle','menu-out','room-hold'].includes(activePhase.current))callbacks.current.onFallback();},[]);
  const latest=useRef({game,rotation});latest.current={game,rotation};
  useEffect(()=>{const resize=()=>setScreen({width:window.innerWidth,height:window.innerHeight});resize();window.addEventListener('resize',resize);return()=>window.removeEventListener('resize',resize);},[]);
  // Decode while the menu is still visible, rather than on the first moving frame.
@@ -191,8 +192,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
   <div className="entry-room"><EntranceEnvironment stage={stage}/></div>
   <div className="entry-view-rig">
   <div className="entry-camera" ref={cameraElement} style={{transform:cameraTransform(cameraStart)}}>
-  <EntranceWorld diameter={diameter} cx={worldX} cy={worldY} stage={stage||0} supportsOnly/>
-  <EntranceSeats greeting={phase==='shuffle'} company={company} diameter={diameter} cx={worldX} cy={worldY} stage={stage||0}/>
+  <EntranceSeats viewport={{width:screen.width,height:screen.height,overview}} company={company} diameter={diameter} cx={worldX} cy={worldY} stage={stage||0}/>
   <div className="entry-table" style={{left:worldX-diameter/2,top:worldY-diameter/2,width:diameter,height:diameter,borderRadius:"50%",clipPath:platformGeometry(diameter,stage||0).clip}}><TableSurface stage={stage||tableSet||undefined} withRim/></div>
   {resume&&gpuStatus!=='ready'&&<div className="entry-saved-table">{savedLandings.map(({item,target,baseTarget})=><EntranceSavedTile key={item.key} item={item} target={target} baseTarget={baseTarget}/>)}</div>}
   {!resume&&gpuStatus==='fallback'&&scene&&landings.length===60&&<div className="entry-deck">{cards.map(({landing,width:tileW,height:tileH,poses,depth},i)=>{
@@ -205,8 +205,10 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
   })}</div>}
   </div>
   </div>
+  <EntranceFurniture diameter={diameter} cx={worldX} cy={worldY} stage={stage||0} width={screen.width} height={screen.height} overview={overview} phase={phase} visible={pageVisible}/>
+  {phase==='shuffle'&&<EntranceGreetings company={company}/>}
   {resume&&phase!=='menu-out'&&savedLandings.length>0&&<ResumeGpuTiles rows={savedLandings} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
-  {!resume&&scene&&cards.length===60&&<EntranceGpuTiles cards={cards} routes={dealRoutes} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
+  {!resume&&!['menu-out','room-hold'].includes(phase)&&scene&&cards.length===60&&<EntranceGpuTiles cards={cards} routes={dealRoutes} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
   <div className="entry-reunion"><div className="entry-return-note"><span>{resume?'WELCOME BACK':`${company.length+1} PLAYERS · TAKE YOUR SEAT`}</span><strong>{stage?`${stageTheme(stage).name}의 테이블`:resume?'익숙한 테이블로 돌아왔어요':'달빛 서재의 작은 승부'}</strong><small>{resume?migrated?'3인전으로 전환했어요. 스테이지와 점수는 이어지고, 진행 중이던 패는 다시 나눴어요.':'자리에 놓인 패 그대로, 승부를 이어갑니다.':'테이블에 둘러앉아 새로운 승부를 시작합니다.'}</small></div></div>
   <div className="entry-edge-shade"/>
   <div className="entry-curtain"/>

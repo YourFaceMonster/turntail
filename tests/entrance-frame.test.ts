@@ -28,7 +28,7 @@ for(const [width,height] of [[390,844],[844,390],[1280,720]]){
  const landed=frame('deal',ENTRANCE_MS.deal),focused=frame('focus',0);
  for(let i=0;i<60;i++)if(tiles[i].kind!=='opponent')for(const c of [0,1,2,4,5,6,7])assert.ok(Math.abs(landed[i*GPU_TILE_STRIDE+c]-focused[i*GPU_TILE_STRIDE+c])<1e-5,`deal/focus component ${c}`);
  assert.equal(frame('rise',ENTRANCE_MS.rise*.88)[6],Math.fround(tileBodyDepth(64)),'full thickness remains until the final focus handoff');
- for(const phase of ['rise','settle','game-in'] as const){const data=frame(phase,phase==='rise'?ENTRANCE_MS.rise:0);for(let i=0;i<60;i++){const at=i*GPU_TILE_STRIDE;assert.equal(data[at],tiles[i].target.x);assert.equal(data[at+1],tiles[i].target.y);assert.equal(data[at+6],0);assert.equal(data[at+9],0);assert.equal(data[at+10],tiles[i].kind==='own'||tiles[i].kind==='upper'||(tiles[i].kind==='opponent'&&phase==='rise')?1:0);}}
+ for(const phase of ['rise','settle','game-in'] as const){const data=frame(phase,phase==='rise'?ENTRANCE_MS.rise:0);for(let i=0;i<60;i++){const at=i*GPU_TILE_STRIDE;assert.equal(data[at],tiles[i].target.x);assert.equal(data[at+1],tiles[i].target.y);assert.equal(data[at+6],Math.fround(tileBodyDepth(tiles[i].target.height)));assert.equal(data[at+9],1);assert.equal(data[at+10],tiles[i].kind!=='opponent'||phase==='rise'?1:0);}}
  for(const elapsed of [0,ENTRANCE_MS.rise/2,ENTRANCE_MS.rise]){
   const camera={width,height,...entranceFrameCamera('rise',elapsed,.3)},point=projectEntrancePoint(width/2+70,height/2+40,24,camera),distance=1000/camera.scale;
   const factor=1000/(distance-40*Math.sin(camera.tilt)-24*Math.cos(camera.tilt));

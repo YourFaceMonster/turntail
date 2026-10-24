@@ -1,9 +1,7 @@
 import type {CSSProperties} from 'react';
 import {platformGeometry,stageSetting} from '../../lib/stage-setting';
-export function tableWorldGeometry(diameter:number,cx:number,cy:number,stage=0){
- const setting=stageSetting(stage),height=setting.kind==='table'?Math.max(setting.height,Math.min(640,diameter*.34)):setting.height,legWidth=Math.max(22,Math.min(48,diameter*.036));
- return {height,legWidth,span:Math.min(2200,diameter*2.1),legs:setting.kind==='table'?[-1,1].flatMap(x=>[-1,1].map(y=>({x:cx+x*diameter*.265,y:cy+y*diameter*.265}))):[]};
-}
+export {furnitureDimensions as tableWorldGeometry} from '../../lib/entrance-furniture';
+import {furnitureDimensions as tableWorldGeometry} from '../../lib/entrance-furniture';
 /** Rock, altar and living roots use solid bodies; only actual tables have legs. */
 export default function EntranceWorld({diameter,cx,cy,stage=0,supportsOnly=false}:{diameter:number,cx:number,cy:number,stage?:number,supportsOnly?:boolean}){
  const {height,legWidth,span,legs}=tableWorldGeometry(diameter,cx,cy,stage),{setting,sides}=platformGeometry(diameter,stage);

@@ -1,3 +1,4 @@
+import {effectOutput} from '../lib/audio-mixer';
 import assert from 'node:assert/strict';
 import {tensionSound,shuffleSound} from '../lib/atmosphere-audio.ts';
 const original={setInterval,clearInterval,setTimeout,clearTimeout};
@@ -13,10 +14,10 @@ const fake={currentTime:0,sampleRate:8000,state:'running',destination:{},createG
 const ctx=fake as unknown as AudioContext;
 try{
  const stopQuiet=tensionSound(ctx,1);assert.equal(intervals.size,0,'three remaining tiles do not start a heartbeat loop');stopQuiet();stopQuiet();assert.deepEqual(made[0].gain.targets,[0],'mute fades once');
- for(const fn of timeouts.values())fn();timeouts.clear();assert.ok(made.every(n=>n.disconnected));made.length=0;
+ for(const fn of timeouts.values())fn();timeouts.clear();assert.ok(made.filter(n=>(n as unknown)!==effectOutput(ctx)).every(n=>n.disconnected));made.length=0;
  const stopCritical=tensionSound(ctx,2);assert.equal(intervals.size,1);const before=made.length;for(const fn of intervals.values())fn();assert.ok(made.length>before,'critical state produces periodic beats');
  fake.state='suspended';const suspendedCount=made.length;for(const fn of intervals.values())fn();assert.equal(made.length,suspendedCount,'no new beats while audio context is suspended');
  stopCritical();assert.equal(intervals.size,0,'leaving/muting stops the heartbeat scheduler');for(const fn of timeouts.values())fn();timeouts.clear();assert.equal(made[0].disconnected,true,'room mix disconnects after fade');
- made.length=0;fake.state='running';const stopShuffle=shuffleSound(ctx);assert.ok(made.some(n=>n.stops===1));stopShuffle();assert.equal(timeouts.size,0);assert.ok(made.every(n=>n.disconnected),'muting cancels future shuffle ticks');
+ made.length=0;fake.state='running';const stopShuffle=shuffleSound(ctx);assert.ok(made.some(n=>n.stops===1));stopShuffle();assert.equal(timeouts.size,0);assert.ok(made.filter(n=>(n as unknown)!==effectOutput(ctx)).every(n=>n.disconnected),'muting cancels future shuffle ticks');
  console.log('PASS: quiet/critical sound lifecycle, heartbeat cancellation, suspended context, fade-out teardown, shuffle cancellation.');
 }finally{Object.assign(globalThis,original);}

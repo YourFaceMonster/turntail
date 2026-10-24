@@ -2,7 +2,7 @@ import {ENTRANCE_MS,type EntrancePhase} from './atmosphere.ts';
 const smooth=(t:number)=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
 export const ENTRANCE_FOCAL=1000;
 export const SEATED_TILT=64*Math.PI/180;
-export function seatedScale(overview:number){return Math.max(.56,Math.min(.84,overview*1.5));}
+export function seatedScale(overview:number){return Math.max(.25,Math.min(.56,overview*1.1));}
 /** Zoom once while seated, then lift the view without another distance change. */
 export function observerCamera(progress:number,_overview:number){return {tilt:SEATED_TILT*(1-smooth(progress)),scale:1};}
 export function entranceCameraState(phase:EntrancePhase,progress:number,overview:number){

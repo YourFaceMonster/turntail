@@ -54,16 +54,16 @@ out vec2 v_uv;
 out vec3 v_normal;
 out float v_material;
 out float v_slot;
+out float v_faceBlend;
 out float v_alpha;
 out float v_shadowSoftness;
 out vec3 v_surface;
 void main(){
  vec3 p=vec3(a_position.xy*i_size.xy,a_position.z*i_size.z);
- v_uv=a_uv;v_material=a_material;v_slot=0.;v_alpha=i_meta.z;v_surface=a_position;v_shadowSoftness=.055;
+ v_uv=a_uv;v_material=a_material;v_slot=0.;v_faceBlend=0.;v_alpha=i_meta.z;v_surface=a_position;v_shadowSoftness=.055;
  if(a_material>1.5){float height=max(0.,i_pose.z-i_size.z);p.xy=p.xy*(1.12+min(height,160.)/650.);p.z=.35-i_pose.z;v_alpha*=1.-min(height/240.,.75);v_shadowSoftness=.075+min(height,180.)/950.;}
  else if(a_material>.5){
-  float c=cos(i_size.w),s=sin(i_size.w);p=vec3(p.x*c,p.y,-p.x*s);
-  if(c<0.){v_slot=i_meta.x;v_uv.x=1.-v_uv.x;}
+  v_slot=i_meta.x;v_faceBlend=smoothstep(0.,1.,i_size.w/3.14159265359);
  }else{v_alpha*=i_meta.y;}
  float c=cos(i_pose.w),s=sin(i_pose.w);
  p.xy=mat2(c,s,-s,c)*p.xy;if(a_material>1.5)p.xy+=vec2(2.,4.)+vec2(.28,.38)*max(0.,i_pose.z-i_size.z);p+=i_pose.xyz;
@@ -86,6 +86,7 @@ in vec2 v_uv;
 in vec3 v_normal;
 in float v_material;
 in float v_slot;
+in float v_faceBlend;
 in float v_alpha;
 in float v_shadowSoftness;
 in vec3 v_surface;
@@ -100,10 +101,11 @@ void main(){
  }else if(v_material>.5){
   vec2 cell=vec2(mod(v_slot,u_atlasGrid.x),floor(v_slot/u_atlasGrid.x));
   vec2 uv=(cell+clamp(v_uv,.002,.998))/u_atlasGrid;
-  color=texture(u_atlas,uv);color.a*=v_alpha;
+  vec2 backUV=clamp(v_uv,.002,.998)/u_atlasGrid;
+  color=mix(texture(u_atlas,backUV),texture(u_atlas,uv),v_faceBlend);color.a*=v_alpha;
  }else{
   float light=.79+.21*max(0.,dot(normalize(v_normal),normalize(vec3(-.5,-.7,.8))));
-  float grain=fract(sin(dot(v_surface.xy*173.+v_surface.z*37.,vec2(12.9898,78.233)))*43758.5453);
+  float grain=(.5+.5*sin(v_surface.x*19.+v_surface.z*3.)*sin(v_surface.y*23.));
   float bevel=pow(max(0.,dot(normalize(v_normal),normalize(vec3(-.35,-.45,1.)))),18.)*.11;
   color=vec4(u_body*(light+(grain-.5)*.018)+vec3(bevel*.95,bevel*.89,bevel*.75),v_alpha);
  }

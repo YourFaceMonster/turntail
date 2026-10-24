@@ -1,3 +1,4 @@
+import {effectOutput} from '../lib/audio-mixer';
 import assert from 'node:assert/strict';
 import {existsSync} from 'node:fs';
 import {renderToStaticMarkup} from 'react-dom/server';
@@ -23,5 +24,5 @@ class Param{value=0;setValueAtTime(n:number){assert.ok(Number.isFinite(n));}expo
 class Node{gain=new Param();frequency=new Param();Q=new Param();onended:(()=>void)|null=null;disconnected=false;connect(){}disconnect(){this.disconnected=true;}start(){}stop(){this.onended?.();}}
 const nodes:Node[]=[],make=()=>{const n=new Node();nodes.push(n);return n;};let buffers=0;
 const fake={state:'running',currentTime:1,sampleRate:8000,destination:{},createGain:make,createBiquadFilter:make,createOscillator:make,createBufferSource:make,createBuffer:(_c:number,length:number)=>{buffers++;return {getChannelData:()=>new Float32Array(length)};}},ctx=fake as unknown as AudioContext;
-playTileSound(ctx,'play',{seed:'a'});playTileSound(ctx,'draw',{seed:'a'});assert.equal(buffers,1,'the scrape buffer is reused');assert.ok(nodes.every(n=>n.disconnected),'finished audio disconnects all graph nodes');const before=nodes.length;fake.state='suspended';playTileSound(ctx,'slam');assert.equal(nodes.length,before);
+playTileSound(ctx,'play',{seed:'a'});playTileSound(ctx,'draw',{seed:'a'});assert.equal(buffers,1,'the scrape buffer is reused');assert.ok(nodes.filter(n=>(n as unknown)!==effectOutput(ctx)).every(n=>n.disconnected),'finished audio disconnects all graph nodes');const before=nodes.length;fake.state='suspended';playTileSound(ctx,'slam');assert.equal(nodes.length,before);
 console.log('PASS: coherent three-monster assets/avatars, non-destructive roster restoration, shared environment zoom, fade only after top view, varied action audio and clean graph lifecycle.');

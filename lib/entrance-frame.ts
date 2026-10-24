@@ -1,7 +1,7 @@
 import {sampleShufflePose,type ShufflePose} from './shuffle-motion.ts';
 import {sampleDealRoute,type DealRoute} from './deal-motion.ts';
 import {ENTRANCE_MS,entranceDuration,type EntrancePhase} from './atmosphere.ts';
-import {tileBodyDepth,tileBodyHandoff} from './tile-body.ts';
+import {tileBodyDepth} from './tile-body.ts';
 import {GPU_TILE_STRIDE} from './entrance-gpu.ts';
 import {entranceCameraState} from './entrance-camera.ts';
 import {opponentTableOpacity} from './entrance-fade.ts';
@@ -10,10 +10,10 @@ const clamp=(n:number)=>Math.max(0,Math.min(1,n));
 export function entranceFrameCamera(phase:EntrancePhase,elapsed:number,overview:number,resume=false){return entranceCameraState(phase,elapsed/Math.max(1,entranceDuration(phase,resume)),overview);}
 /** The original 60-body tracks and flight routes feed one instanced GPU draw. */
 export function writeEntranceFrame(data:Float32Array,tiles:EntranceRenderTile[],routes:DealRoute[],phase:EntrancePhase,elapsed:number,cx:number,cy:number){
- const landed=['focus','rise','opponent-out','settle','game-in'].includes(phase),t=clamp(elapsed/ENTRANCE_MS.deal),remaining=1-tileBodyHandoff(phase,elapsed/Math.max(1,ENTRANCE_MS[phase]));
+ const landed=['focus','rise','opponent-out','settle','game-in'].includes(phase),t=clamp(elapsed/ENTRANCE_MS.deal),remaining=1;
  for(let i=0;i<tiles.length;i++){
   const tile=tiles[i];let x:number,y:number,z=tile.depth,sx=1,sy=1,angle:number,body=1,flip=0,visible=1;
-  if(landed){x=tile.target.x;y=tile.target.y;angle=tile.target.angle;sx=tile.target.width/tile.width;sy=tile.target.height/tile.height;body=remaining;z=tileBodyDepth(tile.target.height)*(tile.kind==='upper'?2:1)*remaining;flip=tile.kind==='own'||tile.kind==='lower'?Math.PI:0;visible=tile.kind==='opponent'?opponentTableOpacity(phase,elapsed/Math.max(1,ENTRANCE_MS[phase])):tile.kind==='lower'?remaining:1;}
+  if(landed){x=tile.target.x;y=tile.target.y;angle=tile.target.angle;sx=tile.target.width/tile.width;sy=tile.target.height/tile.height;body=remaining;z=tileBodyDepth(tile.target.height)*(tile.kind==='upper'?2:1)*remaining;flip=tile.kind==='own'||tile.kind==='lower'?Math.PI:0;visible=tile.kind==='opponent'?opponentTableOpacity(phase,elapsed/Math.max(1,ENTRANCE_MS[phase])):1;}
   else if(phase==='deal'){
    const p=sampleDealRoute(routes[i],t);({x,y,z,sx,sy,angle}=p);body=1;
    if(tile.kind==='own'||tile.kind==='lower'){const u=clamp((t-.82)/.18);flip=Math.PI*u*u*(3-2*u);}
