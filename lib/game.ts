@@ -1,4 +1,5 @@
 import {shouldShowPlayNotice,QUICK_PLAY_MS,ANNOUNCED_PLAY_MS} from './play-notices.ts';
+import {accessibleStack} from './table-access.ts';
 import {chooseStrategicAction} from './bot.ts';
 import {newChallenge,advanceChallenge,type Challenge} from './challenge.ts';
 import type {TablePlay} from './table-play';
@@ -38,9 +39,7 @@ export function beats(ts:Tile[],old:Tile[]){const a=combo(ts),b=combo(old);retur
 export function capacity(g:Game){return g.capacity||3;}
 export function dimensions(g:Game){const cols=g.cols||(capacity(g)===2?6:capacity(g)===4?(g.stacks.length===12?4:3):g.stacks.length===15?5:4);return {cols,rows:g.rows||Math.ceil(g.stacks.length/cols)};}
 export function accessible(g:Game,i:number){
- const st=g.stacks[i];if(!st||(!st[0]&&!st[1]))return false;
- const {cols,rows}=dimensions(g),z=st[1]?1:0,r=Math.floor(i/cols),c=i%cols;
- return [[r-1,c],[r+1,c],[r,c-1],[r,c+1]].some(([y,x])=>y<0||y>=rows||x<0||x>=cols||!g.stacks[y*cols+x]?.[z]);
+ const {cols,rows}=dimensions(g);return accessibleStack(g.stacks,cols,rows,i);
 }
 export function player(name:string,bot=false):Player{return {id:uid(),token:uid(),name:name.trim().slice(0,12)||"플레이어",hand:[],wins:0,losses:0,games:0,points:0,bot};}
 export function matchRules(mode:unknown="unlimited",target:unknown=100){

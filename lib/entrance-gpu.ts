@@ -2,6 +2,8 @@ import {materialTextureCell} from './stage-texture.ts';
 /** One shared mesh/atlas replaces hundreds of independently composited DOM faces. */
 export const GPU_TILE_STRIDE=12;
 export const TILE_ATLAS_CELL={width:512,height:704,columns:8,inset:12} as const;
+/** Keep the presentation at device resolution, bounded to a 4K-sized framebuffer. */
+export function entranceRasterRatio(width:number,height:number,deviceRatio:number){return Math.min(Math.max(1,deviceRatio||1),3,Math.sqrt(8294400/Math.max(1,width*height)));}
 export type GpuCamera={width:number,height:number,tilt:number,scale:number};
 export function projectEntrancePoint(x:number,y:number,z:number,camera:GpuCamera){
  const c=Math.cos(camera.tilt),s=Math.sin(camera.tilt);
@@ -135,7 +137,7 @@ export class EntranceGpu{
   const anisotropy=gl.getExtension('EXT_texture_filter_anisotropic');if(anisotropy)gl.texParameterf(gl.TEXTURE_2D,anisotropy.TEXTURE_MAX_ANISOTROPY_EXT,Math.min(8,gl.getParameter(anisotropy.MAX_TEXTURE_MAX_ANISOTROPY_EXT)));
   this.uniforms={view:gl.getUniformLocation(program,'u_view'),camera:gl.getUniformLocation(program,'u_camera'),grid:gl.getUniformLocation(program,'u_atlasGrid')};
   gl.uniform3fv(gl.getUniformLocation(program,'u_body'),body);gl.uniform2f(this.uniforms.grid,TILE_ATLAS_CELL.columns,atlas.height/TILE_ATLAS_CELL.height);gl.uniform1i(gl.getUniformLocation(program,'u_atlas'),0);
-  const ratio=Math.min(window.devicePixelRatio||1,2,Math.sqrt(2200000/(width*height)));
+  const ratio=entranceRasterRatio(width,height,window.devicePixelRatio||1);
   canvas.width=Math.max(1,Math.round(width*ratio));canvas.height=Math.max(1,Math.round(height*ratio));gl.viewport(0,0,canvas.width,canvas.height);
   gl.enable(gl.DEPTH_TEST);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0);
  }

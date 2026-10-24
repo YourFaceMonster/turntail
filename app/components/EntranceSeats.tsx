@@ -8,7 +8,7 @@ export type EntranceCompany={name:string,avatar?:string,points:number,count:numb
 /** Opponents sit beyond the rear rim, so the tabletop naturally occludes their lower bodies. */
 export default function EntranceSeats({company,diameter,cx,cy,stage=0,viewport}:{company:EntranceCompany,diameter:number,cx:number,cy:number,stage?:number,viewport?:{width:number,height:number,overview:number}}){
  return <div className="entry-world-company" data-player-count={company.length+1}>{company.map((p,i)=>{const monster=!!p.avatar?.startsWith('korean-monster:'),painted=monster||!!p.avatar?.startsWith('stage-portrait:'),seat=entranceSeatLayout(diameter,cx,cy,i,company.length,painted,stage,viewport,p.avatar?.startsWith('stage-portrait:')?Number(p.avatar.split(':')[1]):undefined);return <div key={p.name+i} className={`entry-world-seat modeled-seat ${painted?'monster-seat':''}`} data-world-seat={i} style={{left:seat.left,top:seat.top,width:seat.width,height:seat.height,'--seat-floor':`${seat.support}px`} as CSSProperties}>
- {monster?<MonsterModel index={Number(p.avatar!.split(':')[1])}/>:p.avatar?.startsWith('stage-portrait:')?<StageModel index={Number(p.avatar.split(':')[1])} facing={i>=Math.ceil(company.length/2)?'left':'right'}/>:<SeatedCharacter name={p.name} avatar={p.avatar} index={i}/>}
+ <div className={stage?"regional-character-body":"classic-character-motion"} style={{animationDelay:`${-i*1.25}s`}}>{monster?<MonsterModel index={Number(p.avatar!.split(':')[1])}/>:p.avatar?.startsWith('stage-portrait:')?<StageModel index={Number(p.avatar.split(':')[1])} facing={i>=Math.ceil(company.length/2)?'left':'right'}/>:<SeatedCharacter name={p.name} avatar={p.avatar} index={i}/>}</div>
  
  <span className="world-character-caption">{p.name}</span>
  </div>;})}</div>;

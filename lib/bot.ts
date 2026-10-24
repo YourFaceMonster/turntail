@@ -1,4 +1,5 @@
 import {combo,legalOptions,rank,suitRank,type Tile,type LegalOption,type BotPosition,type BotAction} from './game.ts';
+import {accessibleStack} from './table-access.ts';
 
 type Position=Pick<BotPosition,'me'|'turn'|'lastBy'|'trick'|'cols'|'rows'|'played'> & {
  players:{count:number,known:Tile[],hand?:Tile[]}[];
@@ -150,9 +151,7 @@ function candidates(p:Position,ranked:Candidate[]){
  add(ranked.find(c=>c.action.type==='draw'&&p.stacks[c.action.index].lower?.n===2&&p.stacks[c.action.index].lower?.s===3));
  add(ranked.find(c=>c.action.type==='pass'));return result;
 }
-function accessible(w:World,index:number){const stack=w.stacks[index];if(!stack||!stack[0]&&!stack[1])return false;const z=stack[1]?1:0,r=Math.floor(index/w.cols),c=index%w.cols;
- return [[r-1,c],[r+1,c],[r,c-1],[r,c+1]].some(([y,x])=>y<0||y>=w.rows||x<0||x>=w.cols||!w.stacks[y*w.cols+x]?.[z]);
-}
+function accessible(w:World,index:number){return accessibleStack(w.stacks,w.cols,w.rows,index);}
 function perspective(w:World):Position{return {me:w.turn,turn:w.turn,lastBy:w.lastBy,trick:w.trick,played:w.played,cols:w.cols,rows:w.rows,
  players:w.hands.map((h,i)=>({count:h.length,known:w.known[i],hand:i===w.turn?h:undefined})),stacks:w.stacks.map((s,i)=>({lower:s[1]?null:s[0],lowerPresent:!!s[0],upper:!!s[1],available:!!w.trick.length&&accessible(w,i)}))};}
 function step(w:World,a:BotAction):World{

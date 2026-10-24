@@ -1,11 +1,11 @@
-import {GPU_TILE_STRIDE,TILE_ATLAS_CELL,projectEntrancePoint,type GpuCamera} from './entrance-gpu';
+import {GPU_TILE_STRIDE,TILE_ATLAS_CELL,projectEntrancePoint,entranceRasterRatio,type GpuCamera} from './entrance-gpu';
 type Point={x:number,y:number};
 /** Stable projected solids for browsers without WebGL2; uses the exact same frame data/atlas. */
 export class EntranceCanvas{
  private ctx:CanvasRenderingContext2D;private ratio:number;
  constructor(private canvas:HTMLCanvasElement,private atlas:HTMLCanvasElement,width:number,height:number,private body:[number,number,number]=[1,.983,.937]){
   const ctx=canvas.getContext('2d',{alpha:true});if(!ctx)throw Error('Tile canvas unavailable');this.ctx=ctx;
-  this.ratio=Math.min(window.devicePixelRatio||1,2,Math.sqrt(1800000/(width*height)));canvas.width=Math.round(width*this.ratio);canvas.height=Math.round(height*this.ratio);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+  this.ratio=entranceRasterRatio(width,height,window.devicePixelRatio||1);canvas.width=Math.round(width*this.ratio);canvas.height=Math.round(height*this.ratio);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
  }
  draw(data:Float32Array,camera:GpuCamera){
   const ctx=this.ctx,ratio=this.ratio;ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,camera.width,camera.height);

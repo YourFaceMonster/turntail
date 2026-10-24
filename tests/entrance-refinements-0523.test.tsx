@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import {renderToStaticMarkup} from 'react-dom/server';
+import LegalOptionContents from '../app/components/LegalOptionContents';
+import EntranceGreetings from '../app/components/EntranceGreetings';
+import EntranceSharpTiles from '../app/components/EntranceSharpTiles';
+import EntranceSeats from '../app/components/EntranceSeats';
+import {StageVisuals} from '../app/components/StageVisuals';
+import {entranceRasterRatio} from '../lib/entrance-gpu';
+import type {DealItem} from '../lib/deal-animation';
+const tiles=[{id:8,n:3,s:0},{id:9,n:3,s:1}];
+const contents=renderToStaticMarkup(<LegalOptionContents label="페어" tiles={tiles} title="3 · 페어" stage index={-1} total={1}/>);
+assert.equal(contents,'<b>페어</b><span>3</span>');
+const classic=renderToStaticMarkup(<LegalOptionContents label="페어" tiles={tiles} title="3 · 페어" stage={false} index={0} total={2}/>);assert.ok(classic.includes('2장')&&classic.includes('1/2'));
+const cycling=renderToStaticMarkup(<LegalOptionContents label="페어" tiles={tiles} title="3 · 페어" stage index={0} total={2}/>);assert.ok(cycling.includes('↻')&&!cycling.includes('1/2')&&!cycling.includes('2장'));
+const company=[{name:'왼쪽',avatar:'stage-portrait:0',points:200,count:10},{name:'오른쪽',avatar:'stage-portrait:1',points:200,count:10}];
+const speech=renderToStaticMarkup(<EntranceGreetings stage={1} company={company}/>).split('data-speaker="오른쪽"')[1];assert.ok(speech.includes('data-bubble-side="left"')&&speech.includes('--bubble-tail:24px'));
+const target={x:60,y:80,width:50,height:66,angle:90},rows=(['own','upper','lower','opponent'] as const).map(kind=>({item:{key:kind,kind,selector:'unused',tile:tiles[0]} as DealItem,target}));
+const sharp=renderToStaticMarkup(<StageVisuals stage={1}><EntranceSharpTiles rows={rows}/></StageVisuals>);
+assert.equal((sharp.match(/data-sharp-tile=/g)||[]).length,2);assert.ok(sharp.includes('left:35px;top:47px;width:50px;height:66px;transform:rotate(90deg)'));assert.ok(!sharp.includes('data-sharp-tile="lower"')&&!sharp.includes('data-sharp-tile="opponent"'));assert.ok(sharp.includes('<svg'));
+const monsters=company.map((p,i)=>({...p,avatar:`korean-monster:${i}`})),figures=renderToStaticMarkup(<EntranceSeats company={monsters} diameter={1200} cx={640} cy={360}/>);assert.equal((figures.match(/class="classic-character-motion"/g)||[]).length,2);
+for(const [w,h,dpr] of [[390,844,3],[844,390,3],[1920,1080,2],[3840,2160,2]]){const r=entranceRasterRatio(w,h,dpr);assert.ok(w*h*r*r<=8294400+.01);assert.ok(r>=1);}
+assert.equal(entranceRasterRatio(390,844,3),3);assert.equal(entranceRasterRatio(1920,1080,2),2);
+console.log('PASS: concise stage options, left-starting right speech tail, private-safe native-size vector handoff including rotation, visible classic motion wrappers, and retina presentation buffers.');
