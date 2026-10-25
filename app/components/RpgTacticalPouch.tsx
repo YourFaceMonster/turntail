@@ -20,7 +20,8 @@ export function RpgTacticalPouch({game,enabled,use,close}:{game:View,enabled:boo
  const hasExchange=owned.some(id=>id==='swapped-fate'||id==='fates-scales');
  const hasLens=owned.includes('scout-lens');
  return <div className="modal-shade item-shade" onClick={close}><section className="modal item-pouch rpg-equipment-pouch" role="dialog" aria-modal="true" aria-label="RPG 장비와 가방" onClick={event=>event.stopPropagation()}>
-  <button className="close" aria-label="가방 닫기" onClick={close}>×</button><span className="eyebrow">RPG JOURNEY · STAGE {run.stage}</span><h2>장비와 가방</h2>
+  <button className="close" aria-label="가방 닫기" onClick={close}>×</button><span className="eyebrow">RPG JOURNEY · STAGE {run.stage}</span><h2>🎒 아이템창</h2>
+  <p className="rpg-item-help">전술 아이템은 <b>내 차례에 아이템을 눌러 즉시 사용</b>해요. 교환 아이템은 상대를, 정찰 렌즈는 바닥 위치를 먼저 고르세요. 버튼이 흐리면 지금은 사용할 수 없는 상태예요.</p>
   <h3>장착 유물 {run.equipped.length}/3</h3><div className="rpg-equipped-list">{run.equipped.map(id=>{const relic=RPG_RELICS.find(item=>item.id===id);return <div key={id}><img src={`/rpg-items-v1/relics/${id}.webp`} alt=""/><strong>{relic?.name||id}</strong><small>{relic?.effect}</small></div>;})}{!run.equipped.length&&<p>장착한 유물이 없어요. 스테이지 보상을 받으면 준비 구간에서 장착할 수 있어요.</p>}</div>
   <h3>보유 아이템 {run.consumables.length}/3</h3><p>전술 아이템은 내 차례에 본 행동 전 1개, 한 카드 판에 최대 2개를 사용할 수 있어요. 생존 아이템은 전투 사이 준비 구간에서 사용합니다.</p><p>이번 판 전술 아이템 {used}/2개 사용</p>
   {hasExchange&&<label>교환할 상대<select value={opponent} onChange={event=>setOpponent(Number(event.target.value))}>{game.players.map((player,index)=>index===game.me?null:<option key={player.id} value={index}>{player.name} · 손패 {player.count}장</option>)}</select></label>}
