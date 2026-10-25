@@ -24,7 +24,7 @@ export default function MainMenu(p:Props){return <section className="title-scree
   </div>
   <button className="menu-tutorial" onClick={p.tutorial}><BookOpen aria-hidden="true"/>튜토리얼<span aria-hidden="true">✦</span></button>
 
-  <nav className="title-tools" aria-label="메인 메뉴"><button onClick={p.scores}><span><Trophy aria-hidden="true"/></span>기록실</button><button onClick={p.achievements}><span><Award aria-hidden="true"/></span>업적 수첩</button><button onClick={p.settings}><span><Settings aria-hidden="true"/></span>설정</button></nav>
+  <nav className="title-tools" aria-label="메인 메뉴"><button className="menu-tool-records" onClick={p.scores}><span className="menu-tool-icon"><Trophy aria-hidden="true"/></span><span className="menu-tool-label">기록실</span></button><button className="menu-tool-achievements" onClick={p.achievements}><span className="menu-tool-icon"><Award aria-hidden="true"/></span><span className="menu-tool-label">업적</span></button><button className="menu-tool-settings" onClick={p.settings}><span className="menu-tool-icon"><Settings aria-hidden="true"/></span><span className="menu-tool-label">설정</span></button></nav>
   <div className="title-ornament" aria-hidden="true"><span/>✧<span/></div>
  </div>
  <small className="title-version">TURNTALE · {APP_VERSION}</small>

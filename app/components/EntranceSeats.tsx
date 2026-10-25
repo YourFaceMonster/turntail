@@ -3,6 +3,7 @@ import SeatedCharacter from './SeatedCharacter';
 import MonsterModel from './MonsterModel';
 import StageModel from './StageModel';
 import {STAGE_THEMES} from '../../lib/stage-theme';
+import {twinIndex} from '../../lib/rpg-twins';
 import {entranceSeatLayout} from '../../lib/entrance-company';
 export type EntranceCompany={name:string,avatar?:string,points:number,count:number}[];
 /** Opponents sit beyond the rear rim, so the tabletop naturally occludes their lower bodies. */
@@ -15,6 +16,7 @@ export default function EntranceSeats({company,diameter,cx,cy,stage=0,viewport}:
 }
 
 export function openingGreeting(avatar:string|undefined,_name:string){
+ const twin=twinIndex(avatar);if(twin!==null)return twin===0?'이번에는 내가 먼저 끝내겠어.':'서두르지 마. 끝은 아직 모르잖아.';
  if(avatar?.startsWith('stage-portrait:'))return STAGE_THEMES.flatMap(t=>t.opponents).find(p=>p.portrait===Number(avatar.split(':')[1]))?.quote||'좋습니다. 한 수 겨뤄 보지요.';
  if(avatar==='korean-monster:3')return '히히. 빨리 끝내자. 나 성질 더럽다?';
  return avatar==='korean-monster:0'?'허허, 느긋하게 한 판 해볼까?':avatar==='korean-monster:1'?'좋아! 오늘은 내가 먼저 간다!':avatar==='korean-monster:2'?'끝까지 지켜보겠다. 시작하지.':'좋습니다. 한 수 겨뤄 보지요.';

@@ -46,6 +46,6 @@ const stages=observeAchievements(emptyAchievements(),view(g,g.players[0].token))
 
 const locked=renderToStaticMarkup(<Achievements state={emptyAchievements()} close={()=>{}}/>);
 for(const a of ACHIEVEMENTS.filter(a=>a.hidden)){assert.ok(!locked.includes(a.title));assert.ok(!locked.includes(a.description));}
-assert.equal(ACHIEVEMENTS.length,20);assert.equal(ACHIEVEMENTS.filter(a=>a.hidden).length,4);
+assert.equal(ACHIEVEMENTS.length,21);assert.equal(ACHIEVEMENTS.filter(a=>a.hidden).length,4);
 assert.deepEqual(readAchievements({getItem:()=>'{broken',setItem:()=>{}}),emptyAchievements());
-console.log('PASS: result/event deduplication, save/reload, void rejection, partial-round protection, draws, streaks, friend seats, stage milestones, 20 achievements and hidden-condition secrecy.');
+console.log('PASS: result/event deduplication, save/reload, void rejection, partial-round protection, draws, streaks, friend seats, stage milestones, 21 achievements and hidden-condition secrecy.');

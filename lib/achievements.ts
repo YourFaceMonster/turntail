@@ -3,7 +3,8 @@ import {isHiboringji} from './hiboringji';
 
 export const ACHIEVEMENTS_KEY='turntale-achievements-v1';
 export type AchievementStats={rounds:number,wins:number,streak:number,bestStreak:number,tiles:number,sizes:number[],patterns:Record<string,number>,cleared:number,noDrawWin:number,redFinish:number,hiboWin:number};
-export type Achievement={id:string,title:string,description:string,icon:string,goal:number,hidden?:boolean,value:(s:AchievementStats)=>number};
+export type Achievement={id:string,title:string,description:string,icon:string,goal:number,hidden?:boolean,completion?:boolean,value:(s:AchievementStats)=>number};
+export const COMPLETION_ACHIEVEMENT='all-achievements';
 const pattern=(label:string)=>(s:AchievementStats)=>s.patterns[label]||0;
 export const ACHIEVEMENTS:Achievement[]=[
  {id:'first-round',title:'이야기의 첫 장',description:'유효한 라운드 1판 완료',icon:'✧',goal:1,value:s=>s.rounds},
@@ -26,13 +27,26 @@ export const ACHIEVEMENTS:Achievement[]=[
  {id:'secret-clean',title:'빌리지 않은 승리',description:'바닥 패를 한 장도 가져오지 않고 승리',icon:'☽',goal:1,hidden:true,value:s=>s.noDrawWin},
  {id:'secret-sun',title:'태양이 지는 순간',description:'해 문양 2 싱글로 마지막 패를 내며 승리',icon:'☀',goal:1,hidden:true,value:s=>s.redFinish},
  {id:'secret-temper',title:'분노는 패착을 남긴다',description:'라운드 72행동 이상인 장기전에서 히보를 상대로 승리',icon:'♨',goal:1,hidden:true,value:s=>s.hiboWin},
+ {id:COMPLETION_ACHIEVEMENT,title:'모든 업적 달성',description:'히든을 포함한 나머지 업적 20개를 모두 달성',icon:'♔',goal:20,completion:true,value:()=>0},
 ];
 type TrackedRound={seen:string[],complete:boolean,draws:number,tiles:number,patterns:Record<string,number>};
 export type AchievementState={version:1,stats:AchievementStats,unlocked:Record<string,number>,settled:string[],active:Record<string,TrackedRound>};
+export function achievementValue(a:Achievement,state:AchievementState){return a.completion?ACHIEVEMENTS.filter(x=>!x.completion&&state.unlocked[x.id]).length:a.value(state.stats);}
+/** Newest earned entries first; unearned entries keep their original catalogue order. */
+export function orderedAchievements(state:AchievementState){return ACHIEVEMENTS.map((a,index)=>({a,index})).sort((x,y)=>{
+ const ax=state.unlocked[x.a.id]||0,ay=state.unlocked[y.a.id]||0;
+ return Number(!!ay)-Number(!!ax)||(ax&&ay?ay-ax||Number(!!y.a.completion)-Number(!!x.a.completion):0)||x.index-y.index;
+}).map(x=>x.a);}
+function unlockCompletion(state:AchievementState,at:number){
+ if(state.unlocked[COMPLETION_ACHIEVEMENT]||!ACHIEVEMENTS.filter(a=>!a.completion).every(a=>state.unlocked[a.id]))return null;
+ state.unlocked[COMPLETION_ACHIEVEMENT]=at;return ACHIEVEMENTS.find(a=>a.completion)!;
+}
 export function emptyAchievements():AchievementState{return {version:1,stats:{rounds:0,wins:0,streak:0,bestStreak:0,tiles:0,sizes:[],patterns:{},cleared:0,noDrawWin:0,redFinish:0,hiboWin:0},unlocked:{},settled:[],active:{}};}
 type StoragePort=Pick<Storage,'getItem'|'setItem'>;
 export function readAchievements(storage:StoragePort):AchievementState{
- try{const raw=JSON.parse(storage.getItem(ACHIEVEMENTS_KEY)||'null');if(raw?.version!==1||!raw.stats||!Array.isArray(raw.settled)||!raw.active||!raw.unlocked)return emptyAchievements();return {...raw,stats:{...emptyAchievements().stats,...raw.stats}};}catch{return emptyAchievements();}
+ try{const raw=JSON.parse(storage.getItem(ACHIEVEMENTS_KEY)||'null');if(raw?.version!==1||!raw.stats||!Array.isArray(raw.settled)||!raw.active||!raw.unlocked)return emptyAchievements();const state:AchievementState={...raw,stats:{...emptyAchievements().stats,...raw.stats}};
+ const at=Math.max(1,...Object.values(state.unlocked).filter(Number.isFinite));if(unlockCompletion(state,at)){try{storage.setItem(ACHIEVEMENTS_KEY,JSON.stringify(state));}catch{}}
+ return state;}catch{return emptyAchievements();}
 }
 type AchievementView={code:string,round:number,me:number,phase:string,capacity?:number,players:{id:string,bot?:boolean,replaced?:boolean,name:string,avatar?:string}[],lastEvent?:GameEvent,result?:RoundResult|null,roundActions?:number,items?:unknown};
 /** Commit progress only on valid results: an eventual AI takeover never earns awards. */
@@ -66,7 +80,8 @@ export function observeAchievements(before:AchievementState,game:AchievementView
   if(last?.length===1&&last[0].n===2&&last[0].s===3)s.redFinish++;
   if((game.roundActions||0)>=72&&game.players.some((p,i)=>i!==game.me&&isHiboringji(p)))s.hiboWin++;
  }
- const earned=ACHIEVEMENTS.filter(a=>!state.unlocked[a.id]&&a.value(s)>=a.goal);
+ const earned=ACHIEVEMENTS.filter(a=>!a.completion&&!state.unlocked[a.id]&&a.value(s)>=a.goal);
  for(const a of earned)state.unlocked[a.id]=result.at||Date.now();
+ const completion=unlockCompletion(state,result.at||Date.now());if(completion)earned.push(completion);
  return {state,earned};
 }

@@ -7,12 +7,14 @@ import {isHiboringji,hiboringjiAction,hiboringjiTemperament} from './hiboringji'
 import {newChallenge,advanceChallenge,type Challenge} from './challenge.ts';
 import type {TablePlay} from './table-play';
 import {settleStageRun,type StageRun} from './stage-challenge.ts';
+import {settleRpgRound,type RpgRun} from './rpg.ts';
+import {twinIndex} from './rpg-twins.ts';
 export type Tile = {id:number,n:number,s:number};
 export type Player = {id:string,token:string,name:string,hand:Tile[],wins:number,bot?:boolean,points?:number,losses?:number,games?:number,profile?:string,avatar?:string,timeouts?:number,replaced?:boolean};
 export type RoundResult = {id:string,at:number,round:number,players:{id:string,name:string,count:number,place:number,delta:number,total:number,winner:boolean}[],transfers:{from:number,to:number,points:number}[],voided?:boolean,voidReason?:string,challenge?:Challenge|null,stageRun?:StageRun|null};
 export type GameEvent = {id:string,type:string,who:number,index?:number,tiles?:Tile[],label?:string,at?:number,rally?:number,concealed?:boolean,showNotice?:boolean,reviewMs?:number};
 export type ChatMessage={id:string,who:number,name:string,text:string,at:number};
-export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],tablePlay?:TablePlay|null,log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number,playedTiles?:Tile[],publicDraws?:Record<string,Tile[]>,turnDeadline?:number,turnStartedAt?:number,aiAssisted?:boolean,matchMode?:"unlimited"|"target",targetScore?:number,matchWinner?:number|null,matchNo?:number,matchRoundOffset?:number,turnRuleVersion?:number,roundActions?:number,challenge?:Challenge|null,stageRun?:StageRun|null,revealedHands?:string[],announcedCombos?:number[],itemRun?:ItemRun};
+export type Game = {code:string,phase:"lobby"|"playing"|"ended",players:Player[],stacks:(Tile|null)[][],turn:number,lastBy:number|null,trick:Tile[],tablePlay?:TablePlay|null,log:string[],winner:number|null,round:number,practice:boolean,capacity?:number,cols?:number,rows?:number,result?:RoundResult|null,lastEvent?:GameEvent,chat?:ChatMessage[],opening?:{who:number,tile:Tile},turnReadyAt?:number,rally?:number,playedTiles?:Tile[],publicDraws?:Record<string,Tile[]>,turnDeadline?:number,turnStartedAt?:number,aiAssisted?:boolean,matchMode?:"unlimited"|"target",targetScore?:number,matchWinner?:number|null,matchNo?:number,matchRoundOffset?:number,turnRuleVersion?:number,roundActions?:number,challenge?:Challenge|null,stageRun?:StageRun|null,rpgRun?:RpgRun|null,rpgTest?:boolean,revealedHands?:string[],announcedCombos?:number[],itemRun?:ItemRun};
 export function uid(){if(typeof crypto.randomUUID==="function")return crypto.randomUUID();const a=new Uint8Array(16);crypto.getRandomValues(a);a[6]=(a[6]&15)|64;a[8]=(a[8]&63)|128;const h=Array.from(a,n=>n.toString(16).padStart(2,"0")).join("");return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;}
 export const suits = ["구름","별","달","해"];
 export const symbols = ["☁","✦","☾","☀"];
@@ -93,6 +95,7 @@ export function isRedTwoSingle(ts:Tile[]){return ts.length===1&&ts[0].n===2&&ts[
 export function startingHandSize(size:number){return size===3?10:size===4?9:12;}
 export function start(g:Game,now=Date.now()){
  if(g.stageRun&&g.stageRun.status!=="playing")throw Error("판 결과에서 다음 스테이지를 선택해 주세요.");
+ if(g.rpgRun&&g.rpgRun.status!=="playing")throw Error("RPG 여정의 보상을 먼저 선택해 주세요.");
  if(g.challenge?.complete)throw Error("10판 도전이 끝났어요. 새 도전을 시작해 주세요.");
  if(g.matchWinner!==null&&g.matchWinner!==undefined)throw Error("목표 점수에 도달해 매치가 끝났어요. 새 매치를 시작해 주세요.");
  if(g.players.length!==capacity(g))throw Error(`${capacity(g)}명이 모이면 시작할 수 있어요.`);
@@ -104,6 +107,7 @@ export function start(g:Game,now=Date.now()){
  g.opening=lowestHandLead(g.players);g.turn=g.opening.who;
  g.turnReadyAt=now+DEAL_REVIEW_MS;g.aiAssisted=!g.practice&&g.players.some(p=>p.replaced);g.rally=0;g.roundActions=0;g.playedTiles=[];g.publicDraws={};g.phase="playing";g.trick=[];g.tablePlay=null;g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
  g.announcedCombos=[];g.revealedHands=[];g.lastEvent={id:uid(),type:"deal",who:g.turn,at:now};scheduleTurn(g,now);
+ if(g.rpgRun)g.rpgRun.tacticalPeek=undefined;
 }
 export function restartMatch(g:Game,now=Date.now()){
  if(g.phase!=="ended"||g.matchWinner===null||g.matchWinner===undefined)throw Error("목표 점수 매치가 끝난 뒤 새 매치를 시작할 수 있어요.");
@@ -120,22 +124,27 @@ export function settle(g:Game):RoundResult{
   const diff=voided?0:counts[j]-counts[i];delta[i]+=diff;delta[j]-=diff;
   if(diff)transfers.push({from:diff>0?j:i,to:diff>0?i:j,points:Math.abs(diff)});
  }
- const players=g.players.map((p,i)=>{p.points=(p.points||0)+delta[i];if(!voided){p.games=(p.games||0)+1;if(i===g.winner)p.wins++;else p.losses=(p.losses||0)+1;}
- return {id:p.id,name:p.name,count:counts[i],place:1+counts.filter(c=>c<counts[i]).length,delta:delta[i],total:p.points,winner:i===g.winner};});
+ const players=g.players.map((p,i)=>{if(!g.rpgRun)p.points=(p.points||0)+delta[i];if(!voided){p.games=(p.games||0)+1;if(i===g.winner)p.wins++;else p.losses=(p.losses||0)+1;}
+ return {id:p.id,name:p.name,count:counts[i],place:1+counts.filter(c=>c<counts[i]).length,delta:delta[i],total:p.points||0,winner:i===g.winner};});
  if(!voided&&g.matchMode==="target"){
   const reached=g.players.map((p,i)=>({i,points:p.points||0,count:p.hand.length})).filter(p=>p.points>=(g.targetScore||100)).sort((a,b)=>b.points-a.points||a.count-b.count||a.i-b.i);
   g.matchWinner=reached[0]?.i??null;
  }
- g.result={id:`${g.code}:${g.round}`,at:Date.now(),round:g.round,players,transfers,voided,voidReason:voided?"AI가 대신 진행한 참가자가 있어 전적과 점수를 반영하지 않아요.":undefined};if(g.stageRun){g.stageRun=settleStageRun(g.stageRun,g.result);g.result.stageRun=structuredClone(g.stageRun);}if(g.challenge){g.challenge=advanceChallenge(g.challenge,g.result);g.result.challenge=structuredClone(g.challenge);}return g.result;
+ g.result={id:`${g.code}:${g.round}`,at:Date.now(),round:g.round,players,transfers,voided,voidReason:voided?"AI가 대신 진행한 참가자가 있어 전적과 점수를 반영하지 않아요.":undefined};if(g.stageRun){g.stageRun=settleStageRun(g.stageRun,g.result);g.result.stageRun=structuredClone(g.stageRun);}if(g.rpgRun)g.rpgRun=settleRpgRound(g.rpgRun,g.result,g.winner);if(g.challenge){g.challenge=advanceChallenge(g.challenge,g.result);g.result.challenge=structuredClone(g.challenge);}return g.result;
 }
 export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now=Date.now(),automatic=false){
  if(g.stageRun&&g.stageRun.status!=="playing")throw Error("이번 도전의 판 결과를 먼저 확인해 주세요.");
+ if(g.rpgRun&&g.rpgRun.status!=="playing")throw Error("RPG 여정의 판 결과를 먼저 확인해 주세요.");
  if(g.phase!=="playing"||g.turn!==who)throw Error("지금은 내 차례가 아니에요.");const p=g.players[who];
  if(p.replaced&&!automatic)throw Error("시간 초과로 AI가 대신 진행 중이에요. 새 방에서 다시 참여해 주세요.");
  if(action==="play"){
   if(!ids.length||new Set(ids).size!==ids.length)throw Error("낼 타일을 선택해 주세요.");
   const ts=ids.map(id=>p.hand.find(t=>t.id===id));if(ts.some(t=>!t))throw Error("손패를 다시 확인해 주세요.");
   const tiles=ts as Tile[];if(!beats(tiles,g.trick))throw Error("같은 개수의 더 높은 조합을 내야 해요.");
+  if(g.rpgRun&&who===0&&tiles.length===5&&g.rpgRun.equipped.includes('gamblers-gloves')){
+   const roundId=`${g.code}:${g.round}`;
+   if(!(g.rpgRun.gloveRoundIds||[]).includes(roundId))g.rpgRun={...g.rpgRun,points:g.rpgRun.points+2,gloveRoundIds:[...(g.rpgRun.gloveRoundIds||[]),roundId]};
+  }
   g.roundActions=(g.roundActions??(g.playedTiles?.length||0))+1;
   p.hand=p.hand.filter(t=>!ids.includes(t.id));g.playedTiles=[...(g.playedTiles||[]),...tiles];if(g.publicDraws?.[p.id])g.publicDraws[p.id]=g.publicDraws[p.id].filter(t=>!ids.includes(t.id));g.trick=tiles;g.lastBy=who;
   const introductions=new Set(g.announcedCombos??[1,2,3].filter(n=>g.log.some(line=>line.includes(`· ${['싱글','페어','트리플'][n-1]} ${n}개 제출`))));
@@ -163,7 +172,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
 export function view(g:Game,token:string){
  const me=g.players.findIndex(p=>p.token===token);if(me<0)throw Error("입장 정보가 없어요. 방 코드로 다시 입장해 주세요.");
  const event=g.lastEvent;const lastEvent=event?.type==="draw"&&event.concealed&&event.who!==me?{...event,tiles:undefined}:event;
- return {code:g.code,phase:g.phase,roundActions:g.roundActions??(g.playedTiles?.length||0),matchMode:g.matchMode||"unlimited",targetScore:g.targetScore||0,matchWinner:g.matchWinner??null,matchNo:g.matchNo||1,displayRound:g.round-(g.matchRoundOffset||0),capacity:capacity(g),...dimensions(g),turn:g.turn,turnDeadline:g.turnDeadline||0,turnStartedAt:g.turnStartedAt||0,host:hostSeat(g),turnReadyAt:g.turnReadyAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,tablePlay:g.tablePlay||null,log:g.log,winner:g.winner,round:g.round,practice:g.practice,challenge:g.challenge||null,stageRun:g.stageRun||null,revealedHands:g.revealedHands||[],played:g.playedTiles||g.trick,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent,me,items:itemView(g,me),
+ return {code:g.code,phase:g.phase,roundActions:g.roundActions??(g.playedTiles?.length||0),matchMode:g.matchMode||"unlimited",targetScore:g.targetScore||0,matchWinner:g.matchWinner??null,matchNo:g.matchNo||1,displayRound:g.round-(g.matchRoundOffset||0),capacity:capacity(g),...dimensions(g),turn:g.turn,host:hostSeat(g),turnReadyAt:g.turnReadyAt||0,turnDeadline:g.turnDeadline||0,turnStartedAt:g.turnStartedAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,tablePlay:g.tablePlay||null,log:g.log,winner:g.winner,round:g.round,practice:g.practice,challenge:g.challenge||null,stageRun:g.stageRun||null,rpgRun:g.rpgRun||null,rpgTest:!!g.rpgTest,revealedHands:g.revealedHands||[],played:g.playedTiles||g.trick,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent,me,items:itemView(g,me),
  players:g.players.map((p,i)=>({id:p.id,name:p.name,avatar:p.avatar||"",count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,replaced:!!p.replaced,timeouts:p.timeouts||0,known:g.publicDraws?.[p.id]||[],hand:i===me||(g.phase==="ended"&&(g.practice||!!g.revealedHands?.includes(p.id)))?p.hand:undefined})),
  stacks:g.stacks.map((s,i)=>({lower:s[1]?null:s[0],lowerPresent:!!s[0],upper:!!s[1],available:!!g.trick.length&&accessible(g,i)}))};
 }
@@ -178,11 +187,20 @@ export function findMove(hand:Tile[],trick:Tile[]):Tile[]|null{
 export function botMove(g:Game,now=Date.now()){
  const p=g.players[g.turn];if(!p||!automated(p)||g.phase!=="playing")return;
  if(!g.practice&&!p.bot)g.aiAssisted=true;
- let decision=chooseBotAction(view(g,p.token));
+ let decision=chooseBotAction(rpgTwinBotView(g,g.turn));
  if(g.itemRun&&decision.type==='draw')decision={type:'draw',index:scoutBotDraw(g,g.turn,decision.index)};
  if(decision.type==="play")act(g,g.turn,"play",decision.tiles.map(t=>t.id),-1,now,true);
  else if(decision.type==="draw")act(g,g.turn,"draw",[],decision.index,now,true);
  else act(g,g.turn,"pass",[],-1,now,true);
+}
+
+/** Only the two RPG bosses share their current hands. The human-facing view stays unchanged. */
+export function rpgTwinBotView(g:Game,who:number){
+ const position=view(g,g.players[who].token),own=twinIndex(g.players[who].avatar);
+ if(!g.rpgRun||![3,6,9,10].includes(g.rpgRun.stage)||own===null)return position;
+ const partner=g.players.findIndex((p,i)=>i!==who&&twinIndex(p.avatar)!==null);
+ if(partner>=0)position.players[partner].known=[...g.players[partner].hand];
+ return position;
 }
 
 export type LegalOption={id:string,label:string,tiles:Tile[],key:number[]};

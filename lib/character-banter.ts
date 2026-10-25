@@ -1,6 +1,7 @@
 import {isHiboringji,hiboringjiLine} from './hiboringji';
 import {combo,isRedTwoSingle,type Tile,type GameEvent} from './game.ts';
 import {STAGE_THEMES} from './stage-theme.ts';
+import {twinIndex} from './rpg-twins.ts';
 
 export type BanterKind='confident'|'beaten'|'power'|'draw'|'idle'|'finish';
 export type Banter={who:number,kind:BanterKind,text:string,id:string};
@@ -53,6 +54,13 @@ const stageReactions=[
 export function characterLine(player:{name:string,avatar?:string},kind:BanterKind,actions=0,key=''):string{
  if(isHiboringji(player))return hiboringjiLine(kind,actions,key);
  const avatar=player.avatar||'';
+ const twin=twinIndex(avatar);
+ if(twin!==null){
+  const lines:Lines[]=[
+   {confident:'이번 자리는 내가 차지하겠어.',beaten:'내 수를 넘겼군. 다시 보지.',power:'이 패라면 먼저 끝낼 수 있어.',draw:'한 수 물러서서 다시 계산하지.',idle:'생각은 끝났나? 네 차례야.',finish:'이번에는 내가 먼저야.'},
+   {confident:'아직 승부는 모르지.',beaten:'재미있어. 예상 밖이야.',power:'자, 이번엔 내 차례야!',draw:'조금 더 볼게. 네 패는 아니고.',idle:'기다리는 것도 승부의 일부야.',finish:'끝까지 재밌었어.'},
+  ];return lines[twin][kind];
+ }
  if(avatar.startsWith('korean-monster:')){
   const lines:Lines[]=[
    {confident:'허허, 이 판은 내 방망이 장단이로군!',beaten:'어이쿠! 내 방망이보다 한 수 빠르네.',power:'금 나와라 뚝딱! 승부수 나간다!',draw:'허허, 복 주머니에 한 장 더 넣어볼까.',idle:'방망이 닳도록 기다리겠네. 한 수 두게~',finish:'허허! 오늘 복은 내 쪽으로 왔구먼!'},
