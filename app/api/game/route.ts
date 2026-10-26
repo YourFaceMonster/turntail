@@ -1,6 +1,6 @@
 import {maintainRecords} from '../../../lib/record-retention';
 import { env } from "cloudflare:workers";
-import {act,assertTurnReady,botMove,player,room,start,view,capacity,advanceRoom,hostSeat,restartMatch,revealHand,resetChallenge,changeLobbyAI,type Game} from "../../../lib/game";
+import {act,assertTurnReady,botMove,player,room,start,view,capacity,advanceRoom,hostSeat,restartMatch,revealHand,changeLobbyAI,type Game} from "../../../lib/game";
 import {avatarImage,updateProfile,sendChat} from "../../../lib/social";
 import {scoreEntries,mergeScores,type HighScore} from "../../../lib/challenge";
 import {LINEUP_SUMMARY_SQL,LINEUP_PLAYERS_SQL} from "../../../lib/history";
@@ -51,10 +51,11 @@ export async function POST(req:Request){try{
   return reply({summary,groups,records:records.results.map((r:any)=>({...r,result:JSON.parse(r.result)}))});
  }
  if(b.action==="create"){
+  if(b.challenge)return reply({error:"도전모드는 종료됐어요. 일반 대전을 이용해 주세요.",retiredMode:true},410);
   const size=Number(b.size||3);if(![3,4].includes(size))throw Error("3·4인 중 선택해 주세요.");
   const p=player(String(b.name||"플레이어"));p.avatar=avatarImage(b.avatar);if(profile)p.profile=profile;
   for(let k=0;k<5;k++){
-   const code=crypto.randomUUID().replaceAll("-","").slice(0,6).toUpperCase();const g=room(code,p,!!b.practice,size,{matchMode:b.challenge?"unlimited":b.matchMode,targetScore:b.targetScore,challenge:!!b.challenge});
+   const code=crypto.randomUUID().replaceAll("-","").slice(0,6).toUpperCase();const g=room(code,p,!!b.practice,size,{matchMode:b.matchMode,targetScore:b.targetScore});
    if(b.practice){for(let i=1;i<size;i++)g.players.push(player(["달빛","해솔","별하"][i-1],true));start(g);}
    const r=await db.prepare("INSERT OR IGNORE INTO rooms (code,revision,state,updated) VALUES (?,0,?,?)").bind(code,JSON.stringify(g),Date.now()).run();
    if(r.meta.changes)return reply({token:p.token,game:view(g,p.token),revision:0});
@@ -65,6 +66,7 @@ export async function POST(req:Request){try{
   const row=await db.prepare("SELECT state,revision FROM rooms WHERE code=?").bind(code).first<{state:string,revision:number}>();
   if(!row)return reply({error:"방을 찾지 못했어요."},404);
   const g=JSON.parse(row.state) as Game,wasEnded=g.phase==="ended";let token=String(b.token||""),changed=false,skipped=false;
+  if(g.challenge||g.stageRun)return reply({error:"도전모드는 종료됐어요. 새 일반 대전을 시작해 주세요.",retiredMode:true},410);
   if(b.action==="join"){
    const existing=g.players.find(p=>p.token===token);
    if(!existing){if(g.phase!=="lobby"||g.players.length>=capacity(g))throw Error("이미 시작했거나 정원이 찬 방이에요.");
@@ -78,8 +80,8 @@ export async function POST(req:Request){try{
    if(b.action==="state"||skipped){}
    else if(b.action==="chat"){if(g.practice)throw Error("채팅은 친구 대전에서 이용해 주세요.");sendChat(g,me,b.text,Date.now(),typeof b.messageId==="string"&&/^[a-f0-9-]{36}$/i.test(b.messageId)?b.messageId:crypto.randomUUID());}
    else if(b.action==="reveal")revealHand(g,me,!!b.show);
-   else if(b.action==="abandon"){if(g.challenge&&!g.challenge.complete)g.challenge.abandoned=true;}
-   else if(b.action==="newChallenge"){if(me!==hostSeat(g))throw Error("방장만 시작할 수 있어요.");resetChallenge(g);}
+   else if(b.action==="abandon"){}
+   else if(b.action==="newChallenge")throw Error("도전모드는 종료됐어요.");
    else if(b.action==="profile")updateProfile(g.players[me],b.name,b.avatar);
    else if(b.action==="addAI"||b.action==="removeAI")changeLobbyAI(g,me,b.action==="addAI");
    else if(b.action==="start"){if(me!==hostSeat(g))throw Error("방장만 시작할 수 있어요.");if(g.phase==="playing")throw Error("이미 진행 중이에요.");start(g);}

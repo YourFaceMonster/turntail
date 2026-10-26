@@ -25,7 +25,7 @@ for(let round=1;round<=10;round++){
   if(kind==='lens')assert.deepEqual(view(g,g.players[0].token).items!.intel!.peek!.tile,g.stacks[0][1]);
  }
  saveSingleGame(storage,g);assert.ok(data.has(ITEM_GAME_KEY));assert.equal(data.get(SINGLE_GAME_KEY),untouched);
- const slots=readSaveSlots(storage).slots;assert.ok(slots.some(s=>s.mode==='single')&&slots.some(s=>s.mode==='item'));
+ const slots=readSaveSlots(storage).slots;assert.ok(slots.some(s=>s.mode==='single')&&!slots.some(s=>s.mode==='item'));
  act(g,0,'play',[tile(2,3).id],-1,0);assert.equal(g.phase,'ended');assert.equal(g.challenge!.completed,round);finalPoints+=g.result!.players[0].delta;
  assert.equal(itemView(g,0)!.intel,undefined,'temporary information expires after the action');
  assert.deepEqual(scoreEntries(g.result!,0,'single',3),[],'item rounds cannot enter normal/global scores');

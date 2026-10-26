@@ -97,7 +97,7 @@ assert.throws(()=>useRpgTacticalItem(emptyUpper,'scout-lens',innerIndex));
 assert.deepEqual(emptyUpper.rpgRun!.consumables,['scout-lens'],'selecting a lower-only stack must not consume the lens');
 const manualExchange=createRpgGame('직접 교환');
 manualExchange.turn=0;manualExchange.trick=[{id:-1,n:2,s:3}];manualExchange.rpgRun!.consumables=['swapped-fate'];
-const chosenExchange=manualExchange.players[0].hand.find(tile=>tile.n!==2)!.id;
+const chosenExchange=manualExchange.players[0].hand.find(tile=>tile.n!==1&&tile.n!==2)!.id;
 const handSizes=manualExchange.players.map(person=>person.hand.length);
 useRpgTacticalItem(manualExchange,'swapped-fate',1,[chosenExchange]);
 assert.ok(!manualExchange.players[0].hand.some(tile=>tile.id===chosenExchange));
@@ -109,7 +109,7 @@ assert.throws(()=>useRpgTacticalItem(invalidExchange,'fates-scales',2,[exchangeI
 assert.equal(JSON.stringify(invalidExchange),beforeInvalid,'invalid or duplicate choices must not consume the item or change hands');
 useRpgTacticalItem(invalidExchange,'fates-scales',2,exchangeIds);
 assert.ok(exchangeIds.every(id=>invalidExchange.players[2].hand.some(tile=>tile.id===id)),'two-card exchange uses exactly the two chosen tiles');
-for(const [item,minimum,count] of [['swapped-fate',3,1],['fates-scales',5,2]] as const){
+for(const [item,minimum,count] of [['swapped-fate',4,1],['fates-scales',5,2]] as const){
  const short=createRpgGame('최소 손패');short.turn=0;short.rpgRun!.consumables=[item];short.players[0].hand=short.players[0].hand.slice(0,minimum-1);
  const before=JSON.stringify(short);
  assert.equal(rpgItemAvailability(view(short,short.players[0].token),item,true).usable,false);

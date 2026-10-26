@@ -8,7 +8,7 @@ import {saveRpgGame,RPG_STORAGE_KEY} from '../lib/rpg-storage.ts';
 import {RPG_TEST_STORAGE_KEY} from '../lib/rpg-test-storage.ts';
 import {canSkipEntrance,type EntrancePhase} from '../lib/atmosphere.ts';
 import {runLocalBot} from '../lib/local-bot.ts';
-const fresh=()=>{const g=createHpItemGame('정식 아이템전');g.turn=0;g.trick=[];g.completedBattles=1;g.roundActions=g.players.length;g.rpgRun!.equipped=[];return g;};
+const fresh=()=>{const g=createHpItemGame('정식 아이템전');delete g.hpItemRules;g.rpgRun!.consumables=RPG_BASIC_ITEMS.flatMap(id=>[id,id]);g.rpgRun!.enemyConsumables={1:RPG_BASIC_ITEMS.flatMap(id=>[id,id]),2:RPG_BASIC_ITEMS.flatMap(id=>[id,id])};g.turn=0;g.trick=[];g.completedBattles=1;g.roundActions=g.players.length;g.rpgRun!.equipped=[];return g;};
 const g=fresh();assert.equal(g.hpItemMode,true);assert.equal(g.rpgTest,undefined);assert.equal(view(g,g.players[0].token).hpItemMode,true);
 assert.equal(g.rpgRun!.consumables.length,10);for(const id of RPG_BASIC_ITEMS)assert.equal(g.rpgRun!.consumables.filter(held=>held===id).length,2);
 for(let round=1;round<=7;round++){

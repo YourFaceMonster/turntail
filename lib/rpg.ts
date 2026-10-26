@@ -5,7 +5,7 @@ export type RpgStatus='playing'|'allocation'|'relic'|'ready'|'complete'|'game-ov
 export type RpgResult={id:string,at:number,players:{count:number,delta:number}[]};
 export type RpgReward={stage:number,rank:number,counts:number[],hpAfterSettlement:number[],coins:number,points:number,nextStage:number,offers:string[],retry:boolean,special?:boolean,reason:'clear'|'fate'|'end'};
 export type RpgShop={area:number,stock:{id:string,kind:'relic'|'consumable',price:number,quantity:number}[]};
-export type RpgRun={itemGuards?:Record<number,boolean>,tactics?:Record<number,RpgTacticalState>,enemyConsumables?:Record<number,string[]>,protectedCounts?:number[],lastItem?:RpgItemEvent,version:1,id:string,stage:number,status:RpgStatus,hp:number[],fate:number,coins:number,points:number,rounds:number,roundIds:string[],gloveRoundIds:string[],startedAt:number,updatedAt:number,reward:RpgReward|null,relics:string[],equipped:string[],consumables:string[],shops:RpgShop[],scaleUsed:number[],pendingSoup:boolean,pendingBandage:boolean,shield:number,bossCoinPaid:number[],crackedHeartUsed:number[],discovered:string[],unlocked:string[],relicActivations?:RpgRelicActivation[],lastExchange?:RpgExchangeEvent,tacticalRound?:number,tacticalUsed?:number,tacticalTurn?:number,tacticalPeek?:{round:number,index:number,tile:{id:number,n:number,s:number}}};
+export type RpgRun={itemGuards?:Record<number,boolean>,tactics?:Record<number,RpgTacticalState>,enemyConsumables?:Record<number,string[]>,protectedCounts?:number[],lastItem?:RpgItemEvent,version:1,id:string,stage:number,status:RpgStatus,hp:number[],fate:number,coins:number,points:number,rounds:number,roundIds:string[],gloveRoundIds:string[],startedAt:number,updatedAt:number,reward:RpgReward|null,relics:string[],equipped:string[],consumables:string[],shops:RpgShop[],scaleUsed:number[],pendingSoup:boolean,pendingBandage:boolean,shield:number,bossCoinPaid:number[],crackedHeartUsed:number[],discovered:string[],unlocked:string[],relicActivations?:RpgRelicActivation[],lastExchange?:RpgExchangeEvent,tacticalRound?:number,tacticalUsed?:number,tacticalTurn?:number,tacticalPeeks?:{round:number,index:number,tile:{id:number,n:number,s:number}}[],tacticalPeek?:{round:number,index:number,tile:{id:number,n:number,s:number}}};
 export const RPG_BOSSES=[3,6,9,10];
 export const RPG_TEST_ROUNDS=5;
 export const RPG_RELIC_REWARD_STAGES=[1,2,4,5,7,8];
@@ -24,13 +24,15 @@ export const RPG_RELICS=[
  {id:'split-mirror',name:'갈라진 거울',grade:'legendary',effect:'갈림길 이벤트 후보 2개 제시'},
 ] as const;
 export const RPG_CONSUMABLES=[
+ {id:'spark-dart',name:'바늘탄',price:20,effect:'선택한 상대에게 HP 3 피해'},
+ {id:'whisper-eye',name:'엿보는 눈',price:30,effect:'선택한 상대 손패 무작위 1장 확인 · 사용한 사람만 공개'},
  {id:'ember-bomb',name:'작열탄',price:45,effect:'선택한 상대에게 즉시 HP 8 피해 · 최소 HP 1'},
  {id:'emergency-herb',name:'응급 약초',price:30,effect:'전투 중 자신의 HP 10 회복 · 최대 HP 100'},
  {id:'ward-seal',name:'수호의 봉인',price:40,effect:'비공개 방패 준비 · 다음 공격 또는 패 교환 아이템 1회 완전 방어'},
  {id:'red-vial',name:'붉은 약병',price:30,effect:'준비 중 즉시 HP 20 회복'},
  {id:'moonlight-soup',name:'달빛 수프',price:35,effect:'다음 기본 완료 회복 +20'},
  {id:'guardian-bandage',name:'수호의 붕대',price:40,effect:'다음 스테이지 피해 15 방어'},
- {id:'swapped-fate',name:'뒤바뀐 운명',price:45,effect:'내 손패 1장 ↔ 상대 무작위 1장 · 양쪽 손패 3장 이상'},
+ {id:'swapped-fate',name:'뒤바뀐 운명',price:45,effect:'내 손패 1장 ↔ 상대 무작위 1장 · 양쪽 손패 4장 이상 · 1·2 교환 제외'},
  {id:'fates-scales',name:'운명의 저울',price:75,effect:'내 손패 2장 ↔ 상대 무작위 2장 · 양쪽 손패 5장 이상'},
  {id:'scout-lens',name:'정찰 렌즈',price:45,effect:'원하는 2층 패 1장 투시 · 안쪽 패도 선택 가능'},
 ] as const;

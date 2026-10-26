@@ -1,0 +1,35 @@
+{
+  "version": "0.6.16",
+  "tool": "Built-in image_gen",
+  "transparent_background": true,
+  "prompts": [
+    {
+      "key": "turntale_spark_dart",
+      "prompt": "Use case: style-transfer. Asset type: transparent fantasy RPG inventory item icon for TURNTALE. Input images are STYLE REFERENCES only: keep the exact hand-painted cartoon item style, thick dark warm-brown contours, rich carved antique-gold metal, saturated burgundy accents, warm golden highlights, softly textured brushwork and rounded dimensional modeling. Replace the referenced object with ONE small enchanted throwing DART (the weak attack item, Korean name 바늘탄): a clearly recognizable short sharp silver-blue steel needle point, chunky engraved gold collar and short burgundy leather grip, two compact burgundy fletching fins with gold edging. A single complete dart arranged diagonally from lower left tail toward upper right tip, readable and substantial at 40 pixels. Very small restrained warm glint, no flames or explosion, no speed trails. Match the reference icons' finish, material richness and silhouette weight, not a flat vector icon, not photorealistic. Center the object at about 80 percent of the square canvas with all edges intact and transparent breathing room. Truly transparent alpha background, no colored backdrop, no checkerboard drawn in image, no cast ground shadow, no scenery, no frame, no circular badge, no text, no letters, no numbers, no watermark.",
+      "refs": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/rpg-items-v1/consumables/ember-bomb-v2.png",
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/rpg-items-v1/consumables/ward-seal-v3.png"
+      ]
+    },
+    {
+      "key": "turntale_whisper_eye",
+      "prompt": "Use case: style-transfer. Asset type: transparent fantasy RPG inventory item icon for TURNTALE. Input images are STYLE REFERENCES only: match the exact hand-painted cartoon item style, thick dark warm-brown outline, rich antique-gold metal filigree with small leaf engraving, saturated burgundy accents, warm gold highlights and dimensional textured brushwork. Replace the referenced object with ONE magical spying-eye amulet (Korean name 엿보는 눈), distinct from a magnifying lens and a shield: a horizontal almond-shaped sculpted golden EYE with a large luminous teal emerald iris and a clear dark pupil, a couple of small white gleam highlights, a dark burgundy inset around the iris, simple gold leaf flourishes at the two corners. The eye should look like a tangible enchanted artifact, friendly mysterious fantasy rather than creepy anatomy. Slight three-quarter tilt for depth while the EYE silhouette remains unmistakable. A tiny restrained teal magical glint is okay, but no wide aura. Match the reference icons' material richness and silhouette weight; not a flat vector icon, not realistic anatomy or a photograph. ONE complete object centered at about 82 percent canvas width with generous transparent margins on all sides. Truly transparent alpha background, no colored backdrop, no checkerboard drawn in image, no cast ground shadow, no scenery, no frame, no circular medallion, no extra objects, no text, no letters, no numbers, no watermark.",
+      "refs": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/rpg-items-v1/consumables/ward-seal-v3.png",
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/rpg-items-v1/consumables/ember-bomb-v2.png"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "id": "spark-dart",
+      "source": "public/rpg-items-v1/consumables/spark-dart-v2.png",
+      "web": "public/rpg-items-v1/consumables/spark-dart-v2.webp"
+    },
+    {
+      "id": "whisper-eye",
+      "source": "public/rpg-items-v1/consumables/whisper-eye-v2.png",
+      "web": "public/rpg-items-v1/consumables/whisper-eye-v2.webp"
+    }
+  ]
+}

@@ -20,14 +20,11 @@ export const ACHIEVEMENTS:Achievement[]=[
  {id:'full-house',title:'빈틈없는 한 패',description:'풀하우스 1회 제출',icon:'⌂',goal:1,value:pattern('풀하우스')},
  {id:'four-kind',title:'넷의 위력',description:'포카드 1회 제출',icon:'Ⅳ',goal:1,value:pattern('포카드')},
  {id:'hundred-tiles',title:'백 장의 선택',description:'패 누적 100장 제출',icon:'▥',goal:100,value:s=>s.tiles},
- {id:'stage-one',title:'여정의 문턱',description:'도전모드 스테이지 1 클리어',icon:'⚐',goal:1,value:s=>s.cleared},
- {id:'stage-five',title:'여정의 한가운데',description:'도전모드 스테이지 5 클리어',icon:'◇',goal:5,value:s=>s.cleared},
- {id:'stage-ten',title:'마지막 전설',description:'도전모드 스테이지 10 클리어',icon:'♔',goal:10,value:s=>s.cleared},
  {id:'secret-line',title:'한 줄의 기적',description:'스트레이트 플러시 제출',icon:'✺',goal:1,hidden:true,value:pattern('스트레이트 플러시')},
  {id:'secret-clean',title:'빌리지 않은 승리',description:'바닥 패를 한 장도 가져오지 않고 승리',icon:'☽',goal:1,hidden:true,value:s=>s.noDrawWin},
  {id:'secret-sun',title:'태양이 지는 순간',description:'해 문양 2 싱글로 마지막 패를 내며 승리',icon:'☀',goal:1,hidden:true,value:s=>s.redFinish},
  {id:'secret-temper',title:'분노는 패착을 남긴다',description:'라운드 72행동 이상인 장기전에서 히보를 상대로 승리',icon:'♨',goal:1,hidden:true,value:s=>s.hiboWin},
- {id:COMPLETION_ACHIEVEMENT,title:'모든 업적 달성',description:'히든을 포함한 나머지 업적 20개를 모두 달성',icon:'♔',goal:20,completion:true,value:()=>0},
+ {id:COMPLETION_ACHIEVEMENT,title:'모든 업적 달성',description:'히든을 포함한 나머지 업적 17개를 모두 달성',icon:'♔',goal:17,completion:true,value:()=>0},
 ];
 type TrackedRound={seen:string[],complete:boolean,draws:number,tiles:number,patterns:Record<string,number>};
 export type AchievementState={version:1,stats:AchievementStats,unlocked:Record<string,number>,settled:string[],active:Record<string,TrackedRound>};

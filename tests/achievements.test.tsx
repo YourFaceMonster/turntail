@@ -42,10 +42,10 @@ assert.equal(streak.stats.streak,0);assert.equal(streak.stats.bestStreak,3);asse
 g=fixture();act(g,0,'play',[tile(2,3).id],-1,0);const friend=observeAchievements(emptyAchievements(),view(g,g.players[1].token));assert.equal(friend.state.stats.wins,0);
 // Stage milestones use the authoritative settled result, including all ten stages.
 g=fixture();act(g,0,'play',[tile(2,3).id],-1,0);g.result!.stageRun={cleared:10} as any;
-const stages=observeAchievements(emptyAchievements(),view(g,g.players[0].token));for(const id of ['stage-one','stage-five','stage-ten'])assert.ok(stages.state.unlocked[id]);
+const stages=observeAchievements(emptyAchievements(),view(g,g.players[0].token));for(const id of ['stage-one','stage-five','stage-ten'])assert.ok(!stages.state.unlocked[id]);
 
 const locked=renderToStaticMarkup(<Achievements state={emptyAchievements()} close={()=>{}}/>);
 for(const a of ACHIEVEMENTS.filter(a=>a.hidden)){assert.ok(!locked.includes(a.title));assert.ok(!locked.includes(a.description));}
-assert.equal(ACHIEVEMENTS.length,21);assert.equal(ACHIEVEMENTS.filter(a=>a.hidden).length,4);
+assert.equal(ACHIEVEMENTS.length,18);assert.equal(ACHIEVEMENTS.filter(a=>a.hidden).length,4);
 assert.deepEqual(readAchievements({getItem:()=>'{broken',setItem:()=>{}}),emptyAchievements());
-console.log('PASS: result/event deduplication, save/reload, void rejection, partial-round protection, draws, streaks, friend seats, stage milestones, 21 achievements and hidden-condition secrecy.');
+console.log('PASS: result/event deduplication, save/reload, void rejection, partial-round protection, draws, streaks, friend seats, retired stage milestones omitted, 18 achievements and hidden-condition secrecy.');
