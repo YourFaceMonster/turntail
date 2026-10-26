@@ -26,8 +26,8 @@ export const RPG_CONSUMABLES=[
  {id:'red-vial',name:'붉은 약병',price:30,effect:'준비 중 즉시 HP 20 회복'},
  {id:'moonlight-soup',name:'달빛 수프',price:35,effect:'다음 기본 완료 회복 +20'},
  {id:'guardian-bandage',name:'수호의 붕대',price:40,effect:'다음 스테이지 피해 15 방어'},
- {id:'swapped-fate',name:'뒤바뀐 운명',price:45,effect:'상대와 무작위 손패 1장씩 비공개 교환'},
- {id:'fates-scales',name:'운명의 저울',price:75,effect:'상대와 무작위 손패 2장씩 비공개 교환'},
+ {id:'swapped-fate',name:'뒤바뀐 운명',price:45,effect:'내 손패 1장을 골라 상대의 무작위 패 1장과 비공개 교환'},
+ {id:'fates-scales',name:'운명의 저울',price:75,effect:'내 손패 2장을 골라 상대의 무작위 패 2장과 비공개 교환'},
  {id:'scout-lens',name:'정찰 렌즈',price:45,effect:'선택한 외곽 위층 패 1장 확인'},
 ] as const;
 const rewardCoins=[30,20,10];

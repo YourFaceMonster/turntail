@@ -7,7 +7,7 @@ import type {RpgTacticalItem} from '../../lib/rpg-items.ts';
 type View=ReturnType<typeof view>;
 const tacticalIds:readonly string[]=['swapped-fate','fates-scales','scout-lens'];
 
-export function RpgTacticalPouch({game,enabled,use,selectScout,close}:{game:View,enabled:boolean,use:(id:RpgTacticalItem,target:number)=>void,selectScout:()=>void,close:()=>void}){
+export function RpgTacticalPouch({game,enabled,selectExchange,selectScout,close}:{game:View,enabled:boolean,selectExchange:(id:Exclude<RpgTacticalItem,'scout-lens'>,target:number)=>void,selectScout:()=>void,close:()=>void}){
  const run=game.rpgRun;
  const [exchangeItem,setExchangeItem]=useState<Exclude<RpgTacticalItem,'scout-lens'>|null>(null);
  if(!run)return null;
@@ -19,8 +19,8 @@ export function RpgTacticalPouch({game,enabled,use,selectScout,close}:{game:View
  return <div className="modal-shade item-shade rpg-pouch-shade" onClick={close}><section className={`modal item-pouch rpg-equipment-pouch ${exchangeItem?'rpg-exchange-pouch':''}`} role="dialog" aria-modal="true" aria-label={exchangeItem?'교환 상대 선택':'RPG 아이템창'} onClick={event=>event.stopPropagation()}>
   <header className="rpg-pouch-heading"><div><span className="eyebrow">RPG · STAGE {run.stage}</span><h2>{exchangeItem?'누구와 교환하시겠습니까?':`아이템 ${run.consumables.length}/3`}</h2></div><button className="close" aria-label="아이템창 닫기" onClick={close}>×</button></header>
   {exchangeItem?<>
-   <div className="rpg-exchange-item"><img src={`/rpg-items-v1/consumables/${exchangeItem}.webp`} alt=""/><p><strong>{exchange?.name}</strong><span>서로 무작위 패 {exchangeCount}장을 교환해요.</span></p></div>
-   <div className="rpg-exchange-targets">{game.players.map((player,index)=>{if(index===game.me)return null;const enough=player.count>=exchangeCount&&game.players[game.me].count>=exchangeCount;return <button key={player.id} disabled={!enabled||used>=2||usedTurn||!enough} onClick={()=>{use(exchangeItem,index);close();}}><strong>{player.name}</strong><span>{enough?`손패 ${player.count}장 · 선택하여 교환`:`손패 ${exchangeCount}장 이상 필요`}</span></button>;})}</div>
+   <div className="rpg-exchange-item"><img src={`/rpg-items-v1/consumables/${exchangeItem}.webp`} alt=""/><p><strong>{exchange?.name}</strong><span>상대를 고른 뒤 내 손패 {exchangeCount}장을 선택해요.</span></p></div>
+   <div className="rpg-exchange-targets">{game.players.map((player,index)=>{if(index===game.me)return null;const enough=player.count>=exchangeCount&&game.players[game.me].count>=exchangeCount;return <button key={player.id} disabled={!enabled||used>=2||usedTurn||!enough} onClick={()=>{close();selectExchange(exchangeItem,index);}}><strong>{player.name}</strong><span>{enough?`손패 ${player.count}장 · 상대 선택`:`손패 ${exchangeCount}장 이상 필요`}</span></button>;})}</div>
    <button className="text-btn rpg-exchange-back" onClick={()=>setExchangeItem(null)}>← 아이템 다시 선택</button>
   </>:<>
   <p className="rpg-item-help">내 차례에 전술 아이템을 눌러 사용해요. 한 차례에 1개, 한 판에 최대 2개. 준비 아이템은 판 사이에 사용해요.</p>

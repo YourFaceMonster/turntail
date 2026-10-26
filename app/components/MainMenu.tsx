@@ -1,6 +1,7 @@
 "use client";
 import {APP_VERSION} from '../../lib/version';
 import RoomAmbience from './RoomAmbience';
+import TurntaleWordmark from './TurntaleWordmark';
 import {SuitEmblem} from './TileFace';
 import {BookOpen,Settings,Trophy,Award,UserRound,ChevronRight} from 'lucide-react';
 
@@ -14,7 +15,7 @@ export default function MainMenu(p:Props){return <section className="title-scree
  <button className="menu-profile" onClick={p.profile} aria-label="내 프로필 설정">{p.avatar?<img src={p.avatar} alt=""/>:<UserRound aria-hidden="true"/>}<span>{p.name||'내 프로필'}</span><ChevronRight aria-hidden="true"/></button>
  <div className="title-content">
   <div className="title-crest" aria-hidden="true"><span/><b>✦</b><span/></div>
-  <div className="title-logo title-logo-premium title-logo-approved"><h1 aria-label="턴테일"><svg className="title-wordmark-crop" viewBox="489 54 1210 613" width="1210" height="613" aria-hidden="true"><image href="/turntale-wordmark-v035.png" x="0" y="0" width="2172" height="724"/></svg></h1></div><p className="title-english">TURNTALE</p><div className="wordmark-rule" aria-hidden="true"><span/>✧<span/></div>
+  <div className="title-logo title-logo-premium title-logo-approved"><h1 aria-label="턴테일"><TurntaleWordmark className="title-wordmark-crop"/></h1></div><p className="title-english">TURNTALE</p><div className="wordmark-rule" aria-hidden="true"><span/>✧<span/></div>
   <p className="title-tagline">한 장의 선택, 새로운 이야기</p>
   <div className="title-suits" aria-label="해 · 별 · 달 · 구름">{[3,1,2,0].map(s=><span key={s} className={`title-suit-${s}`}><SuitEmblem s={s}/></span>)}</div>
   <div className="title-play">

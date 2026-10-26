@@ -1818,3 +1818,24 @@ html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmo
 .turntale.table-v211.active-table .table-heading .rally-counter{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0!important;white-space:nowrap}
 .turntale.table-v211.active-table .table-heading .turn-timer{margin-left:auto}
 @media(max-width:400px){.turntale.in-game .brand{padding:2px 4px}.turntale.in-game .brand-wordmark{font-size:16px;letter-spacing:.5px}}
+
+/* Submitted tiles travel straight to the played-card row, growing along the way. */
+.turntale.active-table .flying-tile.flight-play{animation:rpg-direct-play .4s cubic-bezier(.2,.65,.3,1) both;transform-origin:0 0}
+.turntale.active-table .flight-play .tile{animation:none!important}
+@keyframes rpg-direct-play{from{transform:translate3d(var(--sx),var(--sy),0) scale(1)}to{transform:translate3d(var(--ex),var(--ey),0) scale(var(--scale-x),var(--scale-y))}}
+.turntale.in-game .brand{padding:0!important;border:0;background:none;box-shadow:none;line-height:0}
+.ingame-wordmark{display:block;width:76px;height:33px;flex:none;filter:drop-shadow(0 1px 1px #000)}
+.turntale.table-v211.active-table.rpg-mode :is(.own-status-card,.opponents .seat-card){border-radius:8px!important;overflow:hidden!important;box-shadow:none!important}
+.turntale.table-v211.active-table.rpg-mode .opponents .seat-card::before,.turntale.table-v211.active-table.rpg-mode .own-status-fill{inset:0 auto 0 0;width:var(--hp-percent);max-width:100%;border-radius:inherit}
+.lead-turn-banner{position:absolute;inset:0;z-index:11;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;pointer-events:none;text-align:center;text-shadow:-1px -1px 0 #180e04,1px -1px 0 #180e04,-1px 1px 0 #180e04,1px 1px 0 #180e04,0 3px 8px #000}
+.lead-turn-banner::before{content:"";position:absolute;inset:22% 8%;z-index:-1;background:radial-gradient(ellipse,#231a10b0,transparent 70%)}
+.lead-turn-banner strong{font-size:clamp(30px,8vmin,48px);font-weight:950;color:#ffe4a0;letter-spacing:.08em;line-height:1.15}.lead-turn-banner small{font-size:12px;font-weight:800;color:#fff4d7}
+.turntale.table-v211.active-table .trick-area.has-lead:has(.my-lead) :is(.my-lead,.new-trick){visibility:hidden}
+.exchange-hand-instruction{font-size:10px;font-weight:800;color:#ffe4a0;text-shadow:var(--game-ui-outline);margin:0;white-space:nowrap}
+@media(max-width:750px),(pointer:coarse){
+ .turntale.rpg-mode.portrait-table .rpg-equipped-relics{width:54px;right:0;padding:5px 3px;bottom:calc(100% + 3px)}
+ .turntale.rpg-mode.portrait-table .rpg-relic-tray-heading{flex-direction:column;gap:3px;margin-bottom:7px}.turntale.rpg-mode.portrait-table .rpg-relic-tray-heading strong{font-size:9px;letter-spacing:0}.turntale.rpg-mode.portrait-table .rpg-relic-tray-heading small{font-size:7px}
+ .turntale.rpg-mode.portrait-table .rpg-relic-slots{grid-template-columns:minmax(0,1fr);gap:8px}.turntale.rpg-mode.portrait-table .rpg-relic-slot-frame{width:38px;height:38px}.turntale.rpg-mode.portrait-table .rpg-relic-slot-frame img{width:33px;height:33px}.turntale.rpg-mode.portrait-table .rpg-relic-slot-condition,.turntale.rpg-mode.portrait-table .rpg-relic-slot-bonus{font-size:8px}
+ .turntale.table-v211.active-table.rpg-mode.portrait-table .floor-stage{padding-right:58px}.turntale.table-v211.active-table.rpg-mode.portrait-table .trick-area{padding-right:58px!important;--shown-w:min(calc(var(--tile-w)*1.15),calc((100vw - 112px)/5))}
+ .turntale.rpg-mode.portrait-table .rpg-relic-tooltip{right:calc(100% + 6px);bottom:0;width:min(250px,calc(100vw - 86px));padding:8px}.turntale.rpg-mode.portrait-table .rpg-relic-tooltip>img{width:29px;height:29px}
+}

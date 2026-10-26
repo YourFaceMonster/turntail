@@ -7,7 +7,7 @@ const tacticalItems:readonly string[]=['swapped-fate','fates-scales','scout-lens
 function randomIndex(length:number){const value=new Uint32Array(1);crypto.getRandomValues(value);return value[0]%length;}
 function takeRandom(hand:Tile[],count:number){const pool=[...hand],picked:Tile[]=[];for(let i=0;i<count;i++)picked.push(pool.splice(randomIndex(pool.length),1)[0]);return picked;}
 
-export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1){
+export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:number[]=[]){
  const run=g.rpgRun;
  if(!g.practice||!run||run.status!=='playing'||g.phase!=='playing'||g.turn!==0)throw Error('RPG 전술 아이템은 진행 중인 내 차례에만 사용할 수 있어요.');
  if(!tacticalItems.includes(id)||!run.consumables.includes(id))throw Error('보유한 전술 아이템을 확인해 주세요.');
@@ -20,7 +20,9 @@ export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1){
  }else{
   const count=id==='fates-scales'?2:1;
   if(![1,2].includes(target)||g.players[0].hand.length<count||g.players[target].hand.length<count)throw Error(`나와 상대에게 각각 손패 ${count}장 이상이 필요해요.`);
-  const mine=g.players[0],other=g.players[target],out=takeRandom(mine.hand,count),incoming=takeRandom(other.hand,count);
+  const mine=g.players[0],other=g.players[target];
+  if(ids.length&&(ids.length!==count||new Set(ids).size!==count||ids.some(tileId=>!mine.hand.some(tile=>tile.id===tileId))))throw Error(`교환할 내 손패 ${count}장을 선택해 주세요.`);
+  const out=ids.length?ids.map(tileId=>mine.hand.find(tile=>tile.id===tileId)!):takeRandom(mine.hand,count),incoming=takeRandom(other.hand,count);
   mine.hand=sorted([...mine.hand.filter(tile=>!out.some(t=>t.id===tile.id)),...incoming]);
   other.hand=sorted([...other.hand.filter(tile=>!incoming.some(t=>t.id===tile.id)),...out]);
   // Exchanged public draws no longer establish who holds those cards.
