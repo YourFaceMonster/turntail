@@ -1,4 +1,4 @@
-import {hpItemShopPending} from './hp-item-shop.ts';
+import {hpItemShopPending,hpItemEffectiveHp} from './hp-item-shop.ts';
 import {finishHpItemMatch} from './hp-item-mode.ts';
 import type {Game,Tile} from './game.ts';
 import {sorted,uid,legalOptions,rank,view} from './game.ts';
@@ -18,7 +18,7 @@ export const RPG_ITEM_HINTS:Record<string,{label:string,bonus:string}>={
  'scout-lens':{label:'2층 투시',bonus:'1장 확인'},'swapped-fate':{label:'1장 교환',bonus:'양쪽 3장↑'},'fates-scales':{label:'2장 교환',bonus:'양쪽 5장↑'},
  'ember-bomb':{label:'즉시 공격',bonus:'HP −8'},'emergency-herb':{label:'자신 회복',bonus:'HP +10'},'ward-seal':{label:'비밀 방패',bonus:'공격 1회 방어'},
 };
-export function rpgItemDescription(id:string,hpItemMode=false){const effect=RPG_ITEM_DESCRIPTIONS[id];return hpItemMode&&id==='ember-bomb'?'선택한 상대에게 즉시 HP 8 피해 · HP 0이면 대전 종료':effect;}
+export function rpgItemDescription(id:string,hpItemMode=false){const effect=RPG_ITEM_DESCRIPTIONS[id];return hpItemMode&&id==='ember-bomb'?'선택한 상대에게 HP 8 피해 · 판 종료 시 HP에 반영':effect;}
 const RPG_ITEM_DESCRIPTIONS:Record<string,string>={'ember-bomb':'선택한 상대에게 즉시 HP 8 피해 · 최소 HP 1','emergency-herb':'전투 중 자신의 HP 10 회복 · 최대 HP 100','ward-seal':'상대에게 숨겨 방패 준비 · 다음 공격·패 교환 아이템 1회 완전 방어'};
 export function itemImage(id:string){if(id==='ward-seal')return '/rpg-items-v1/consumables/ward-seal-v3.webp';return `/rpg-items-v1/consumables/${id}${['ember-bomb','emergency-herb','ward-seal'].includes(id)?'-v2.webp':'.webp'}`;}
 function stateFor(run:RpgRun,who:number,round:number):RpgTacticalState{
@@ -51,17 +51,17 @@ export function rpgItemAvailability(game:ReturnType<typeof view>,id:string,enabl
  const run=game.rpgRun;
  if(!run||!RPG_TACTICAL_ITEMS.includes(id as RpgTacticalItem))return {usable:false,reason:'준비 구간 전용'};
  if(!enabled||run.status!=='playing'||game.phase!=='playing'||game.turn!==game.me)return {usable:false,reason:'내 차례에 사용 가능'};
- if(hpItemShopPending(game))return {usable:false,reason:'상점에서 아이템 5개를 구매해 주세요'};
+ if(hpItemShopPending(game))return {usable:false,reason:'상점 준비를 마쳐 주세요 · 구매는 선택이에요'};
  if(!rpgItemsUnlocked(game))return {usable:false,reason:game.hpItemMode?'첫 싸움이 끝나 새 선이 정해지면 사용 가능':'첫 바퀴가 끝나면 사용 가능'};
  const state=stateFor(run,game.me,game.round);
  if(state.used>=rpgItemLimit(game))return {usable:false,reason:`이번 판 사용 한도 ${rpgItemLimit(game)}개`};
  if(state.turn===game.roundActions)return {usable:false,reason:'이번 차례 사용 완료'};
  if(id==='scout-lens')return game.stacks.some(stack=>stack.upper)?{usable:true,reason:'원하는 2층 패 1장 투시'}:{usable:false,reason:'남은 2층 패 없음'};
- if(id==='emergency-herb')return {usable:run.hp[game.me]<100,reason:run.hp[game.me]<100?'자신의 HP 10 회복':'HP가 이미 가득 찼어요'};
+ if(id==='emergency-herb')return {usable:hpItemEffectiveHp(game,game.me)<100,reason:hpItemEffectiveHp(game,game.me)<100?'자신의 HP 10 회복':'HP가 이미 가득 찼어요'};
  if(id==='ward-seal')return {usable:!run.itemGuards?.[game.me],reason:run.itemGuards?.[game.me]?'비밀 방패가 이미 준비됐어요':'다음 공격·패 교환 아이템 1회 방어'};
  if(id==='ember-bomb'){
-  if(!game.players.some((_,i)=>i!==game.me&&run.hp[i]>(game.hpItemMode?0:1)))return {usable:false,reason:'공격할 수 있는 상대가 없어요'};
-  return {usable:true,reason:game.hpItemMode?'즉시 HP 8 피해 · HP 0이면 종료':'선택한 상대에게 즉시 HP 8 피해 · 최소 HP 1'};
+  if(!game.players.some((_,i)=>i!==game.me&&hpItemEffectiveHp(game,i)>(game.hpItemMode?0:1)))return {usable:false,reason:'공격할 수 있는 상대가 없어요'};
+  return {usable:true,reason:game.hpItemMode?'HP 8 피해 · 판 종료 시 정산':'선택한 상대에게 즉시 HP 8 피해 · 최소 HP 1'};
  }
  const minimum=exchangeMinimum(id);
  if(game.players[game.me].count<minimum)return {usable:false,reason:`내 손패 ${minimum}장 이상 필요`};
@@ -85,9 +85,9 @@ export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:numbe
  }else if(id==='ward-seal'){
   run.itemGuards={...run.itemGuards,[who]:true};target=who;
  }else if(id==='emergency-herb'){
-  const amount=Math.min(10,100-run.hp[who]);run.hp[who]+=amount;record(g,who,id,who,'heal',amount);
+  const amount=Math.min(10,100-hpItemEffectiveHp(g,who));if(g.hpItemMode&&g.hpItemMatch){g.hpItemMatch.pendingItemDelta??=g.players.map(()=>0);g.hpItemMatch.pendingItemDelta[who]+=amount;}else run.hp[who]+=amount;record(g,who,id,who,'heal',amount);
  }else if(id==='ember-bomb'){
-  if(!Number.isInteger(target)||!g.players[target]||target===who||run.hp[target]<=(g.hpItemMode?0:1))throw Error('공격할 수 있는 상대를 선택해 주세요.');
+  if(!Number.isInteger(target)||!g.players[target]||target===who||hpItemEffectiveHp(g,target)<=(g.hpItemMode?0:1))throw Error('공격할 수 있는 상대를 선택해 주세요.');
   applyRpgEmberDamage(g,who,target,Date.now());
  }else{
   const count=id==='fates-scales'?2:1;
@@ -123,7 +123,7 @@ export function refundLegacyEmbers(g:Game){
 }
 function applyRpgEmberDamage(g:Game,who:number,target:number,now:number){
  if(blockHostileItem(g,who,target,'ember-bomb'))return;
- const run=g.rpgRun!;let damage=Math.min(8,Math.max(0,run.hp[target]-(g.hpItemMode?0:1)));
+ const run=g.rpgRun!;let damage=Math.min(8,Math.max(0,hpItemEffectiveHp(g,target)-(g.hpItemMode?0:1)));
  if(target===0&&damage>0){
   if(run.equipped.includes('cracked-heart')&&!run.crackedHeartUsed.includes(run.stage)){
    const blocked=Math.min(8,damage);damage-=blocked;
@@ -131,8 +131,8 @@ function applyRpgEmberDamage(g:Game,who:number,target:number,now:number){
   }
   const blocked=Math.min(run.shield||0,damage);damage-=blocked;run.shield-=blocked;
  }
- run.hp[target]=Math.max(g.hpItemMode?0:1,run.hp[target]-damage);record(g,who,'ember-bomb',target,'damage',damage);
- if(g.hpItemVariant===2&&g.hpItemMatch){g.hpItemMatch.points[who]+=damage;g.hpItemMatch.roundEarned[who]+=damage;}finishHpItemMatch(g);
+ if(g.hpItemMode&&g.hpItemMatch){g.hpItemMatch.pendingItemDelta??=g.players.map(()=>0);g.hpItemMatch.pendingItemDelta[target]-=damage;}else run.hp[target]=Math.max(1,run.hp[target]-damage);record(g,who,'ember-bomb',target,'damage',damage);
+ if(g.hpItemVariant===2&&g.hpItemMatch){g.hpItemMatch.pendingItemPoints??=g.players.map(()=>0);g.hpItemMatch.pendingItemPoints[who]+=damage;g.hpItemMatch.roundEarned[who]+=damage;}if(!g.hpItemMode)finishHpItemMatch(g);
 }
 export function resetRpgTactics(run:RpgRun){run.tactics={};run.tacticalPeek=undefined;run.tacticalRound=undefined;run.tacticalUsed=0;run.tacticalTurn=undefined;run.protectedCounts=undefined;}
 export function scoutRpgBotDraw(g:Game,who:number,index:number){
@@ -145,8 +145,8 @@ export function chooseRpgBotItem(position:ReturnType<typeof view>):RpgBotItemCho
  const run=position.rpgRun,who=position.me;if(!run||who===0)return null;
  const own=position.players[who],hand=own.hand||[],moves=legalOptions(hand,position.trick);
  const can=(id:RpgTacticalItem)=>run.consumables.includes(id)&&rpgItemAvailability(position,id,true).usable;
- const opponents=position.players.map((_,i)=>i).filter(i=>i!==who),target=opponents.filter(i=>run.hp[i]>(position.hpItemMode?0:1)).sort((a,b)=>run.hp[b]-run.hp[a])[0];
- if(can('emergency-herb')&&run.hp[who]<=90)return {id:'emergency-herb'};
+ const opponents=position.players.map((_,i)=>i).filter(i=>i!==who),target=opponents.filter(i=>hpItemEffectiveHp(position,i)>(position.hpItemMode?0:1)).sort((a,b)=>run.hp[b]-run.hp[a])[0];
+ if(can('emergency-herb')&&hpItemEffectiveHp(position,who)<=90)return {id:'emergency-herb'};
  if(can('ward-seal')&&opponents.length)return {id:'ward-seal'};
  if(can('ember-bomb')&&target!==undefined)return {id:'ember-bomb',target};
  if(!moves.length){

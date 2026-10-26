@@ -1,43 +1,42 @@
 "use client";
 import {useEffect,useLayoutEffect,useRef,useState,type CSSProperties} from 'react';
-import TileFace from './TileFace';
-import TileBack from './TileBack';
 import {createPortal} from 'react-dom';
 import type {view} from '../../lib/game.ts';
 import {itemImage,rpgItemNoticeText,type RpgItemEvent} from '../../lib/rpg-items.ts';
-import {itemScenePoints,RPG_ITEM_SCENE_MS} from '../../lib/rpg-item-motion.ts';
-
+import {itemScenePoints,itemSceneTiming,itemProjectileFrames} from '../../lib/rpg-item-motion.ts';
+import TileFace from './TileFace';
+import TileBack from './TileBack';
 type View=ReturnType<typeof view>;
-type Points=ReturnType<typeof itemScenePoints>;
+type Scene={points:ReturnType<typeof itemScenePoints>,source:DOMRect,target:DOMRect,elapsed:number};
 export function RpgItemNotice({game}:{game:View}){
- const event=game.rpgRun?.lastItem,seen=useRef(event?.id),[queue,setQueue]=useState<RpgItemEvent[]>([]),shown=queue[0];
- const [points,setPoints]=useState<Points|null>(null);
- useEffect(()=>{if(!event||seen.current===event.id)return;seen.current=event.id;
-  if(event.kind==='cancel'||event.kind==='armed'||event.kind==='exchange'&&(event.actor===game.me||event.target===game.me))return;
-  setQueue(old=>[...old,event].slice(-6));
- },[event?.id,game.me]);
- useEffect(()=>{if(!shown)return;const timer=setTimeout(()=>setQueue(old=>old.slice(1)),RPG_ITEM_SCENE_MS);return()=>clearTimeout(timer);},[shown?.id]);
+ const event=game.rpgRun?.lastItem,seen=useRef(event?.id),[shown,setShown]=useState<RpgItemEvent|null>(null),[scene,setScene]=useState<Scene|null>(null),projectile=useRef<HTMLSpanElement>(null);
+ useEffect(()=>{if(!event||event.id===seen.current)return;seen.current=event.id;if(event.kind==='cancel'||event.kind==='armed')return;setShown(event);},[event?.id]);
+ const timing=shown?itemSceneTiming(shown,game.me):null;
+ useEffect(()=>{if(!shown||!timing)return;const timer=setTimeout(()=>setShown(null),Math.max(0,shown.at+timing.duration-Date.now()));return()=>clearTimeout(timer);},[shown?.id]);
  useLayoutEffect(()=>{
-  if(!shown){setPoints(null);return;}
+  if(!shown){setScene(null);return;}
   const measure=()=>{
    const seat=(who:number)=>document.querySelector<HTMLElement>(who===game.me?'.rpg-mode .own-status-card':`.rpg-mode .opponents [data-seat="${who}"] .seat-card`);
-   const fallback=(who:number)=>({left:who===game.me?innerWidth/2-24:who<2?30:innerWidth-78,top:who===game.me?innerHeight-130:70,width:48,height:40});
-   const source=seat(shown.actor)?.getBoundingClientRect()||fallback(shown.actor),target=seat(shown.target)?.getBoundingClientRect()||source;
-   const board=document.querySelector('.rpg-mode .floor-stage')?.getBoundingClientRect()||{left:0,top:100,width:innerWidth,height:innerHeight*.45};
-   setPoints(itemScenePoints(innerWidth,innerHeight,source,target,board));
-  };
-  measure();window.addEventListener('resize',measure);window.addEventListener('scroll',measure,true);
-  return()=>{window.removeEventListener('resize',measure);window.removeEventListener('scroll',measure,true);};
+   const source=seat(shown.actor)?.getBoundingClientRect(),target=seat(shown.target)?.getBoundingClientRect()||source;if(!source||!target)return;
+   const board=document.querySelector('.rpg-mode .floor-stage')?.getBoundingClientRect()||source;
+   setScene({points:itemScenePoints(innerWidth,innerHeight,source,target,board),source,target,elapsed:Math.max(0,Date.now()-shown.at)});
+  };measure();window.addEventListener('resize',measure);return()=>window.removeEventListener('resize',measure);
  },[shown?.id,game.me]);
- if(!shown||!points||typeof document==='undefined')return null;
- const message=rpgItemNoticeText(shown,game.players),actor=game.players[shown.actor]?.name||'상대',target=game.players[shown.target]?.name||'상대';
- const style={'--from-x':`${points.from.x}px`,'--from-y':`${points.from.y}px`,'--to-x':`${points.to.x}px`,'--to-y':`${points.to.y}px`,'--apex-y':`${points.apex.y}px`,'--center-x':`${points.center.x}px`,'--center-y':`${points.center.y}px`,'--block-x':`${points.blockHit.x}px`,'--block-y':`${points.blockHit.y}px`,'--recoil-x':`${points.recoil.x}px`,'--recoil-y':`${points.recoil.y}px`} as CSSProperties;
- const offensive=['damage','blocked'].includes(shown.kind),blocked=shown.kind==='blocked';
- const caption=blocked?`${target} · ${shown.itemId==='ember-bomb'?'작열탄':'패 교환'} 차단`:shown.kind==='heal'?`${actor} · HP +${shown.amount}`:shown.kind==='seal'?'수호의 봉인 · 방어 준비':shown.kind==='exchange'?`${actor} ↔ ${target}`:'';
- return createPortal(<div key={shown.id} className={`item-fx-scene fx-${shown.kind} ${shown.itemId==='ember-bomb'?'fx-ember':''} ${shown.kind==='blocked'&&shown.itemId!=='ember-bomb'?'fx-blocked-exchange':''}`} style={style} role="status" aria-live="polite" aria-atomic="true" aria-label={`${message.title} · ${message.route} · ${message.detail}`}>
-  {offensive&&<><small className="item-fx-source">{actor}</small><span className="item-fx-projectile">{shown.itemId==='ember-bomb'&&<i className="ember-flight-flame"/>}<span className="item-fx-attack-art">{blocked&&shown.itemId!=='ember-bomb'?shown.tiles?.[0]?<TileFace tile={shown.tiles[0]}/>:<TileBack/>:<img src={itemImage(shown.itemId)} alt=""/>}</span></span></>}
-  {shown.kind==='damage'&&<span className="item-fx-impact"><b>콰광!</b></span>}
-  {blocked?<span className="item-fx-shield"><img src={itemImage('ward-seal')} alt=""/><i className="item-fx-barrier"/></span>:!offensive&&<span className="item-fx-emblem"><i className="item-fx-aura"/><img src={itemImage(shown.itemId)} alt=""/></span>}
-  <small className="item-fx-caption"><b>{message.title}</b><span>{caption||message.detail}</span></small>
+ useLayoutEffect(()=>{
+  if(!shown||!scene||!projectile.current)return;
+  const duration=itemSceneTiming(shown,game.me).duration,reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const frames=reduced?[{opacity:1,transform:`translate(${scene.points.to.x}px,${scene.points.to.y}px) translate(-50%,-50%) scale(.6)`},{opacity:0,transform:`translate(${scene.points.to.x}px,${scene.points.to.y}px) translate(-50%,-50%) scale(.6)`}]:itemProjectileFrames(scene.points,shown.kind==='blocked',shown.itemId!=='ember-bomb');
+  const animation=projectile.current.animate(frames,{duration,easing:'linear',fill:'both'});animation.currentTime=Math.max(0,Date.now()-shown.at);return()=>animation.cancel();
+ },[shown?.id,scene,game.me]);
+ if(!shown||!scene||!timing||!timing.duration)return null;
+ const {points,source,target,elapsed}=scene,blocked=shown.kind==='blocked',offensive=shown.kind==='damage'||blocked,ownExchange=shown.kind==='exchange'&&(shown.actor===game.me||shown.target===game.me),message=rpgItemNoticeText(shown,game.players);
+ const style={'--fx-ms':`${timing.duration}ms`,'--fx-delay':`-${elapsed}ms`,'--impact-ms':`${Math.max(0,timing.impact-elapsed)}ms`,'--shield-ms':`${Math.max(0,timing.shield-elapsed)}ms`,'--to-x':`${points.to.x}px`,'--to-y':`${points.to.y}px`,'--center-x':`${points.center.x}px`,'--center-y':`${points.center.y}px`,'--shield-w':`${target.width+24}px`,'--shield-h':`${target.height+30}px`} as CSSProperties;
+ return createPortal(<div key={shown.id} className={`item-fx-scene smooth-item-scene fx-${shown.kind} ${shown.itemId==='ember-bomb'?'fx-ember':''}`} style={style} role="status" aria-live="polite" aria-label={`${message.title} · ${message.route} · ${message.detail}`}>
+  <span className="item-seat-badge" style={{left:Math.min(innerWidth-34,source.right-12),top:Math.max(8,source.top-12)}} title={message.title}><img src={itemImage(shown.itemId)} alt=""/></span>
+  {offensive&&<span className={`item-fx-projectile ${shown.itemId!=='ember-bomb'?'is-tile-projectile':''}`} ref={projectile}>{blocked&&shown.itemId!=='ember-bomb'?shown.tiles?.[0]?<TileFace tile={shown.tiles[0]}/>:<TileBack/>:<img src={itemImage(shown.itemId)} alt=""/>}</span>}
+  {shown.kind==='damage'&&<span className="item-fx-impact"/>}
+  {blocked&&<span className="item-character-shield"><i/><img src={itemImage('ward-seal')} alt=""/></span>}
+  {!offensive&&!ownExchange&&<span className="item-fx-emblem"><img src={itemImage(shown.itemId)} alt=""/></span>}
+  {shown.kind==='heal'&&<span className="item-heal-caption"><b>HP +{shown.amount}</b>{game.hpItemMode&&<small>이번 판 종료 시 회복</small>}</span>}
  </div>,document.body);
 }
