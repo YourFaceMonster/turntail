@@ -1,3 +1,4 @@
+import {hpItemShopPending} from './hp-item-shop.ts';
 import {finishHpItemMatch} from './hp-item-mode.ts';
 import type {Game,Tile} from './game.ts';
 import {sorted,uid,legalOptions,rank,view} from './game.ts';
@@ -10,7 +11,7 @@ export type RpgTacticalItem=RpgExchangeItem|'scout-lens'|'ember-bomb'|'emergency
 export const RPG_BASIC_ITEMS:readonly RpgTacticalItem[]=['scout-lens','swapped-fate','ward-seal','ember-bomb','emergency-herb'];
 export const RPG_TACTICAL_ITEMS:readonly RpgTacticalItem[]=[...RPG_BASIC_ITEMS,'fates-scales'];
 export type RpgTacticalState={round:number,used:number,turn?:number,peek?:{round:number,index:number,tile:Tile},sealed?:number[],ember?:{target:number,turn:number}};
-export type RpgItemEvent={id:string,actor:number,target:number,itemId:RpgTacticalItem,kind:'heal'|'damage'|'seal'|'scout'|'exchange'|'blocked'|'armed'|'cancel',amount?:number,at:number};
+export type RpgItemEvent={id:string,actor:number,target:number,itemId:RpgTacticalItem,kind:'heal'|'damage'|'seal'|'scout'|'exchange'|'blocked'|'armed'|'cancel',amount?:number,at:number,tiles?:Tile[]};
 export type RpgExchangeEvent={id:string,itemId:RpgExchangeItem,actor?:number,target:number,round:number,outgoing:Tile[],incoming:Tile[],at:number};
 export const exchangeMinimum=(id:string)=>id==='fates-scales'?5:3;
 export const RPG_ITEM_HINTS:Record<string,{label:string,bonus:string}>={
@@ -26,7 +27,8 @@ function stateFor(run:RpgRun,who:number,round:number):RpgTacticalState{
  return {round,used:who===0&&run.tacticalRound===round?(run.tacticalUsed||0):0,turn:who===0&&run.tacticalRound===round?run.tacticalTurn:undefined};
 }
 export function protectedTileIds(_run:RpgRun,_who:number,_round:number):number[]{return [];}
-export function rpgItemsUnlocked(game:{roundActions?:number,players:readonly unknown[]}){return (game.roundActions||0)>=game.players.length;}
+export function rpgItemsUnlocked(game:{roundActions?:number,players:readonly unknown[],hpItemMode?:boolean,completedBattles?:number}){return game.hpItemMode?(game.completedBattles||0)>0:(game.roundActions||0)>=game.players.length;}
+export function rpgItemLimit(game:{hpItemMode?:boolean}){return game.hpItemMode?2:RPG_ITEMS_PER_ROUND;}
 export function rpgInventory(run:RpgRun,who:number){return who===0?run.consumables:run.enemyConsumables?.[who]||[];}
 export function giveRpgEnemyItems(run:RpgRun,copies=1){run.enemyConsumables=Object.fromEntries([1,2].map(who=>[who,RPG_BASIC_ITEMS.flatMap(id=>Array(copies).fill(id))]));}
 /** Expose only the observer's private scouting/protection state. Inventory names/counts are public. */
@@ -34,7 +36,7 @@ export function rpgTacticalView(run:RpgRun,me:number,round:number):RpgRun{
  const own=stateFor(run,me,round),exchange=run.lastExchange,actor=exchange?.actor??0;
  const visibleExchange=me!==0||!exchange?undefined:actor===0?exchange:exchange.target===0?{...exchange,actor:0,target:actor,outgoing:exchange.incoming,incoming:exchange.outgoing}:undefined;
  const visibleItem=run.lastItem?.kind==='seal'&&run.lastItem.actor!==me?undefined:run.lastItem;
- return {...run,enemyConsumables:{[me]:rpgInventory(run,me)},consumables:rpgInventory(run,me),itemGuards:{[me]:!!run.itemGuards?.[me]},tactics:{[me]:{...own,sealed:undefined}},protectedCounts:undefined,lastItem:visibleItem,lastExchange:visibleExchange,tacticalPeek:own.peek||(me===0?run.tacticalPeek:undefined),tacticalRound:own.round,tacticalUsed:own.used,tacticalTurn:own.turn};
+ return {...run,enemyConsumables:{[me]:rpgInventory(run,me)},consumables:rpgInventory(run,me),itemGuards:{[me]:!!run.itemGuards?.[me]},tactics:{[me]:{...own,sealed:undefined}},protectedCounts:undefined,lastItem:visibleItem?{...visibleItem,tiles:visibleItem.actor===me?visibleItem.tiles:undefined}:undefined,lastExchange:visibleExchange,tacticalPeek:own.peek||(me===0?run.tacticalPeek:undefined),tacticalRound:own.round,tacticalUsed:own.used,tacticalTurn:own.turn};
 }
 export function exchangeTargetAvailable(game:ReturnType<typeof view>,id:string,target:number){
  const minimum=exchangeMinimum(id),count=id==='fates-scales'?2:1,person=game.players[target];
@@ -49,9 +51,10 @@ export function rpgItemAvailability(game:ReturnType<typeof view>,id:string,enabl
  const run=game.rpgRun;
  if(!run||!RPG_TACTICAL_ITEMS.includes(id as RpgTacticalItem))return {usable:false,reason:'준비 구간 전용'};
  if(!enabled||run.status!=='playing'||game.phase!=='playing'||game.turn!==game.me)return {usable:false,reason:'내 차례에 사용 가능'};
- if(!rpgItemsUnlocked(game))return {usable:false,reason:'첫 바퀴가 끝나면 사용 가능'};
+ if(hpItemShopPending(game))return {usable:false,reason:'상점에서 아이템 5개를 구매해 주세요'};
+ if(!rpgItemsUnlocked(game))return {usable:false,reason:game.hpItemMode?'첫 싸움이 끝나 새 선이 정해지면 사용 가능':'첫 바퀴가 끝나면 사용 가능'};
  const state=stateFor(run,game.me,game.round);
- if(state.used>=RPG_ITEMS_PER_ROUND)return {usable:false,reason:`이번 판 사용 한도 ${RPG_ITEMS_PER_ROUND}개`};
+ if(state.used>=rpgItemLimit(game))return {usable:false,reason:`이번 판 사용 한도 ${rpgItemLimit(game)}개`};
  if(state.turn===game.roundActions)return {usable:false,reason:'이번 차례 사용 완료'};
  if(id==='scout-lens')return game.stacks.some(stack=>stack.upper)?{usable:true,reason:'원하는 2층 패 1장 투시'}:{usable:false,reason:'남은 2층 패 없음'};
  if(id==='emergency-herb')return {usable:run.hp[game.me]<100,reason:run.hp[game.me]<100?'자신의 HP 10 회복':'HP가 이미 가득 찼어요'};
@@ -67,7 +70,7 @@ export function rpgItemAvailability(game:ReturnType<typeof view>,id:string,enabl
 }
 function randomIndex(length:number){const value=new Uint32Array(1);crypto.getRandomValues(value);return value[0]%length;}
 function takeRandom(hand:Tile[],count:number){const pool=[...hand],picked:Tile[]=[];for(let i=0;i<count;i++)picked.push(pool.splice(randomIndex(pool.length),1)[0]);return picked;}
-function record(g:Game,who:number,id:RpgTacticalItem,target:number,kind:RpgItemEvent['kind'],amount?:number){g.rpgRun!.lastItem={id:uid(),actor:who,target,itemId:id,kind,amount,at:Date.now()};}
+function record(g:Game,who:number,id:RpgTacticalItem,target:number,kind:RpgItemEvent['kind'],amount?:number){g.rpgRun!.lastItem={id:uid(),actor:who,target,itemId:id,kind,amount,at:Date.now()};if(g.hpItemMatch)g.hpItemMatch.roundItems.push({actor:who,target,id,kind,amount});}
 export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:number[]=[],who=0){
  const run=g.rpgRun;
  if(!g.practice||!run||run.status!=='playing'||g.phase!=='playing'||g.turn!==who||!g.players[who])throw Error('RPG 전술 아이템은 진행 중인 내 차례에만 사용할 수 있어요.');
@@ -91,7 +94,8 @@ export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:numbe
   if(!exchangeTargetAvailable(position,id,target))throw Error(`양쪽 손패 ${exchangeMinimum(id)}장 이상과 교환 가능한 패가 필요해요.`);
   const mine=g.players[who],other=g.players[target],protectedIds=protectedTileIds(run,target,g.round),pool=other.hand.filter(tile=>!protectedIds.includes(tile.id));
   if(ids.length&&(ids.length!==count||new Set(ids).size!==count||ids.some(tileId=>!mine.hand.some(tile=>tile.id===tileId))))throw Error(`교환할 내 손패 ${count}장을 선택해 주세요.`);
-  blocked=blockHostileItem(g,who,target,id);
+  const attempted=ids.length?ids.map(tileId=>({...mine.hand.find(tile=>tile.id===tileId)!})):takeRandom(mine.hand,count);
+  blocked=blockHostileItem(g,who,target,id);if(blocked&&run.lastItem)run.lastItem.tiles=attempted;
   if(!blocked){
   const out=ids.length?ids.map(tileId=>mine.hand.find(tile=>tile.id===tileId)!):takeRandom(mine.hand,count),incoming=takeRandom(pool,count);
   mine.hand=sorted([...mine.hand.filter(tile=>!out.some(t=>t.id===tile.id)),...incoming]);
@@ -127,7 +131,8 @@ function applyRpgEmberDamage(g:Game,who:number,target:number,now:number){
   }
   const blocked=Math.min(run.shield||0,damage);damage-=blocked;run.shield-=blocked;
  }
- run.hp[target]=Math.max(g.hpItemMode?0:1,run.hp[target]-damage);record(g,who,'ember-bomb',target,'damage',damage);finishHpItemMatch(g);
+ run.hp[target]=Math.max(g.hpItemMode?0:1,run.hp[target]-damage);record(g,who,'ember-bomb',target,'damage',damage);
+ if(g.hpItemVariant===2&&g.hpItemMatch){g.hpItemMatch.points[who]+=damage;g.hpItemMatch.roundEarned[who]+=damage;}finishHpItemMatch(g);
 }
 export function resetRpgTactics(run:RpgRun){run.tactics={};run.tacticalPeek=undefined;run.tacticalRound=undefined;run.tacticalUsed=0;run.tacticalTurn=undefined;run.protectedCounts=undefined;}
 export function scoutRpgBotDraw(g:Game,who:number,index:number){
@@ -151,7 +156,7 @@ export function chooseRpgBotItem(position:ReturnType<typeof view>):RpgBotItemCho
  return null;
 }
 export function tryRpgBotItem(g:Game){
- const run=g.rpgRun,who=g.turn;if(!run||!g.players[who]?.bot)return;
+ const run=g.rpgRun,who=g.turn;if(!run||!g.players[who]?.bot||hpItemShopPending(g))return;
  if(!run.enemyConsumables?.[who]){run.enemyConsumables={...run.enemyConsumables,[who]:[...RPG_BASIC_ITEMS]};}
  const choice=chooseRpgBotItem(view(g,g.players[who].token));if(choice)useRpgTacticalItem(g,choice.id,choice.target??-1,choice.ids||[],who);
 }
