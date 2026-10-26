@@ -3,9 +3,10 @@ import {useEffect,useLayoutEffect,useRef,useState,type CSSProperties} from 'reac
 import {createPortal} from 'react-dom';
 import {suits,type Tile,type view} from '../../lib/game.ts';
 import {exchangeStageLayout,type ExchangeRect} from '../../lib/rpg-exchange-motion.ts';
-import type {RpgExchangeEvent,RpgExchangeItem} from '../../lib/rpg-items.ts';
+import {itemImage,type RpgExchangeEvent,type RpgExchangeItem} from '../../lib/rpg-items.ts';
 import TileFace from './TileFace';
 import TileBack from './TileBack';
+import useTileGestures from './useTileGestures';
 
 type View=ReturnType<typeof view>;
 export type ExchangeTarget={id:RpgExchangeItem,target:number};
@@ -32,9 +33,7 @@ export function RpgExchangeStage({game,target,selected,onReady,onConfirm,onCance
  useEffect(()=>{const item=game.rpgRun?.lastItem;if(target&&item?.kind==='blocked'&&item.actor===game.me&&item.target===target.target&&(item.itemId==='swapped-fate'||item.itemId==='fates-scales')){sources.current={};callbacks.current.onComplete();callbacks.current.onBusy(false);}},[game.rpgRun?.lastItem?.id]);
  useEffect(()=>()=>callbacks.current.onBusy(false),[]);
  useEffect(()=>{
-  callbacks.current.onReady(false);
-  if(!target||running||selected.length!==count)return;
-  const timer=setTimeout(()=>{callbacks.current.onReady(true);callbacks.current.onConfirm(selected.map(tile=>tile.id));},820);return()=>clearTimeout(timer);
+  callbacks.current.onReady(!!target&&!running&&selected.length===count);
  },[target?.id,target?.target,selectionKey,count,running?.id]);
  useEffect(()=>{if(!target||running)return;const escape=(event:KeyboardEvent)=>{if(event.key==='Escape')callbacks.current.onCancel();};document.addEventListener('keydown',escape);return()=>document.removeEventListener('keydown',escape);},[!!target,running?.id]);
  useLayoutEffect(()=>{
@@ -52,18 +51,19 @@ export function RpgExchangeStage({game,target,selected,onReady,onConfirm,onCance
   const hand=document.querySelector('[data-hand-area]'),observer=new ResizeObserver(measure);if(hand)observer.observe(hand);
   return()=>{observer.disconnect();window.removeEventListener('resize',measure);window.removeEventListener('scroll',measure,true);};
  },[target?.id,targetSeat,selectionKey,count,running?.id]);
+ const previewGestures=useTileGestures({kind:'hand',enabled:!!target&&!running,rotation:0,contextKey:`${runId}:${target?.id}:${targetSeat}:${selectionKey}`,tapContextKey:`${runId}:${target?.id}:${targetSeat}`,canStart:()=>false,canCommit:()=>false,canDoubleCommit:()=>selected.length===count,onTap:()=>{},onCommit:()=>{},onDoubleCommit:()=>callbacks.current.onConfirm(selected.map(tile=>tile.id))});
  if((!target&&!running)||!measurements||typeof document==='undefined')return null;
  const {layout,hand,opponent}=measurements,{cardWidth,cardHeight}=layout;
  const holes=measurements.tiles.map(rect=>{const left=Math.max(hand.left,rect.left),top=Math.max(hand.top,rect.top),right=Math.min(hand.left+hand.width,rect.left+rect.width),bottom=Math.min(hand.top+hand.height,rect.top+rect.height);return right>left&&bottom>top?`,${left}px ${top}px,${left}px ${bottom}px,${right}px ${bottom}px,${right}px ${top}px,${left}px ${top}px,0 0`:'';}).join('');
  const hole=`polygon(evenodd,0 0,100% 0,100% 100%,0 100%,0 0${holes})`;
  const avatarDestination=(index:number)=>{const width=Math.min(cardWidth,opponent.width*.8);return {left:opponent.left+opponent.width/2-width/2+index*4,top:opponent.top+opponent.height/2-width/.76/2,width,height:width/.76};};
  const style=(index:number,source:ExchangeRect,destination:ExchangeRect):CSSProperties=>({width:cardWidth,height:cardHeight,'--sx':`${source.left}px`,'--sy':`${source.top}px`,'--ssx':source.width/cardWidth,'--ssy':source.height/cardHeight,'--ox':`${layout.own[index].x}px`,'--oy':`${layout.own[index].y}px`,'--px':`${layout.opponent[index].x}px`,'--py':`${layout.opponent[index].y}px`,'--dx':`${destination.left}px`,'--dy':`${destination.top}px`,'--dsx':destination.width/cardWidth,'--dsy':destination.height/cardHeight} as CSSProperties);
- const outgoing=running?.outgoing||selected,opponentArrives=!!running||selected.length===count;
+ const outgoing=running?.outgoing||selected,opponentArrives=!!running;
  const describe=(tiles:Tile[])=>tiles.map(tile=>`${suits[tile.s]} ${tile.n}`).join(' · ');
- return createPortal(<div className={`rpg-exchange-stage ${game.rpgTest?'rpg-test-mode':''}`} data-phase={running?'swapping':'selecting'}><div className="exchange-focus-shade" style={{clipPath:hole}} onClick={()=>!running&&callbacks.current.onCancel()}/><div className="exchange-stage-label" style={{top:layout.opponent[0].y-23}}>{game.players[targetSeat!].name}의 패 · 위</div><div className="exchange-stage-label" style={{top:layout.own[0].y-23}}>내 패 · 아래</div>
+ return createPortal(<div className={`rpg-exchange-stage ${game.rpgTest?'rpg-test-mode':''}`} data-phase={running?'swapping':'selecting'}><div className="exchange-focus-shade" style={{clipPath:hole}} onClick={()=>!running&&callbacks.current.onCancel()}/><div className="exchange-stage-emblem" style={{left:layout.centerX,top:layout.emblemY}}><img src={itemImage(running?.itemId||target!.id)} alt=""/></div><div className="exchange-stage-label" style={{left:layout.centerX,top:layout.opponent[0].y-22}}>{game.players[targetSeat!].name}</div><div className="exchange-stage-label" style={{left:layout.centerX,top:layout.own[0].y-22}}>내 패</div>
   {!running&&Array.from({length:count},(_,index)=>selected[index]?null:<span key={`slot-${index}`} className="exchange-stage-placeholder" style={{left:layout.own[index].x,top:layout.own[index].y,width:cardWidth,height:cardHeight}}>선택</span>)}
-  {outgoing.map((tile,index)=>{const source=measurements.sources[tile.id]||hand;return <button type="button" key={`${running?.id||'pick'}:${tile.id}`} className={`exchange-stage-tile ${running?'stage-post-outgoing':'stage-own-approach'}`} style={style(index,source,avatarDestination(index))} onClick={()=>!running&&callbacks.current.onRemove(tile.id)} disabled={!!running} aria-label={`선택한 ${suits[tile.s]} ${tile.n}${running?' 보내는 중':' 선택 취소'}`}><TileFace tile={tile}/></button>;})}
+  {outgoing.map((tile,index)=>{const source=measurements.sources[tile.id]||hand;return <button type="button" key={`${running?.id||'pick'}:${tile.id}`} className={`exchange-stage-tile ${running?'stage-post-outgoing':'stage-own-approach'}`} style={style(index,source,avatarDestination(index))} {...previewGestures.bind(tile.id)} onKeyDown={event=>{if(!running&&selected.length===count&&event.key==='Enter'){event.preventDefault();callbacks.current.onConfirm(selected.map(tile=>tile.id));}}} disabled={!!running} aria-label={`선택한 ${suits[tile.s]} ${tile.n}${running?' 보내는 중':' · 두 번 눌러 교환'}`}><TileFace tile={tile}/></button>;})}
   {opponentArrives&&Array.from({length:count},(_,index)=>{const tile=running?.incoming[index],destination=tile&&measurements.destinations[tile.id]||{left:hand.left+hand.width/2-cardWidth/2+index*(cardWidth+6),top:hand.top,width:cardWidth,height:cardHeight};return <span key={`${running?.id||'opponent'}:${index}`} className={`exchange-stage-tile ${running?'stage-post-incoming':'stage-opponent-approach'}`} style={style(index,avatarDestination(index),destination)}>{tile?<span className="exchange-stage-flipper"><span className="exchange-stage-back"><TileBack/></span><span className="exchange-stage-front"><TileFace tile={tile}/></span></span>:<TileBack/>}</span>;})}
-  <div className="exchange-stage-controls" style={{top:layout.controlsY}}>{running?<div className="exchange-stage-receipt" role="status" aria-live="polite"><strong>패 교환</strong><small>보낸 패: {describe(running.outgoing)}<br/>받은 패: {describe(running.incoming)}</small></div>:<><strong>{selected.length}/{count}장 · 교환할 손패를 더블클릭·더블탭하세요</strong><small>바깥을 누르거나 Esc로 닫기</small>{error&&<small className="exchange-stage-error">{error}</small>}</>}</div>
+  <div className="exchange-stage-controls" style={{left:layout.centerX,top:layout.controlsY}}>{running?<div className="exchange-stage-receipt" role="status" aria-live="polite"><strong>패 교환</strong><small>보낸 패: {describe(running.outgoing)}<br/>받은 패: {describe(running.incoming)}</small></div>:<><strong>{selected.length}/{count}장 · 한 번 눌러 미리보기, 두 번 눌러 교환</strong><small>바깥을 누르면 취소</small>{error&&<small className="exchange-stage-error">{error}</small>}</>}</div>
  </div>,document.body);
 }

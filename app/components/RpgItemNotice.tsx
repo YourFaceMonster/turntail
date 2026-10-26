@@ -1,17 +1,41 @@
 "use client";
-import {useEffect,useRef,useState} from 'react';
+import {useEffect,useLayoutEffect,useRef,useState,type CSSProperties} from 'react';
 import {createPortal} from 'react-dom';
 import type {view} from '../../lib/game.ts';
 import {itemImage,rpgItemNoticeText,type RpgItemEvent} from '../../lib/rpg-items.ts';
-export function RpgItemNotice({game}:{game:ReturnType<typeof view>}){
+import {itemScenePoints,RPG_ITEM_SCENE_MS} from '../../lib/rpg-item-motion.ts';
+
+type View=ReturnType<typeof view>;
+type Points=ReturnType<typeof itemScenePoints>;
+export function RpgItemNotice({game}:{game:View}){
  const event=game.rpgRun?.lastItem,seen=useRef(event?.id),[queue,setQueue]=useState<RpgItemEvent[]>([]),shown=queue[0];
- useEffect(()=>{if(!event||seen.current===event.id)return;seen.current=event.id;if(event.kind==='cancel'||event.kind==='armed')return;setQueue(old=>[...old,event].slice(-6));},[event?.id]);
- useEffect(()=>{if(!shown)return;const timer=setTimeout(()=>setQueue(old=>old.slice(1)),1900);return()=>clearTimeout(timer);},[shown?.id]);
- if(!shown||typeof document==='undefined')return null;
- const message=rpgItemNoticeText(shown,game.players),opponents=game.players.map((_,seat)=>seat).filter(seat=>seat!==game.me);
- const positions=game.players.map((player,seat)=>({name:player.name,seat,x:seat===game.me?120:opponents.indexOf(seat)===0?43:197,y:seat===game.me?110:20}));
- const source=positions[shown.actor],directed=['damage','exchange','blocked'].includes(shown.kind),target=directed?positions[shown.target]:source;
- const dx=(target?.x||0)-(source?.x||0),dy=(target?.y||0)-(source?.y||0),distance=Math.hypot(dx,dy)||1,trim=27;
- const marker=`item-arrow-${shown.id}`;
- return createPortal(<div key={shown.id} className={`rpg-item-notice spatial-item-notice item-notice-${shown.kind}`} role="status" aria-live="polite" aria-atomic="true" aria-label={`${message.title} · ${message.route} · ${message.detail}`}><header><img src={itemImage(shown.kind==='blocked'?'ward-seal':shown.itemId)} alt=""/><strong>{message.title}</strong></header><div className="item-seat-map"><svg className="item-route-svg" viewBox="0 0 240 132" preserveAspectRatio="none" aria-hidden="true"><defs><marker id={marker} markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8 2 4Z" fill="#fff0ad"/></marker></defs>{directed&&source&&target&&<line x1={source.x+dx/distance*trim} y1={source.y+dy/distance*trim} x2={target.x-dx/distance*trim} y2={target.y-dy/distance*trim} markerEnd={`url(#${marker})`} stroke="#ffe39a" strokeWidth="4"/>}{!directed&&source&&<circle cx={source.x} cy={source.y} r="23" fill="none" stroke="#ffe39a" strokeWidth="3"/>}</svg>{positions.map(position=><span key={position.seat} className={`item-seat-label ${position.seat===shown.actor?'is-source':''} ${position.seat===target?.seat?'is-target':''}`} style={{left:`${position.x/2.4}%`,top:`${position.y/1.32}%`}}><small>{position.seat===game.me?'나':opponents.indexOf(position.seat)===0?'왼쪽 상대':'오른쪽 상대'}</small><b>{position.name}</b></span>)}</div><footer>{message.detail}</footer></div>,document.body);
+ const [points,setPoints]=useState<Points|null>(null);
+ useEffect(()=>{if(!event||seen.current===event.id)return;seen.current=event.id;
+  if(event.kind==='cancel'||event.kind==='armed'||event.kind==='exchange'&&(event.actor===game.me||event.target===game.me))return;
+  setQueue(old=>[...old,event].slice(-6));
+ },[event?.id,game.me]);
+ useEffect(()=>{if(!shown)return;const timer=setTimeout(()=>setQueue(old=>old.slice(1)),shown.kind==='scout'?1250:RPG_ITEM_SCENE_MS);return()=>clearTimeout(timer);},[shown?.id]);
+ useLayoutEffect(()=>{
+  if(!shown){setPoints(null);return;}
+  const measure=()=>{
+   const seat=(who:number)=>document.querySelector<HTMLElement>(who===game.me?'.rpg-mode .own-status-card':`.rpg-mode .opponents [data-seat="${who}"] .seat-card`);
+   const fallback=(who:number)=>({left:who===game.me?innerWidth/2-24:who<2?30:innerWidth-78,top:who===game.me?innerHeight-130:70,width:48,height:40});
+   const source=seat(shown.actor)?.getBoundingClientRect()||fallback(shown.actor),target=seat(shown.target)?.getBoundingClientRect()||source;
+   const board=document.querySelector('.rpg-mode .floor-stage')?.getBoundingClientRect()||{left:0,top:100,width:innerWidth,height:innerHeight*.45};
+   setPoints(itemScenePoints(innerWidth,innerHeight,source,target,board));
+  };
+  measure();window.addEventListener('resize',measure);window.addEventListener('scroll',measure,true);
+  return()=>{window.removeEventListener('resize',measure);window.removeEventListener('scroll',measure,true);};
+ },[shown?.id,game.me]);
+ if(!shown||!points||typeof document==='undefined')return null;
+ const message=rpgItemNoticeText(shown,game.players),actor=game.players[shown.actor]?.name||'상대',target=game.players[shown.target]?.name||'상대';
+ const style={'--from-x':`${points.from.x}px`,'--from-y':`${points.from.y}px`,'--to-x':`${points.to.x}px`,'--to-y':`${points.to.y}px`,'--apex-y':`${points.apex.y}px`,'--center-x':`${points.center.x}px`,'--center-y':`${points.center.y}px`,'--block-x':`${points.blockHit.x}px`,'--block-y':`${points.blockHit.y}px`,'--recoil-x':`${points.recoil.x}px`,'--recoil-y':`${points.recoil.y}px`} as CSSProperties;
+ const offensive=['damage','blocked'].includes(shown.kind),blocked=shown.kind==='blocked';
+ const caption=blocked?`${target} · ${shown.itemId==='ember-bomb'?'작열탄':'패 교환'} 차단`:shown.kind==='heal'?`${actor} · HP +${shown.amount}`:shown.kind==='seal'?'수호의 봉인 · 방어 준비':shown.kind==='exchange'?`${actor} ↔ ${target}`:'';
+ return createPortal(<div key={shown.id} className={`item-fx-scene fx-${shown.kind} ${shown.itemId==='ember-bomb'?'fx-ember':''}`} style={style} role="status" aria-live="polite" aria-atomic="true" aria-label={`${message.title} · ${message.route} · ${message.detail}`}>
+  {offensive&&<><small className="item-fx-source">{actor}</small><span className="item-fx-projectile">{shown.itemId==='ember-bomb'&&<i className="ember-flight-flame"/>}<img src={itemImage(shown.itemId)} alt=""/></span></>}
+  {shown.kind==='damage'&&<span className="item-fx-impact"/>}
+  {blocked?<span className="item-fx-shield"><img src={itemImage('ward-seal')} alt=""/><i className="item-fx-barrier"/></span>:!offensive&&<span className="item-fx-emblem"><i className="item-fx-aura"/><img src={itemImage(shown.itemId)} alt=""/></span>}
+  {caption&&<small className="item-fx-caption">{caption}</small>}
+ </div>,document.body);
 }

@@ -7,6 +7,7 @@ import {readRpgArchive,saveRpgGame,RPG_STORAGE_KEY} from '../lib/rpg-storage.ts'
 import {readSaveSlots} from '../lib/save-slots.ts';
 import {useRpgTacticalItem,rpgItemAvailability,rpgItemSlots} from '../lib/rpg-items.ts';
 import {exchangeStageLayout} from '../lib/rpg-exchange-motion.ts';
+import {itemScenePoints,RPG_ITEM_IMPACT_MS,RPG_ITEM_SCENE_MS} from '../lib/rpg-item-motion.ts';
 
 function createRpgGame(...args:Parameters<typeof baseRpgGame>){const game=baseRpgGame(...args);game.roundActions=game.players.length;return game;}
 
@@ -30,6 +31,13 @@ for(const [width,height] of [[360,640],[390,844],[1280,720]])for(const count of 
  }
  assert.ok(layout.controlsY+44<=height,'exchange controls remain within the viewport');
 }
+const portraitExchange=exchangeStageLayout(390,844,{left:8,top:640,width:374,height:170},2);
+assert.ok(portraitExchange.controlsY+40<640,'the exchange receipt stays above the actual hand instead of covering the played row or hand');
+const sideExchange=exchangeStageLayout(900,400,{left:470,top:0,width:420,height:380},2);
+assert.ok(sideExchange.own[1].x+sideExchange.cardWidth<470,'landscape exchange preview stays in the board beside the hand');
+const scene=itemScenePoints(390,844,{left:40,top:65,width:120,height:45},{left:30,top:710,width:330,height:45},{left:10,top:160,width:370,height:330});
+assert.ok(scene.from.y<scene.center.y&&scene.center.y<scene.to.y,'attack travels from the opposing seat toward the defending human');
+assert.ok(RPG_ITEM_IMPACT_MS<RPG_ITEM_SCENE_MS,'the hit appears during the artwork flight');
 const initial=newRpgRun('rpg',1);
 assert.deepEqual([initial.hp,initial.fate,initial.coins,initial.relics],[ [100,100,100],3,0,[] ]);
 const round=(id:string,delta:number[],counts=[0,5,10])=>({id,at:2,players:delta.map((d,i)=>({delta:d,count:counts[i]}))});
