@@ -4,7 +4,8 @@ import {finishHpItemRoundReport} from './hp-item-shop.ts';
 import {resolveHpSkills,type HpSkillUse} from './hp-item-skills.ts';
 
 export type HpBattleEvent={id:string,round:number,actor:number,label:string,damage:number,damageTaken?:number[],skills?:HpSkillUse[],hpBefore:number[],hpAfter:number[],at:number};
-export function isBattleItemMode(game:{hpItemMode?:boolean,hpItemVariant?:number,hpItemRules?:number}){return !!game.hpItemMode&&game.hpItemVariant===1&&game.hpItemRules===2;}
+/** Rules 2 preserves previously saved mode-1 trials; new battles belong to mode 2. */
+export function isBattleItemMode(game:{hpItemMode?:boolean,hpItemVariant?:number,hpItemRules?:number}){return !!game.hpItemMode&&(game.hpItemVariant===2&&game.hpItemRules===3||game.hpItemVariant===1&&game.hpItemRules===2);}
 export const HP_BATTLE_DAMAGE:Readonly<Record<string,number>>={'싱글':1,'페어':2,'트리플':3,'스트레이트':4,'플러시':4,'풀하우스':5,'포카드':6,'스트레이트 플러시':10};
 export function hpBattleDamage(tiles:Tile[]){const label=combo(tiles)?.label;return label?HP_BATTLE_DAMAGE[label]||0:0;}
 /** Called before clearing the winning trick and before final-hand money settlement. */

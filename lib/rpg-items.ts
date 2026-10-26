@@ -147,7 +147,7 @@ function applyRpgEmberDamage(g:Game,who:number,target:number,now:number,id:RpgTa
   const blocked=Math.min(run.shield||0,damage);damage-=blocked;run.shield-=blocked;
  }
  if(g.hpItemMode&&!isBattleItemMode(g)&&g.hpItemMatch){g.hpItemMatch.pendingItemDelta??=g.players.map(()=>0);g.hpItemMatch.pendingItemDelta[target]-=damage;}else run.hp[target]=Math.max(isBattleItemMode(g)?0:1,run.hp[target]-damage);record(g,who,id,target,'damage',damage);
- if(g.hpItemVariant===2&&g.hpItemMatch){g.hpItemMatch.pendingItemPoints??=g.players.map(()=>0);g.hpItemMatch.pendingItemPoints[who]+=damage;g.hpItemMatch.roundEarned[who]+=damage;}if(!g.hpItemMode)finishHpItemMatch(g);
+ if(g.hpItemVariant===2&&!isBattleItemMode(g)&&g.hpItemMatch){g.hpItemMatch.pendingItemPoints??=g.players.map(()=>0);g.hpItemMatch.pendingItemPoints[who]+=damage;g.hpItemMatch.roundEarned[who]+=damage;}if(!g.hpItemMode)finishHpItemMatch(g);
 }
 export function resetRpgTactics(run:RpgRun){run.tactics={};run.tacticalPeeks=undefined;run.tacticalPeek=undefined;run.tacticalRound=undefined;run.tacticalUsed=0;run.tacticalTurn=undefined;run.protectedCounts=undefined;}
 export function scoutRpgBotDraw(g:Game,who:number,index:number){

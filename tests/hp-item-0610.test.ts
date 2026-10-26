@@ -6,7 +6,7 @@ import {view,settle,type Game} from '../lib/game.ts';
 import {startRpgRound} from '../lib/rpg-game.ts';
 import {itemScenePoints,itemSceneTiming,itemProjectileFrames,itemTurnReadyAt} from '../lib/rpg-item-motion.ts';
 import {exchangePickerPlacement} from '../lib/rpg-exchange-motion.ts';
-const fresh=()=>{const game=createHpItemGame('20P 테스트','',Date.now(),2);game.rpgRun!.equipped=[];game.turnReadyAt=0;return game;};
+const fresh=()=>{const game=createHpItemGame('20P 테스트','',Date.now(),2);delete game.hpItemRules;delete game.hpItemMatch!.skills;game.rpgRun!.consumables=[];game.rpgRun!.enemyConsumables={1:[],2:[]};game.rpgRun!.equipped=[];game.turnReadyAt=0;return game;};
 const ended=(game:Game)=>{game.phase='ended';game.winner=0;game.players[0].hand=[];game.players[1].hand=game.players[1].hand.slice(0,3);game.players[2].hand=game.players[2].hand.slice(0,5);settle(game);};
 const empty=fresh();assert.deepEqual(empty.hpItemMatch!.points,[20,20,20]);assert.ok(hpItemShopPending(empty));buyHpItemLoadout(empty,[]);assert.equal(empty.hpItemMatch!.points[0],20);assert.equal(empty.rpgRun!.consumables.length,0);assert.equal(hpItemShopPending(empty),false);assert.throws(()=>buyHpItemLoadout(empty,[]),'a shop cannot charge twice');
 const held=fresh();held.rpgRun!.consumables=Array(45).fill('ward-seal');buyHpItemLoadout(held,['scout-lens']);assert.equal(held.rpgRun!.consumables.length,46,'ownership is not capped');const before=JSON.stringify(held.rpgRun!.consumables);ended(held);const points=[...held.hpItemMatch!.points];startRpgRound(held);assert.equal(JSON.stringify(held.rpgRun!.consumables),before,'unused items survive every round');assert.equal(held.hpItemMatch!.points[0],points[0]+8);buyHpItemLoadout(held,[]);assert.equal(held.rpgRun!.consumables.length,46);

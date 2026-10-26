@@ -10,7 +10,7 @@ import {itemSceneTiming,itemProjectileFrames,itemScenePoints} from '../lib/rpg-i
 import {HpItemResult,HpItemShop} from '../app/components/HpItemMatch.tsx';
 import RpgScoutReveal from '../app/components/RpgScoutReveal.tsx';
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
-const fresh=()=>{const g=createHpItemGame('나','',Date.now(),2);g.turn=0;g.rpgRun!.equipped=[];buyHpItemLoadout(g,[]);g.roundActions=3;g.completedBattles=1;g.turnReadyAt=0;return g;};
+const fresh=()=>{const g=createHpItemGame('나','',Date.now(),2);delete g.hpItemRules;delete g.hpItemMatch!.skills;g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.turn=0;g.rpgRun!.equipped=[];buyHpItemLoadout(g,[]);g.roundActions=3;g.completedBattles=1;g.turnReadyAt=0;return g;};
 const lens=fresh();lens.trick=[tile(15,3)];lens.lastBy=2;lens.rpgRun!.consumables=['scout-lens','scout-lens'];const indexes=view(lens,lens.players[0].token).stacks.flatMap((stack,index)=>stack.available&&stack.upper?[index]:[]).slice(0,2);assert.equal(indexes.length,2);
 useRpgTacticalItem(lens,'scout-lens',indexes[0]);lens.roundActions!++;useRpgTacticalItem(lens,'scout-lens',indexes[1]);lens.turn=1;lens.roundActions!++;assert.equal(view(lens,lens.players[0].token).rpgRun!.tacticalPeeks?.length,2,'two scouts survive later actions and other turns');
 const enemy=view(lens,lens.players[1].token);assert.deepEqual(enemy.rpgRun!.tacticalPeeks,[]);assert.equal(enemy.rpgRun!.lastItem?.target,-1,'public use notification hides the scouted location');assert.equal(enemy.rpgRun!.lastItem?.itemId,'scout-lens');

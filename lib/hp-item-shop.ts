@@ -8,7 +8,8 @@ export type HpItemRoundReport={round:number,hpBefore:number[],hpAfter:number[],e
 export type HpItemMatchState={points:number[],skills?:HpSkillState,shopRound:number,roundStartHp:number[],roundItems:HpItemRoundReport['items'],roundEarned:number[],pendingItemDelta?:number[],pendingItemPoints?:number[],battles?:HpBattleEvent[],lastBattle?:HpBattleEvent,roundMoneyBefore?:number[],moneyBefore?:number[],moneyDelta?:number[],moneyDamage?:number[],moneySkipped?:boolean,endReason?:'battle'|'item'|'bankruptcy',moneySettlementId?:string,report?:HpItemRoundReport};
 export const HP_ITEM_PRICES:Record<string,number>={'whisper-eye':4,'spark-dart':4,'scout-lens':3,'swapped-fate':6,'ward-seal':6,'ember-bomb':10,'emergency-herb':5};
 export const HP_ITEM_START_POINTS=20;
-export const HP_ITEM_STARTER_ITEMS=RPG_SHOP_ITEMS;
+// Keep starter data independent of the item/game import cycle.
+export const HP_ITEM_STARTER_ITEMS:readonly RpgTacticalItem[]=['scout-lens','swapped-fate','ward-seal','ember-bomb','emergency-herb','whisper-eye','spark-dart'];
 export const HP_ITEM_ROUND_ALLOWANCE=8;
 export function hpItemShopPending(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'|'round'|'result'>){
  if(isBattleItemMode(game))return game.phase==='ended'&&game.rpgRun?.status==='playing'&&!!game.result&&game.hpItemMatch?.shopRound!==game.round;
@@ -55,7 +56,7 @@ export function finishHpItemRoundReport(game:Game,hpBeforeSettlement?:number[]){
 }
 export function beginHpItemRound(game:Game){
  const state=game.hpItemMatch,run=game.rpgRun;if(!game.hpItemMode||!state||!run)return;
- if(game.hpItemVariant===2&&game.round>1)state.points=state.points.map(points=>points+HP_ITEM_ROUND_ALLOWANCE);
+ if(game.hpItemVariant===2&&!isBattleItemMode(game)&&game.round>1)state.points=state.points.map(points=>points+HP_ITEM_ROUND_ALLOWANCE);
  state.roundStartHp=[...run.hp];state.roundItems=[];state.roundEarned=game.players.map(()=>0);state.pendingItemDelta=game.players.map(()=>0);state.pendingItemPoints=game.players.map(()=>0);
  if(isBattleItemMode(game)){resetHpSkills(game);state.battles=[];state.lastBattle=undefined;state.roundMoneyBefore=[...state.points];state.moneyBefore=undefined;state.moneyDelta=undefined;state.moneyDamage=undefined;state.moneySkipped=false;state.endReason=undefined;}
 }
