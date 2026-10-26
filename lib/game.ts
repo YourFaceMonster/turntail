@@ -7,7 +7,8 @@ import {isHiboringji,hiboringjiAction,hiboringjiTemperament} from './hiboringji'
 import {newChallenge,advanceChallenge,type Challenge} from './challenge.ts';
 import type {TablePlay} from './table-play';
 import {settleStageRun,type StageRun} from './stage-challenge.ts';
-import {settleRpgRound,type RpgRun} from './rpg.ts';
+import {RPG_TEST_ROUNDS,settleRpgRound,type RpgRun} from './rpg.ts';
+import {withRelicActivations} from './rpg-relic-feedback.ts';
 import {twinIndex} from './rpg-twins.ts';
 export type Tile = {id:number,n:number,s:number};
 export type Player = {id:string,token:string,name:string,hand:Tile[],wins:number,bot?:boolean,points?:number,losses?:number,games?:number,profile?:string,avatar?:string,timeouts?:number,replaced?:boolean};
@@ -130,7 +131,7 @@ export function settle(g:Game):RoundResult{
   const reached=g.players.map((p,i)=>({i,points:p.points||0,count:p.hand.length})).filter(p=>p.points>=(g.targetScore||100)).sort((a,b)=>b.points-a.points||a.count-b.count||a.i-b.i);
   g.matchWinner=reached[0]?.i??null;
  }
- g.result={id:`${g.code}:${g.round}`,at:Date.now(),round:g.round,players,transfers,voided,voidReason:voided?"AI가 대신 진행한 참가자가 있어 전적과 점수를 반영하지 않아요.":undefined};if(g.stageRun){g.stageRun=settleStageRun(g.stageRun,g.result);g.result.stageRun=structuredClone(g.stageRun);}if(g.rpgRun)g.rpgRun=settleRpgRound(g.rpgRun,g.result,g.winner);if(g.challenge){g.challenge=advanceChallenge(g.challenge,g.result);g.result.challenge=structuredClone(g.challenge);}return g.result;
+ g.result={id:`${g.code}:${g.round}`,at:Date.now(),round:g.round,players,transfers,voided,voidReason:voided?"AI가 대신 진행한 참가자가 있어 전적과 점수를 반영하지 않아요.":undefined};if(g.stageRun){g.stageRun=settleStageRun(g.stageRun,g.result);g.result.stageRun=structuredClone(g.stageRun);}if(g.rpgRun){g.rpgRun=settleRpgRound(g.rpgRun,g.result,g.winner,!!g.rpgTest);if(g.rpgTest&&g.rpgRun.rounds>=RPG_TEST_ROUNDS)g.rpgRun={...g.rpgRun,status:'complete',reward:null};}if(g.challenge){g.challenge=advanceChallenge(g.challenge,g.result);g.result.challenge=structuredClone(g.challenge);}return g.result;
 }
 export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now=Date.now(),automatic=false){
  if(g.stageRun&&g.stageRun.status!=="playing")throw Error("이번 도전의 판 결과를 먼저 확인해 주세요.");
@@ -143,7 +144,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   const tiles=ts as Tile[];if(!beats(tiles,g.trick))throw Error("같은 개수의 더 높은 조합을 내야 해요.");
   if(g.rpgRun&&who===0&&tiles.length===5&&g.rpgRun.equipped.includes('gamblers-gloves')){
    const roundId=`${g.code}:${g.round}`;
-   if(!(g.rpgRun.gloveRoundIds||[]).includes(roundId))g.rpgRun={...g.rpgRun,points:g.rpgRun.points+2,gloveRoundIds:[...(g.rpgRun.gloveRoundIds||[]),roundId]};
+   if(!(g.rpgRun.gloveRoundIds||[]).includes(roundId))g.rpgRun=withRelicActivations({...g.rpgRun,points:g.rpgRun.points+2,gloveRoundIds:[...(g.rpgRun.gloveRoundIds||[]),roundId]},[{relicId:'gamblers-gloves',message:'포인트 +2'}],now);
   }
   g.roundActions=(g.roundActions??(g.playedTiles?.length||0))+1;
   p.hand=p.hand.filter(t=>!ids.includes(t.id));g.playedTiles=[...(g.playedTiles||[]),...tiles];if(g.publicDraws?.[p.id])g.publicDraws[p.id]=g.publicDraws[p.id].filter(t=>!ids.includes(t.id));g.trick=tiles;g.lastBy=who;

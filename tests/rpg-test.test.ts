@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
-import {createRpgTestGame} from '../lib/rpg-game.ts';
-import {RPG_CONSUMABLES,RPG_RELICS} from '../lib/rpg.ts';
+import {createRpgTestGame,startRpgRound} from '../lib/rpg-game.ts';
+import {settle} from '../lib/game.ts';
+import {RPG_CONSUMABLES,RPG_RELICS,newRpgRun,settleRpgRound} from '../lib/rpg.ts';
 import {readRpgTestGame,saveRpgTestGame,RPG_TEST_STORAGE_KEY} from '../lib/rpg-test-storage.ts';
 import {readRpgArchive,RPG_STORAGE_KEY} from '../lib/rpg-storage.ts';
 import {readSaveSlots} from '../lib/save-slots.ts';
@@ -12,8 +13,9 @@ for(let n=0;n<20;n++){
  assert.deepEqual(run.equipped,run.relics);
  assert.ok(run.relics.every(id=>RPG_RELICS.some(item=>item.id===id)&&!['mor-quill','twin-needle-compass','split-mirror'].includes(id)));
  assert.equal(run.consumables.length,3);
+ assert.equal(new Set(run.consumables).size,3);
  assert.ok(run.consumables.every(id=>RPG_CONSUMABLES.some(item=>item.id===id)));
- assert.ok(run.consumables.some(id=>['swapped-fate','fates-scales','scout-lens'].includes(id)));
+ assert.ok(run.consumables.includes('scout-lens'));
 }
 const values=new Map<string,string>();
 const storage={getItem:(key:string)=>values.get(key)??null,setItem:(key:string,value:string)=>{values.set(key,value);}};
@@ -22,4 +24,16 @@ assert.ok(values.has(RPG_TEST_STORAGE_KEY));assert.equal(values.has(RPG_STORAGE_
 assert.equal(readRpgArchive(storage).active,null);
 assert.equal(readRpgTestGame(storage)?.code,game.code);
 assert.equal(readSaveSlots(storage).slots.find(slot=>slot.mode==='rpg-test')?.game?.code,game.code);
-console.log('PASS: random RPG test kit, active relics, tactical item guarantee and separate save');
+for(let round=1;round<=5;round++){
+ game.round=round;game.phase='ended';game.winner=0;game.result=null;
+ game.players[0].hand=[];
+ settle(game);
+ assert.equal(game.rpgRun?.rounds,round);
+ assert.equal(game.rpgRun?.status,round===5?'complete':'playing');
+}
+assert.throws(()=>startRpgRound(game));
+const bossRun={...newRpgRun('test-boss'),stage:3,hp:[100,1,1]};
+const bossResult={id:'test-boss-round',at:Date.now(),players:[{count:0,delta:10},{count:1,delta:-5},{count:1,delta:-5}]};
+assert.equal(settleRpgRound(bossRun,bossResult,0,true).reward?.reason,'clear');
+assert.equal(settleRpgRound(bossRun,bossResult,0).reward?.reason,'end');
+console.log('PASS: random RPG kit, scout lens, separate save and five-round limit');

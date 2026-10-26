@@ -17,8 +17,7 @@ export function createRpgTestGame(name:string,avatar='',now=Date.now()):Game{
  const game=createRpgGame(name,avatar,now),run=game.rpgRun!;
  const relicPool=RPG_RELICS.filter(item=>!['mor-quill','twin-needle-compass','split-mirror'].includes(item.id));
  const relics=sample(relicPool,3).map(item=>item.id);
- const tactical=RPG_CONSUMABLES.filter(item=>['swapped-fate','fates-scales','scout-lens'].includes(item.id));
- const consumables=[...sample(tactical,1),...sample(RPG_CONSUMABLES.filter(item=>!tactical.includes(item)),2)].map(item=>item.id);
+ const consumables=['scout-lens',...sample(RPG_CONSUMABLES.filter(item=>item.id!=='scout-lens'),2).map(item=>item.id)];
  game.rpgTest=true;game.code='RPG-TEST-'+uid();
  run.relics=relics;run.equipped=[...relics];run.discovered=[...relics];run.unlocked=['second-heart'];run.consumables=sample(consumables,consumables.length);
  return game;

@@ -1,19 +1,30 @@
 "use client";
+import {useEffect,useLayoutEffect,useRef,useState,type CSSProperties} from 'react';
+import {createPortal} from 'react-dom';
 import type {view} from '../../lib/game.ts';
 import {RPG_RELICS} from '../../lib/rpg.ts';
 
 type View=ReturnType<typeof view>;
 
-export function RpgStatusPanel({game,close,openItems,openProfile}:{game:View,close:()=>void,openItems:()=>void,openProfile:()=>void}){
+export function RpgStatusPanel({game,seat,close,openProfile}:{game:View,seat:number,close:()=>void,openProfile?:()=>void}){
  const run=game.rpgRun;
- if(!run)return null;
- const player=game.players[game.me];
- return <div className="modal-shade rpg-status-shade" onClick={close}><section className="modal rpg-status-panel" role="dialog" aria-modal="true" aria-label="내 RPG 상태" onClick={event=>event.stopPropagation()}>
-  <button className="close" aria-label="상태창 닫기" onClick={close}>×</button>
-  <span className="eyebrow">WANDERER · STAGE {run.stage}</span><h2>{player.name}의 상태</h2>
-  <p>최고의 승부를 찾아 여행하는 방랑자입니다. 수호자에게 인정받으며 문양을 모아 해의 왕좌로 향합니다.</p>
-  <div className="rpg-status-stats"><div><small>체력</small><b>{run.hp[0]}/100</b><span>0이 되면 여정이 끝나요.</span></div><div><small>운명</small><b>{run.fate}</b><span>준비 구간에서 회복에 사용해요.</span></div><div><small>주화</small><b>{run.coins}</b><span>준비 구간 상점에서 사용해요.</span></div><div><small>포인트</small><b>{run.points}</b><span>판 종료 후 강화에 사용해요.</span></div></div>
-  <h3>장착 유물 {run.equipped.length}/3</h3><div className="rpg-equipped-list">{run.equipped.map(id=>{const relic=RPG_RELICS.find(item=>item.id===id);return <div key={id}><img src={`/rpg-items-v1/relics/${id}.webp`} alt=""/><strong>{relic?.name||id}</strong><small>{relic?.effect}</small></div>;})}{!run.equipped.length&&<p>장착한 유물이 없어요. 스테이지 보상으로 얻어 준비 구간에서 장착할 수 있어요.</p>}</div>
-  <div className="rpg-status-actions"><button className="primary" onClick={openItems}>🎒 아이템창 열기</button><button className="text-btn" onClick={openProfile}>프로필 편집</button></div>
- </section></div>;
+ const panelRef=useRef<HTMLElement>(null);
+ const [position,setPosition]=useState<CSSProperties>();
+ useLayoutEffect(()=>{
+  if(seat===game.me){setPosition(undefined);return;}
+  const anchor=document.querySelector<HTMLElement>(`.rpg-mode .opponents [data-seat="${seat}"] .seat-card`);
+  if(!anchor)return;
+  const place=()=>{const bounds=anchor.getBoundingClientRect(),width=Math.min(360,bounds.width),rightSide=bounds.left+bounds.width/2>=innerWidth/2;setPosition({left:rightSide?bounds.right-width:bounds.left,top:bounds.bottom+4,right:'auto',width,visibility:bounds.bottom<0||bounds.top>innerHeight?'hidden':'visible'});};
+  place();const observer=new ResizeObserver(place);observer.observe(anchor);window.addEventListener('resize',place);window.addEventListener('scroll',place,true);
+  return()=>{observer.disconnect();window.removeEventListener('resize',place);window.removeEventListener('scroll',place,true);};
+ },[seat,game.me]);
+ useEffect(()=>{const outside=(event:PointerEvent)=>{if(!panelRef.current?.contains(event.target as Node))close();};const escape=(event:KeyboardEvent)=>{if(event.key==='Escape')close();};document.addEventListener('pointerdown',outside);document.addEventListener('keydown',escape);return()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',escape);};},[close]);
+ if(!run||typeof document==='undefined')return null;
+ const mine=seat===game.me,player=game.players[seat],equipped=mine?run.equipped:[];
+ return createPortal(<div className="rpg-status-popover-layer"><section ref={panelRef} className={`modal rpg-status-panel ${mine?'is-own':'is-opponent'}`} style={mine?undefined:position||{visibility:'hidden'}} role="dialog" aria-label={`${player.name} RPG 상태`}>
+  <header className="rpg-status-heading"><h2>{player.name}</h2><span className="rpg-status-hp">HP <b>{run.hp[seat]}</b><small>/100</small></span><button className="close" aria-label="상태창 닫기" onClick={close}>×</button></header>
+  {mine&&<div className="rpg-status-resources"><span>운명 <b>{run.fate}</b></span><span>주화 <b>{run.coins}</b></span><span>포인트 <b>{run.points}</b></span></div>}
+  <div className="rpg-status-relics"><span className="rpg-status-relic-label">장착 유물</span>{equipped.length?<div className="rpg-status-relic-items">{equipped.map(id=>{const relic=RPG_RELICS.find(item=>item.id===id);return <div key={id}><img src={`/rpg-items-v1/relics/${id}.webp`} alt=""/><strong>{relic?.name||id}</strong><small>{relic?.effect}</small></div>;})}</div>:<span className="rpg-status-empty">없음</span>}</div>
+  {mine&&openProfile&&<button className="text-btn rpg-profile-edit" onClick={openProfile}>프로필 편집</button>}
+ </section></div>,document.body);
 }
