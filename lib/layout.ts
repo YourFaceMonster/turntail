@@ -3,7 +3,7 @@ export function tileLayout({width,height,floorWidth,handWidth,handCount,cols,row
  const columns=Math.max(5,Math.ceil(handCount/2)),gap=handCount>30?2:handCount>18?4:6;
  const baseColumns=players===2?6:5,baseGap=6;
  const compactLandscape=landscape&&height<300;
- const seatHeight=landscape?36:players===4?84:80,handChrome=landscape?(compactLandscape?152:186):144+(rpg?10:0),trickChrome=landscape?8:32,surfaceInset=landscape?16:12;
+ const seatHeight=landscape?36:rpg?68:players===4?84:80,handChrome=(landscape?(compactLandscape?152:186):144)-(rpg?(landscape?compactLandscape?32:36:8):0),trickChrome=landscape?8:32,surfaceInset=landscape?16:12;
  const boardChrome=seatHeight+18+8+18+(rows-1)*4;
  const portraitChrome=boardChrome+trickChrome+handChrome+12+surfaceInset;
  const deviceShort=Math.min(width+18,height+67),deviceLong=Math.max(width+18,height+67);
@@ -12,12 +12,20 @@ export function tileLayout({width,height,floorWidth,handWidth,handCount,cols,row
  // The left column holds seats, floor and played tiles; the full-height right column
  // sizes its hand independently, so a floor row cannot limit the hand height.
  const landscapeChrome=seatHeight+4+8+(rows-1)*4+trickChrome+6;
- const vertical=landscape?(height-surfaceInset-landscapeChrome)/(rows+1):(height-portraitChrome)/(rows+3);
+ const vertical=landscape?(height-surfaceInset-landscapeChrome)/(rows+1):(height-portraitChrome)/(rows+(rpg?3.72:3));
  const floorLimit=(floorWidth-(cols-1)*6)/cols/.76;
  const handLimit=Math.min((handWidth-4-(columns-1)*gap)/columns/.76,handCount>18?(handWidth-4-8*6)/9/.76:Infinity,handCount>30?(handWidth-4-14*4)/15/.76:Infinity);
  const playedLabelWidth=84;
  const fiveLimit=landscape?(floorWidth-playedLabelWidth-12-4*6)/5/.76:(width-24-surfaceInset-4*6)/5/.76;
  const floorHeight=Math.max(10,Math.floor(Math.min(portraitTarget,vertical,floorLimit,fiveLimit)));
- const tileHeight=Math.max(10,Math.floor(Math.min(landscape?tileCeiling:floorHeight,handLimit,landscape?(height-surfaceInset-handChrome)/2:Infinity)));
+ const portraitHandRoom=(height-portraitChrome-rows*floorHeight-floorHeight*1.28)/2;
+ const tileHeight=Math.max(10,Math.floor(Math.min(landscape?tileCeiling:rpg?floorHeight*1.22:floorHeight,handLimit,landscape?(height-surfaceInset-handChrome)/2:rpg?portraitHandRoom:Infinity)));
  return {height:tileHeight,width:tileHeight*.76,floorHeight,floorWidth:floorHeight*.76,columns,gap,baseColumns,seatHeight,handChrome,trickChrome,playedLabelWidth,compactLandscape,seatRail:landscape?0:players===2?0:82};
+}
+
+/** Center the actual submitted group and cap it by its own row, not the viewport. */
+export function playedTileLayout(floorHeight:number,availableWidth:number,count:number,enhanced=true){
+ const n=Math.max(1,Math.min(5,count)),gap=5;
+ const height=Math.max(10,Math.min(enhanced?120:76,floorHeight*(enhanced?1.28:1.15),(availableWidth-(n-1)*gap)/n/.76));
+ return {height,width:height*.76};
 }

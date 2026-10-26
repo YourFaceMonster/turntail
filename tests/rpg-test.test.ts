@@ -4,6 +4,7 @@ import {settle} from '../lib/game.ts';
 import {RPG_CONSUMABLES,RPG_RELICS,newRpgRun,settleRpgRound} from '../lib/rpg.ts';
 import {readRpgTestGame,saveRpgTestGame,RPG_TEST_STORAGE_KEY} from '../lib/rpg-test-storage.ts';
 import {readRpgArchive,RPG_STORAGE_KEY} from '../lib/rpg-storage.ts';
+import {RPG_BASIC_ITEMS} from '../lib/rpg-items.ts';
 import {readSaveSlots} from '../lib/save-slots.ts';
 
 for(let n=0;n<20;n++){
@@ -12,10 +13,14 @@ for(let n=0;n<20;n++){
  assert.equal(run.relics.length,3);assert.equal(new Set(run.relics).size,3);
  assert.deepEqual(run.equipped,run.relics);
  assert.ok(run.relics.every(id=>RPG_RELICS.some(item=>item.id===id)&&!['mor-quill','twin-needle-compass','split-mirror'].includes(id)));
- assert.equal(run.consumables.length,3);
- assert.equal(new Set(run.consumables).size,3);
+ assert.equal(run.consumables.length,10);
+ assert.equal(new Set(run.consumables).size,5);
  assert.ok(run.consumables.every(id=>RPG_CONSUMABLES.some(item=>item.id===id)));
  assert.ok(run.consumables.includes('scout-lens'));
+ assert.deepEqual(new Set(run.consumables),new Set(RPG_BASIC_ITEMS));
+ for(const id of RPG_BASIC_ITEMS)assert.equal(run.consumables.filter(held=>held===id).length,2);
+ for(const seat of [1,2])assert.deepEqual(run.enemyConsumables?.[seat],RPG_BASIC_ITEMS.flatMap(id=>[id,id]),'test opponents receive the same ten items');
+ assert.ok(!run.consumables.includes('fates-scales'),'two-card exchange remains an additional item, outside the five-item test kit');
 }
 const values=new Map<string,string>();
 const storage={getItem:(key:string)=>values.get(key)??null,setItem:(key:string,value:string)=>{values.set(key,value);}};

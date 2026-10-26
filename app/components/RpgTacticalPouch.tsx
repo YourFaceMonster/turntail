@@ -2,33 +2,26 @@
 import {useState} from 'react';
 import type {view} from '../../lib/game.ts';
 import {RPG_CONSUMABLES} from '../../lib/rpg.ts';
-import type {RpgTacticalItem} from '../../lib/rpg-items.ts';
+import {RPG_ITEMS_PER_ROUND,exchangeMinimum,exchangeTargetAvailable,itemImage,rpgItemDescription,rpgItemAvailability,type RpgExchangeItem,type RpgTacticalItem} from '../../lib/rpg-items.ts';
 
 type View=ReturnType<typeof view>;
-const tacticalIds:readonly string[]=['swapped-fate','fates-scales','scout-lens'];
-
-export function RpgTacticalPouch({game,enabled,selectExchange,selectScout,close}:{game:View,enabled:boolean,selectExchange:(id:Exclude<RpgTacticalItem,'scout-lens'>,target:number)=>void,selectScout:()=>void,close:()=>void}){
- const run=game.rpgRun;
- const [exchangeItem,setExchangeItem]=useState<Exclude<RpgTacticalItem,'scout-lens'>|null>(null);
+export function RpgTacticalPouch({game,enabled,selectExchange,selectScout,selectSeal,useItem,close,initialItem=null}:{game:View,enabled:boolean,selectExchange:(id:RpgExchangeItem,target:number)=>void,selectScout:()=>void,selectSeal:()=>void,useItem:(id:RpgTacticalItem,target?:number)=>void,close:()=>void,initialItem?:RpgExchangeItem|null}){
+ const run=game.rpgRun,[targetItem,setTargetItem]=useState<RpgExchangeItem|'ember-bomb'|null>(initialItem);
  if(!run)return null;
- const used=run.tacticalRound===game.round?(run.tacticalUsed||0):0;
- const usedTurn=run.tacticalRound===game.round&&run.tacticalTurn===game.roundActions;
- const scoutTargets=game.stacks.some(stack=>stack.available&&stack.upper);
- const owned=[...new Set(run.consumables)];
- const exchange=RPG_CONSUMABLES.find(item=>item.id===exchangeItem),exchangeCount=exchangeItem==='fates-scales'?2:1;
- return <div className="modal-shade item-shade rpg-pouch-shade" onClick={close}><section className={`modal item-pouch rpg-equipment-pouch ${exchangeItem?'rpg-exchange-pouch':''}`} role="dialog" aria-modal="true" aria-label={exchangeItem?'교환 상대 선택':'RPG 아이템창'} onClick={event=>event.stopPropagation()}>
-  <header className="rpg-pouch-heading"><div><span className="eyebrow">RPG · STAGE {run.stage}</span><h2>{exchangeItem?'누구와 교환하시겠습니까?':`아이템 ${run.consumables.length}/3`}</h2></div><button className="close" aria-label="아이템창 닫기" onClick={close}>×</button></header>
-  {exchangeItem?<>
-   <div className="rpg-exchange-item"><img src={`/rpg-items-v1/consumables/${exchangeItem}.webp`} alt=""/><p><strong>{exchange?.name}</strong><span>상대를 고른 뒤 내 손패 {exchangeCount}장을 선택해요.</span></p></div>
-   <div className="rpg-exchange-targets">{game.players.map((player,index)=>{if(index===game.me)return null;const enough=player.count>=exchangeCount&&game.players[game.me].count>=exchangeCount;return <button key={player.id} disabled={!enabled||used>=2||usedTurn||!enough} onClick={()=>{close();selectExchange(exchangeItem,index);}}><strong>{player.name}</strong><span>{enough?`손패 ${player.count}장 · 상대 선택`:`손패 ${exchangeCount}장 이상 필요`}</span></button>;})}</div>
-   <button className="text-btn rpg-exchange-back" onClick={()=>setExchangeItem(null)}>← 아이템 다시 선택</button>
+ const owned=[...new Set(run.consumables)].sort((a,b)=>Number(rpgItemAvailability(game,b,enabled).usable)-Number(rpgItemAvailability(game,a,enabled).usable));
+ const item=RPG_CONSUMABLES.find(entry=>entry.id===targetItem),description=targetItem?rpgItemDescription(targetItem,game.hpItemMode)||item?.effect:undefined,isBomb=targetItem==='ember-bomb',minimum=exchangeMinimum(targetItem||'');
+ function pick(id:string){if(id==='scout-lens')selectScout();else if(id==='ward-seal')selectSeal();else if(id==='emergency-herb')useItem(id);else setTargetItem(id as RpgExchangeItem|'ember-bomb');}
+ function itemCard(id:string){const entry=RPG_CONSUMABLES.find(row=>row.id===id),count=run!.consumables.filter(row=>row===id).length,state=rpgItemAvailability(game,id,enabled);return <button key={id} className={state.usable?'is-usable':'is-unavailable'} disabled={!state.usable} onClick={()=>pick(id)}><img src={itemImage(id)} alt=""/><strong>{entry?.name||id}<small>×{count}</small></strong><p>{rpgItemDescription(id,game.hpItemMode)||entry?.effect}</p><b>{state.reason.replace(' · 사용 가능','')}</b></button>;}
+ return <div className="modal-shade item-shade rpg-pouch-shade" onClick={close}><section className={`modal item-pouch rpg-equipment-pouch ${targetItem?'rpg-exchange-pouch':''}`} role="dialog" aria-modal="true" aria-label={targetItem?'아이템 상대 선택':'RPG 아이템창'} onClick={event=>event.stopPropagation()}>
+  <header className="rpg-pouch-heading"><div><span className="eyebrow">{game.hpItemMode?`아이템전 · 라운드 ${game.round}`:`RPG · STAGE ${run.stage}`}</span><h2>{targetItem?isBomb?'누구에게 작열탄을 사용할까요?':'누구와 교환하시겠습니까?':`아이템 ${run.consumables.length}개`}</h2></div><button className="close" aria-label="아이템창 닫기" onClick={close}>×</button></header>
+  {targetItem?<>
+   <div className="rpg-exchange-item"><img src={itemImage(targetItem)} alt=""/><p><strong>{item?.name}</strong><span>{description}</span></p></div>
+   <div className="rpg-exchange-targets">{game.players.map((player,index)=>{if(index===game.me)return null;const enough=isBomb?run.hp[index]>(game.hpItemMode?0:1):exchangeTargetAvailable(game,targetItem,index);return <button key={player.id} disabled={!rpgItemAvailability(game,targetItem,enabled).usable||!enough} onClick={()=>{close();if(isBomb)useItem('ember-bomb',index);else selectExchange(targetItem,index);}}><strong>{player.name}</strong><span>{isBomb?`HP ${run.hp[index]}/100`:enough?`손패 ${player.count}장`:`양쪽 ${minimum}장 이상 · 교환 가능 패 필요`}</span></button>;})}</div>
+   <button className="text-btn rpg-exchange-back" onClick={()=>setTargetItem(null)}>← 아이템 다시 선택</button>
   </>:<>
-  <p className="rpg-item-help">내 차례에 전술 아이템을 눌러 사용해요. 한 차례에 1개, 한 판에 최대 2개. 준비 아이템은 판 사이에 사용해요.</p>
-  <div className="item-cards">{owned.map(id=>{const item=RPG_CONSUMABLES.find(entry=>entry.id===id),count=run.consumables.filter(entry=>entry===id).length,tactical=tacticalIds.includes(id),required=id==='fates-scales'?2:1,canExchange=game.players[game.me].count>=required&&game.players.some((player,index)=>index!==game.me&&player.count>=required);
-   const content=<><img src={`/rpg-items-v1/consumables/${id}.webp`} alt=""/><strong>{item?.name||id}<small>{count}개</small></strong><p>{item?.effect}</p><b>{tactical?usedTurn?'이번 차례 사용 완료':id==='scout-lens'?'바닥에서 선택':'사용하기':'준비 구간에서 사용'}</b></>;
-   return tactical?<button key={id} disabled={!enabled||used>=2||usedTurn||(id==='scout-lens'?!game.trick.length||!scoutTargets:!canExchange)} onClick={()=>id==='scout-lens'?selectScout():setExchangeItem(id as Exclude<RpgTacticalItem,'scout-lens'>)}>{content}</button>:<div className="rpg-owned-item" key={id}>{content}</div>;
-  })}{!owned.length&&<p>보유 아이템이 없어요. 스테이지 보상과 상점에서 획득할 수 있어요.</p>}</div>
-  {run.tacticalPeek?.round===game.round&&run.tacticalTurn===game.roundActions&&<p className="rpg-scout-note">정찰한 패는 이번 차례 동안 바닥에 앞면으로 표시돼요.</p>}
+   <p className="rpg-item-help">첫 바퀴 이후 · 내 차례에 1개, 한 판에 최대 {RPG_ITEMS_PER_ROUND}개 · 이번 판 {run.tacticalUsed||0}/{RPG_ITEMS_PER_ROUND} 사용</p>
+   <div className="item-cards">{owned.map(itemCard)}</div>
+   {!owned.length&&<p>보유 아이템이 없어요.</p>}
   </>}
  </section></div>;
 }

@@ -1,3 +1,4 @@
+import {refundLegacyEmbers} from './rpg-items.ts';
 import type {Game} from './game.ts';
 import type {RpgRun} from './rpg.ts';
 export const RPG_STORAGE_KEY='turntale-rpg-state-v1';
@@ -9,10 +10,11 @@ export function readRpgArchive(storage:StoragePort):RpgArchive{
  const raw=storage.getItem(RPG_STORAGE_KEY);if(!raw)return empty();
  let saved:RpgArchive;try{saved=JSON.parse(raw);}catch{throw Error('RPG 저장 데이터를 읽지 못했어요. 기존 데이터는 보존했어요.');}
  if(saved?.version!==1||!Array.isArray(saved.records)||saved.active&&(!saved.active.rpgRun||saved.active.players?.length!==3))throw Error('RPG 저장 형식을 확인해 주세요. 기존 데이터는 보존했어요.');
+ if(saved.active)refundLegacyEmbers(saved.active);
  return {...saved,discovered:Array.isArray(saved.discovered)?saved.discovered:[],unlocked:Array.isArray(saved.unlocked)?saved.unlocked:[]};
 }
 export function saveRpgGame(storage:StoragePort,game:Game,replace=false):RpgArchive{
- const run=game.rpgRun;if(!run)throw Error('RPG 여정 데이터가 없어요.');
+ const run=game.rpgRun;if(!run||game.hpItemMode)throw Error('RPG 여정 데이터가 없어요.');
  const old=readRpgArchive(storage),records=old.records.filter(row=>row.id!==run.id);
  if(old.active?.rpgRun?.id!==run.id&&old.active){
   if(!replace)throw Error('저장된 RPG 여정이 있어요. 새 여정으로 교체할지 선택해 주세요.');

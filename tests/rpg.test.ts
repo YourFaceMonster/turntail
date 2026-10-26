@@ -1,13 +1,35 @@
 import assert from 'node:assert/strict';
 import {newRpgRun,rpgRanks,settleRpgRound,allocateRpgPoints,chooseRpgRelic,advanceRpgStage,buyRpgItem,currentRpgShop,useRpgConsumable,restRpg} from '../lib/rpg.ts';
-import {createRpgGame,startRpgRound} from '../lib/rpg-game.ts';
+import {createRpgGame as baseRpgGame,startRpgRound} from '../lib/rpg-game.ts';
 import {rpgTwinBotView,view} from '../lib/game.ts';
 import {RPG_TWINS} from '../lib/rpg-twins.ts';
 import {readRpgArchive,saveRpgGame,RPG_STORAGE_KEY} from '../lib/rpg-storage.ts';
 import {readSaveSlots} from '../lib/save-slots.ts';
-import {useRpgTacticalItem} from '../lib/rpg-items.ts';
+import {useRpgTacticalItem,rpgItemAvailability,rpgItemSlots} from '../lib/rpg-items.ts';
+import {exchangeStageLayout} from '../lib/rpg-exchange-motion.ts';
+
+function createRpgGame(...args:Parameters<typeof baseRpgGame>){const game=baseRpgGame(...args);game.roundActions=game.players.length;return game;}
 
 assert.deepEqual(rpgRanks([10,5,5],[0,4,4]),[1,2,2],'joint second place must survive');
+const railGame=createRpgGame('아이템 정렬');railGame.turn=0;railGame.players[0].hand=railGame.players[0].hand.slice(0,4);
+railGame.rpgRun!.consumables=['fates-scales','scout-lens','swapped-fate'];
+assert.deepEqual(rpgItemSlots(view(railGame,railGame.players[0].token),true).map(slot=>slot?.id),['scout-lens','swapped-fate','fates-scales'],'usable items precede unavailable items');
+assert.deepEqual(railGame.rpgRun!.consumables,['fates-scales','scout-lens','swapped-fate'],'display sorting leaves the saved inventory intact');
+railGame.rpgRun!.consumables=['fates-scales','swapped-fate'];
+assert.deepEqual(rpgItemSlots(view(railGame,railGame.players[0].token),true).map(slot=>slot?.id||null),['swapped-fate','fates-scales',null]);
+railGame.rpgRun!.consumables=['scout-lens','scout-lens'];
+assert.deepEqual(rpgItemSlots(view(railGame,railGame.players[0].token),true).map(slot=>slot?.id||null),['scout-lens','scout-lens',null],'duplicate items each retain an inventory slot');
+railGame.rpgRun!.consumables=[];
+assert.deepEqual(rpgItemSlots(view(railGame,railGame.players[0].token),true),[null,null,null],'empty inventory keeps three slots');
+for(const [width,height] of [[360,640],[390,844],[1280,720]])for(const count of [1,2]){
+ const layout=exchangeStageLayout(width,height,{left:12,top:height*.77,width:width-24,height:height*.2},count);
+ assert.ok(layout.opponent[0].y+layout.cardHeight<layout.own[0].y,'opponent cards arrive above the player cards');
+ for(const row of [layout.own,layout.opponent]){
+  assert.ok(row.every(card=>card.x>=0&&card.y>=0&&card.x+layout.cardWidth<=width&&card.y+layout.cardHeight<=height));
+  assert.ok(Math.abs((row[0].x+row[count-1].x+layout.cardWidth)/2-width/2)<.01,'both exchange rows are centered');
+ }
+ assert.ok(layout.controlsY+44<=height,'exchange controls remain within the viewport');
+}
 const initial=newRpgRun('rpg',1);
 assert.deepEqual([initial.hp,initial.fate,initial.coins,initial.relics],[ [100,100,100],3,0,[] ]);
 const round=(id:string,delta:number[],counts=[0,5,10])=>({id,at:2,players:delta.map((d,i)=>({delta:d,count:counts[i]}))});
@@ -40,18 +62,31 @@ assert.equal(clearedBoss.reward?.special,true,'both defeated bosses trigger the 
 assert.ok(clearedBoss.unlocked.includes('second-heart'));
 assert.equal(chooseRpgRelic(allocateRpgPoints(clearedBoss,0),clearedBoss.reward!.offers[0]).status,'complete','boss reward selection finishes the trial');
 const tactical=createRpgGame('전술 테스트');
-tactical.turn=0;tactical.roundActions=0;tactical.rpgRun!.consumables=['swapped-fate','scout-lens','fates-scales'];
+tactical.turn=0;tactical.roundActions=3;tactical.rpgRun!.consumables=['swapped-fate','scout-lens','fates-scales'];
 const allBefore=tactical.players.flatMap(p=>p.hand.map(t=>t.id)).sort((a,b)=>a-b);
 useRpgTacticalItem(tactical,'swapped-fate',1);
 assert.deepEqual(tactical.players.map(p=>p.hand.length),[10,10,10],'exchange preserves hand sizes');
 assert.deepEqual(tactical.players.flatMap(p=>p.hand.map(t=>t.id)).sort((a,b)=>a-b),allBefore,'exchange preserves cards');
 assert.throws(()=>useRpgTacticalItem(tactical,'fates-scales',2),'only one tactical item per turn');
-tactical.roundActions=1;tactical.trick=[tactical.players[1].hand[0]];
+tactical.roundActions=4;tactical.trick=[tactical.players[1].hand[0]];
 const scoutIndex=view(tactical,tactical.players[0].token).stacks.findIndex(s=>s.available&&s.upper);
 assert.ok(scoutIndex>=0);
 useRpgTacticalItem(tactical,'scout-lens',scoutIndex);
 assert.equal(tactical.rpgRun?.tacticalPeek?.tile.id,tactical.stacks[scoutIndex][1]?.id);
-assert.throws(()=>useRpgTacticalItem(tactical,'fates-scales',2),'only two tactical items per card round');
+assert.throws(()=>useRpgTacticalItem(tactical,'fates-scales',2),'a second item in the same turn remains blocked');
+const interiorScout=createRpgGame('안쪽 정찰');interiorScout.turn=0;interiorScout.trick=[interiorScout.players[1].hand[0]];interiorScout.rpgRun!.consumables=['scout-lens'];
+const innerIndex=(interiorScout.cols||5)+1,upperBefore={...interiorScout.stacks[innerIndex][1]!};
+assert.equal(view(interiorScout,interiorScout.players[0].token).stacks[innerIndex].available,false,'this upper tile is not accessible for drawing');
+useRpgTacticalItem(interiorScout,'scout-lens',innerIndex);
+assert.equal(interiorScout.rpgRun!.tacticalPeek?.tile.id,upperBefore.id,'the lens may inspect an interior upper tile');
+assert.deepEqual(interiorScout.stacks[innerIndex][1],upperBefore,'projection must leave the upper tile physically facedown in its original stack');
+assert.equal(view(interiorScout,interiorScout.players[0].token).stacks[innerIndex].available,false,'scouting does not make an interior tile drawable');
+const leadingScout=createRpgGame('선 정찰');leadingScout.turn=0;leadingScout.trick=[];leadingScout.rpgRun!.consumables=['scout-lens'];
+useRpgTacticalItem(leadingScout,'scout-lens',innerIndex);
+assert.equal(leadingScout.rpgRun!.tacticalPeek?.index,innerIndex,'scouting also works when the player has the lead');
+const emptyUpper=createRpgGame('층 검증');emptyUpper.turn=0;emptyUpper.rpgRun!.consumables=['scout-lens'];emptyUpper.stacks[innerIndex][1]=null;
+assert.throws(()=>useRpgTacticalItem(emptyUpper,'scout-lens',innerIndex));
+assert.deepEqual(emptyUpper.rpgRun!.consumables,['scout-lens'],'selecting a lower-only stack must not consume the lens');
 const manualExchange=createRpgGame('직접 교환');
 manualExchange.turn=0;manualExchange.trick=[{id:-1,n:2,s:3}];manualExchange.rpgRun!.consumables=['swapped-fate'];
 const chosenExchange=manualExchange.players[0].hand.find(tile=>tile.n!==2)!.id;
@@ -66,6 +101,28 @@ assert.throws(()=>useRpgTacticalItem(invalidExchange,'fates-scales',2,[exchangeI
 assert.equal(JSON.stringify(invalidExchange),beforeInvalid,'invalid or duplicate choices must not consume the item or change hands');
 useRpgTacticalItem(invalidExchange,'fates-scales',2,exchangeIds);
 assert.ok(exchangeIds.every(id=>invalidExchange.players[2].hand.some(tile=>tile.id===id)),'two-card exchange uses exactly the two chosen tiles');
+for(const [item,minimum,count] of [['swapped-fate',3,1],['fates-scales',5,2]] as const){
+ const short=createRpgGame('최소 손패');short.turn=0;short.rpgRun!.consumables=[item];short.players[0].hand=short.players[0].hand.slice(0,minimum-1);
+ const before=JSON.stringify(short);
+ assert.equal(rpgItemAvailability(view(short,short.players[0].token),item,true).usable,false);
+ assert.throws(()=>useRpgTacticalItem(short,item,1,short.players[0].hand.slice(0,count).map(tile=>tile.id)));
+ assert.equal(JSON.stringify(short),before,'a hand below the minimum cannot consume an item or change any cards');
+ const opponentShort=createRpgGame('상대 최소 손패');opponentShort.turn=0;opponentShort.rpgRun!.consumables=[item];opponentShort.players.slice(1).forEach(person=>{person.hand=person.hand.slice(0,minimum-1);});
+ assert.equal(rpgItemAvailability(view(opponentShort,opponentShort.players[0].token),item,true).usable,false);
+ assert.throws(()=>useRpgTacticalItem(opponentShort,item,1,opponentShort.players[0].hand.slice(0,count).map(tile=>tile.id)));
+ const boundary=createRpgGame('경계 교환');boundary.turn=0;boundary.rpgRun!.consumables=[item];boundary.players[0].hand=boundary.players[0].hand.slice(0,minimum);boundary.players[1].hand=boundary.players[1].hand.slice(0,minimum);
+ assert.equal(rpgItemAvailability(view(boundary,boundary.players[0].token),item,true).usable,true);
+ const chosen=boundary.players[0].hand.slice(0,count).map(tile=>tile.id);
+ useRpgTacticalItem(boundary,item,1,chosen);
+ const exchange=boundary.rpgRun!.lastExchange!;
+ assert.deepEqual(exchange.outgoing.map(tile=>tile.id),chosen);
+ assert.equal(exchange.incoming.length,count);
+ assert.ok(exchange.incoming.every(tile=>boundary.players[0].hand.some(held=>held.id===tile.id)));
+ assert.ok(exchange.outgoing.every(tile=>boundary.players[1].hand.some(held=>held.id===tile.id)));
+ assert.deepEqual(boundary.players.slice(0,2).map(person=>person.hand.length),[minimum,minimum]);
+ assert.equal(view(boundary,boundary.players[0].token).rpgRun!.lastExchange?.id,exchange.id);
+ assert.equal(view(boundary,boundary.players[1].token).rpgRun!.lastExchange,undefined,'exchange animation details are private to the human recipient, never included in an ordinary bot view');
+}
 const twinGame=createRpgGame('도전자');
 const beforeBoss=settleRpgRound({...newRpgRun('twin-cast'),stage:2,hp:[1,1,1]},round('twin-cast-clear',[10,-5,-5],[0,5,5]),0);
 twinGame.rpgRun=chooseRpgRelic(allocateRpgPoints(beforeBoss,0),null);

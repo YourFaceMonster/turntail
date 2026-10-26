@@ -1,10 +1,11 @@
 import {withRelicActivations,type RpgRelicActivation,type RpgRelicEffect} from './rpg-relic-feedback.ts';
+import type {RpgExchangeEvent,RpgItemEvent,RpgTacticalState} from './rpg-items.ts';
 /** The RPG journey is deliberately separate from the older score based stage run. */
 export type RpgStatus='playing'|'allocation'|'relic'|'ready'|'complete'|'game-over'|'abandoned';
 export type RpgResult={id:string,at:number,players:{count:number,delta:number}[]};
 export type RpgReward={stage:number,rank:number,counts:number[],hpAfterSettlement:number[],coins:number,points:number,nextStage:number,offers:string[],retry:boolean,special?:boolean,reason:'clear'|'fate'|'end'};
 export type RpgShop={area:number,stock:{id:string,kind:'relic'|'consumable',price:number,quantity:number}[]};
-export type RpgRun={version:1,id:string,stage:number,status:RpgStatus,hp:number[],fate:number,coins:number,points:number,rounds:number,roundIds:string[],gloveRoundIds:string[],startedAt:number,updatedAt:number,reward:RpgReward|null,relics:string[],equipped:string[],consumables:string[],shops:RpgShop[],scaleUsed:number[],pendingSoup:boolean,pendingBandage:boolean,shield:number,bossCoinPaid:number[],crackedHeartUsed:number[],discovered:string[],unlocked:string[],relicActivations?:RpgRelicActivation[],tacticalRound?:number,tacticalUsed?:number,tacticalTurn?:number,tacticalPeek?:{round:number,index:number,tile:{id:number,n:number,s:number}}};
+export type RpgRun={itemGuards?:Record<number,boolean>,tactics?:Record<number,RpgTacticalState>,enemyConsumables?:Record<number,string[]>,protectedCounts?:number[],lastItem?:RpgItemEvent,version:1,id:string,stage:number,status:RpgStatus,hp:number[],fate:number,coins:number,points:number,rounds:number,roundIds:string[],gloveRoundIds:string[],startedAt:number,updatedAt:number,reward:RpgReward|null,relics:string[],equipped:string[],consumables:string[],shops:RpgShop[],scaleUsed:number[],pendingSoup:boolean,pendingBandage:boolean,shield:number,bossCoinPaid:number[],crackedHeartUsed:number[],discovered:string[],unlocked:string[],relicActivations?:RpgRelicActivation[],lastExchange?:RpgExchangeEvent,tacticalRound?:number,tacticalUsed?:number,tacticalTurn?:number,tacticalPeek?:{round:number,index:number,tile:{id:number,n:number,s:number}}};
 export const RPG_BOSSES=[3,6,9,10];
 export const RPG_TEST_ROUNDS=5;
 export const RPG_RELIC_REWARD_STAGES=[1,2,4,5,7,8];
@@ -23,12 +24,15 @@ export const RPG_RELICS=[
  {id:'split-mirror',name:'갈라진 거울',grade:'legendary',effect:'갈림길 이벤트 후보 2개 제시'},
 ] as const;
 export const RPG_CONSUMABLES=[
+ {id:'ember-bomb',name:'작열탄',price:45,effect:'선택한 상대에게 즉시 HP 8 피해 · 최소 HP 1'},
+ {id:'emergency-herb',name:'응급 약초',price:30,effect:'전투 중 자신의 HP 10 회복 · 최대 HP 100'},
+ {id:'ward-seal',name:'수호의 봉인',price:40,effect:'비공개 방패 준비 · 다음 공격 또는 패 교환 아이템 1회 완전 방어'},
  {id:'red-vial',name:'붉은 약병',price:30,effect:'준비 중 즉시 HP 20 회복'},
  {id:'moonlight-soup',name:'달빛 수프',price:35,effect:'다음 기본 완료 회복 +20'},
  {id:'guardian-bandage',name:'수호의 붕대',price:40,effect:'다음 스테이지 피해 15 방어'},
- {id:'swapped-fate',name:'뒤바뀐 운명',price:45,effect:'내 손패 1장을 골라 상대의 무작위 패 1장과 비공개 교환'},
- {id:'fates-scales',name:'운명의 저울',price:75,effect:'내 손패 2장을 골라 상대의 무작위 패 2장과 비공개 교환'},
- {id:'scout-lens',name:'정찰 렌즈',price:45,effect:'선택한 외곽 위층 패 1장 확인'},
+ {id:'swapped-fate',name:'뒤바뀐 운명',price:45,effect:'내 손패 1장 ↔ 상대 무작위 1장 · 양쪽 손패 3장 이상'},
+ {id:'fates-scales',name:'운명의 저울',price:75,effect:'내 손패 2장 ↔ 상대 무작위 2장 · 양쪽 손패 5장 이상'},
+ {id:'scout-lens',name:'정찰 렌즈',price:45,effect:'원하는 2층 패 1장 투시 · 안쪽 패도 선택 가능'},
 ] as const;
 const rewardCoins=[30,20,10];
 export function newRpgRun(id:string,now=Date.now()):RpgRun{return {version:1,id,stage:1,status:'playing',hp:[100,100,100],fate:3,coins:0,points:0,rounds:0,roundIds:[],gloveRoundIds:[],startedAt:now,updatedAt:now,reward:null,relics:[],equipped:[],consumables:[],shops:[],scaleUsed:[],pendingSoup:false,pendingBandage:false,shield:0,bossCoinPaid:[],crackedHeartUsed:[],discovered:[],unlocked:[]};}
@@ -40,7 +44,7 @@ function makeShop(run:RpgRun,area:number,seed:string):RpgShop{
 }
 export function rpgRanks(hp:number[],counts:number[]){return hp.map((value,i)=>1+hp.filter((other,j)=>other>value||other===value&&counts[j]<counts[i]).length);}
 function offers(run:RpgRun,seed:string,count:number,grade?:string){let hash=2166136261;for(const c of seed)hash=Math.imul(hash^c.charCodeAt(0),16777619)>>>0;const pool=RPG_RELICS.filter(r=>(r.id!=='second-heart'||run.unlocked?.includes('second-heart'))&&(run.stage>3||!['mor-quill','twin-needle-compass','split-mirror'].includes(r.id))&&!run.relics.includes(r.id)&&(!grade||r.grade===grade));const chosen:string[]=[];while(pool.length&&chosen.length<count){const index=hash%pool.length;chosen.push(pool.splice(index,1)[0].id);hash=Math.imul(hash^chosen.length,16777619)>>>0;}return chosen;}
-export function settleRpgRound(run:RpgRun,result:RpgResult,winner:number,testMode=false):RpgRun{
+export function settleRpgRound(run:RpgRun,result:RpgResult,winner:number,testMode=false,hpItemMode=false):RpgRun{
  if(run.status!=='playing'||run.roundIds.includes(result.id))return run;
  if(result.players.length!==3)throw Error('RPG 여정은 나와 AI 2명의 3인전이에요.');
  const hp=[...run.hp],counts=result.players.map(p=>p.count),effects:RpgRelicEffect[]=[];let points=run.points,shield=run.shield||0;
@@ -54,6 +58,7 @@ export function settleRpgRound(run:RpgRun,result:RpgResult,winner:number,testMod
  const crackedHeartUsed=result.players[0].delta<0&&run.equipped.includes('cracked-heart')&&!run.crackedHeartUsed.includes(run.stage)?[...run.crackedHeartUsed,run.stage]:run.crackedHeartUsed;
  if(winner===0&&run.equipped.includes('stopped-hourglass')){points+=5;effects.push({relicId:'stopped-hourglass',message:'포인트 +5'});}
  const base=withRelicActivations({...run,hp,points,shield,crackedHeartUsed,rounds:run.rounds+1,roundIds:[...run.roundIds,result.id],updatedAt:result.at},effects,result.at);
+ if(hpItemMode)return {...base,hp:hp.map(value=>Math.max(0,value)),status:hp.some(value=>value<=0)?'complete':'playing',reward:null};
  const rewardEffects:RpgRelicEffect[]=[];
  if(!hp.some(value=>value<=0))return base;
  const rank=rpgRanks(hp,counts)[0],boss=RPG_BOSSES.includes(run.stage),retry=boss&&rank===3;

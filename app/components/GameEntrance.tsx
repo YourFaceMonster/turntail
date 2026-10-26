@@ -23,17 +23,18 @@ import {tableCircle,opponentTableTarget} from '../../lib/table-world';
 import {observerCameraFrames,environmentCameraFrames,environmentTransform,cameraTransform} from '../../lib/entrance-camera';
 import {planShuffle,frameShuffle,overviewScale,shuffleDepth,shuffleFrameIndices,shuffleKeyframes,shuffleTransform,type ShuffleScene} from '../../lib/shuffle-motion';
 import {matchShuffleTracks,planTableDealFlights,dealKeyframes} from '../../lib/deal-motion';
-import {ENTRANCE_MS,entranceDuration,entranceCurtain,type EntrancePhase} from '../../lib/atmosphere';
+import {ENTRANCE_MS,entranceDuration,entranceCurtain,canSkipEntrance,type EntrancePhase} from '../../lib/atmosphere';
 import {measureDealLayout,shuffleTileSize,type DealView,type DealItem,type DealTarget} from '../../lib/deal-animation';
 import {measureSavedTable,type SavedTableItem} from '../../lib/saved-table';
 import TableSurfaceViewport from './TableSurfaceViewport';
 import {nativeTableMaterial} from '../../lib/table-material';
-type Props={onWorldDiameter:(diameter:number)=>void,company:{name:string,avatar?:string,points:number,count:number}[],tableSet:number,stage?:number,phase:EntrancePhase,resume:boolean,migrated?:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void};
-function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migrated=false,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback}:Props){
+type Props={onWorldDiameter:(diameter:number)=>void,company:{name:string,avatar?:string,points:number,count:number}[],tableSet:number,stage?:number,phase:EntrancePhase,resume:boolean,migrated?:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void,onSkip?:()=>void};
+function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migrated=false,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback,onSkip}:Props){
  const [screen,setScreen]=useState({width:0,height:0}),[landings,setLandings]=useState<{item:DealItem,target:DealTarget,finish:Record<string,string>}[]>([]);
  const [scene,setScene]=useState<ShuffleScene|null>(null),[assetsReady,setAssetsReady]=useState(false);
  const [gpuStatus,setGpuStatus]=useState<'pending'|'ready'|'fallback'>('pending');
  const [savedLandings,setSavedLandings]=useState<{item:SavedTableItem,target:DealTarget,baseTarget?:DealTarget}[]>([]),[savedBounds,setSavedBounds]=useState<{left:number,top:number,width:number,height:number}|null>(null);
+ const skipTap=useRef<{at:number,x:number,y:number}|null>(null);
  const shuffleSeed=useRef(0),measuredKey=useRef(''),cardElements=useRef<(HTMLDivElement|null)[]>([]),running=useRef<Animation[]>([]);
  const animationPhase=useRef(''),cameraElement=useRef<HTMLDivElement>(null),cameraMotion=useRef<Animation|null>(null),environmentMotions=useRef<Animation[]>([]);
  const callbacks=useRef({onPrepared,onFallback});callbacks.current={onPrepared,onFallback};
@@ -191,8 +192,9 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  },[phase,pageVisible,dealFrames,gpuStatus]);
  if(phase==='idle'||reduced||typeof document==='undefined')return null;
 
+ const skippable=!!onSkip&&canSkipEntrance(phase,resume);
  const curtain=phase==='menu-out'?ENTRANCE_MS['menu-out']:phase==='game-in'?entranceDuration('game-in',resume):ENTRANCE_MS.approach,cameraStart=entranceFrameCamera(phase,0,overview,resume,!!stage);
- return createPortal(<StageVisuals stage={stage||tableSet||undefined}><div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${gpuStatus==='ready'?'entry-gpu-ready':''}`} aria-hidden="true" data-stage={stage} data-world-kind={stageSetting(stage||0).kind} data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--stage-accent':stage?stagePalette(stage).accent:undefined,'--stage-side':tableSet?MATERIAL_COLORS[tableSet-1]:undefined,'--camera-ms':`${entranceDuration('approach',resume)}ms`,'--camera-far':`${(1-1/Math.max(.001,overview))*1000}px`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--focus-ms':`${ENTRANCE_MS.focus}ms`,'--rise-ms':`${ENTRANCE_MS.rise}ms`,'--scene-key-light':stage?stagePalette(stage).accent:undefined,'--opponent-out-ms':`${ENTRANCE_MS['opponent-out']}ms`,'--environment-far-transform':environmentTransform(cameraStart,overview,false,!!stage),'--environment-near-transform':environmentTransform(cameraStart,overview,true,!!stage),'--curtain-ms':`${curtain}ms`} as CSSProperties}>
+ return createPortal(<StageVisuals stage={stage||tableSet||undefined}><div className={`table-entrance entry-${phase} ${resume?'entry-resume':''} ${gpuStatus==='ready'?'entry-gpu-ready':''}`} aria-hidden="true" data-skippable={skippable} onDoubleClick={event=>{if(skippable){event.preventDefault();onSkip?.();}}} onPointerUp={event=>{if(!skippable||event.pointerType==='mouse')return;const next={at:event.timeStamp,x:event.clientX,y:event.clientY},previous=skipTap.current;if(previous&&next.at-previous.at<=330&&Math.hypot(next.x-previous.x,next.y-previous.y)<=28){skipTap.current=null;event.preventDefault();onSkip?.();}else skipTap.current=next;}} data-stage={stage} data-world-kind={stageSetting(stage||0).kind} data-visible={pageVisible} data-curtain={entranceCurtain(phase)} style={{'--stage-accent':stage?stagePalette(stage).accent:undefined,'--stage-side':tableSet?MATERIAL_COLORS[tableSet-1]:undefined,'--camera-ms':`${entranceDuration('approach',resume)}ms`,'--camera-far':`${(1-1/Math.max(.001,overview))*1000}px`,'--camera-overview':overview,'--camera-near':1/Math.max(.001,overview),'--table-diameter':`${diameter}px`,'--deal-ms':`${ENTRANCE_MS.deal}ms`,'--focus-ms':`${ENTRANCE_MS.focus}ms`,'--rise-ms':`${ENTRANCE_MS.rise}ms`,'--scene-key-light':stage?stagePalette(stage).accent:undefined,'--opponent-out-ms':`${ENTRANCE_MS['opponent-out']}ms`,'--environment-far-transform':environmentTransform(cameraStart,overview,false,!!stage),'--environment-near-transform':environmentTransform(cameraStart,overview,true,!!stage),'--curtain-ms':`${curtain}ms`} as CSSProperties}>
   <div className="entry-room"><EntranceEnvironment stage={stage}/></div>
   <div className="entry-view-rig">
   <div className="entry-camera" ref={cameraElement} style={{transform:cameraTransform(cameraStart)}}>
@@ -217,7 +219,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
   {stage&&['approach','shuffle','deal'].includes(phase)&&<div className="entry-stage-arrival"><span>STAGE {String(stage).padStart(2,'0')}</span><strong>{stageTheme(stage).name}</strong></div>}
   <div className="entry-reunion"><div className="entry-return-note"><span>{resume?'WELCOME BACK':`${company.length+1} PLAYERS · TAKE YOUR SEAT`}</span><strong>{stage?`${stageTheme(stage).name}의 테이블`:resume?'익숙한 테이블로 돌아왔어요':'달빛 서재의 작은 승부'}</strong><small>{resume?migrated?'3인전으로 전환했어요. 스테이지와 점수는 이어지고, 진행 중이던 패는 다시 나눴어요.':'자리에 놓인 패 그대로, 승부를 이어갑니다.':'테이블에 둘러앉아 새로운 승부를 시작합니다.'}</small></div></div>
   {stage&&<div className="entry-painted-glaze"/>}<div className="entry-edge-shade"/>
-  <div className="entry-curtain"/>
+  <div className="entry-curtain"/>{skippable&&<span className="entry-skip-hint">더블클릭·더블탭으로 연출 건너뛰기</span>}
   {['prepare','room-hold'].includes(phase)&&<div className="entry-preparing-note"><i/><strong>{resume?'저장된 테이블을 불러오고 있어요':'새로운 승부를 준비하고 있어요'}</strong><small>잠시만 기다려 주세요</small></div>}
  </div></StageVisuals>,document.body);
 }
