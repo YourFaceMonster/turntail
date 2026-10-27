@@ -25,7 +25,6 @@ export const RPG_RELICS=[
  {id:'split-mirror',name:'갈라진 거울',grade:'legendary',effect:'갈림길 이벤트 후보 2개 제시'},
 ] as const;
 export const RPG_CONSUMABLES=[
- {id:'spark-dart',name:'바늘탄',price:20,effect:'선택한 상대에게 HP 3 피해'},
  {id:'whisper-eye',name:'엿보는 눈',price:30,effect:'선택한 상대 손패 무작위 1장 확인 · 사용한 사람만 공개'},
  {id:'ember-bomb',name:'작열탄',price:45,effect:'선택한 상대에게 즉시 HP 8 피해 · 최소 HP 1'},
  {id:'emergency-herb',name:'응급 약초',price:30,effect:'전투 중 자신의 HP 10 회복 · 최대 HP 100'},
@@ -121,6 +120,7 @@ export function advanceRpgStage(run:RpgRun):RpgRun{
  return {...run,stage,status:'playing',hp:[run.hp[0],100,100],shield:run.pendingBandage?15:0,pendingBandage:false,reward:null,updatedAt:Date.now()};
 }
 export function buyRpgItem(run:RpgRun,id:string):RpgRun{
+ if(id==='spark-dart')throw Error('바늘탄은 현재 상점에서 판매하지 않아요.');
  if(run.status!=='ready')throw Error('전투 준비 중에만 구매할 수 있어요.');
  const shop=currentRpgShop(run),entry=shop?.stock.find(item=>item.id===id);
  if(!shop||!entry||entry.quantity<1)throw Error('상점에서 구매할 수 없는 물품이에요.');

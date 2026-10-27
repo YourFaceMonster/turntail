@@ -69,6 +69,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,tileSet,stage,phase,resu
   const surfaceAsset=nativeTableMaterial(stage||tableSet||0);
   const paths=[...(surfaceAsset?[surfaceAsset]:[]),...(stage?[stageEnvironmentImage(stage)]:['/turntale-room-0513.webp']),...(stage?[]:['/monsters/blue-0513.webp','/monsters/red-0513.webp','/monsters/haetae-0513.webp','/monsters/hiboringji-061.webp','/monsters/hibo-seated-063.webp']),'/turntale-ivory-material-055.webp','/turntale-stone-material-055.webp','/turntale-tile-back-gold.svg','/turntale-wood-0513.webp',...(stage?['/stage-company-0516.webp','/stage-table-materials-0518.webp']:[]),...(stage||tableSet?['/turntale-stage-materials-v2.webp']:[])];
   paths.push(...stageCompanyAssets(companyArtKey.split('|')));
+  if(stage)paths.push(...['scout-lens','swapped-fate','ward-seal-v3','ember-bomb-v2','emergency-herb-v2','whisper-eye-v2'].map(id=>`/rpg-items-v1/consumables/${id}.webp`),'/rpg-items-v1/effects/ember-impact-v1.webp');
   void Promise.all([...new Set(paths)].map(src=>new Promise<void>(resolve=>{const finish=()=>{clearTimeout(timer);resolve();},timer=setTimeout(finish,6000),img=new Image();img.onload=()=>{void img.decode().catch(()=>{}).then(finish);};img.onerror=finish;img.src=src;}))).then(()=>{if(!cancelled)setAssetsReady(true);});
   return()=>{cancelled=true;};
  },[screen.width>screen.height,!!screen.width,stage,tableSet,companyArtKey]);

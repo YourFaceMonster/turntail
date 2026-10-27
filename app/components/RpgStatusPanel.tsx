@@ -2,7 +2,6 @@
 import {useEffect,useLayoutEffect,useRef,useState,type CSSProperties} from 'react';
 import {createPortal} from 'react-dom';
 import type {view} from '../../lib/game.ts';
-import {hasHpSkills,hpCharacter} from '../../lib/hp-item-skills.ts';
 import {RpgProfessionStatus} from './RpgProfessions';
 import {RPG_RELICS,RPG_CONSUMABLES} from '../../lib/rpg.ts';
 import {RPG_RELIC_HINTS} from '../../lib/rpg-relic-feedback.ts';
@@ -28,6 +27,6 @@ export function RpgStatusPanel({game,seat,close}:{game:View,seat:number,close:()
  return createPortal(<div className="rpg-status-popover-layer"><section ref={panelRef} className={`modal rpg-status-panel ${mine?'is-own':'is-opponent'}`} style={position||{visibility:'hidden'}} role="dialog" aria-label={`${player.name} RPG 상태`}>
   <header className="rpg-status-heading"><h2>{player.name}</h2><span className="rpg-status-hp">HP <b>{run.hp[seat]}</b><small>/100</small></span><button className="close" aria-label="상태창 닫기" onClick={close}>×</button></header>
   <RpgProfessionStatus game={game} seat={seat} detail/><p className="rpg-status-item-summary">{mine?`아이템 ${inventory.length}개${run.itemGuards?.[seat]?' · 비밀 방패 대기':''}`:'아이템과 방어 준비는 비공개'}</p>{mine&&<p className="rpg-status-item-names">{[...new Set(inventory)].map(id=>`${RPG_CONSUMABLES.find(item=>item.id===id)?.name||id} ×${inventory.filter(entry=>entry===id).length}`).join(' · ')}</p>}
-  {hasHpSkills(game)&&<p className="rpg-status-item-names"><b>{hpCharacter(game.hpItemMatch!.skills!.characters[seat]).name} · {hpCharacter(game.hpItemMatch!.skills!.characters[seat]).skill}</b><br/>{hpCharacter(game.hpItemMatch!.skills!.characters[seat]).effect}<br/>매판 1회 · 첫 싸움 이후 · 아이템과 같은 차례 사용 불가</p>}<div className="rpg-status-relics"><span className="rpg-status-relic-label">장착 유물</span>{equipped.length?<div className="rpg-status-relic-items">{equipped.map(id=>{const relic=RPG_RELICS.find(item=>item.id===id),hint=RPG_RELIC_HINTS[id];return <div key={id}><img src={`/rpg-items-v1/relics/${id}.webp`} alt=""/><strong>{relic?.name||id}</strong><small>{hint?`${hint.label} ${hint.bonus}`:relic?.effect}</small></div>;})}</div>:<span className="rpg-status-empty">없음</span>}</div>
+  <div className="rpg-status-relics"><span className="rpg-status-relic-label">장착 유물</span>{equipped.length?<div className="rpg-status-relic-items">{equipped.map(id=>{const relic=RPG_RELICS.find(item=>item.id===id),hint=RPG_RELIC_HINTS[id];return <div key={id}><img src={`/rpg-items-v1/relics/${id}.webp`} alt=""/><strong>{relic?.name||id}</strong><small>{hint?`${hint.label} ${hint.bonus}`:relic?.effect}</small></div>;})}</div>:<span className="rpg-status-empty">없음</span>}</div>
  </section></div>,document.body);
 }

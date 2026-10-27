@@ -1,4 +1,4 @@
-import {usedHpSkillThisTurn,tryHpBotSkill} from './hp-item-skills.ts';
+import {retireLegacyLoadout} from './retired-loadout.ts';
 import {professionCombatView} from './rpg-profession-combat.ts';
 import {isBattleItemMode} from './hp-item-battle.ts';
 import {hpItemShopPending,hpItemEffectiveHp} from './hp-item-shop.ts';
@@ -12,12 +12,12 @@ export const RPG_ITEMS_PER_ROUND=3;
 export type RpgExchangeItem='swapped-fate'|'fates-scales';
 export type RpgTacticalItem=RpgExchangeItem|'scout-lens'|'ember-bomb'|'emergency-herb'|'ward-seal'|'whisper-eye'|'spark-dart';
 export const RPG_BASIC_ITEMS:readonly RpgTacticalItem[]=['scout-lens','swapped-fate','ward-seal','ember-bomb','emergency-herb'];
-export const RPG_SHOP_ITEMS:readonly RpgTacticalItem[]=[...RPG_BASIC_ITEMS,'whisper-eye','spark-dart'];
+export const RPG_SHOP_ITEMS:readonly RpgTacticalItem[]=[...RPG_BASIC_ITEMS,'whisper-eye'];
 export const RPG_TACTICAL_ITEMS:readonly RpgTacticalItem[]=[...RPG_SHOP_ITEMS,'fates-scales'];
 export const isAttackItem=(id:string):id is 'ember-bomb'|'spark-dart'=>id==='ember-bomb'||id==='spark-dart';
 export const exchangeEligible=(tile:Tile)=>tile.n!==1&&tile.n!==2;
 export type RpgTacticalState={round:number,used:number,turn?:number,peek?:{round:number,index:number,tile:Tile},peeks?:{round:number,index:number,tile:Tile}[],handPeek?:{round:number,target:number,tile:Tile},sealed?:number[],ember?:{target:number,turn:number}};
-export type RpgItemEvent={id:string,actor:number,target:number,itemId:RpgTacticalItem,kind:'heal'|'damage'|'seal'|'scout'|'exchange'|'blocked'|'armed'|'cancel'|'reveal'|'failed',amount?:number,at:number,tiles?:Tile[]};
+export type RpgItemEvent={id:string,actor:number,target:number,itemId:RpgTacticalItem,kind:'heal'|'damage'|'seal'|'scout'|'exchange'|'blocked'|'armed'|'cancel'|'reveal'|'failed',amount?:number,hpBefore?:number,hpAfter?:number,at:number,tiles?:Tile[]};
 export type RpgExchangeEvent={source?:'profession',id:string,itemId:RpgExchangeItem,actor?:number,target:number,round:number,outgoing:Tile[],incoming:Tile[],at:number};
 export const exchangeMinimum=(id:string)=>id==='fates-scales'?5:4;
 export const RPG_ITEM_HINTS:Record<string,{label:string,bonus:string}>={
@@ -65,7 +65,6 @@ export function rpgItemAvailability(game:ReturnType<typeof view>,id:string,enabl
  const state=stateFor(run,game.me,game.round);
  if(state.used>=rpgItemLimit(game))return {usable:false,reason:`이번 판 사용 한도 ${rpgItemLimit(game)}개`};
  if(state.turn===game.roundActions)return {usable:false,reason:'이번 차례 사용 완료'};
- if(usedHpSkillThisTurn(game,game.me))return {usable:false,reason:'스킬을 쓴 차례에는 아이템을 사용할 수 없어요.'};
  if(id==='scout-lens')return game.stacks.some(stack=>stack.upper)?{usable:true,reason:'원하는 2층 패 1장 투시'}:{usable:false,reason:'남은 2층 패 없음'};
  if(id==='emergency-herb')return {usable:hpItemEffectiveHp(game,game.me)<100,reason:hpItemEffectiveHp(game,game.me)<100?'자신의 HP 10 회복':'HP가 이미 가득 찼어요'};
  if(id==='ward-seal')return {usable:!run.itemGuards?.[game.me],reason:run.itemGuards?.[game.me]?'비밀 방패가 이미 준비됐어요':'다음 공격·패 교환 아이템 1회 방어'};
@@ -81,7 +80,7 @@ export function rpgItemAvailability(game:ReturnType<typeof view>,id:string,enabl
 }
 function randomIndex(length:number){const value=new Uint32Array(1);crypto.getRandomValues(value);return value[0]%length;}
 function takeRandom(hand:Tile[],count:number){const pool=[...hand],picked:Tile[]=[];for(let i=0;i<count;i++)picked.push(pool.splice(randomIndex(pool.length),1)[0]);return picked;}
-function record(g:Game,who:number,id:RpgTacticalItem,target:number,kind:RpgItemEvent['kind'],amount?:number){g.rpgRun!.lastItem={id:uid(),actor:who,target,itemId:id,kind,amount,at:Date.now()};if(g.hpItemMatch)g.hpItemMatch.roundItems.push({actor:who,target,id,kind,amount});}
+function record(g:Game,who:number,id:RpgTacticalItem,target:number,kind:RpgItemEvent['kind'],amount?:number){g.rpgRun!.lastItem={id:uid(),actor:who,target,itemId:id,kind,amount,at:Date.now()};if((kind==='damage'||kind==='heal')&&(!g.hpItemMode||isBattleItemMode(g))){const after=g.rpgRun!.hp[target];g.rpgRun!.lastItem.hpAfter=after;g.rpgRun!.lastItem.hpBefore=after+(kind==='damage'?1:-1)*(amount||0);}if(g.hpItemMatch)g.hpItemMatch.roundItems.push({actor:who,target,id,kind,amount});}
 export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:number[]=[],who=0){
  const run=g.rpgRun;
  if(!g.practice||!run||run.status!=='playing'||g.phase!=='playing'||g.turn!==who||!g.players[who])throw Error('RPG 전술 아이템은 진행 중인 내 차례에만 사용할 수 있어요.');
@@ -129,7 +128,7 @@ export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:numbe
 }
 /** Reimburse the former preparation state when loading an older local save. */
 export function refundLegacyEmbers(g:Game){
- const run=g.rpgRun;if(!run)return;
+ const run=g.rpgRun;if(!run)return;retireLegacyLoadout(g);
  for(const [key,state] of Object.entries(run.tactics||{})){
   const who=Number(key);if(state.sealed?.length){run.itemGuards={...run.itemGuards,[who]:true};delete state.sealed;}
   if(!state.ember)continue;delete state.ember;state.used=Math.max(0,state.used-1);state.turn=undefined;
@@ -176,7 +175,7 @@ export function chooseRpgBotItem(position:ReturnType<typeof view>):RpgBotItemCho
 export function tryRpgBotItem(g:Game){
  const run=g.rpgRun,who=g.turn;if(!run||!g.players[who]?.bot||hpItemShopPending(g))return;
  if(!run.enemyConsumables?.[who]){run.enemyConsumables={...run.enemyConsumables,[who]:[...RPG_BASIC_ITEMS]};}
- const choice=chooseRpgBotItem(view(g,g.players[who].token));if(choice)useRpgTacticalItem(g,choice.id,choice.target??-1,choice.ids||[],who);else tryHpBotSkill(g);
+ const choice=chooseRpgBotItem(view(g,g.players[who].token));if(choice)useRpgTacticalItem(g,choice.id,choice.target??-1,choice.ids||[],who);
 }
 
 export function rpgItemNoticeText(event:RpgItemEvent,players:readonly {name:string}[]){

@@ -20,7 +20,11 @@ export function tileLayout({width,height,floorWidth,handWidth,handCount,cols,row
  const floorHeight=Math.max(10,Math.floor(Math.min(portraitTarget,vertical,floorLimit,fiveLimit)));
  const portraitHandRoom=(height-portraitChrome-rows*floorHeight-floorHeight*1.28)/2;
  const tileHeight=Math.max(10,Math.floor(Math.min(landscape?tileCeiling:rpg?floorHeight*1.22:floorHeight,handLimit,landscape?(height-surfaceInset-handChrome)/2:rpg?portraitHandRoom:Infinity)));
- return {height:tileHeight,width:tileHeight*.76,floorHeight,floorWidth:floorHeight*.76,columns,gap,baseColumns,seatHeight,handChrome,trickChrome,playedLabelWidth,compactLandscape,seatRail:landscape?0:players===2?0:82};
+ // Reserve the standard two-row rack even when an oversized hand needs smaller
+ // tiles. Changing a player's hand must never re-center the floor above it.
+ const baselineHandLimit=(handWidth-4-(baseColumns-1)*baseGap)/baseColumns/.76;
+ const handSpaceHeight=Math.max(10,Math.floor(Math.min(landscape?tileCeiling:rpg?floorHeight*1.22:floorHeight,baselineHandLimit,landscape?(height-surfaceInset-handChrome)/2:rpg?portraitHandRoom:Infinity)));
+ return {height:tileHeight,width:tileHeight*.76,handSpaceHeight,floorHeight,floorWidth:floorHeight*.76,columns,gap,baseColumns,seatHeight,handChrome,trickChrome,playedLabelWidth,compactLandscape,seatRail:landscape?0:players===2?0:82};
 }
 
 /** Center the actual submitted group and cap it by its own row, not the viewport. */

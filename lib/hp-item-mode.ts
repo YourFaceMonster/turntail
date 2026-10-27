@@ -1,6 +1,6 @@
 import {newProfessionCombat} from './rpg-profession-combat.ts';
 import type {RpgProfessionId} from './rpg-professions.ts';
-import {createHpSkills,hpCharacter,pickHpOpponents,type HpCharacterId} from './hp-item-skills.ts';
+import {hpCharacter,pickHpOpponents,type HpCharacterId} from './hp-item-skills.ts';
 import {isBattleItemMode} from './hp-item-battle.ts';
 import {finishHpItemRoundReport,HP_ITEM_START_POINTS,type HpItemVariant} from './hp-item-shop.ts';
 import {uid,type Game} from './game.ts';
@@ -19,7 +19,7 @@ export function createHpItemGame(name:string,avatar='',now=Date.now(),variant:Hp
  const game=createRpgTestGame(name,avatar,now);delete game.rpgTest;game.hpItemMode=true;game.hpItemVariant=variant;game.code='HP-ITEM-'+uid();
  game.hpItemMatch={pendingItemDelta:[0,0,0],pendingItemPoints:[0,0,0],points:[HP_ITEM_START_POINTS,HP_ITEM_START_POINTS,HP_ITEM_START_POINTS],shopRound:0,roundStartHp:[...game.rpgRun!.hp],roundItems:[],roundEarned:[0,0,0]};
  if(variant===2){
-  game.hpItemRules=4;game.hpItemMatch.skills=createHpSkills(hpCharacter(character).id,game.round);game.players.slice(1).forEach((player,index)=>{const person=hpCharacter(game.hpItemMatch!.skills!.characters[index+1]);player.name=person.name;player.avatar=person.avatar;});game.hpItemMatch.battleTiles=game.players.map(()=>0);game.hpItemMatch.battles=[];game.hpItemMatch.roundMoneyBefore=[...game.hpItemMatch.points];
+  game.hpItemRules=4;pickHpOpponents().forEach((id,index)=>{const person=hpCharacter(id);game.players[index+1].name=person.name;game.players[index+1].avatar=person.avatar;});game.hpItemMatch.battleTiles=game.players.map(()=>0);game.hpItemMatch.battles=[];game.hpItemMatch.roundMoneyBefore=[...game.hpItemMatch.points];
   // This mode earns money only from the card score, so do not offer RPG point bonuses.
   const excluded=['gamblers-gloves','stopped-hourglass','mor-quill','twin-needle-compass','split-mirror'],run=game.rpgRun!;
   run.consumables=[];

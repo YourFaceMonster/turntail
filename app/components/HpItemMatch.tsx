@@ -8,7 +8,6 @@ import {isBattleItemMode,usesOriginalItemShop} from '../../lib/hp-item-battle';
 import {HP_ITEM_PRICES,HP_ITEM_ROUND_ALLOWANCE,hpItemShopAfterResult} from '../../lib/hp-item-shop.ts';
 import {seatPanelTheme} from '../../lib/seat-presentation';
 import {itemUsageLine} from '../../lib/hp-item-summary';
-import {HpCharacterPicker} from './HpCharacterSkills';
 import {hpSkillUseText,type HpCharacterId} from '../../lib/hp-item-skills.ts';
 import {RpgProfessionPicker,RpgProfessionHistory} from './RpgProfessions';
 import type {RpgProfessionId} from '../../lib/rpg-professions.ts';
@@ -18,11 +17,11 @@ import {RpgHpBar} from './RpgHpBar';
 type View=ReturnType<typeof view>;
 const itemName=(id:string)=>RPG_CONSUMABLES.find(item=>item.id===id)?.name||id;
 
-export function HpItemLobby({archive,start,resume,close,error,character,chooseCharacter,profession='swordsman',chooseProfession=()=>{}}:{archive:HpItemArchive,profession?:RpgProfessionId,chooseProfession?:(id:RpgProfessionId)=>void,start:()=>void,resume:()=>void,close:()=>void,error:string,character:HpCharacterId,chooseCharacter:(id:HpCharacterId)=>void}){
+export function HpItemLobby({archive,start,resume,close,error,character,chooseCharacter,profession='swordsman',chooseProfession=()=>{}}:{archive:HpItemArchive,profession?:RpgProfessionId,chooseProfession?:(id:RpgProfessionId)=>void,start:()=>void,resume:()=>void,close:()=>void,error:string,character?:HpCharacterId,chooseCharacter?:(id:HpCharacterId)=>void}){
  const starter=RPG_SHOP_ITEMS,legacy=!!archive.active&&(archive.active.hpItemRules!==4||!archive.active.rpgRun?.combat);
  return <div className="modal-shade" onClick={close}><section className="modal hp-item-lobby" role="dialog" aria-modal="true" aria-label="싱글플레이 아이템전" onClick={event=>event.stopPropagation()}>
   <button className="close" onClick={close} aria-label="아이템전 닫기">×</button><h2>아이템전</h2>
-  <p>포인트 상점 · 싸움마다 HP 공격 · 고유스킬</p>
+  <p>포인트 상점 · 싸움마다 HP 공격 · 직업 스킬</p>
   <p className="hp-random-opponents">세계의 주민 30명 중 상대 2명이 무작위로 찾아와요.<small>한 대전 동안 같은 상대와 겨루며, 새 대전을 시작하면 다시 만나요.</small></p>
   <details className="hp-item-rule-details"><summary>규칙 보기</summary><div className="hp-item-rules">
    <span>나와 AI 2명 · 시작 HP 100 · 누군가 HP 0이면 대전 종료</span>
@@ -30,21 +29,16 @@ export function HpItemLobby({archive,start,resume,close,error,character,chooseCh
    <span>승자가 이번 싸움에서 낸 패 수만큼 상대 두 명을 각각 공격</span><span>싱글 두 번 = 2피해 · 페어 두 번 = 4피해 · 패 1장당 1피해</span>
    <span>아이템은 즉시 반영 · 싸움·아이템으로 HP 0이면 이번 판 돈 미정산</span><span>시작 20P · 정상 판 점수는 돈으로 정산 · 부족한 1P당 HP −1</span>
    <span>첫판부터 20P로 상점 구매 · 다음 판 준비금 +8P · 구매는 선택</span><span>주화는 판 종료 시 남은 패 차이 점수로 정산 · HP 피해 추가 보상 없음</span>
-   <span>고유스킬 매판 1회 · 아이템과 같은 차례 사용 불가</span><span>미사용 아이템 계속 보관 · 무작위 유물 3개</span>
+   <span>직업별 승리 조건을 만족하면 자동 스킬 발동</span><span>미사용 아이템 계속 보관 · 무작위 유물 3개</span>
   </div></details>
-  <HpCharacterPicker selected={character} choose={chooseCharacter}/><RpgProfessionPicker selected={profession} choose={chooseProfession}/>
+  <RpgProfessionPicker selected={profession} choose={chooseProfession}/>
   <p className="muted">20P로 상점에서 선택 구매 · 무료 시작 지급 없음</p><div className="hp-item-start-kit">{starter.map(id=><span key={id}><img src={itemImage(id)} alt=""/><small>{itemName(id)}<br/>{HP_ITEM_PRICES[id]}P</small></span>)}</div>
   {error&&<p className="stage-error" role="alert">{error}</p>}{legacy&&<p className="hp-legacy-save-note">저장된 대전은 이전 규칙으로 이어져요. 새 구성은 새 아이템전부터 적용해요.</p>}
   {archive.active&&<button className="primary full" onClick={resume}>아이템전 이어하기{legacy?' · 이전 규칙':''} →</button>}<button className={`${archive.active?'secondary':'primary'} full`} onClick={start}>새 아이템전 시작 →</button>
   {archive.records.length>0&&<details><summary>최근 아이템전 기록</summary><RecordList archive={archive}/></details>}
  </section></div>;
 }
-export function HpItemShop({game,busy,error,buy,exit}:{game:View,busy:boolean,error:string,buy:(cart:string[])=>void,exit:()=>void}){
- const [cart,setCart]=useState<string[]>([]),points=game.hpItemMatch?.points[game.me]||0,total=cart.reduce((sum,id)=>sum+HP_ITEM_PRICES[id],0),held=game.rpgRun?.consumables||[];
- const quantities=(items:string[])=>[...new Set(items)].map(id=>({id,count:items.filter(value=>value===id).length}));
- const remove=(id:string)=>setCart(old=>{const index=old.lastIndexOf(id);return old.filter((_,i)=>i!==index);});
- return <div className="modal-shade hp-shop-shade"><section className="modal hp-item-shop stable-hp-shop" role="dialog" aria-modal="true" aria-label="이번 판 아이템 상점"><header><span className="eyebrow">아이템전 · {hpItemShopAfterResult(game)?game.round+1:game.round}판 준비</span><h2>이번 판에 필요한 아이템</h2><p>그림을 누르면 구매 목록에 담겨요. 보유 수량 제한은 없어요.</p><div className="hp-shop-wallet"><strong>{points}P</strong><span>구매 {total}P · 잔액 {points-total}P</span></div></header><div className="hp-shop-body"><div className="hp-shop-cards shop-art-cards">{RPG_SHOP_ITEMS.map(id=><button key={id} disabled={busy||total+HP_ITEM_PRICES[id]>points} onClick={()=>setCart(old=>[...old,id])}><img src={itemImage(id)} alt=""/><strong>{itemName(id)}</strong><small>{RPG_ITEM_HINTS[id].bonus}</small><b>{HP_ITEM_PRICES[id]}P</b></button>)}</div><section className="hp-shop-stock"><h3>내 아이템 <small>보유 {held.length}개 · 수량 제한 없음</small></h3><div className="hp-stock-items">{quantities(held).map(({id,count})=><span key={id} title={itemName(id)}><img src={itemImage(id)} alt=""/><strong>{itemName(id)}</strong><b>×{count}</b></span>)}{!held.length&&<p className="hp-stock-empty">아직 보유한 아이템이 없어요. 미사용 아이템은 다음 판에도 남아요.</p>}</div></section><section className="hp-shop-selected"><h3>이번 구매 <small>{cart.length}개 · {total}P</small></h3><div className="hp-shop-cart">{quantities(cart).map(({id,count})=><button key={id} disabled={busy} onClick={()=>remove(id)} aria-label={`${itemName(id)} 1개 구매 취소`}><img src={itemImage(id)} alt=""/><b>×{count}</b><small>1개 취소</small></button>)}{!cart.length&&<p className="hp-stock-empty">위의 아이템을 눌러 담으세요. 구매 없이 시작할 수도 있어요.</p>}</div></section></div><footer><p className="muted">구매 후 보유 {held.length+cart.length}개 · 최대 보유 수량 없음 · 판당 2개 사용{game.hpItemVariant===2&&(!isBattleItemMode(game)||usesOriginalItemShop(game))?` · 다음 판 +${HP_ITEM_ROUND_ALLOWANCE}P`:""}</p><div className="hp-shop-error" role="status">{error}</div><button className="primary full" disabled={busy||total>points} onClick={()=>buy(cart)}>{cart.length?`${total}P 구매하고 시작 →`:'구매 없이 시작 →'}</button><button className="text-btn full" disabled={busy} onClick={exit}>저장하고 나가기</button></footer></section></div>;
-}
+export {HpItemShop} from './HpItemShop';
 export function HpItemResult({game,busy,next,restart,exit}:{game:View,busy:boolean,next:()=>void,restart:()=>void,exit:()=>void}){
  const [reveal,setReveal]=useState(false);useEffect(()=>{const timer=setTimeout(()=>setReveal(true),120);return()=>clearTimeout(timer);},[]);
  const run=game.rpgRun;if(!run)return null;

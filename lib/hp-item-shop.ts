@@ -9,7 +9,7 @@ export type HpItemMatchState={points:number[],skills?:HpSkillState,shopRound:num
 export const HP_ITEM_PRICES:Record<string,number>={'whisper-eye':4,'spark-dart':4,'scout-lens':3,'swapped-fate':6,'ward-seal':6,'ember-bomb':10,'emergency-herb':5};
 export const HP_ITEM_START_POINTS=20;
 // Keep starter data independent of the item/game import cycle.
-export const HP_ITEM_STARTER_ITEMS:readonly RpgTacticalItem[]=['scout-lens','swapped-fate','ward-seal','ember-bomb','emergency-herb','whisper-eye','spark-dart'];
+export const HP_ITEM_STARTER_ITEMS:readonly RpgTacticalItem[]=['scout-lens','swapped-fate','ward-seal','ember-bomb','emergency-herb','whisper-eye'];
 export const HP_ITEM_ROUND_ALLOWANCE=8;
 export function hpItemShopAfterResult(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'>){return isBattleItemMode(game)&&!usesOriginalItemShop(game);}
 export function hpItemShopPending(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'|'round'|'result'>){
@@ -22,11 +22,12 @@ export function buyHpItemLoadout(game:Game,cart:string[]){
  const state=game.hpItemMatch,run=game.rpgRun;
  if(!state||!run||!hpItemShopPending(game)||!hpItemShopAfterResult(game)&&(game.phase!=='playing'||game.roundActions))throw Error('지금은 아이템 구매 시간이 아니에요.');
  if(!Array.isArray(cart)||cart.some(id=>!RPG_SHOP_ITEMS.includes(id as RpgTacticalItem)))throw Error('구매할 아이템을 확인해 주세요.');
+ if(new Set(cart).size!==cart.length)throw Error('한 판에 같은 종류는 1개씩만 구매할 수 있어요.');
  const price=cart.reduce((sum,id)=>sum+HP_ITEM_PRICES[id],0);
  if(price>state.points[0])throw Error('구매 포인트가 부족해요.');
  const kits:string[][]=[cart];
  for(let seat=1;seat<game.players.length;seat++){
-  const held=run.enemyConsumables?.[seat]||[],kit:string[]=[],preferred=[...(run.hp[seat]<=85?['emergency-herb']:[]),...(run.itemGuards?.[seat]?[]:['ward-seal']),'ember-bomb','spark-dart','whisper-eye','swapped-fate','scout-lens'];let budget=state.points[seat];
+  const held=run.enemyConsumables?.[seat]||[],kit:string[]=[],preferred=[...(run.hp[seat]<=85?['emergency-herb']:[]),...(run.itemGuards?.[seat]?[]:['ward-seal']),'ember-bomb','whisper-eye','swapped-fate','scout-lens'];let budget=state.points[seat];
   for(const id of preferred){
    if(kit.length>=2||held.includes(id)||HP_ITEM_PRICES[id]>budget)continue;
    kit.push(id);budget-=HP_ITEM_PRICES[id];
@@ -66,7 +67,8 @@ export function beginHpItemRound(game:Game){
 export function hpItemEffectiveHp(game:Pick<Game,'hpItemMode'|'hpItemMatch'|'rpgRun'>,seat:number){return Math.max(0,Math.min(100,(game.rpgRun?.hp[seat]||0)+(game.hpItemMode?game.hpItemMatch?.pendingItemDelta?.[seat]||0:0)));}
 /** Apply queued HP once, immediately before the card settlement. */
 export function applyPendingHpItems(game:Game){if(!game.hpItemMode||!game.hpItemMatch||!game.rpgRun)return;game.rpgRun.hp=game.rpgRun.hp.map((_,seat)=>hpItemEffectiveHp(game,seat));game.hpItemMatch.pendingItemDelta=game.players.map(()=>0);}
-export function hpItemDisplayHp(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'>,seat:number,reveal=false,heldBattle:HpBattleEvent|null=null){
+export function hpItemDisplayHp(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'>,seat:number,reveal=false,heldBattle:HpBattleEvent|null=null,heldItem:{id:string,target:number,before:number}|null=null){
+ if(heldItem&&game.rpgRun?.lastItem?.id===heldItem.id&&heldItem.target===seat)return heldItem.before;
  // Presentation only: the authoritative HP remains immediate for all game decisions.
  if(heldBattle&&(game.hpItemMatch?.lastBattle||game.rpgRun?.combat?.lastBattle)?.id===heldBattle.id)return heldBattle.hpBefore[seat];
  return !isBattleItemMode(game)&&game.hpItemMode&&game.phase==='ended'&&!reveal?game.hpItemMatch?.report?.hpBefore[seat]??game.rpgRun?.hp[seat]??0:game.rpgRun?.hp[seat]??0;

@@ -11,10 +11,11 @@ export function createHpSkills(character:HpCharacterId,round:number):HpSkillStat
  return {version:1,round,characters,seats:characters.map(()=>({used:false,armed:false})),uses:[]};
 }
 type SkillGame=Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'|'round'|'turn'|'roundActions'|'completedBattles'|'turnReadyAt'|'result'>;
-export function hasHpSkills(game:SkillGame){return isBattleItemMode(game)&&game.hpItemMatch?.skills?.version===1;}
+export const HP_CHARACTER_SKILLS_ENABLED=false;
+export function hasHpSkills(game:SkillGame){return HP_CHARACTER_SKILLS_ENABLED&&isBattleItemMode(game)&&game.hpItemMatch?.skills?.version===1;}
 export function hpSkillAvailability(game:SkillGame,who:number,enabled=true,now=Date.now()){
  const skills=game.hpItemMatch?.skills,seat=skills?.seats[who];
- if(!hasHpSkills(game)||!seat)return {usable:false,reason:'고유스킬은 새 아이템전에서 사용할 수 있어요.'};
+ if(!hasHpSkills(game)||!seat)return {usable:false,reason:'캐릭터 고유스킬은 현재 사용하지 않아요.'};
  if(game.phase!=='playing'||game.rpgRun?.status!=='playing')return {usable:false,reason:'이번 판이 종료됐어요.'};
  if(hpItemShopPending(game))return {usable:false,reason:'상점 준비를 먼저 마쳐 주세요.'};
  if(seat.armed)return {usable:false,reason:'준비됨 · 다음 싸움 종료 시 발동'};

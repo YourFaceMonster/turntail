@@ -34,11 +34,18 @@ function bezier(a:Point,b:Point,c:Point,d:Point,t:number){const v=1-t;return {x:
 export function itemProjectileFrames(points:ReturnType<typeof itemScenePoints>,blocked:boolean,exchange=false,options:{dart?:boolean,contact?:number}={}):Keyframe[]{
  const contact=options.contact??.68,windup=exchange?contact*(.10/.68):.10;
  const launch={x:points.from.x+(points.from.x<points.to.x?-18:18),y:points.from.y+12};
+ const distance=Math.hypot(points.to.x-points.from.x,points.to.y-points.from.y),down=points.from.y<points.center.y*.6&&points.to.y<points.center.y*.6;
+ const desiredArc=Math.min(260,Math.max(95,distance*.48));
+ // Keep the complete silhouette on-screen when a high AI seat throws downward.
+ // Bound the parabola rather than clamping each point, which would flatten its apex.
+ const ceiling=Math.min(64,launch.y,points.to.y);
+ const fits=(arc:number)=>Array.from({length:101},(_,i)=>i/100).every(t=>mix(launch.y,points.to.y,t)-4*arc*t*(1-t)>=ceiling);
+ let arc=desiredArc;
+ if(!down&&!fits(arc)){let low=0,high=arc;for(let i=0;i<18;i++){const mid=(low+high)/2;if(fits(mid))low=mid;else high=mid;}arc=low;}
  const sample=(time:number)=>{
   const travel=Math.max(0,Math.min(1,(time-windup)/(contact-windup)));let p:Point,scale:number,opacity=1,rotation=0;
   if(time<windup){const t=time/windup;p={x:mix(points.from.x,launch.x,t),y:mix(points.from.y,launch.y,t)};scale=mix(.28,.35,t);rotation=-38*t;opacity=Math.min(1,t*3);
   }else if(time<=contact){
-   const distance=Math.hypot(points.to.x-points.from.x,points.to.y-points.from.y),arc=Math.min(260,Math.max(95,distance*.48)),down=points.from.y<points.center.y*.6&&points.to.y<points.center.y*.6;
    p={x:mix(launch.x,points.to.x,travel),y:mix(launch.y,points.to.y,travel)+(down?1:-1)*4*arc*travel*(1-travel)};
    scale=exchange?.8:.35+.6*Math.sin(travel*Math.PI*.84);rotation=exchange?0:-38+travel*110;
   }else if(blocked){

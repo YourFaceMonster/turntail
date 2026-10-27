@@ -1,44 +1,28 @@
 import assert from 'node:assert/strict';
 import {createElement as h} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
-import {act,view,type Tile,type Game} from '../lib/game.ts';
 import {createHpItemGame,saveHpItemGame,readHpItemArchive} from '../lib/hp-item-mode.ts';
-import {resolveHpItemBattle} from '../lib/hp-item-battle.ts';
+import {createRpgGame} from '../lib/rpg-game.ts';
+import {saveRpgGame,readRpgArchive} from '../lib/rpg-storage.ts';
+import {createHpSkills,hasHpSkills,useHpSkill} from '../lib/hp-item-skills.ts';
+import {retireLegacyLoadout} from '../lib/retired-loadout.ts';
+import {RPG_SHOP_ITEMS,RPG_TACTICAL_ITEMS,rpgItemAvailability,useRpgTacticalItem,refundLegacyEmbers} from '../lib/rpg-items.ts';
 import {buyHpItemLoadout} from '../lib/hp-item-shop.ts';
-import {startRpgRound} from '../lib/rpg-game.ts';
-import {useRpgTacticalItem,rpgItemAvailability,tryRpgBotItem} from '../lib/rpg-items.ts';
-import {HP_CHARACTERS,hpCharacter,hasHpSkills,hpSkillAvailability,useHpSkill,type HpCharacterId} from '../lib/hp-item-skills.ts';
-import {HpCharacterPicker,HpSkillControl} from '../app/components/HpCharacterSkills';
-import {HpItemResult} from '../app/components/HpItemMatch';
-const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
-function fresh(character:HpCharacterId='toto'){
- const g=createHpItemGame('내 이름','',Date.now(),2,character);g.hpItemRules=3;g.rpgRun!.consumables=['scout-lens','swapped-fate','ward-seal','ember-bomb','emergency-herb','whisper-eye','spark-dart'].flatMap(id=>[id,id]);g.rpgRun!.enemyConsumables={1:[...g.rpgRun!.consumables],2:[...g.rpgRun!.consumables]};g.rpgRun!.equipped=[];g.turn=0;g.turnReadyAt=0;g.completedBattles=1;g.roundActions=3;g.trick=[];g.lastBy=null;g.tablePlay=null;g.stacks=Array.from({length:15},()=>[null,null]);
- // These resolution fixtures deliberately use the original attack/guard/money trio.
- g.hpItemMatch!.skills!.characters=[character,...HP_CHARACTERS.map(entry=>entry.id).filter(id=>id!==character)];
- g.players.slice(1).forEach((player,index)=>{const person=hpCharacter(g.hpItemMatch!.skills!.characters[index+1]);player.name=person.name;player.avatar=person.avatar;});
- g.players.forEach((player,seat)=>{player.hand=[tile(3+seat),tile(9+seat)];});return g;
-}
-function fight(g:Game,actor:number,tiles=[tile(8)]){g.trick=tiles;g.lastBy=actor;g.tablePlay={id:crypto.randomUUID(),who:actor,tiles};return resolveHpItemBattle(g)!;}
-for(const character of HP_CHARACTERS){const g=fresh(character.id);assert.ok(hasHpSkills(g));assert.equal(g.players[0].name,'내 이름');assert.equal(g.hpItemMatch!.skills!.characters[0],character.id);assert.equal(new Set(g.hpItemMatch!.skills!.characters).size,3);g.players.slice(1).forEach((player,index)=>assert.equal(player.name,hpCharacter(g.hpItemMatch!.skills!.characters[index+1]).name));}
-const locked=fresh();locked.completedBattles=0;assert.throws(()=>useHpSkill(locked),/첫 싸움/);locked.completedBattles=1;locked.turn=1;assert.throws(()=>useHpSkill(locked),/내 차례/);locked.turn=0;locked.turnReadyAt=Date.now()+5000;assert.throws(()=>useHpSkill(locked),/확인/);locked.turnReadyAt=0;
-const before=JSON.stringify({hand:locked.players[0].hand,turn:locked.turn,actions:locked.roundActions});useHpSkill(locked);assert.equal(JSON.stringify({hand:locked.players[0].hand,turn:locked.turn,actions:locked.roundActions}),before,'skill preparation preserves the card action');assert.throws(()=>useHpSkill(locked),/준비됨/);assert.throws(()=>useRpgTacticalItem(locked,'ward-seal'),/스킬을 쓴 차례/);assert.equal(locked.rpgRun!.tactics?.[0]?.used||0,0,'skill does not consume an item allowance');
-act(locked,0,'play',[locked.players[0].hand[0].id]);assert.equal(locked.players[0].hand.length,1,'cards can still be played after preparing a skill');
-const itemFirst=fresh();useRpgTacticalItem(itemFirst,'ward-seal');assert.throws(()=>useHpSkill(itemFirst),/아이템을 쓴 차례/);itemFirst.roundActions!++;assert.equal(hpSkillAvailability(itemFirst,0).usable,true);
-const combined=fresh();useHpSkill(combined);combined.turn=1;useHpSkill(combined,1);const battle=fight(combined,0);assert.deepEqual(combined.rpgRun!.hp,[100,100,98],'attack +1 resolves before guarding 2');assert.deepEqual(battle.damageTaken,[0,0,2]);assert.equal(combined.hpItemMatch!.skills!.uses[0].outcome,'attack');assert.equal(combined.hpItemMatch!.skills!.uses[1].amount,2);const once=JSON.stringify(combined);resolveHpItemBattle(combined);assert.equal(JSON.stringify(combined),once,'repeat resolution cannot duplicate damage or skill consumption');
-const lost=fresh();useHpSkill(lost);fight(lost,1);assert.equal(lost.hpItemMatch!.skills!.uses[0].outcome,'missed');assert.equal(lost.hpItemMatch!.skills!.seats[0].armed,false);lost.turn=0;assert.throws(()=>useHpSkill(lost),/사용 완료/);fight(lost,0);assert.deepEqual(lost.rpgRun!.hp,[99,99,98],'an unsuccessful skill never carries into a second fight');
-const defended=fresh('rowen');useHpSkill(defended);fight(defended,1);assert.equal(defended.rpgRun!.hp[0],100);assert.equal(defended.hpItemMatch!.skills!.uses[0].amount,1,'small damage clamps at zero');
-const guardWinner=fresh('rowen');useHpSkill(guardWinner);fight(guardWinner,0);assert.equal(guardWinner.hpItemMatch!.skills!.uses[0].outcome,'missed');assert.equal(guardWinner.hpItemMatch!.skills!.seats[0].armed,false);
-const itemAttack=fresh('rowen');useHpSkill(itemAttack);itemAttack.turn=1;useRpgTacticalItem(itemAttack,'ember-bomb',0,[],1);assert.equal(itemAttack.rpgRun!.hp[0],92,'guard skill never blocks items');assert.equal(itemAttack.hpItemMatch!.skills!.seats[0].armed,true);fight(itemAttack,1,[tile(7),tile(7,1),tile(7,2)]);assert.equal(itemAttack.rpgRun!.hp[0],91,'guard remains for the next card fight');
-const money=fresh('lumi');useHpSkill(money);fight(money,0);assert.deepEqual(money.hpItemMatch!.points,[22,20,20]);const moneyOnce=JSON.stringify(money);resolveHpItemBattle(money);assert.equal(JSON.stringify(money),moneyOnce,'skill money cannot pay twice');
-money.trick=[];money.lastBy=null;money.turn=0;money.players[0].hand=[tile(3)];act(money,0,'play',[tile(3).id]);assert.deepEqual(money.hpItemMatch!.report?.skillMoney,[2,0,0]);assert.deepEqual(money.hpItemMatch!.report?.moneyDelta,[4,-2,-2]);buyHpItemLoadout(money,[]);const kept=[...money.hpItemMatch!.points];startRpgRound(money);assert.deepEqual(money.hpItemMatch!.points,kept);assert.equal(money.hpItemMatch!.skills!.seats[0].used,false);assert.equal(money.hpItemMatch!.skills!.uses.length,0);assert.equal(money.hpItemMatch!.skills!.lastEvent,undefined);assert.equal(hpSkillAvailability(money,0).usable,false,'every new round repeats the opening-fight lock');
-const fatal=fresh();useHpSkill(fatal);fatal.rpgRun!.hp[2]=2;fatal.players[0].hand=[tile(3)];act(fatal,0,'play',[tile(3).id]);assert.equal(fatal.rpgRun!.status,'complete');assert.equal(fatal.result,null);assert.deepEqual(fatal.hpItemMatch!.points,[20,20,20]);assert.equal(fatal.hpItemMatch!.report?.skills?.[0].outcome,'attack');
-const skillPaid=fresh('lumi');useHpSkill(skillPaid);skillPaid.rpgRun!.hp[2]=1;fight(skillPaid,0);assert.deepEqual(skillPaid.hpItemMatch!.points,[22,20,20]);assert.equal(skillPaid.hpItemMatch!.report?.moneySkipped,true,'instant skill rewards are separate from canceled card-round settlement');assert.deepEqual(skillPaid.hpItemMatch!.report?.skillMoney,[2,0,0]);
-const expired=fresh('rowen');useHpSkill(expired);expired.turn=1;expired.rpgRun!.hp[2]=1;useRpgTacticalItem(expired,'ember-bomb',2,[],1);assert.equal(expired.hpItemMatch!.report?.skills?.[0].outcome,'expired');assert.equal(expired.hpItemMatch!.skills!.seats[0].armed,false);
-const ai=fresh('lumi');ai.turn=1;ai.rpgRun!.enemyConsumables![1]=[];const aiActions=ai.roundActions;tryRpgBotItem(ai);assert.equal(ai.hpItemMatch!.skills!.seats[1].armed,true,'AI attacks with its own skill under the same first-fight restriction');assert.equal(ai.roundActions,aiActions);assert.equal(rpgItemAvailability(view(ai,ai.players[1].token),'ward-seal',true).usable,false);assert.equal(view(ai,ai.players[0].token).players[1].hand,undefined,'skill state never reveals an opponent hand');
-const memory=new Map<string,string>(),storage={getItem:(key:string)=>memory.get(key)||null,setItem:(key:string,value:string)=>{memory.set(key,value);}};saveHpItemGame(storage,lost);const restored=readHpItemArchive(storage,2).active!;assert.equal(restored.hpItemMatch!.skills!.seats[0].used,true);restored.turn=0;assert.throws(()=>useHpSkill(restored),/사용 완료/);delete restored.hpItemMatch!.skills;saveHpItemGame(storage,restored);assert.equal(readHpItemArchive(storage,2).active!.hpItemMatch!.skills,undefined,'existing saves are not silently granted mid-round skills');
-const mode1=createHpItemGame('모드1','',Date.now(),1);assert.ok(!hasHpSkills(mode1));assert.throws(()=>useHpSkill(mode1),/새 아이템전/);assert.equal(mode1.hpItemRules,undefined);assert.equal(mode1.rpgRun!.consumables.length,10);
-const legacy=fresh();delete legacy.hpItemRules;assert.ok(!hasHpSkills(legacy));assert.throws(()=>useHpSkill(legacy));
-const picker=renderToStaticMarkup(h(HpCharacterPicker,{selected:'rowen',choose:()=>{}}));for(const character of HP_CHARACTERS)assert.ok(picker.includes(character.skill));assert.equal((picker.match(/aria-pressed="true"/g)||[]).length,1);
-const control=renderToStaticMarkup(h(HpSkillControl,{game:view(lost,lost.players[0].token),enabled:true,busy:false,use:()=>{}}));assert.ok(control.includes('사용 완료')&&control.includes('disabled'));
-const result=renderToStaticMarkup(h(HpItemResult,{game:view(skillPaid,skillPaid.players[0].token),busy:false,next:()=>{},restart:()=>{},exit:()=>{}}));assert.ok(result.includes('고유스킬 사용 내역')&&result.includes('스킬 +2P')&&result.includes('이번 판 돈 정산 없음'));
-console.log('PASS: three character skills, turn/item exclusivity, attack/guard/money resolution, expiration, final-card death, recharge, AI privacy, save persistence and result accounting.');
+import {HpSkillControl,HpSkillBadge} from '../app/components/HpCharacterSkills';
+import {view} from '../lib/game.ts';
+const g=createHpItemGame('나','',Date.now(),2,undefined,'mage');
+assert.equal(g.hpItemMatch!.skills,undefined);assert.ok(g.rpgRun!.combat);
+g.hpItemMatch!.skills=createHpSkills('toto',g.round);g.hpItemMatch!.skills.seats[0].armed=true;
+assert.equal(hasHpSkills(g),false);const unchanged=JSON.stringify(g);assert.throws(()=>useHpSkill(g));assert.equal(JSON.stringify(g),unchanged);
+const position=view(g,g.players[0].token);assert.equal(renderToStaticMarkup(h(HpSkillControl,{game:position,enabled:true,busy:false,use:()=>{}})),'');assert.equal(renderToStaticMarkup(h(HpSkillBadge,{game:position,seat:1})),'');
+assert.ok(!RPG_SHOP_ITEMS.includes('spark-dart')&&!RPG_TACTICAL_ITEMS.includes('spark-dart'));
+g.rpgRun!.consumables=['spark-dart','ward-seal','spark-dart'];g.rpgRun!.enemyConsumables={1:['spark-dart'],2:['emergency-herb']};const wallets=[...g.hpItemMatch!.points];
+retireLegacyLoadout(g);assert.equal(g.hpItemMatch!.skills,undefined);assert.deepEqual(g.rpgRun!.consumables,['ward-seal']);assert.deepEqual(g.rpgRun!.enemyConsumables,{1:[],2:['emergency-herb']});assert.deepEqual(g.hpItemMatch!.points,[wallets[0]+8,wallets[1]+4,wallets[2]]);
+const normalized=JSON.stringify(g);retireLegacyLoadout(g);assert.equal(JSON.stringify(g),normalized,'retirement/refund is idempotent');
+g.rpgRun!.consumables.push('spark-dart');assert.equal(rpgItemAvailability(view(g,g.players[0].token),'spark-dart',true).usable,false);assert.throws(()=>buyHpItemLoadout(g,['spark-dart']));buyHpItemLoadout(g,[]);g.turn=0;g.turnReadyAt=0;g.completedBattles=1;assert.throws(()=>useRpgTacticalItem(g,'spark-dart',1));
+const mem=new Map<string,string>(),storage={getItem:(key:string)=>mem.get(key)||null,setItem:(key:string,value:string)=>{mem.set(key,value);}};
+saveHpItemGame(storage,g);const restored=readHpItemArchive(storage,2).active!;assert.ok(!restored.rpgRun!.consumables.includes('spark-dart'));assert.equal(restored.hpItemMatch!.skills,undefined);assert.equal(restored.rpgRun!.combat!.professions[0],'mage');
+saveHpItemGame(storage,restored);assert.deepEqual(readHpItemArchive(storage,2).active!.hpItemMatch!.points,restored.hpItemMatch!.points,'saved refund cannot repeat');
+const rpg=createRpgGame('나','',Date.now(),'rogue');rpg.rpgRun!.consumables=['spark-dart','scout-lens'];const coins=rpg.rpgRun!.coins;refundLegacyEmbers(rpg);assert.equal(rpg.rpgRun!.coins,coins+20);assert.deepEqual(rpg.rpgRun!.consumables,['scout-lens']);
+saveRpgGame(storage,rpg);assert.equal(readRpgArchive(storage).active!.rpgRun!.combat!.professions[0],'rogue');
+console.log('PASS: retired three skills and dart, idempotent saved-item refunds, inventory integrity and four profession persistence.');

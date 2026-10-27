@@ -19,10 +19,10 @@ assert.ok(!picker.includes('아이템전1'));assert.ok(picker.includes('포인�
 const archive={version:1 as const,active,records:[]};
 const lobby=renderToStaticMarkup(h(HpItemLobby,{archive,start:noop,resume:noop,close:noop,error:'',character:'toto',chooseCharacter:noop}));
 assert.ok(lobby.includes('<h2>아이템전</h2>'));assert.ok(lobby.includes('아이템전 이어하기')&&lobby.includes('새 아이템전 시작'));
-assert.ok(lobby.includes('30명')&&lobby.includes('hp-character-picker')&&lobby.includes('20P로 상점에서 선택 구매'));
+assert.ok(lobby.includes('30명')&&!lobby.includes('hp-character-picker')&&lobby.includes('profession-picker')&&lobby.includes('20P로 상점에서 선택 구매'));
 for(const retiredLabel of ['아이템전1','아이템전2','segmented','판 종료 시 아이템 효과'])assert.ok(!lobby.includes(retiredLabel));
 const gameView=view(active,active.players[0].token),shop=renderToStaticMarkup(h(HpItemShop,{game:gameView,busy:false,error:'',buy:noop,exit:noop}));
-assert.ok(shop.includes('아이템전 · 1판 준비')&&!shop.includes('아이템전2'));
+assert.ok(shop.includes('별빛 상점')&&shop.includes('1판 준비')&&!shop.includes('아이템전2'));
 const result=renderToStaticMarkup(h(HpItemResult,{game:gameView,busy:false,next:noop,restart:noop,exit:noop}));assert.ok(!result.includes('아이템전2'));
 const kept=memory.get(HP_ITEM_SHOP_STORAGE_KEY);memory.set(HP_ITEM_STORAGE_KEY,'{broken');
 assert.equal(readSaveSlots(storage).errors.length,0,'retired mode corruption is not reported as an active-game error');
