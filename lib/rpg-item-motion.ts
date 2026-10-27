@@ -31,7 +31,7 @@ type Point={x:number,y:number};
 const mix=(a:number,b:number,t:number)=>a+(b-a)*t;
 function bezier(a:Point,b:Point,c:Point,d:Point,t:number){const v=1-t;return {x:v*v*v*a.x+3*v*v*t*b.x+3*v*t*t*c.x+t*t*t*d.x,y:v*v*v*a.y+3*v*v*t*b.y+3*v*t*t*c.y+t*t*t*d.y};}
 /** Dense samples and linear interpolation avoid the stop at each CSS waypoint. */
-export function itemProjectileFrames(points:ReturnType<typeof itemScenePoints>,blocked:boolean,exchange=false,options:{dart?:boolean,contact?:number}={}):Keyframe[]{
+export function itemProjectileFrames(points:ReturnType<typeof itemScenePoints>,blocked:boolean,exchange=false,options:{dart?:boolean,contact?:number,reduced?:boolean}={}):Keyframe[]{
  const contact=options.contact??.68,windup=exchange?contact*(.10/.68):.10;
  const launch={x:points.from.x+(points.from.x<points.to.x?-18:18),y:points.from.y+12};
  const distance=Math.hypot(points.to.x-points.from.x,points.to.y-points.from.y),down=points.from.y<points.center.y*.6&&points.to.y<points.center.y*.6;
@@ -40,7 +40,7 @@ export function itemProjectileFrames(points:ReturnType<typeof itemScenePoints>,b
  // Bound the parabola rather than clamping each point, which would flatten its apex.
  const ceiling=Math.min(64,launch.y,points.to.y);
  const fits=(arc:number)=>Array.from({length:101},(_,i)=>i/100).every(t=>mix(launch.y,points.to.y,t)-4*arc*t*(1-t)>=ceiling);
- let arc=desiredArc;
+ let arc=options.reduced?0:desiredArc;
  if(!down&&!fits(arc)){let low=0,high=arc;for(let i=0;i<18;i++){const mid=(low+high)/2;if(fits(mid))low=mid;else high=mid;}arc=low;}
  const sample=(time:number)=>{
   const travel=Math.max(0,Math.min(1,(time-windup)/(contact-windup)));let p:Point,scale:number,opacity=1,rotation=0;
@@ -49,7 +49,7 @@ export function itemProjectileFrames(points:ReturnType<typeof itemScenePoints>,b
    p={x:mix(launch.x,points.to.x,travel),y:mix(launch.y,points.to.y,travel)+(down?1:-1)*4*arc*travel*(1-travel)};
    scale=exchange?.8:.35+.6*Math.sin(travel*Math.PI*.84);rotation=exchange?0:-38+travel*110;
   }else if(blocked){
-   const t=(time-contact)/(1-contact);p=bezier(points.to,{x:points.recoil.x,y:points.to.y-130},{x:points.from.x,y:points.from.y-90},points.from,t);scale=mix(.64,.26,t);opacity=1-Math.max(0,(t-.5)*2);rotation=72-t*250;
+   const t=(time-contact)/(1-contact);p=options.reduced?{x:mix(points.to.x,points.from.x,t),y:mix(points.to.y,points.from.y,t)}:bezier(points.to,{x:points.recoil.x,y:points.to.y-130},{x:points.from.x,y:points.from.y-90},points.from,t);scale=mix(.64,.26,t);opacity=1-Math.max(0,(t-.5)*2);rotation=72-t*250;
   }else{p=points.to;scale=.64;opacity=Math.max(0,1-(time-contact)/.05);}
   return {p,scale,opacity,rotation};
  };
@@ -68,6 +68,6 @@ export function itemProjectileFrames(points:ReturnType<typeof itemScenePoints>,b
    const peak=.10+.58/(2*.84),flip=Math.max(0,Math.min(1,(time-(peak-.035))/.07)),artAngle=Math.atan2(-1,1-2*flip)*180/Math.PI;
    rotation=lastAngle-artAngle;
   }
-  return {offset:time,transform:`translate3d(${current.p.x}px,${current.p.y}px,0) translate(-50%,-50%) scale(${current.scale}) rotate(${rotation}deg)`,opacity:current.opacity};
+  return {offset:time,transform:`translate3d(${current.p.x}px,${current.p.y}px,0) translate(-50%,-50%) scale(${options.reduced?0.6:current.scale}) rotate(${options.reduced?0:rotation}deg)`,opacity:current.opacity};
  });
 }

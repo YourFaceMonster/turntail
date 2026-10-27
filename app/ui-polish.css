@@ -1,0 +1,39 @@
+/* 0.6.31 · painted environments, readable healing, anchored floor slots. */
+.turntale.table-v211.active-table .floor-stage .wall{grid-auto-flow:row!important;grid-auto-rows:var(--floor-cell-h,var(--tile-h))!important}
+.turntale.table-v211.active-table.rpg-mode .own-status-info .own-hp-line{display:flex!important;align-items:center;justify-content:flex-start;gap:5px;white-space:nowrap}
+.turntale.table-v211.active-table.rpg-mode .own-status-card .own-hp-line .own-guard-mark{position:static!important;inset:auto!important;display:inline-block;flex:none;width:19px!important;height:19px!important;margin:0!important;object-fit:contain;filter:drop-shadow(0 0 2px #9ed7e0);vertical-align:middle}
+.turntale.table-v211.active-table.rpg-mode.landscape-table[data-landscape-density="compact"] .own-status-card .own-hp-line .own-guard-mark{width:14px!important;height:14px!important}
+.item-heal-caption b,.rpg-hit-overlay.is-heal .rpg-hit-number{color:#277a49!important;-webkit-text-stroke:1.1px #e3efcf!important;paint-order:stroke fill;text-shadow:0 2px 3px #07190dde,0 0 2px #e3efcf!important;font-weight:900}
+.item-heal-caption b{font-size:23px!important;letter-spacing:.4px}
+.rpg-hit-overlay.is-heal .rpg-hit-flash{background:linear-gradient(0deg,#249d635c,#329f6326 65%,transparent)!important;box-shadow:inset 0 0 18px #6ccf8d5c!important}
+.modal.market-item-shop{background-image:linear-gradient(0deg,#0b1b16 0%,#0b1b16e8 40%,#0b1b1620 100%),url('/ui/market-interior-v1.png');background-size:100% 100%,100% auto;background-repeat:no-repeat;background-position:center,center top;background-color:#0b1b16;border-color:#b99a60;box-shadow:0 22px 75px #000d,inset 0 0 0 4px #d8b57016}
+.market-item-shop .market-header{min-height:116px;align-items:flex-end;background:linear-gradient(0deg,#0b1b16d9,transparent 85%);border-bottom-color:#c09d5c;padding-top:35px}
+.market-item-shop .market-header h2{font-size:31px!important;text-shadow:0 2px 4px #000,0 0 12px #000}
+.market-item-shop .market-header .eyebrow{color:#f0d6a4;text-shadow:0 1px 3px #000}
+.market-item-shop .market-sign>svg{color:#f4d99f;filter:drop-shadow(0 2px 3px #000)}
+.market-item-shop .market-wallet{background:#0b1b16e8;border-color:#e7c88780;box-shadow:0 3px 12px #0005,inset 0 1px #f5d69e22}
+.market-item-shop .market-shelf>button{background:radial-gradient(ellipse at 50% 0,#d8b76b22,transparent 80%),linear-gradient(145deg,#263a2beF,#11251deF);border-color:#d1ad695e;box-shadow:0 4px 7px #0007,inset 0 1px #ffe6b824}
+.market-item-shop .market-shelf>button.is-inspected{background:radial-gradient(ellipse at 50% 0,#e1c57e38,transparent 80%),#293b27;border-color:#e8c87d}
+.market-item-shop .market-description,.market-item-shop .market-stock,.market-item-shop .market-basket{background:#0b201ae0;border-color:#c6a76b4d}
+.modal.hp-item-result.compact-item-result{background-image:linear-gradient(0deg,#0a1715ef 0%,#0a171560 65%,#0a171500 100%),url('/ui/settlement-ledger-v1.png');background-size:100% 100%,100% auto;background-position:center,center top;background-repeat:no-repeat;background-color:#0a1715;border:1px solid #c9ac70;box-shadow:0 20px 70px #000b,inset 0 0 0 4px #d7b87613;padding:18px 20px!important;overflow-y:auto}
+.compact-item-result .settlement-header{display:flex;flex-direction:column;justify-content:flex-end;min-height:96px;text-align:center;margin:-8px -4px 9px;padding:20px 4px 8px;border-bottom:1px solid #d8b87560;background:linear-gradient(0deg,#0a1715bb,transparent)}
+.compact-item-result .settlement-header .eyebrow{font-size:10px;line-height:14px;color:#dbc18d;letter-spacing:1.2px;text-shadow:0 1px 3px #000}
+.compact-item-result .settlement-header h2{margin:4px 0!important;font-size:27px!important;line-height:1.15;color:#f3dfb4;text-shadow:0 2px 4px #000}
+.compact-item-result .settlement-header p{margin:0!important;font-size:11px;line-height:16px;font-weight:400;color:#c0c9bb}
+.compact-item-result .hp-settlement{margin:4px 0!important;gap:7px}
+.compact-item-result .hp-settlement>article{padding:7px;border:1px solid #bdab7c40;border-radius:11px;background:#10211edb;box-shadow:0 2px 6px #0004}
+.compact-item-result .hp-settlement .rpg-hp-bar{min-height:44px!important;height:44px!important}
+.compact-item-result .compact-hp-breakdown{margin:6px 3px 1px!important;font-size:11px!important;line-height:1.45;font-weight:400!important;color:#c2c9bf!important;text-align:left}
+.compact-item-result .compact-hp-breakdown p{margin:0!important;font:inherit!important;line-height:1.45!important;color:inherit}
+.compact-item-result .compact-hp-breakdown .breakdown-dot{display:inline!important;margin:0 5px;font-weight:400;color:#9ba995}
+.compact-item-result .compact-hp-breakdown b{font-size:12px!important;line-height:1;font-weight:850!important;text-shadow:none!important}
+.compact-item-result .compact-hp-breakdown .hp-lost,.compact-item-result .hp-change-float .negative{color:#ed726b!important}
+.compact-item-result .compact-hp-breakdown .hp-recovered,.compact-item-result .hp-change-float .positive{color:#50b778!important}
+.compact-item-result .compact-hp-breakdown .hp-unchanged{display:inline!important;font-weight:400!important;color:#a9b6a6}
+.compact-item-result .compact-hp-breakdown .round-money-detail{display:block!important;margin-top:2px!important;color:#b9c3b5!important;font-weight:400!important}
+.compact-item-result .compact-hp-breakdown small{font-size:10px!important;font-weight:400;color:inherit}
+.compact-item-result .compact-hp-breakdown .round-money-shortage{display:inline!important;font-size:10px;font-weight:400!important}
+.compact-item-result .result-details{background:#0b1c17d6;border-color:#a68b554d;margin:6px 0!important;padding:6px 8px}
+.compact-item-result>.primary{min-height:43px!important;padding-block:9px!important}
+@media(max-width:700px){.market-item-shop .market-header{min-height:96px;padding-top:20px}.market-item-shop .market-header h2{font-size:25px!important}.modal.hp-item-result.compact-item-result{padding:12px!important}.compact-item-result .settlement-header{min-height:88px;margin-bottom:9px}.compact-item-result .settlement-header h2{font-size:24px!important}.compact-item-result .hp-settlement>article{padding:7px}.compact-item-result .compact-hp-breakdown{font-size:10px!important;margin-top:6px!important}.compact-item-result .compact-hp-breakdown b{font-size:11px!important}}
+@media(max-height:520px) and (min-width:560px){.market-item-shop .market-header{min-height:57px;padding-top:4px;padding-bottom:7px}.market-item-shop .market-header h2{font-size:24px!important}.compact-item-result .settlement-header{min-height:74px;padding-top:18px}.compact-item-result .settlement-header h2{font-size:23px!important}.compact-item-result .settlement-header p{display:none}}
