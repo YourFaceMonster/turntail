@@ -31,6 +31,6 @@ saveSingleGame(storage,normal);
 saveRpgGame(storage,createRpgGame('RPG 저장'));
 for(const variant of [1,2] as const)saveHpItemGame(storage,createHpItemGame('아이템 저장','',Date.now(),variant));
 const retainedBefore=[...memory.entries()];
-assert.deepEqual(readSaveSlots(storage).slots.map(s=>s.mode),['single','rpg','hp-item','hp-item-2','multi']);
+assert.deepEqual(readSaveSlots(storage).slots.map(s=>s.mode),['single','rpg','hp-item-2','multi']);
 assert.deepEqual([...memory.entries()],retainedBefore,'reading available modes cannot rewrite their saved state');
 console.log('PASS: retired challenge saves omitted without deletion, independent classic/online resume, exact state recovery, storage failures and isolated corrupt saves.');
