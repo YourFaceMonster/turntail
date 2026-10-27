@@ -5,6 +5,7 @@ import {StagePortrait} from './StagePortrait';
 import {stagePalette} from '../../lib/stage-presentation';
 import {stageEnvironmentImage} from '../../lib/stage-art';
 import {stageTheme} from '../../lib/stage-theme';
+import {stageCompanyAssets} from '../../lib/stage-models';
 import {MATERIAL_COLORS,StageVisuals} from './StageVisuals';
 import TileBack from './TileBack';
 import TileFace from './TileFace';
@@ -36,6 +37,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
  const [savedLandings,setSavedLandings]=useState<{item:SavedTableItem,target:DealTarget,baseTarget?:DealTarget}[]>([]),[savedBounds,setSavedBounds]=useState<{left:number,top:number,width:number,height:number}|null>(null);
  const skipTap=useRef<{at:number,x:number,y:number}|null>(null);
  const shuffleSeed=useRef(0),measuredKey=useRef(''),cardElements=useRef<(HTMLDivElement|null)[]>([]),running=useRef<Animation[]>([]);
+ const companyArtKey=company.map(person=>person.avatar||'').join('|');
  const animationPhase=useRef(''),cameraElement=useRef<HTMLDivElement>(null),cameraMotion=useRef<Animation|null>(null),environmentMotions=useRef<Animation[]>([]);
  const callbacks=useRef({onPrepared,onFallback});callbacks.current={onPrepared,onFallback};
  const circle=savedBounds?tableCircle(savedBounds,screen.width,screen.height,resume?0:(scene?.width||0)+32):null;
@@ -66,9 +68,10 @@ function GameEntrance({onWorldDiameter,company,tableSet,stage,phase,resume,migra
   let cancelled=false;setAssetsReady(false);
   const surfaceAsset=nativeTableMaterial(stage||tableSet||0);
   const paths=[...(surfaceAsset?[surfaceAsset]:[]),...(stage?[stageEnvironmentImage(stage)]:['/turntale-room-0513.webp']),...(stage?[]:['/monsters/blue-0513.webp','/monsters/red-0513.webp','/monsters/haetae-0513.webp','/monsters/hiboringji-061.webp','/monsters/hibo-seated-063.webp']),'/turntale-ivory-material-055.webp','/turntale-stone-material-055.webp','/turntale-tile-back-gold.svg','/turntale-wood-0513.webp',...(stage?['/stage-company-0516.webp','/stage-table-materials-0518.webp']:[]),...(stage||tableSet?['/turntale-stage-materials-v2.webp']:[])];
-  void Promise.all(paths.map(src=>new Promise<void>(resolve=>{const finish=()=>{clearTimeout(timer);resolve();},timer=setTimeout(finish,6000),img=new Image();img.onload=()=>{void img.decode().catch(()=>{}).then(finish);};img.onerror=finish;img.src=src;}))).then(()=>{if(!cancelled)setAssetsReady(true);});
+  paths.push(...stageCompanyAssets(companyArtKey.split('|')));
+  void Promise.all([...new Set(paths)].map(src=>new Promise<void>(resolve=>{const finish=()=>{clearTimeout(timer);resolve();},timer=setTimeout(finish,6000),img=new Image();img.onload=()=>{void img.decode().catch(()=>{}).then(finish);};img.onerror=finish;img.src=src;}))).then(()=>{if(!cancelled)setAssetsReady(true);});
   return()=>{cancelled=true;};
- },[screen.width>screen.height,!!screen.width,stage,tableSet]);
+ },[screen.width>screen.height,!!screen.width,stage,tableSet,companyArtKey]);
  useLayoutEffect(()=>{
   if(phase==='menu-out'){setSavedLandings([]);setSavedBounds(null);}
   if(!resume||phase!=='room-hold'||!game||!screen.width||!pageVisible)return;

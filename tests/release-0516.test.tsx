@@ -8,7 +8,7 @@ import {readStageArchive,saveStageGame,STAGE_STORAGE_KEY} from '../lib/stage-sto
 import {createStageGame} from '../lib/stage-game';
 import {stageRecord} from '../lib/stage-challenge';
 import {STAGE_THEMES} from '../lib/stage-theme';
-import {stageModel,STAGE_MODEL_SIZE} from '../lib/stage-models';
+import {stageModel} from '../lib/stage-models';
 import EntranceSeats from '../app/components/EntranceSeats';
 import {StagePortrait} from '../app/components/StagePortrait';
 import {StageVisuals} from '../app/components/StageVisuals';
@@ -23,7 +23,7 @@ const g=createStageGame('보존'),original=JSON.stringify(g),records=Array.from(
 storage.setItem(STAGE_STORAGE_KEY,JSON.stringify({version:1,active:g,records}));assert.equal(readStageArchive(storage).records.length,10);assert.equal(JSON.parse(storage.getItem(STAGE_STORAGE_KEY)!).records.length,10);assert.equal(JSON.stringify(readStageArchive(storage).active),original);
 const saved=saveStageGame(storage,g);assert.equal(saved.records.length,10);assert.ok(saved.records.some(r=>r.id===g.stageRun!.id));assert.equal(JSON.stringify(saved.active),original);
 const seen=new Set<string>();for(const theme of STAGE_THEMES){const company=theme.opponents.slice(0,2).map(p=>({name:p.name,avatar:`stage-portrait:${p.portrait}`,count:10,points:200}));const html=renderToStaticMarkup(<EntranceSeats company={company} diameter={1900} cx={681} cy={468} stage={theme.stage}/>);assert.equal((html.match(/class="stage-painted-model"/g)||[]).length,2);assert.ok(!html.includes('figure-volume'));
- for(const p of theme.opponents.slice(0,2)){const m=stageModel(p.portrait);seen.add(m.rect.join());for(const rect of [m.rect,[m.face[0],m.face[1],m.face[2],m.face[2]]]){assert.ok(rect[0]>=0&&rect[1]>=0&&rect[0]+rect[2]<=STAGE_MODEL_SIZE.width&&rect[1]+rect[3]<=STAGE_MODEL_SIZE.height);}assert.ok(renderToStaticMarkup(<StagePortrait index={p.portrait}/>).includes('/stage-company-0516.webp'));}
+ for(const p of theme.opponents.slice(0,2)){const m=stageModel(p.portrait);seen.add(`${m.src}:${m.rect.join()}`);for(const rect of [m.rect,[m.face[0],m.face[1],m.face[2],m.face[2]]]){assert.ok(rect[0]>=0&&rect[1]>=0&&rect[0]+rect[2]<=m.size.width&&rect[1]+rect[3]<=m.size.height);}assert.ok(renderToStaticMarkup(<StagePortrait index={p.portrait}/>).includes(m.src));}
  const tile=renderToStaticMarkup(<StageVisuals stage={theme.stage}><TileFace tile={{id:20,n:6,s:1}}/></StageVisuals>);assert.ok(tile.includes('data-stage-texture')&&tile.includes('data-tile-finish="cartoon"'));}
 assert.equal(seen.size,20);
 const sql=new DatabaseSync(':memory:');for(const f of fs.readdirSync('drizzle').filter(n=>n.endsWith('.sql')).sort().slice(0,3))sql.exec(fs.readFileSync('drizzle/'+f,'utf8'));

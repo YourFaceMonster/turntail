@@ -13,6 +13,9 @@ import {HpItemResult} from '../app/components/HpItemMatch';
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 function fresh(character:HpCharacterId='toto'){
  const g=createHpItemGame('내 이름','',Date.now(),2,character);g.hpItemRules=3;g.rpgRun!.consumables=['scout-lens','swapped-fate','ward-seal','ember-bomb','emergency-herb','whisper-eye','spark-dart'].flatMap(id=>[id,id]);g.rpgRun!.enemyConsumables={1:[...g.rpgRun!.consumables],2:[...g.rpgRun!.consumables]};g.rpgRun!.equipped=[];g.turn=0;g.turnReadyAt=0;g.completedBattles=1;g.roundActions=3;g.trick=[];g.lastBy=null;g.tablePlay=null;g.stacks=Array.from({length:15},()=>[null,null]);
+ // These resolution fixtures deliberately use the original attack/guard/money trio.
+ g.hpItemMatch!.skills!.characters=[character,...HP_CHARACTERS.map(entry=>entry.id).filter(id=>id!==character)];
+ g.players.slice(1).forEach((player,index)=>{const person=hpCharacter(g.hpItemMatch!.skills!.characters[index+1]);player.name=person.name;player.avatar=person.avatar;});
  g.players.forEach((player,seat)=>{player.hand=[tile(3+seat),tile(9+seat)];});return g;
 }
 function fight(g:Game,actor:number,tiles=[tile(8)]){g.trick=tiles;g.lastBy=actor;g.tablePlay={id:crypto.randomUUID(),who:actor,tiles};return resolveHpItemBattle(g)!;}

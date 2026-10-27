@@ -1,4 +1,4 @@
-import {createHpSkills,hpCharacter,type HpCharacterId} from './hp-item-skills.ts';
+import {createHpSkills,hpCharacter,pickHpOpponents,type HpCharacterId} from './hp-item-skills.ts';
 import {isBattleItemMode} from './hp-item-battle.ts';
 import {finishHpItemRoundReport,HP_ITEM_START_POINTS,type HpItemVariant} from './hp-item-shop.ts';
 import {uid,type Game} from './game.ts';
@@ -25,6 +25,8 @@ export function createHpItemGame(name:string,avatar='',now=Date.now(),variant:Hp
   const relics=run.equipped.filter(id=>!excluded.includes(id)),pool=RPG_RELICS.filter(relic=>!excluded.includes(relic.id)&&!relics.includes(relic.id)).map(relic=>relic.id);
   while(relics.length<3&&pool.length){const random=new Uint32Array(1);crypto.getRandomValues(random);relics.push(pool.splice(random[0]%pool.length,1)[0]);}
   run.relics=[...relics];run.equipped=[...relics];run.discovered=[...relics];
+ }else{
+  pickHpOpponents().forEach((id,index)=>{const person=hpCharacter(id);game.players[index+1].name=person.name;game.players[index+1].avatar=person.avatar;});
  }
  return game;
 }

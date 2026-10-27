@@ -1,0 +1,61 @@
+{
+  "tool": "built-in image_gen",
+  "intent": "Complete 10 missing seated character sprites in the existing painterly concept",
+  "reference_images": [
+    "public/stage-company-0516.webp",
+    "public/turntale-stage-portraits.webp"
+  ],
+  "identities": [
+    {
+      "portrait": 2,
+      "name": "토토"
+    },
+    {
+      "portrait": 5,
+      "name": "도담"
+    },
+    {
+      "portrait": 8,
+      "name": "이온"
+    },
+    {
+      "portrait": 11,
+      "name": "방울"
+    },
+    {
+      "portrait": 14,
+      "name": "브람"
+    },
+    {
+      "portrait": 17,
+      "name": "태엽"
+    },
+    {
+      "portrait": 20,
+      "name": "나비르"
+    },
+    {
+      "portrait": 21,
+      "name": "아스텔"
+    },
+    {
+      "portrait": 26,
+      "name": "베스"
+    },
+    {
+      "portrait": 29,
+      "name": "로제아"
+    }
+  ],
+  "prompt": "Use case: stylized-concept.\nAsset type: ONE transparent sprite atlas supplement for the existing TURNTALE seated fantasy tabletop characters.\nInput image 1 (stage-company-0516.webp) is STYLE, proportions and seated-pose reference only. Input image 2 (turntale-stage-portraits.webp) is IDENTITY reference: a 5-column by 6-row portrait sheet; zero-based identity indices below refer to that sheet.\nMake exactly TEN NEW distinct full-body seated characters in ONE precisely aligned 5-column by 2-row sprite atlas, preferably 3072x1536 or higher at the same 2:1 aspect. Each equal cell contains one character only, centered, completely visible including feet, tail/wings and simple stool where appropriate, with transparent empty gutter at least 8% on every side. NO background, checkerboard, labels, borders, text, ground shadows, glow clouds or grid lines. Actual transparent alpha. All faces near 22% of their cell height, consistent large readable heads. Hands resting at lap height, viewer facing gentle three-quarter seated poses, matching source atlas proportions and warm illustrated storybook fantasy style, textured painterly edges, rich natural material detail, soft restrained lighting. Do not copy existing full-body figures; complete the ten missing identities as follows, exact left-to-right order:\nTOP ROW:\n1. Toto, portrait index 2: little grey rabbit courier, one long ear folded, warm expressive dark eyes, oversized russet red-brown newsboy cap, brown travel clothes and leather mail satchel containing sealed letters. Both rabbit feet visible, gentle eager expression.\n2. Dodam, index 5: plump friendly raccoon porter, unmistakable black eye mask and ringed fluffy tail, yellow neckerchief, simple brown traveller clothes, large backpack resting just behind shoulders. Relaxed seated posture.\n3. Ion, index 8: little fern forest spirit, wooden mask face with TWO small jade-green eyes, fern leaves and moss hair, moss-green shoulder cape, gnarled wooden arms and feet, friendly small wooden humanoid seated on stump. No stone golem features.\n4. Bangul, index 11: round translucent PALE BLUE water-droplet spirit with two dark eyes and small smile, one white lotus petal on head, little rounded watery arms/feet tucked in a seated pose, clearly readable translucent body edges and internal water highlights. No radiating effects.\n5. Bram, index 14: sturdy grey mountain-goat bridge sentinel, large curved horns, white-grey goatee, leather shoulder strap bearing a small bronze wind chime, muted rugged travelling tunic, cloven hooves visible. Dignified reassuring expression.\nBOTTOM ROW:\n1. Taeyeop, index 17: small brass OWL automaton record keeper, one monocular mechanical lens and one round glass eye, ornate but readable aged brass feather plates, small purple ribbon under beak, articulated brass claws and folded wings. Seated upright.\n2. Nabir, index 20: silvery soft-furred MOTH spirit with blue eyes, two long delicate antennae, folded moon-patterned silver wings, small crescent moon chest motif, plush pale grey body and little feet. Sweet calm face, not a rabbit or owl.\n3. Astel, index 21: IVORY WHITE FOX constellation observer, long white fox muzzle and ears, gold eyes, navy forehead band with gold star ornament, dark-blue and gold scholar's cape, small brass star-chart astrolabe held in lap, fluffy white tail curling near feet. Explicitly an anthropomorphic fox, not a human or porcelain doll.\n4. Bes, index 26: charcoal-black CAT smoke spirit, amber eyes, sly polite smile, one ear tip subtly wispy, tiny red-bead necklace and bronze bell, paws resting at lap, coiled dark tail. Keep most of silhouette solid so it reads on a dark game UI, only ear tip is mist.\n5. Rosea, index 29: majestic RED PHOENIX guardian, golden crest, long scarlet neck feathers, amber eyes, elegant folded wings and long layered crimson/gold tail curled compactly around a seated/perched body, golden bird feet. Feather texture carries the fire theme; NO flames, halo or effects.\nKeep each character strictly within its own cell. Match the original portrait identities while adopting the seated full-body atlas's illustrative rendering. Do not add any of the existing 20 characters. No UI. No weapons or cards.",
+  "spacing_prompt": "Edit target: the attached NEW ten-character TURNTALE sprite atlas. Keep ALL TEN character identities, poses, textures, colors, outfits and order unchanged. Only fix production sprite-sheet spacing. Output actual transparent alpha, wide 2:1 canvas, exactly FIVE EQUAL COLUMNS and TWO EQUAL ROWS. Reposition and scale down each of the ten existing figures uniformly within its own equal rectangular cell so there is at least 12% cell width of completely TRANSPARENT EMPTY SPACE on EACH side and at least 8% cell height above and below every figure. Every ear, horn, wing, tail, foot and stool must fit entirely within that character's own cell. The two rows must have a clear transparent horizontal gutter. Cell boundaries must never touch a subject. No visible grid or labels, no additional objects or effects, no background. These will be independently clipped rectangular game sprites, so generous regular separation is essential. Do not crop or restyle any character. Top row rabbit, raccoon, wood spirit, water spirit, goat. Bottom row brass owl, moth, white fox, black cat, phoenix.",
+  "generation_original": "C:/Users/SONG/.codex/generated_images/01a177b7-0f26-7270-b78e-fbf56b17ab91/exec-0cff0587-6e55-4daf-b2d4-ef6dd1029bbe.png",
+  "selected_original": "C:/Users/SONG/.codex/generated_images/01a177b7-0f26-7270-b78e-fbf56b17ab91/exec-504bd8f9-8731-466d-ab4b-519696ab9511.png",
+  "workspace_original": "D:/CHATGPT_CODEX/17_Turntail/artifacts/characters-0.6.27/residents-final-10.png",
+  "asset": "public/stage-company-0627.webp",
+  "dimensions": [
+    1774,
+    887
+  ],
+  "format": "lossless WebP, original alpha preserved"
+}

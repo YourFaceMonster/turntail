@@ -1,20 +1,13 @@
 import {assertTurnReady,combo,legalOptions,uid,view,type Game} from './game.ts';
 import {isBattleItemMode} from './hp-item-battle.ts';
 import {hpItemShopPending} from './hp-item-shop.ts';
-
-export const HP_CHARACTERS=[
- {id:'toto',name:'토토',avatar:'stage-portrait:2',role:'공격형',skill:'전력 질주',effect:'다음 싸움에서 이기면 다른 두 명에게 주는 피해 +1',kind:'attack'},
- {id:'rowen',name:'로웬',avatar:'stage-portrait:0',role:'수비형',skill:'관문의 수호',effect:'다음 싸움에서 자신이 받는 싸움 피해 2 감소',kind:'guard'},
- {id:'lumi',name:'루미',avatar:'stage-portrait:1',role:'운영형',skill:'길잡이의 보상',effect:'다음 싸움에서 이기면 즉시 돈 2P 획득',kind:'money'},
-] as const;
-export type HpCharacterId=typeof HP_CHARACTERS[number]['id'];
+import {hpCharacter,pickHpOpponents,type HpCharacterId} from './hp-item-characters.ts';
+export {HP_CHARACTERS,HP_BATTLE_CHARACTERS,hpCharacter,isHpCharacterId,pickHpOpponents,type HpCharacterId} from './hp-item-characters.ts';
 export type HpSkillOutcome='ready'|'attack'|'guard'|'money'|'missed'|'expired';
 export type HpSkillUse={id:string,round:number,actor:number,character:HpCharacterId,at:number,outcome:HpSkillOutcome,amount?:number};
 export type HpSkillState={version:1,round:number,characters:HpCharacterId[],seats:{used:boolean,armed:boolean,turn?:number}[],uses:HpSkillUse[],lastEvent?:HpSkillUse};
-export function hpCharacter(id:unknown){return HP_CHARACTERS.find(character=>character.id===id)||HP_CHARACTERS[0];}
-export function isHpCharacterId(id:unknown):id is HpCharacterId{return HP_CHARACTERS.some(character=>character.id===id);}
 export function createHpSkills(character:HpCharacterId,round:number):HpSkillState{
- const characters=[character,...HP_CHARACTERS.map(entry=>entry.id).filter(id=>id!==character)];
+ const characters=[character,...pickHpOpponents(character)];
  return {version:1,round,characters,seats:characters.map(()=>({used:false,armed:false})),uses:[]};
 }
 type SkillGame=Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'|'round'|'turn'|'roundActions'|'completedBattles'|'turnReadyAt'|'result'>;
