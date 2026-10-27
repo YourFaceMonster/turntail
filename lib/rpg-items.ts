@@ -1,4 +1,5 @@
 import {usedHpSkillThisTurn,tryHpBotSkill} from './hp-item-skills.ts';
+import {professionCombatView} from './rpg-profession-combat.ts';
 import {isBattleItemMode} from './hp-item-battle.ts';
 import {hpItemShopPending,hpItemEffectiveHp} from './hp-item-shop.ts';
 import {finishHpItemMatch} from './hp-item-mode.ts';
@@ -17,7 +18,7 @@ export const isAttackItem=(id:string):id is 'ember-bomb'|'spark-dart'=>id==='emb
 export const exchangeEligible=(tile:Tile)=>tile.n!==1&&tile.n!==2;
 export type RpgTacticalState={round:number,used:number,turn?:number,peek?:{round:number,index:number,tile:Tile},peeks?:{round:number,index:number,tile:Tile}[],handPeek?:{round:number,target:number,tile:Tile},sealed?:number[],ember?:{target:number,turn:number}};
 export type RpgItemEvent={id:string,actor:number,target:number,itemId:RpgTacticalItem,kind:'heal'|'damage'|'seal'|'scout'|'exchange'|'blocked'|'armed'|'cancel'|'reveal'|'failed',amount?:number,at:number,tiles?:Tile[]};
-export type RpgExchangeEvent={id:string,itemId:RpgExchangeItem,actor?:number,target:number,round:number,outgoing:Tile[],incoming:Tile[],at:number};
+export type RpgExchangeEvent={source?:'profession',id:string,itemId:RpgExchangeItem,actor?:number,target:number,round:number,outgoing:Tile[],incoming:Tile[],at:number};
 export const exchangeMinimum=(id:string)=>id==='fates-scales'?5:4;
 export const RPG_ITEM_HINTS:Record<string,{label:string,bonus:string}>={
  'scout-lens':{label:'2층 투시',bonus:'1장 확인'},'swapped-fate':{label:'1장 교환',bonus:'양쪽 4장↑ · 1·2 제외'},'fates-scales':{label:'2장 교환',bonus:'양쪽 5장↑'},
@@ -44,7 +45,7 @@ export function rpgTacticalView(run:RpgRun,me:number,round:number,game?:Game):Rp
  const visibleItem=run.lastItem?.kind==='seal'&&run.lastItem.actor!==me?undefined:run.lastItem;
  const peeks=(own.peeks||[own.peek].filter(Boolean) as NonNullable<RpgTacticalState['peeks']>).filter(peek=>peek.round===round&&(!game||game.stacks[peek.index]?.[1]?.id===peek.tile.id));
  const handPeek=own.handPeek?.round===round&&(!game||game.players[own.handPeek.target]?.hand.some(tile=>tile.id===own.handPeek!.tile.id))?own.handPeek:undefined;
- return {...run,enemyConsumables:{[me]:rpgInventory(run,me)},consumables:rpgInventory(run,me),itemGuards:{[me]:!!run.itemGuards?.[me]},tactics:{[me]:{...own,peek:peeks.at(-1),peeks,handPeek,sealed:undefined}},protectedCounts:undefined,lastItem:visibleItem?{...visibleItem,target:visibleItem.kind==='scout'&&visibleItem.actor!==me?-1:visibleItem.target,tiles:visibleItem.actor===me?visibleItem.tiles:undefined}:undefined,lastExchange:visibleExchange,tacticalPeek:peeks.at(-1),tacticalPeeks:peeks,tacticalRound:own.round,tacticalUsed:own.used,tacticalTurn:own.turn};
+ return {...run,combat:professionCombatView(run.combat,me,game),enemyConsumables:{[me]:rpgInventory(run,me)},consumables:rpgInventory(run,me),itemGuards:{[me]:!!run.itemGuards?.[me]},tactics:{[me]:{...own,peek:peeks.at(-1),peeks,handPeek,sealed:undefined}},protectedCounts:undefined,lastItem:visibleItem?{...visibleItem,target:visibleItem.kind==='scout'&&visibleItem.actor!==me?-1:visibleItem.target,tiles:visibleItem.actor===me?visibleItem.tiles:undefined}:undefined,lastExchange:visibleExchange,tacticalPeek:peeks.at(-1),tacticalPeeks:peeks,tacticalRound:own.round,tacticalUsed:own.used,tacticalTurn:own.turn};
 }
 export function exchangeTargetAvailable(game:ReturnType<typeof view>,id:string,target:number){
  const minimum=exchangeMinimum(id),count=id==='fates-scales'?2:1,person=game.players[target];
@@ -186,8 +187,8 @@ export function rpgItemNoticeText(event:RpgItemEvent,players:readonly {name:stri
  return {title:event.kind==='blocked'?`${names[event.itemId]} 차단`:`${names[event.itemId]} 사용`,route,detail};
 }
 
-function blockHostileItem(g:Game,actor:number,target:number,itemId:RpgTacticalItem){
+export function blockHostileItem(g:Game,actor:number,target:number,itemId:RpgTacticalItem,source:'item'|'profession'='item'){
  const run=g.rpgRun!;if(!run.itemGuards?.[target])return false;
- run.itemGuards[target]=false;record(g,actor,itemId,target,'blocked',0);
- g.log=[`${g.players[target].name} · 수호의 봉인으로 아이템 방어`,...g.log].slice(0,40);return true;
+ run.itemGuards[target]=false;if(source==='item')record(g,actor,itemId,target,'blocked',0);
+ g.log=[`${g.players[target].name} · 수호의 봉인으로 ${source==='profession'?'직업 패 교환':'아이템'} 방어`,...g.log].slice(0,40);return true;
 }

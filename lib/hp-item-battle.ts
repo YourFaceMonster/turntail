@@ -2,8 +2,9 @@ import {combo,type Game,type Tile} from './game.ts';
 import {finishHpItemMatch} from './hp-item-mode.ts';
 import {finishHpItemRoundReport} from './hp-item-shop.ts';
 import {resolveHpSkills,type HpSkillUse} from './hp-item-skills.ts';
+import {resolveProfessionWin,type ProfessionEffect} from './rpg-profession-combat.ts';
 
-export type HpBattleEvent={id:string,round:number,actor:number,label:string,damage:number,playedCount?:number,roundFinal?:boolean,damageTaken?:number[],pointsEarned?:number,skills?:HpSkillUse[],hpBefore:number[],hpAfter:number[],at:number};
+export type HpBattleEvent={id:string,round:number,actor:number,label:string,damage:number,playedCount?:number,roundFinal?:boolean,damageTaken?:number[],blockedDamage?:number[],pointsEarned?:number,skills?:HpSkillUse[],professions?:ProfessionEffect[],hpBefore:number[],hpAfter:number[],at:number};
 /** Impact beat before the click-to-dismiss result; the client holds turns until acknowledged. */
 export const HP_BATTLE_WIN_DELAY_MS=1250;
 export const HP_BATTLE_REVIEW_MS=2600;
@@ -32,10 +33,10 @@ export function resolveHpItemBattle(game:Game,now=Date.now(),roundEnding=false):
  const state=game.hpItemMatch,run=game.rpgRun,id=`${game.code}:${game.round}:${game.tablePlay?.id||game.lastEvent?.id||game.completedBattles||0}`;
  const prior=state.battles?.find(battle=>battle.id===id);if(prior)return prior;
  const actor=game.lastBy,label=combo(game.trick)?.label,playedCount=usesOriginalItemShop(game)?Math.max(game.trick.length,battleTileCounts(game)[actor]):undefined,damage=playedCount??hpBattleDamage(game.trick);if(!label||!damage)return null;
- const resolved=resolveHpSkills(game,actor,damage),hpBefore=[...run.hp],hpAfter=run.hp.map((hp,seat)=>Math.max(0,hp-resolved.damage[seat]));
+ const hpBefore=[...run.hp],profession=resolveProfessionWin(game,actor,label,now),resolved=resolveHpSkills(game,actor,damage+profession.damage),hpAfter=run.hp.map((hp,seat)=>Math.min(100,Math.max(0,hp+profession.heal[seat]-resolved.damage[seat])));
  const pointsEarned=0;
  const roundFinal=roundEnding||hpAfter.some(hp=>hp<=0);
- const battle:HpBattleEvent={id,round:game.round,actor,label,damage,playedCount,roundFinal,damageTaken:resolved.damage,pointsEarned,skills:resolved.effects,hpBefore,hpAfter:[...hpAfter],at:now};
+ const battle:HpBattleEvent={id,round:game.round,actor,label,damage,playedCount,roundFinal,damageTaken:resolved.damage,pointsEarned,skills:resolved.effects,professions:profession.effects,hpBefore,hpAfter:[...hpAfter],at:now};
  run.hp=hpAfter;run.updatedAt=now;state.battles=[...(state.battles||[]),battle];state.lastBattle=battle;
  state.battleTiles=game.players.map(()=>0);
  game.turnReadyAt=Math.max(game.turnReadyAt||0,now+(roundFinal?700:HP_BATTLE_REVIEW_MS));

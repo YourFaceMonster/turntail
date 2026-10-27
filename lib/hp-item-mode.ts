@@ -1,3 +1,5 @@
+import {newProfessionCombat} from './rpg-profession-combat.ts';
+import type {RpgProfessionId} from './rpg-professions.ts';
 import {createHpSkills,hpCharacter,pickHpOpponents,type HpCharacterId} from './hp-item-skills.ts';
 import {isBattleItemMode} from './hp-item-battle.ts';
 import {finishHpItemRoundReport,HP_ITEM_START_POINTS,type HpItemVariant} from './hp-item-shop.ts';
@@ -13,7 +15,7 @@ type StoragePort=Pick<Storage,'getItem'|'setItem'>;
 export type HpItemRecord={id:string,name:string,rank:number,hp:number[],rounds:number,at:number,status:'complete'|'abandoned',variant?:HpItemVariant,rules?:2|3|4};
 export type HpItemArchive={version:1,active:Game|null,records:HpItemRecord[]};
 export function emptyHpItemArchive():HpItemArchive{return {version:1,active:null,records:[]};}
-export function createHpItemGame(name:string,avatar='',now=Date.now(),variant:HpItemVariant=1,character:HpCharacterId='toto'):Game{
+export function createHpItemGame(name:string,avatar='',now=Date.now(),variant:HpItemVariant=1,character:HpCharacterId='toto',profession?:RpgProfessionId):Game{
  const game=createRpgTestGame(name,avatar,now);delete game.rpgTest;game.hpItemMode=true;game.hpItemVariant=variant;game.code='HP-ITEM-'+uid();
  game.hpItemMatch={pendingItemDelta:[0,0,0],pendingItemPoints:[0,0,0],points:[HP_ITEM_START_POINTS,HP_ITEM_START_POINTS,HP_ITEM_START_POINTS],shopRound:0,roundStartHp:[...game.rpgRun!.hp],roundItems:[],roundEarned:[0,0,0]};
  if(variant===2){
@@ -28,6 +30,7 @@ export function createHpItemGame(name:string,avatar='',now=Date.now(),variant:Hp
  }else{
   pickHpOpponents().forEach((id,index)=>{const person=hpCharacter(id);game.players[index+1].name=person.name;game.players[index+1].avatar=person.avatar;});
  }
+ if(variant===2&&profession)game.rpgRun!.combat=newProfessionCombat(profession,game.players.map(player=>player.avatar||''),game.round);
  return game;
 }
 export function hpItemRanks(game:Pick<Game,'players'|'rpgRun'>){return rpgRanks(game.rpgRun!.hp,game.players.map(player=>player.hand.length));}

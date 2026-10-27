@@ -1,3 +1,4 @@
+import {recordProfessionBattlePlay,resetProfessionCombat,resolveProfessionRpgBattle} from './rpg-profession-combat.ts';
 import {isBattleItemMode,recordHpBattlePlay,resolveHpItemBattle,settleHpBattleMoney} from './hp-item-battle.ts';
 import {applyPendingHpItems,beginHpItemRound,finishHpItemRoundReport,hpItemShopPending,type HpItemMatchState} from './hp-item-shop.ts';
 import {finishHpItemMatch} from './hp-item-mode.ts';
@@ -113,7 +114,7 @@ export function start(g:Game,now=Date.now()){
  g.opening=lowestHandLead(g.players);g.turn=g.opening.who;
  g.turnReadyAt=now+DEAL_REVIEW_MS;g.aiAssisted=!g.practice&&g.players.some(p=>p.replaced);g.rally=0;g.roundActions=0;g.completedBattles=0;g.playedTiles=[];g.publicDraws={};g.phase="playing";g.trick=[];g.tablePlay=null;g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
  g.announcedCombos=[];g.revealedHands=[];g.lastEvent={id:uid(),type:"deal",who:g.turn,at:now};scheduleTurn(g,now);
- if(g.rpgRun)resetRpgTactics(g.rpgRun);beginHpItemRound(g);
+ if(g.rpgRun)resetRpgTactics(g.rpgRun);beginHpItemRound(g);resetProfessionCombat(g);
 }
 export function restartMatch(g:Game,now=Date.now()){
  if(g.phase!=="ended"||g.matchWinner===null||g.matchWinner===undefined)throw Error("목표 점수 매치가 끝난 뒤 새 매치를 시작할 수 있어요.");
@@ -154,7 +155,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
    if(!(g.rpgRun.gloveRoundIds||[]).includes(roundId))g.rpgRun=withRelicActivations({...g.rpgRun,points:g.rpgRun.points+2,gloveRoundIds:[...(g.rpgRun.gloveRoundIds||[]),roundId]},[{relicId:'gamblers-gloves',message:'포인트 +2'}],now);
   }
   g.roundActions=(g.roundActions??(g.playedTiles?.length||0))+1;
-  recordHpBattlePlay(g,who,tiles.length);
+  recordHpBattlePlay(g,who,tiles.length);recordProfessionBattlePlay(g,who,tiles.length);
   p.hand=p.hand.filter(t=>!ids.includes(t.id));const protection=g.rpgRun?.tactics?.[who];if(protection?.sealed)protection.sealed=protection.sealed.filter(id=>!ids.includes(id));g.playedTiles=[...(g.playedTiles||[]),...tiles];if(g.publicDraws?.[p.id])g.publicDraws[p.id]=g.publicDraws[p.id].filter(t=>!ids.includes(t.id));g.trick=tiles;g.lastBy=who;
   const introductions=new Set(g.announcedCombos??[1,2,3].filter(n=>g.log.some(line=>line.includes(`· ${['싱글','페어','트리플'][n-1]} ${n}개 제출`))));
   const showNotice=shouldShowPlayNotice(introductions,tiles.length),reviewMs=showNotice?PLAY_REVIEW_MS:QUICK_PLAY_MS;g.announcedCombos=[...introductions];
@@ -162,7 +163,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   g.lastEvent={id:uid(),type:"play",who,tiles,label:combo(tiles)!.label,at:now,rally:g.rally,showNotice,reviewMs};
   g.tablePlay={tiles:tiles.map(t=>({...t})),who,id:g.lastEvent.id};
   note(g,`${p.name} · ${combo(tiles)!.label} ${tiles.length}개 제출`);
-  if(!p.hand.length){resolveHpItemBattle(g,now,true);if(g.rpgRun?.status==='complete')return;g.phase="ended";g.turnDeadline=0;g.winner=who;if(!automatic)p.timeouts=0;settle(g);note(g,g.result?.voided?`${p.name} 손패 소진 · AI 대체로 무효 경기입니다.`:`${p.name} 승리! 손패를 모두 냈습니다.`);return;}
+  if(!p.hand.length){resolveHpItemBattle(g,now,true);resolveProfessionRpgBattle(g,now,true);if(g.rpgRun&&g.rpgRun.status!=='playing')return;g.phase="ended";g.turnDeadline=0;g.winner=who;if(!automatic)p.timeouts=0;settle(g);note(g,g.result?.voided?`${p.name} 손패 소진 · AI 대체로 무효 경기입니다.`:`${p.name} 승리! 손패를 모두 냈습니다.`);return;}
  }else if(action==="draw"){
   if(!g.trick.length)throw Error("선을 잡은 차례에는 패를 반드시 내야 해요.");
   if(!Number.isInteger(index)||!accessible(g,index))throw Error("밝게 표시된 외곽 타일만 가져올 수 있어요.");
@@ -175,7 +176,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
  }else throw Error("지원하지 않는 동작이에요.");
  if(!automatic)p.timeouts=0;
  g.turn=(who+1)%g.players.length;
- if(g.lastBy===g.turn){const battle=resolveHpItemBattle(g,now);if(g.rpgRun?.status==='complete')return;g.completedBattles=(g.completedBattles||0)+1;g.rally=0;g.trick=[];g.tablePlay=null;g.lastBy=null;if(!battle)g.turnReadyAt=Math.max(now,g.turnReadyAt||0)+LEAD_REVIEW_MS;note(g,`${g.players[g.turn].name}이 선을 잡았습니다.`);}
+ if(g.lastBy===g.turn){const battle=resolveHpItemBattle(g,now)||resolveProfessionRpgBattle(g,now);if(g.rpgRun&&g.rpgRun.status!=='playing')return;g.completedBattles=(g.completedBattles||0)+1;g.rally=0;g.trick=[];g.tablePlay=null;g.lastBy=null;if(!battle)g.turnReadyAt=Math.max(now,g.turnReadyAt||0)+LEAD_REVIEW_MS;note(g,`${g.players[g.turn].name}이 선을 잡았습니다.`);}
  scheduleTurn(g,now);
 }
 export function view(g:Game,token:string){

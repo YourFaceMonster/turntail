@@ -1,11 +1,12 @@
 import {withRelicActivations,type RpgRelicActivation,type RpgRelicEffect} from './rpg-relic-feedback.ts';
 import type {RpgExchangeEvent,RpgItemEvent,RpgTacticalState} from './rpg-items.ts';
+import type {RpgProfessionCombat} from './rpg-profession-combat.ts';
 /** The RPG journey is deliberately separate from the older score based stage run. */
 export type RpgStatus='playing'|'allocation'|'relic'|'ready'|'complete'|'game-over'|'abandoned';
 export type RpgResult={id:string,at:number,players:{count:number,delta:number}[]};
 export type RpgReward={stage:number,rank:number,counts:number[],hpAfterSettlement:number[],coins:number,points:number,nextStage:number,offers:string[],retry:boolean,special?:boolean,reason:'clear'|'fate'|'end'};
 export type RpgShop={area:number,stock:{id:string,kind:'relic'|'consumable',price:number,quantity:number}[]};
-export type RpgRun={itemGuards?:Record<number,boolean>,tactics?:Record<number,RpgTacticalState>,enemyConsumables?:Record<number,string[]>,protectedCounts?:number[],lastItem?:RpgItemEvent,version:1,id:string,stage:number,status:RpgStatus,hp:number[],fate:number,coins:number,points:number,rounds:number,roundIds:string[],gloveRoundIds:string[],startedAt:number,updatedAt:number,reward:RpgReward|null,relics:string[],equipped:string[],consumables:string[],shops:RpgShop[],scaleUsed:number[],pendingSoup:boolean,pendingBandage:boolean,shield:number,bossCoinPaid:number[],crackedHeartUsed:number[],discovered:string[],unlocked:string[],relicActivations?:RpgRelicActivation[],lastExchange?:RpgExchangeEvent,tacticalRound?:number,tacticalUsed?:number,tacticalTurn?:number,tacticalPeeks?:{round:number,index:number,tile:{id:number,n:number,s:number}}[],tacticalPeek?:{round:number,index:number,tile:{id:number,n:number,s:number}}};
+export type RpgRun={combat?:RpgProfessionCombat,itemGuards?:Record<number,boolean>,tactics?:Record<number,RpgTacticalState>,enemyConsumables?:Record<number,string[]>,protectedCounts?:number[],lastItem?:RpgItemEvent,version:1,id:string,stage:number,status:RpgStatus,hp:number[],fate:number,coins:number,points:number,rounds:number,roundIds:string[],gloveRoundIds:string[],startedAt:number,updatedAt:number,reward:RpgReward|null,relics:string[],equipped:string[],consumables:string[],shops:RpgShop[],scaleUsed:number[],pendingSoup:boolean,pendingBandage:boolean,shield:number,bossCoinPaid:number[],crackedHeartUsed:number[],discovered:string[],unlocked:string[],relicActivations?:RpgRelicActivation[],lastExchange?:RpgExchangeEvent,tacticalRound?:number,tacticalUsed?:number,tacticalTurn?:number,tacticalPeeks?:{round:number,index:number,tile:{id:number,n:number,s:number}}[],tacticalPeek?:{round:number,index:number,tile:{id:number,n:number,s:number}}};
 export const RPG_BOSSES=[3,6,9,10];
 export const RPG_TEST_ROUNDS=5;
 export const RPG_RELIC_REWARD_STAGES=[1,2,4,5,7,8];
@@ -52,12 +53,13 @@ export function settleRpgRound(run:RpgRun,result:RpgResult,winner:number,testMod
  const hp=[...run.hp],counts=result.players.map(p=>p.count),effects:RpgRelicEffect[]=[];let points=run.points,shield=run.shield||0;
  result.players.forEach((p,i)=>{
   if(p.delta>=0){if(i===0)points+=p.delta;return;}
+  if(run.combat)return;
   let damage=-p.delta;
   if(i===0&&run.equipped.includes('cracked-heart')&&!run.crackedHeartUsed.includes(run.stage)){const blocked=Math.min(8,damage);damage-=blocked;effects.push({relicId:'cracked-heart',message:`피해 ${blocked} 방어`});}
   if(i===0&&shield>0){const blocked=Math.min(shield,damage);damage-=blocked;shield-=blocked;}
   hp[i]-=damage;
  });
- const crackedHeartUsed=result.players[0].delta<0&&run.equipped.includes('cracked-heart')&&!run.crackedHeartUsed.includes(run.stage)?[...run.crackedHeartUsed,run.stage]:run.crackedHeartUsed;
+ const crackedHeartUsed=!run.combat&&result.players[0].delta<0&&run.equipped.includes('cracked-heart')&&!run.crackedHeartUsed.includes(run.stage)?[...run.crackedHeartUsed,run.stage]:run.crackedHeartUsed;
  if(winner===0&&run.equipped.includes('stopped-hourglass')){points+=5;effects.push({relicId:'stopped-hourglass',message:'포인트 +5'});}
  const base=withRelicActivations({...run,hp,points,shield,crackedHeartUsed,rounds:run.rounds+1,roundIds:[...run.roundIds,result.id],updatedAt:result.at},effects,result.at);
  if(hpItemMode)return {...base,hp:hp.map(value=>Math.max(0,value)),status:hp.some(value=>value<=0)?'complete':'playing',reward:null};

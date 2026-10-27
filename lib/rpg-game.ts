@@ -1,3 +1,5 @@
+import {newProfessionCombat} from './rpg-profession-combat.ts';
+import type {RpgProfessionId} from './rpg-professions.ts';
 import {player,room,start,uid,type Game} from './game.ts';
 import {advanceRpgStage,newRpgRun,RPG_RELICS} from './rpg.ts';
 import {RPG_BASIC_ITEMS,giveRpgEnemyItems} from './rpg-items.ts';
@@ -8,10 +10,10 @@ function opponents(stage:number){
  if([3,6,9,10].includes(stage))return RPG_TWINS.map(person=>{const ai=player(person.name,true);ai.avatar=person.avatar;return ai;});
  return stageOpponents(stage).map(person=>{const ai=player(person.name,true);ai.avatar=`stage-portrait:${person.portrait}`;return ai;});
 }
-export function createRpgGame(name:string,avatar='',now=Date.now()):Game{
+export function createRpgGame(name:string,avatar='',now=Date.now(),profession?:RpgProfessionId):Game{
  const human=player(name||'나');human.avatar=avatar;
  const game=room('RPG-'+uid(),human,true,3);game.rpgRun=newRpgRun(uid(),now);
- game.players.push(...opponents(1));giveRpgEnemyItems(game.rpgRun!);start(game,now);return game;
+ game.players.push(...opponents(1));if(profession)game.rpgRun!.combat=newProfessionCombat(profession,game.players.map(player=>player.avatar||''),game.round);giveRpgEnemyItems(game.rpgRun!);start(game,now);return game;
 }
 function sample<T>(pool:readonly T[],count:number){const choices=[...pool],picked:T[]=[];while(choices.length&&picked.length<count){const value=new Uint32Array(1);crypto.getRandomValues(value);picked.push(choices.splice(value[0]%choices.length,1)[0]);}return picked;}
 export function createRpgTestGame(name:string,avatar='',now=Date.now()):Game{
