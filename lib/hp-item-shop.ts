@@ -1,24 +1,26 @@
 import {expireHpSkills,resetHpSkills,type HpSkillState,type HpSkillUse} from './hp-item-skills.ts';
 import type {Game} from './game.ts';
 import {RPG_SHOP_ITEMS,type RpgTacticalItem} from './rpg-items.ts';
-import {isBattleItemMode,type HpBattleEvent} from './hp-item-battle.ts';
+import {isBattleItemMode,usesOriginalItemShop,type HpBattleEvent} from './hp-item-battle.ts';
 
 export type HpItemVariant=1|2;
-export type HpItemRoundReport={round:number,hpBefore:number[],hpAfter:number[],earned:number[],skills?:HpSkillUse[],skillMoney?:number[],battleDamage?:number[],moneyDamage?:number[],moneyDelta?:number[],moneyBefore?:number[],moneyAfter?:number[],moneySkipped?:boolean,endReason?:'battle'|'item'|'bankruptcy',itemDamage?:number[],itemHealing?:number[],cardDamage?:number[],itemPoints?:number[],cardPoints?:number[],items:{actor:number,target:number,id:string,kind:string,amount?:number}[]};
+export type HpItemRoundReport={round:number,hpBefore:number[],hpAfter:number[],earned:number[],skills?:HpSkillUse[],skillMoney?:number[],battleDamage?:number[],battlePoints?:number[],moneyDamage?:number[],moneyDelta?:number[],moneyBefore?:number[],moneyAfter?:number[],moneySkipped?:boolean,endReason?:'battle'|'item'|'bankruptcy',itemDamage?:number[],itemHealing?:number[],cardDamage?:number[],itemPoints?:number[],cardPoints?:number[],items:{actor:number,target:number,id:string,kind:string,amount?:number}[]};
 export type HpItemMatchState={points:number[],skills?:HpSkillState,shopRound:number,roundStartHp:number[],roundItems:HpItemRoundReport['items'],roundEarned:number[],pendingItemDelta?:number[],pendingItemPoints?:number[],battles?:HpBattleEvent[],lastBattle?:HpBattleEvent,roundMoneyBefore?:number[],moneyBefore?:number[],moneyDelta?:number[],moneyDamage?:number[],moneySkipped?:boolean,endReason?:'battle'|'item'|'bankruptcy',moneySettlementId?:string,report?:HpItemRoundReport};
 export const HP_ITEM_PRICES:Record<string,number>={'whisper-eye':4,'spark-dart':4,'scout-lens':3,'swapped-fate':6,'ward-seal':6,'ember-bomb':10,'emergency-herb':5};
 export const HP_ITEM_START_POINTS=20;
 // Keep starter data independent of the item/game import cycle.
 export const HP_ITEM_STARTER_ITEMS:readonly RpgTacticalItem[]=['scout-lens','swapped-fate','ward-seal','ember-bomb','emergency-herb','whisper-eye','spark-dart'];
 export const HP_ITEM_ROUND_ALLOWANCE=8;
+export function hpItemShopAfterResult(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'>){return isBattleItemMode(game)&&!usesOriginalItemShop(game);}
 export function hpItemShopPending(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'|'round'|'result'>){
+ if(usesOriginalItemShop(game))return game.phase==='playing'&&game.rpgRun?.status==='playing'&&game.hpItemMatch?.shopRound!==game.round;
  if(isBattleItemMode(game))return game.phase==='ended'&&game.rpgRun?.status==='playing'&&!!game.result&&game.hpItemMatch?.shopRound!==game.round;
  return !!game.hpItemMode&&game.hpItemVariant===2&&game.hpItemMatch?.shopRound!==game.round;
 }
 /** Any affordable cart, including an empty cart. Existing items survive the purchase. */
 export function buyHpItemLoadout(game:Game,cart:string[]){
  const state=game.hpItemMatch,run=game.rpgRun;
- if(!state||!run||!hpItemShopPending(game)||!isBattleItemMode(game)&&(game.phase!=='playing'||game.roundActions))throw Error('지금은 아이템 구매 시간이 아니에요.');
+ if(!state||!run||!hpItemShopPending(game)||!hpItemShopAfterResult(game)&&(game.phase!=='playing'||game.roundActions))throw Error('지금은 아이템 구매 시간이 아니에요.');
  if(!Array.isArray(cart)||cart.some(id=>!RPG_SHOP_ITEMS.includes(id as RpgTacticalItem)))throw Error('구매할 아이템을 확인해 주세요.');
  const price=cart.reduce((sum,id)=>sum+HP_ITEM_PRICES[id],0);
  if(price>state.points[0])throw Error('구매 포인트가 부족해요.');
@@ -41,7 +43,8 @@ export function finishHpItemRoundReport(game:Game,hpBeforeSettlement?:number[]){
   expireHpSkills(game);
   const amounts=(kind:string)=>game.players.map((_,seat)=>state.roundItems.filter(item=>item.target===seat&&item.kind===kind).reduce((sum,item)=>sum+(item.amount||0),0));
   const battles=game.players.map((_,seat)=>(state.battles||[]).reduce((sum,battle)=>sum+battle.hpBefore[seat]-battle.hpAfter[seat],0)),money=state.moneyDelta||game.players.map(()=>0);
-  state.report={round:game.round,hpBefore:[...state.roundStartHp],hpAfter:[...run.hp],earned:money.map(value=>Math.max(0,value)),skills:state.skills?.uses.map(use=>({...use})),skillMoney:game.players.map((_,seat)=>(state.skills?.uses||[]).filter(use=>use.actor===seat&&use.outcome==='money').reduce((sum,use)=>sum+(use.amount||0),0)),battleDamage:battles,cardDamage:battles,moneyDamage:state.moneyDamage||game.players.map(()=>0),moneyDelta:[...money],moneyBefore:[...(state.moneyBefore||state.roundMoneyBefore||state.points)],moneyAfter:[...state.points],moneySkipped:!!state.moneySkipped,endReason:state.endReason,itemDamage:amounts('damage'),itemHealing:amounts('heal'),itemPoints:game.players.map(()=>0),cardPoints:money.map(value=>Math.max(0,value)),items:[...state.roundItems]};return;
+  const battlePoints=game.players.map((_,seat)=>(state.battles||[]).filter(battle=>battle.actor===seat).reduce((sum,battle)=>sum+(battle.pointsEarned||0),0));
+  state.report={round:game.round,hpBefore:[...state.roundStartHp],hpAfter:[...run.hp],earned:money.map(value=>Math.max(0,value)),skills:state.skills?.uses.map(use=>({...use})),skillMoney:game.players.map((_,seat)=>(state.skills?.uses||[]).filter(use=>use.actor===seat&&use.outcome==='money').reduce((sum,use)=>sum+(use.amount||0),0)),battleDamage:battles,battlePoints,cardDamage:battles,moneyDamage:state.moneyDamage||game.players.map(()=>0),moneyDelta:[...money],moneyBefore:[...(state.moneyBefore||state.roundMoneyBefore||state.points)],moneyAfter:[...state.points],moneySkipped:!!state.moneySkipped,endReason:state.endReason,itemDamage:amounts('damage'),itemHealing:amounts('heal'),itemPoints:usesOriginalItemShop(game)?[...state.roundEarned]:game.players.map(()=>0),cardPoints:money.map(value=>Math.max(0,value)),items:[...state.roundItems]};return;
  }
  const earned=[...state.roundEarned],loss=(hpBeforeSettlement||run.hp).map((hp,index)=>Math.max(0,hp-run.hp[index])),cardPoints=game.players.map(()=>0);
  if(game.hpItemVariant===2)state.points=state.points.map((points,index)=>points+(state.pendingItemPoints?.[index]||0));
@@ -56,7 +59,7 @@ export function finishHpItemRoundReport(game:Game,hpBeforeSettlement?:number[]){
 }
 export function beginHpItemRound(game:Game){
  const state=game.hpItemMatch,run=game.rpgRun;if(!game.hpItemMode||!state||!run)return;
- if(game.hpItemVariant===2&&!isBattleItemMode(game)&&game.round>1)state.points=state.points.map(points=>points+HP_ITEM_ROUND_ALLOWANCE);
+ if(game.hpItemVariant===2&&(!isBattleItemMode(game)||usesOriginalItemShop(game))&&game.round>1)state.points=state.points.map(points=>points+HP_ITEM_ROUND_ALLOWANCE);
  state.roundStartHp=[...run.hp];state.roundItems=[];state.roundEarned=game.players.map(()=>0);state.pendingItemDelta=game.players.map(()=>0);state.pendingItemPoints=game.players.map(()=>0);
  if(isBattleItemMode(game)){resetHpSkills(game);state.battles=[];state.lastBattle=undefined;state.roundMoneyBefore=[...state.points];state.moneyBefore=undefined;state.moneyDelta=undefined;state.moneyDamage=undefined;state.moneySkipped=false;state.endReason=undefined;}
 }

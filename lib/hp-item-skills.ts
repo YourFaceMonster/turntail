@@ -1,5 +1,6 @@
 import {assertTurnReady,combo,legalOptions,uid,view,type Game} from './game.ts';
 import {isBattleItemMode} from './hp-item-battle.ts';
+import {hpItemShopPending} from './hp-item-shop.ts';
 
 export const HP_CHARACTERS=[
  {id:'toto',name:'토토',avatar:'stage-portrait:2',role:'공격형',skill:'전력 질주',effect:'다음 싸움에서 이기면 다른 두 명에게 주는 피해 +1',kind:'attack'},
@@ -16,12 +17,13 @@ export function createHpSkills(character:HpCharacterId,round:number):HpSkillStat
  const characters=[character,...HP_CHARACTERS.map(entry=>entry.id).filter(id=>id!==character)];
  return {version:1,round,characters,seats:characters.map(()=>({used:false,armed:false})),uses:[]};
 }
-type SkillGame=Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'|'round'|'turn'|'roundActions'|'completedBattles'|'turnReadyAt'>;
+type SkillGame=Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'|'round'|'turn'|'roundActions'|'completedBattles'|'turnReadyAt'|'result'>;
 export function hasHpSkills(game:SkillGame){return isBattleItemMode(game)&&game.hpItemMatch?.skills?.version===1;}
 export function hpSkillAvailability(game:SkillGame,who:number,enabled=true,now=Date.now()){
  const skills=game.hpItemMatch?.skills,seat=skills?.seats[who];
  if(!hasHpSkills(game)||!seat)return {usable:false,reason:'고유스킬은 새 아이템전2에서 사용할 수 있어요.'};
  if(game.phase!=='playing'||game.rpgRun?.status!=='playing')return {usable:false,reason:'이번 판이 종료됐어요.'};
+ if(hpItemShopPending(game))return {usable:false,reason:'상점 준비를 먼저 마쳐 주세요.'};
  if(seat.armed)return {usable:false,reason:'준비됨 · 다음 싸움 종료 시 발동'};
  if(seat.used)return {usable:false,reason:'사용 완료 · 다음 판에 다시 충전'};
  if(!enabled||game.turn!==who)return {usable:false,reason:'내 차례에 사용 가능'};

@@ -4,7 +4,7 @@ import {createPortal} from 'react-dom';
 import type {view} from '../../lib/game.ts';
 import {isAttackItem,itemImage,rpgItemNoticeText,type RpgItemEvent} from '../../lib/rpg-items.ts';
 import {isBattleItemMode} from '../../lib/hp-item-battle.ts';
-import {itemScenePoints,itemSceneTiming,itemProjectileFrames} from '../../lib/rpg-item-motion.ts';
+import {itemScenePoints,itemSceneTiming,itemProjectileFrames,dartFacingFrames} from '../../lib/rpg-item-motion.ts';
 import TileFace from './TileFace';
 import TileBack from './TileBack';
 type View=ReturnType<typeof view>;
@@ -25,18 +25,20 @@ export function RpgItemNotice({game}:{game:View}){
  },[shown?.id,game.me]);
  useLayoutEffect(()=>{
   if(!shown||!scene||!projectile.current)return;
-  const duration=itemSceneTiming(shown,game.me).duration,reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const frames=reduced?[{opacity:1,transform:`translate(${scene.points.to.x}px,${scene.points.to.y}px) translate(-50%,-50%) scale(.6)`},{opacity:0,transform:`translate(${scene.points.to.x}px,${scene.points.to.y}px) translate(-50%,-50%) scale(.6)`}]:itemProjectileFrames(scene.points,shown.kind==='blocked',!isAttackItem(shown.itemId));
-  const animation=projectile.current.animate(frames,{duration,easing:'linear',fill:'both'});animation.currentTime=Math.max(0,Date.now()-shown.at);return()=>animation.cancel();
+  const timing=itemSceneTiming(shown,game.me),duration=timing.duration,reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const frames=reduced?[{opacity:1,transform:`translate(${scene.points.to.x}px,${scene.points.to.y}px) translate(-50%,-50%) scale(.6)`},{opacity:0,transform:`translate(${scene.points.to.x}px,${scene.points.to.y}px) translate(-50%,-50%) scale(.6)`}]:itemProjectileFrames(scene.points,shown.kind==='blocked',!isAttackItem(shown.itemId),{dart:shown.itemId==='spark-dart',contact:timing.impact/timing.duration});
+  const animation=projectile.current.animate(frames,{duration,easing:'linear',fill:'both'});animation.currentTime=Math.max(0,Date.now()-shown.at);
+  const dart=shown.itemId==='spark-dart'&&!reduced?projectile.current.querySelector('img')?.animate(dartFacingFrames(),{duration,easing:'linear',fill:'both'}):null;
+  if(dart)dart.currentTime=animation.currentTime;return()=>{animation.cancel();dart?.cancel();};
  },[shown?.id,scene,game.me]);
  if(!shown||!scene||!timing||!timing.duration)return null;
  const {points,source,target,elapsed}=scene,blocked=shown.kind==='blocked',offensive=shown.kind==='damage'||blocked,ownExchange=shown.kind==='exchange'&&(shown.actor===game.me||shown.target===game.me),message=rpgItemNoticeText(shown,game.players);
- const style={'--fx-ms':`${timing.duration}ms`,'--fx-delay':`-${elapsed}ms`,'--impact-ms':`${Math.max(0,timing.impact-elapsed)}ms`,'--shield-ms':`${Math.max(0,timing.shield-elapsed)}ms`,'--to-x':`${points.to.x}px`,'--to-y':`${points.to.y}px`,'--center-x':`${points.center.x}px`,'--center-y':`${points.center.y}px`,'--shield-w':`${target.width+24}px`,'--shield-h':`${target.height+30}px`} as CSSProperties;
- return createPortal(<div key={shown.id} className={`item-fx-scene smooth-item-scene fx-${shown.kind} ${shown.itemId==='ember-bomb'?'fx-ember':shown.itemId==='spark-dart'?'fx-dart':''}`} style={style} role="status" aria-live="polite" aria-label={`${message.title} · ${message.route} · ${message.detail}`}>
+ const style={'--fx-ms':`${timing.duration}ms`,'--fx-delay':`-${elapsed}ms`,'--impact-ms':`${Math.max(0,timing.impact-elapsed)}ms`,'--impact-life':`${timing.duration-timing.impact-30}ms`,'--shield-ms':`${Math.max(0,timing.shield-elapsed)}ms`,'--to-x':`${points.to.x}px`,'--to-y':`${points.to.y}px`,'--center-x':`${points.center.x}px`,'--center-y':`${points.center.y}px`,'--shield-w':`${target.width+24}px`,'--shield-h':`${target.height+30}px`} as CSSProperties;
+ return createPortal(<div key={shown.id} className={`item-fx-scene smooth-item-scene fx-${shown.kind} ${shown.itemId==='ember-bomb'?'fx-ember':shown.itemId==='spark-dart'?'fx-dart':blocked?'fx-blocked-exchange':''}`} style={style} role="status" aria-live="polite" aria-label={`${message.title} · ${message.route} · ${message.detail}`}>
   <span className="item-seat-badge" style={{left:Math.min(innerWidth-34,source.right-12),top:Math.max(8,source.top-12)}} title={message.title}><img src={itemImage(shown.itemId)} alt=""/></span>
   {offensive&&<span className={`item-fx-projectile ${!isAttackItem(shown.itemId)?'is-tile-projectile':''}`} ref={projectile}>{blocked&&!isAttackItem(shown.itemId)?shown.tiles?.[0]?<TileFace tile={shown.tiles[0]}/>:<TileBack/>:<img src={itemImage(shown.itemId)} alt=""/>}</span>}
-  {shown.kind==='damage'&&<><span className="item-fx-impact"/><svg className="item-impact-burst" viewBox="0 0 160 160" aria-hidden="true"><circle cx="80" cy="80" r="19" fill="#fff7d9"/>{Array.from({length:8},(_,index)=><path key={index} d="M80 13L84 51L80 63L76 51Z" fill={index%2?'#ffbf62':'#fff3c1'} transform={`rotate(${index*45} 80 80)`}/>)}</svg></>}
-  {blocked&&<span className="item-character-shield"><i/><img src={itemImage('ward-seal')} alt=""/></span>}
+  {shown.kind==='damage'&&(shown.itemId==='ember-bomb'?<span className="ember-impact-visual" aria-hidden="true"><span className="ember-impact-sheet"/><i className="ember-impact-shockwave"/></span>:<><span className="item-fx-impact"/><svg className="item-impact-burst dart-contact-spark" viewBox="0 0 100 100" aria-hidden="true"><path d="M49 47L31 17L45 43L52 49L72 31L57 50L77 64L54 56L45 80L48 57L21 63Z" fill="#ffdf9c"/><path d="M46 45L53 48L56 55L48 57L44 52Z" fill="#fff7df"/></svg></>)}
+  {blocked&&<><span className="item-character-shield"><i/><img src={itemImage('ward-seal')} alt=""/></span><span className="item-guard-contact"><i/><b/></span></>}
   {!offensive&&!ownExchange&&<><strong className="item-emblem-owner">{game.players[shown.actor]?.name}</strong><span className="item-fx-emblem"><img src={itemImage(shown.itemId)} alt=""/></span></>}
   {shown.kind==='failed'&&<span className="item-failed-caption">교환할 수 없습니다<small>1·2를 제외한 교환 가능한 패가 없어요.</small></span>}
   {shown.kind==='heal'&&<span className="item-heal-caption"><b>HP +{shown.amount}</b>{game.hpItemMode&&!isBattleItemMode(game)&&<small>이번 판 종료 시 회복</small>}</span>}

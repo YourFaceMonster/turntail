@@ -3,9 +3,13 @@ import {finishHpItemMatch} from './hp-item-mode.ts';
 import {finishHpItemRoundReport} from './hp-item-shop.ts';
 import {resolveHpSkills,type HpSkillUse} from './hp-item-skills.ts';
 
-export type HpBattleEvent={id:string,round:number,actor:number,label:string,damage:number,damageTaken?:number[],skills?:HpSkillUse[],hpBefore:number[],hpAfter:number[],at:number};
+export type HpBattleEvent={id:string,round:number,actor:number,label:string,damage:number,damageTaken?:number[],pointsEarned?:number,skills?:HpSkillUse[],hpBefore:number[],hpAfter:number[],at:number};
+/** Impact beat before the click-to-dismiss result; the client holds turns until acknowledged. */
+export const HP_BATTLE_REVIEW_MS=700;
 /** Rules 2 preserves previously saved mode-1 trials; new battles belong to mode 2. */
-export function isBattleItemMode(game:{hpItemMode?:boolean,hpItemVariant?:number,hpItemRules?:number}){return !!game.hpItemMode&&(game.hpItemVariant===2&&game.hpItemRules===3||game.hpItemVariant===1&&game.hpItemRules===2);}
+export function isBattleItemMode(game:{hpItemMode?:boolean,hpItemVariant?:number,hpItemRules?:number}){return !!game.hpItemMode&&(game.hpItemVariant===2&&(game.hpItemRules===3||game.hpItemRules===4)||game.hpItemVariant===1&&game.hpItemRules===2);}
+/** Original purchase-start shop and allowance; HP damage never creates coins. */
+export function usesOriginalItemShop(game:{hpItemMode?:boolean,hpItemVariant?:number,hpItemRules?:number}){return !!game.hpItemMode&&game.hpItemVariant===2&&game.hpItemRules===4;}
 export const HP_BATTLE_DAMAGE:Readonly<Record<string,number>>={'싱글':1,'페어':2,'트리플':3,'스트레이트':4,'플러시':4,'풀하우스':5,'포카드':6,'스트레이트 플러시':10};
 export function hpBattleDamage(tiles:Tile[]){const label=combo(tiles)?.label;return label?HP_BATTLE_DAMAGE[label]||0:0;}
 /** Called before clearing the winning trick and before final-hand money settlement. */
@@ -15,8 +19,10 @@ export function resolveHpItemBattle(game:Game,now=Date.now()):HpBattleEvent|null
  const prior=state.battles?.find(battle=>battle.id===id);if(prior)return prior;
  const actor=game.lastBy,label=combo(game.trick)?.label,damage=hpBattleDamage(game.trick);if(!label||!damage)return null;
  const resolved=resolveHpSkills(game,actor,damage),hpBefore=[...run.hp],hpAfter=run.hp.map((hp,seat)=>Math.max(0,hp-resolved.damage[seat]));
- const battle:HpBattleEvent={id,round:game.round,actor,label,damage,damageTaken:resolved.damage,skills:resolved.effects,hpBefore,hpAfter:[...hpAfter],at:now};
+ const pointsEarned=0;
+ const battle:HpBattleEvent={id,round:game.round,actor,label,damage,damageTaken:resolved.damage,pointsEarned,skills:resolved.effects,hpBefore,hpAfter:[...hpAfter],at:now};
  run.hp=hpAfter;run.updatedAt=now;state.battles=[...(state.battles||[]),battle];state.lastBattle=battle;
+ game.turnReadyAt=Math.max(game.turnReadyAt||0,now+HP_BATTLE_REVIEW_MS);
  game.log=[`${game.players[actor].name} · ${label} 승리 · ${game.players.map((player,seat)=>seat===actor?null:`${player.name} HP −${hpBefore[seat]-hpAfter[seat]}`).filter(Boolean).join(" · ")}`,...game.log].slice(0,40);
  if(run.hp.some(hp=>hp<=0)){state.endReason='battle';state.moneySkipped=true;finishHpItemMatch(game);}
  return battle;

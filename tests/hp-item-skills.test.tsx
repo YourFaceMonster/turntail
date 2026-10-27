@@ -12,7 +12,7 @@ import {HpCharacterPicker,HpSkillControl} from '../app/components/HpCharacterSki
 import {HpItemResult} from '../app/components/HpItemMatch';
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 function fresh(character:HpCharacterId='toto'){
- const g=createHpItemGame('내 이름','',Date.now(),2,character);g.rpgRun!.equipped=[];g.turn=0;g.turnReadyAt=0;g.completedBattles=1;g.roundActions=3;g.trick=[];g.lastBy=null;g.tablePlay=null;g.stacks=Array.from({length:15},()=>[null,null]);
+ const g=createHpItemGame('내 이름','',Date.now(),2,character);g.hpItemRules=3;g.rpgRun!.consumables=['scout-lens','swapped-fate','ward-seal','ember-bomb','emergency-herb','whisper-eye','spark-dart'].flatMap(id=>[id,id]);g.rpgRun!.enemyConsumables={1:[...g.rpgRun!.consumables],2:[...g.rpgRun!.consumables]};g.rpgRun!.equipped=[];g.turn=0;g.turnReadyAt=0;g.completedBattles=1;g.roundActions=3;g.trick=[];g.lastBy=null;g.tablePlay=null;g.stacks=Array.from({length:15},()=>[null,null]);
  g.players.forEach((player,seat)=>{player.hand=[tile(3+seat),tile(9+seat)];});return g;
 }
 function fight(g:Game,actor:number,tiles=[tile(8)]){g.trick=tiles;g.lastBy=actor;g.tablePlay={id:crypto.randomUUID(),who:actor,tiles};return resolveHpItemBattle(g)!;}

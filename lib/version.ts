@@ -1,2 +1,2 @@
-/** Current shipped TURNTALE release. */
-export const APP_VERSION='0.6.18';
+/** Current TURNTALE app build version; publication is recorded separately. */
+export const APP_VERSION='0.6.25';

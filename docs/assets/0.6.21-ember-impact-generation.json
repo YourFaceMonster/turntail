@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "prompt": "Use case: stylized-concept. Asset type: transparent animated VFX sprite sheet for the Korean fantasy card game TURNTALE. Reference image is STYLE REFERENCE ONLY: preserve the existing ornate burgundy-and-antique-gold bomb icon unchanged in the project; do NOT redraw the bomb. Create ONLY its explosion/flame impact animation as ONE clean sprite sheet, exactly 4 equal columns by 2 equal rows, EIGHT sequential frames read left-to-right then next row, landscape 2:1 canvas preferred. Each equal cell has the same impact origin centered horizontally, ground contact at 72% of cell height, ample transparent margin, no neighboring frame touching. Frame 1 tiny white-gold impact spark; 2 compact warm gold/orange flame burst; 3 bigger curling flames with an asymmetrical painterly silhouette and ochre dust; 4 peak rounded smoky fire curls; 5 flames folding upward, low dust sweeping outward; 6 receding ember-orange curls, brown translucent smoke; 7 very faint smoke wisps and few gold embers; 8 nearly faded small smoke/embers. Cohesive hand-painted premium storybook fantasy game art, soft dimensional shading, elegant restrained orange/amber/burgundy palette matching the reference, clean fine contour, organic flame tongues with real volume, not a sun, not a star, not a flat vector cartoon, no photorealistic smoke, no text, no numbers, no tile borders, no checkerboard, no black background. Actual alpha transparency including empty cells and soft smoke edges. The flame motion is a single coherent evolving explosion with stable anchor and continuous shapes across frames, high polish at 160px display size. No bomb, no characters, no UI, no scenery.",
+  "reference": "public/rpg-items-v1/consumables/ember-bomb-v2.webp",
+  "generatedSource": "C:/Users/SONG/.codex/generated_images/01a177b7-0f26-7270-b78e-fbf56b17ab91/exec-1913c9c6-6b7b-4739-808c-eefc59480240.png",
+  "asset": "public/rpg-items-v1/effects/ember-impact-v1.webp",
+  "original": "public/rpg-items-v1/effects/ember-impact-v1.png",
+  "frames": 8,
+  "columns": 4,
+  "rows": 2,
+  "alpha": true,
+  "conversion": "Resized whole sheet to 1024x512 and encoded as WebP, preserving alpha."
+}

@@ -1,10 +1,7 @@
 "use client";
 import type {SaveSlot} from '../../lib/save-slots';
 export function SinglePlayerMenu({normal,items,rpg,close}:{normal:()=>void,items?:()=>void,rpg:()=>void,close:()=>void}){
- return <div className="modal-shade" onClick={close}><section className="modal single-mode-menu compact-single-menu" role="dialog" aria-modal="true" aria-labelledby="single-mode-title" onClick={event=>event.stopPropagation()}>
-  <button className="close" onClick={close} aria-label="닫기">×</button><h2 id="single-mode-title">싱글플레이</h2>
-  <div className="single-mode-options"><button type="button" onClick={normal}>일반모드</button>{items&&<button type="button" onClick={items}>아이템전</button>}<button type="button" className="single-mode-rpg" onClick={rpg}>RPG모드</button></div>
- </section></div>;
+ return <div className="modal-shade" onClick={close}><section className="modal single-mode-menu" role="dialog" aria-modal="true" aria-labelledby="single-mode-title" onClick={e=>e.stopPropagation()}><button className="close" onClick={close} aria-label="닫기">×</button><span className="eyebrow">CHOOSE YOUR JOURNEY</span><h2 id="single-mode-title">오늘은 어떤 한 수?</h2><p>일반 대전, HP 아이템전과 RPG 여정 중 골라주세요.</p><div className="single-mode-cards"><button onClick={normal} className="mode-normal"><span aria-hidden="true">✦</span><small>CLASSIC TABLE</small><strong>일반모드</strong><p>AI와 3·4인 대전<br/>원하는 만큼 이어지는 대전</p><b>테이블 선택 →</b></button>{items&&<button onClick={items} className="mode-hp-items"><span aria-hidden="true">✶</span><small>HP ITEM MATCH</small><strong>아이템전</strong><p>포인트 상점 · 전투·고유스킬<br/>AI 2명과 HP 생존 대전</p><b>아이템전 열기 →</b></button>}<button onClick={rpg} className="mode-rpg"><span aria-hidden="true">✹</span><small>RPG JOURNEY</small><strong>RPG 모드</strong><p>HP · 운명 · 주화 · 유물<br/>별도로 저장되는 새 여정</p><b>RPG 여정 열기 →</b></button></div><p className="foot muted">각 모드는 독립적으로 자동 저장되며 진행 기록을 섞지 않아요.</p></section></div>;
 }
 export function ResumePicker({slots,errors,choose,close}:{slots:SaveSlot[],errors:string[],choose:(mode:SaveSlot['mode'])=>void,close:()=>void}){
  const available=slots.filter(slot=>slot.mode!=='stage'&&slot.mode!=='item'&&!slot.game?.challenge&&!slot.game?.stageRun);

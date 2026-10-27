@@ -1,6 +1,6 @@
 import {createHpSkills,hpCharacter,type HpCharacterId} from './hp-item-skills.ts';
 import {isBattleItemMode} from './hp-item-battle.ts';
-import {finishHpItemRoundReport,HP_ITEM_START_POINTS,HP_ITEM_STARTER_ITEMS,type HpItemVariant} from './hp-item-shop.ts';
+import {finishHpItemRoundReport,HP_ITEM_START_POINTS,type HpItemVariant} from './hp-item-shop.ts';
 import {uid,type Game} from './game.ts';
 import {createRpgTestGame} from './rpg-game.ts';
 import {rpgRanks,RPG_RELICS} from './rpg.ts';
@@ -10,18 +10,18 @@ export const HP_ITEM_STORAGE_KEY='turntale-hp-items-v1';
 export const HP_ITEM_SHOP_STORAGE_KEY='turntale-hp-items-2-v1';
 const storageKey=(variant:HpItemVariant)=>variant===2?HP_ITEM_SHOP_STORAGE_KEY:HP_ITEM_STORAGE_KEY;
 type StoragePort=Pick<Storage,'getItem'|'setItem'>;
-export type HpItemRecord={id:string,name:string,rank:number,hp:number[],rounds:number,at:number,status:'complete'|'abandoned',variant?:HpItemVariant,rules?:2|3};
+export type HpItemRecord={id:string,name:string,rank:number,hp:number[],rounds:number,at:number,status:'complete'|'abandoned',variant?:HpItemVariant,rules?:2|3|4};
 export type HpItemArchive={version:1,active:Game|null,records:HpItemRecord[]};
 export function emptyHpItemArchive():HpItemArchive{return {version:1,active:null,records:[]};}
 export function createHpItemGame(name:string,avatar='',now=Date.now(),variant:HpItemVariant=1,character:HpCharacterId='toto'):Game{
  const game=createRpgTestGame(name,avatar,now);delete game.rpgTest;game.hpItemMode=true;game.hpItemVariant=variant;game.code='HP-ITEM-'+uid();
  game.hpItemMatch={pendingItemDelta:[0,0,0],pendingItemPoints:[0,0,0],points:[HP_ITEM_START_POINTS,HP_ITEM_START_POINTS,HP_ITEM_START_POINTS],shopRound:0,roundStartHp:[...game.rpgRun!.hp],roundItems:[],roundEarned:[0,0,0]};
  if(variant===2){
-  game.hpItemRules=3;game.hpItemMatch.skills=createHpSkills(hpCharacter(character).id,game.round);game.players.slice(1).forEach((player,index)=>{const person=hpCharacter(game.hpItemMatch!.skills!.characters[index+1]);player.name=person.name;player.avatar=person.avatar;});game.hpItemMatch.battles=[];game.hpItemMatch.roundMoneyBefore=[...game.hpItemMatch.points];
+  game.hpItemRules=4;game.hpItemMatch.skills=createHpSkills(hpCharacter(character).id,game.round);game.players.slice(1).forEach((player,index)=>{const person=hpCharacter(game.hpItemMatch!.skills!.characters[index+1]);player.name=person.name;player.avatar=person.avatar;});game.hpItemMatch.battles=[];game.hpItemMatch.roundMoneyBefore=[...game.hpItemMatch.points];
   // This mode earns money only from the card score, so do not offer RPG point bonuses.
   const excluded=['gamblers-gloves','stopped-hourglass','mor-quill','twin-needle-compass','split-mirror'],run=game.rpgRun!;
-  run.consumables=HP_ITEM_STARTER_ITEMS.flatMap(id=>[id,id]);
-  run.enemyConsumables=Object.fromEntries(game.players.slice(1).map((_,index)=>[index+1,HP_ITEM_STARTER_ITEMS.flatMap(id=>[id,id])]));
+  run.consumables=[];
+  run.enemyConsumables={1:[],2:[]};
   const relics=run.equipped.filter(id=>!excluded.includes(id)),pool=RPG_RELICS.filter(relic=>!excluded.includes(relic.id)&&!relics.includes(relic.id)).map(relic=>relic.id);
   while(relics.length<3&&pool.length){const random=new Uint32Array(1);crypto.getRandomValues(random);relics.push(pool.splice(random[0]%pool.length,1)[0]);}
   run.relics=[...relics];run.equipped=[...relics];run.discovered=[...relics];

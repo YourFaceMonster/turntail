@@ -3,7 +3,7 @@ export function tileLayout({width,height,floorWidth,handWidth,handCount,cols,row
  const columns=Math.max(5,Math.ceil(handCount/2)),gap=handCount>30?2:handCount>18?4:6;
  const baseColumns=players===2?6:5,baseGap=6;
  const compactLandscape=landscape&&height<300;
- const seatHeight=landscape?36:rpg?68:players===4?84:80,handChrome=(landscape?(compactLandscape?152:186):144)-(rpg?(landscape?compactLandscape?32:36:8):0),trickChrome=landscape?8:32,surfaceInset=landscape?16:12;
+ const seatHeight=rpg?(landscape?compactLandscape?54:62:74):landscape?36:players===4?84:80,handChrome=(landscape?(compactLandscape?152:186):144)-(rpg?(landscape?compactLandscape?32:36:8):0),trickChrome=landscape?8:32,surfaceInset=landscape?16:12;
  const boardChrome=seatHeight+18+8+18+(rows-1)*4;
  const portraitChrome=boardChrome+trickChrome+handChrome+12+surfaceInset;
  const deviceShort=Math.min(width+18,height+67),deviceLong=Math.max(width+18,height+67);
