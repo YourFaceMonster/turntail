@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-28",
+  "source": "User-supplied ElevenLabs effects",
+  "missing": [
+    8,
+    10,
+    11,
+    12,
+    13,
+    14,
+    16
+  ],
+  "files": [
+    {
+      "number": 1,
+      "original": "Sound_update_261028/1_패 선택 클릭.mp3",
+      "src": "/audio/sfx-261028/01-tile-select.mp3",
+      "bytes": 25946,
+      "sha256": "6dce6b009fa07671e830584dc3fed1b751ad4026227efb894883c06a35cd1edf"
+    },
+    {
+      "number": 2,
+      "original": "Sound_update_261028/2_패 제출 버튼.mp3",
+      "src": "/audio/sfx-261028/02-tile-submit.mp3",
+      "bytes": 27618,
+      "sha256": "b8c8c51593c0cbadd809832dcc6e9c31d9946515af0ac400329b17527521ad88"
+    },
+    {
+      "number": 3,
+      "original": "Sound_update_261028/3_일반 패 착지.mp3",
+      "src": "/audio/sfx-261028/03-tile-land.mp3",
+      "bytes": 30961,
+      "sha256": "c2708d6b8441cecb17e1f4e44c78439888faeaadea210fbf9968247513ea2d28"
+    },
+    {
+      "number": 4,
+      "original": "Sound_update_261028/4_강한 패착지.mp3",
+      "src": "/audio/sfx-261028/04-tile-slam.mp3",
+      "bytes": 34305,
+      "sha256": "0a5a6ac3c4f8df4a7b2ef00a839afe60288824c7faf1c3b0b216d8334f90c537"
+    },
+    {
+      "number": 5,
+      "original": "Sound_update_261028/5_패 가져오기.mp3",
+      "src": "/audio/sfx-261028/05-tile-draw.mp3",
+      "bytes": 34305,
+      "sha256": "568ed287e64d787685d04dbb41f847d6a93d7959906f7cbd3d68d6828fb3a568"
+    },
+    {
+      "number": 6,
+      "original": "Sound_update_261028/6_내차례알림.mp3",
+      "src": "/audio/sfx-261028/06-your-turn.mp3",
+      "bytes": 41828,
+      "sha256": "40480975789443ec4d0cc69b1fdc4a1be7523fd7973b9772ce2f2db4fd31dc81"
+    },
+    {
+      "number": 7,
+      "original": "Sound_update_261028/7_마지막 패 제출 라운드종료.mp3",
+      "src": "/audio/sfx-261028/07-round-finish.mp3",
+      "bytes": 50187,
+      "sha256": "f47c4aaaee6e9b3f5f239cab1a8b3b7d9c3680d19f246b346b7a1f5e590dd415"
+    },
+    {
+      "number": 9,
+      "original": "Sound_update_261028/9_빨간 2 등장.mp3",
+      "src": "/audio/sfx-261028/09-red-two.mp3",
+      "bytes": 50187,
+      "sha256": "57f955dfac33d3532b30cd35086cbb5c7fd3fe8f8f892f030857e4f645633528"
+    },
+    {
+      "number": 15,
+      "original": "Sound_update_261028/15_승리 팡파르.mp3",
+      "src": "/audio/sfx-261028/15-victory.mp3",
+      "bytes": 162322,
+      "sha256": "0ad529241b24601d286b339e5c928cd98e6a05afcb88444cf85b65a2921bae13"
+    }
+  ]
+}

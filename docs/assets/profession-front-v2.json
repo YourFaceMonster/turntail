@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-28",
+  "tool": "built-in image_gen",
+  "mode": "edit",
+  "transparent_background_requested": true,
+  "assets": [
+    {
+      "id": "swordsman",
+      "prompt": "Use case: identity-preserve. Edit target: the supplied existing TURNTALE profession portrait. Preserve the same character identity, facial features, age, gender, hairstyle and hair color, costume materials and colors, signature equipment, polished hand-painted fantasy game art and transparent alpha background. Primary change: redraw the character in a STRICTLY FRONT-FACING portrait. Head upright without tilt, face and nose centered toward the camera, BOTH eyes looking directly straight at viewer, balanced visible cheeks, shoulders level and parallel to the image plane, chest/torso square to camera. This must be a fully frontal pose, not a three-quarter view with eyes merely turned forward. Make the head and upper torso large and readable in a tall narrow selection card; retain a centered waist-up composition and enough space above head. Genuine transparency around silhouette. No scene, background color, text, border, watermark, extra people, or UI. Keep the face unobstructed. Keep the young brown-haired male knight, red scarf and silver armor with gold trim. Stand confidently square to the viewer; hold the upright sword at one side of the chest, blade never covering the face. Determined friendly direct gaze.",
+      "reference": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/swordsman.webp",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-665b102e-20f8-4f06-9696-f6ed1bc97636.png",
+      "destination": "public/item-battle-v1/professions/swordsman-front-v2.webp",
+      "workspaceOriginal": "../artifacts/profession-front-v2-originals/swordsman-front-v2.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "alpha": {
+        "min": 0,
+        "max": 254
+      }
+    },
+    {
+      "id": "rogue",
+      "prompt": "Use case: identity-preserve. Edit target: the supplied existing TURNTALE profession portrait. Preserve the same character identity, facial features, age, gender, hairstyle and hair color, costume materials and colors, signature equipment, polished hand-painted fantasy game art and transparent alpha background. Primary change: redraw the character in a STRICTLY FRONT-FACING portrait. Head upright without tilt, face and nose centered toward the camera, BOTH eyes looking directly straight at viewer, balanced visible cheeks, shoulders level and parallel to the image plane, chest/torso square to camera. This must be a fully frontal pose, not a three-quarter view with eyes merely turned forward. Make the head and upper torso large and readable in a tall narrow selection card; retain a centered waist-up composition and enough space above head. Genuine transparency around silhouette. No scene, background color, text, border, watermark, extra people, or UI. Keep the face unobstructed. Keep the short dark-teal-haired female rogue, brass goggles on head, green hooded cape and brown leather armor. Torso square forward. Hold the spyglass down near one shoulder and a small brass trap device at waist level. Both eyes straight toward viewer, alert playful expression. Avoid the prior over-shoulder twist.",
+      "reference": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/rogue.webp",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-235504c7-e413-44a2-8029-387f99f7d782.png",
+      "destination": "public/item-battle-v1/professions/rogue-front-v2.webp",
+      "workspaceOriginal": "../artifacts/profession-front-v2-originals/rogue-front-v2.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "alpha": {
+        "min": 0,
+        "max": 254
+      }
+    },
+    {
+      "id": "cleric",
+      "prompt": "Use case: identity-preserve. Edit target: the supplied existing TURNTALE profession portrait. Preserve the same character identity, facial features, age, gender, hairstyle and hair color, costume materials and colors, signature equipment, polished hand-painted fantasy game art and transparent alpha background. Primary change: redraw the character in a STRICTLY FRONT-FACING portrait. Head upright without tilt, face and nose centered toward the camera, BOTH eyes looking directly straight at viewer, balanced visible cheeks, shoulders level and parallel to the image plane, chest/torso square to camera. This must be a fully frontal pose, not a three-quarter view with eyes merely turned forward. Make the head and upper torso large and readable in a tall narrow selection card; retain a centered waist-up composition and enough space above head. Genuine transparency around silhouette. No scene, background color, text, border, watermark, extra people, or UI. Keep the face unobstructed. Keep the silver-haired male cleric with subtle stubble, ivory and green robes, ornate gold edging and green gem. Torso square forward. Hold the green crystal staff upright at one side and an open healing hand in front of the chest. Calm kind direct eye contact; no head lean.",
+      "reference": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/cleric.webp",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-f93914c8-2548-4340-9337-f6a620cec97a.png",
+      "destination": "public/item-battle-v1/professions/cleric-front-v2.webp",
+      "workspaceOriginal": "../artifacts/profession-front-v2-originals/cleric-front-v2.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "alpha": {
+        "min": 0,
+        "max": 254
+      }
+    },
+    {
+      "id": "mage",
+      "prompt": "Use case: identity-preserve. Edit target: the supplied existing TURNTALE profession portrait. Preserve the same character identity, facial features, age, gender, hairstyle and hair color, costume materials and colors, signature equipment, polished hand-painted fantasy game art and transparent alpha background. Primary change: redraw the character in a STRICTLY FRONT-FACING portrait. Head upright without tilt, face and nose centered toward the camera, BOTH eyes looking directly straight at viewer, balanced visible cheeks, shoulders level and parallel to the image plane, chest/torso square to camera. This must be a fully frontal pose, not a three-quarter view with eyes merely turned forward. Make the head and upper torso large and readable in a tall narrow selection card; retain a centered waist-up composition and enough space above head. Genuine transparency around silhouette. No scene, background color, text, border, watermark, extra people, or UI. Keep the face unobstructed. Keep the violet-haired female mage, purple pointed hat with golden crescent/star decorations, richly layered purple robes and golden crystal staff. Torso square forward, head centered and both eyes straight at viewer. Staff at one side, small controlled flame in the opposite open palm at waist level. Self-assured direct gaze; avoid the previous tilted head or sideways body.",
+      "reference": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/mage.webp",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-e27fa87e-cf6d-4a69-a829-a8ad17e76c2d.png",
+      "destination": "public/item-battle-v1/professions/mage-front-v2.webp",
+      "workspaceOriginal": "../artifacts/profession-front-v2-originals/mage-front-v2.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "alpha": {
+        "min": 0,
+        "max": 254
+      }
+    }
+  ]
+}

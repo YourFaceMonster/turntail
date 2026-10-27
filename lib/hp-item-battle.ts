@@ -3,8 +3,11 @@ import {finishHpItemMatch} from './hp-item-mode.ts';
 import {finishHpItemRoundReport} from './hp-item-shop.ts';
 import {resolveHpSkills,type HpSkillUse} from './hp-item-skills.ts';
 import {resolveProfessionWin,type ProfessionEffect} from './rpg-profession-combat.ts';
+import {itemBattleRelicWin} from './item-battle-relics.ts';
+import {blockItemBattleDamage,itemBattleState} from './item-battle-rules.ts';
+import {withRelicActivations} from './rpg-relic-feedback.ts';
 
-export type HpBattleEvent={id:string,round:number,actor:number,label:string,damage:number,playedCount?:number,roundFinal?:boolean,damageTaken?:number[],blockedDamage?:number[],pointsEarned?:number,skills?:HpSkillUse[],professions?:ProfessionEffect[],hpBefore:number[],hpAfter:number[],at:number};
+export type HpBattleEvent={id:string,round:number,actor:number,label:string,damage:number,playedCount?:number,roundFinal?:boolean,damageTaken?:number[],blockedDamage?:number[],pointsEarned?:number,skills?:HpSkillUse[],professions?:ProfessionEffect[],relics?:{relicId:string,message:string}[],relicDamage?:number,relicHealing?:number,hpBefore:number[],hpAfter:number[],at:number};
 /** Impact beat before the click-to-dismiss result; the client holds turns until acknowledged. */
 export const HP_BATTLE_WIN_DELAY_MS=1250;
 export const HP_BATTLE_REVIEW_MS=2600;
@@ -33,10 +36,16 @@ export function resolveHpItemBattle(game:Game,now=Date.now(),roundEnding=false):
  const state=game.hpItemMatch,run=game.rpgRun,id=`${game.code}:${game.round}:${game.tablePlay?.id||game.lastEvent?.id||game.completedBattles||0}`;
  const prior=state.battles?.find(battle=>battle.id===id);if(prior)return prior;
  const actor=game.lastBy,label=combo(game.trick)?.label,playedCount=usesOriginalItemShop(game)?Math.max(game.trick.length,battleTileCounts(game)[actor]):undefined,damage=playedCount??hpBattleDamage(game.trick);if(!label||!damage)return null;
- const hpBefore=[...run.hp],profession=resolveProfessionWin(game,actor,label,now),resolved=resolveHpSkills(game,actor,damage+profession.damage),hpAfter=run.hp.map((hp,seat)=>Math.min(100,Math.max(0,hp+profession.heal[seat]-resolved.damage[seat])));
+ const hpBefore=[...run.hp],profession=resolveProfessionWin(game,actor,label,now),relic=actor===0&&itemBattleState(game)?itemBattleRelicWin(run.equipped,label,game.trick):{damage:0,heal:0,effects:[]},resolved=resolveHpSkills(game,actor,damage+profession.damage+relic.damage);
+ const blockedDamage=game.players.map(()=>0);
+ if(itemBattleState(game))resolved.damage=resolved.damage.map((amount,seat)=>{const actual=blockItemBattleDamage(game,seat,amount,now);blockedDamage[seat]=amount-actual;return actual;});
+ const relicHeal=Math.min(relic.heal,Math.max(0,100-run.hp[actor]-profession.heal[actor]));
+ let remaining=relicHeal;const relicEffects=relic.effects.flatMap(effect=>{if(!effect.message.startsWith('HP'))return [effect];const wanted=effect.relicId==='life-sigil'?2:1,actual=Math.min(wanted,remaining);remaining-=actual;return actual?[{...effect,message:`HP +${actual}`}]:[];});
+ if(relicEffects.length)Object.assign(run,withRelicActivations(run,relicEffects,now));
+ const hpAfter=run.hp.map((hp,seat)=>Math.min(100,Math.max(0,hp+profession.heal[seat]+(seat===actor?relicHeal:0)-resolved.damage[seat])));
  const pointsEarned=0;
  const roundFinal=roundEnding||hpAfter.some(hp=>hp<=0);
- const battle:HpBattleEvent={id,round:game.round,actor,label,damage,playedCount,roundFinal,damageTaken:resolved.damage,pointsEarned,skills:resolved.effects,professions:profession.effects,hpBefore,hpAfter:[...hpAfter],at:now};
+ const battle:HpBattleEvent={id,round:game.round,actor,label,damage,playedCount,roundFinal,damageTaken:resolved.damage,...(blockedDamage.some(Boolean)?{blockedDamage}:{}),pointsEarned,skills:resolved.effects,professions:profession.effects,...(relicEffects.length?{relics:relicEffects,relicDamage:relic.damage,relicHealing:relicHeal}:{}),hpBefore,hpAfter:[...hpAfter],at:now};
  run.hp=hpAfter;run.updatedAt=now;state.battles=[...(state.battles||[]),battle];state.lastBattle=battle;
  state.battleTiles=game.players.map(()=>0);
  game.turnReadyAt=Math.max(game.turnReadyAt||0,now+(roundFinal?700:HP_BATTLE_REVIEW_MS));

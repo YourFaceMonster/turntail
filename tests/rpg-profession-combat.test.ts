@@ -13,7 +13,8 @@ const t=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 const pair=[t(7),t(7,1)],triple=[...pair,t(7,2)],straight=[t(3),t(4,1),t(5,2),t(6,3),t(7)],full=[...triple,t(8),t(8,1)],four=[...triple,t(7,3),t(8)];
 function fresh(id:RpgProfessionId,item=false){
  const g=item?createHpItemGame('나','',Date.now(),2,'toto',id):createRpgGame('나','',Date.now(),id);
- if(item)buyHpItemLoadout(g,[]);g.turn=0;g.turnReadyAt=0;g.roundActions=3;g.completedBattles=1;g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.rpgRun!.combat!.professions=[id,'cleric','cleric'];
+ // This suite preserves the pre-expansion saved profession rules in both modes.
+ if(item){delete g.rpgRun!.combat!.itemBattle;buyHpItemLoadout(g,[]);}g.turn=0;g.turnReadyAt=0;g.roundActions=3;g.completedBattles=1;g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.rpgRun!.combat!.professions=[id,'cleric','cleric'];
  g.players.forEach((player,seat)=>{player.hand=Array.from({length:8},(_,i)=>t(i+3,seat));});return g;
 }
 function fight(g:Game,tiles:Tile[],count=tiles.length,actor=0){

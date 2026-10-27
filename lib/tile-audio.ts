@@ -1,4 +1,5 @@
 import {effectOutput} from './audio-mixer';
+import {playSoundAsset} from './sound-assets';
 export const TILE_ACTION_GAIN=5;
 export type TileSoundKind='tap'|'submit'|'play'|'slam'|'draw';
 export type TileSoundDetail={count?:number,concealed?:boolean,seed?:string};
@@ -24,6 +25,7 @@ export function tileSoundPlan(kind:TileSoundKind,variant:number,detail:TileSound
 const cachedNoise=new WeakMap<AudioContext,AudioBuffer>(),lastVariant=new WeakMap<AudioContext,Map<string,number>>();
 export function playTileSound(ctx:AudioContext,kind:TileSoundKind,detail:TileSoundDetail={}){
  if(ctx.state!=='running')return;
+ if(playSoundAsset(ctx,kind))return;
  let history=lastVariant.get(ctx);if(!history){history=new Map();lastVariant.set(ctx,history);}
  let hash=0;for(const c of detail.seed||String(ctx.currentTime))hash=(hash*31+c.charCodeAt(0))>>>0;
  let variant=hash%5;if(variant===history.get(kind))variant=(variant+1)%5;history.set(kind,variant);

@@ -1,0 +1,152 @@
+{
+  "date": "2026-10-28",
+  "tool": "built-in image_gen",
+  "mode": "generate",
+  "transparent_background": true,
+  "reference_style": "Existing rpg-items-v1/relics/cracked-heart.webp inspected visually; prompts describe matching painted fantasy gold/jewel cartoon art. No existing assets replaced.",
+  "assets": [
+    {
+      "id": "wind-sigil",
+      "kind": "relics",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f79-ccd9-7e81-8b8e-f4020b5059d5\\exec-da5caadb-9c26-40ef-b59a-6600303425a6.png",
+      "prompt": "Use case: stylized-concept. Asset type: TURNTALE fantasy game inventory relic icon. Create one standalone WIND SIGIL talisman: two curling ivory-and-teal wind ribbons orbiting a small aged gold circular medallion, evoking a paired-card blessing. Rich polished hand-painted fantasy cartoon collectible, softly beveled gold metal, luminous turquoise enamel, substantial dark brown outlines and jewel-like highlights, warm storybook game art, readable at 48 pixels. Centered single object fills 75 percent of square canvas with generous transparent margins. Genuine transparent alpha background. No text, letters, numbers, UI frame, scene, people, drop-shadow rectangle, watermark. Match premium fantasy painted item art, not flat vector, no photorealism.",
+      "destination": "public/item-battle-v1/relics/wind-sigil.webp",
+      "originalWorkspace": "../artifacts/item-battle-1033-originals/relics/wind-sigil.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "hasAlpha": true
+    },
+    {
+      "id": "warrior-crest",
+      "kind": "relics",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f79-ccd9-7e81-8b8e-f4020b5059d5\\exec-c86ddd7c-868b-441a-8c43-0d0fba9cff2f.png",
+      "prompt": "Use case: stylized-concept. Asset type: TURNTALE fantasy game inventory relic icon. One standalone centered object filling 75 percent of a square canvas with transparent margins. Rich polished hand-painted fantasy cartoon collectible, substantial dark brown outlines, softly beveled aged gold metal with jewel-like highlights, warm storybook game art, strong silhouette readable at 48 pixels. Genuine transparent alpha background. No text, letters, numbers, UI frame, scene, people, watermark. Not flat vector, no photorealism. A WARRIOR CREST: a compact bronze-and-silver shield insignia embossed with three upright sword blades, one large center blade and two smaller flanking blades; deep cobalt enamel, sturdy leather tie, decisive martial energy.",
+      "destination": "public/item-battle-v1/relics/warrior-crest.webp",
+      "originalWorkspace": "../artifacts/item-battle-1033-originals/relics/warrior-crest.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "hasAlpha": true
+    },
+    {
+      "id": "life-sigil",
+      "kind": "relics",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f79-ccd9-7e81-8b8e-f4020b5059d5\\exec-a4fe344f-2cc2-4f3e-8d7d-872f127d2256.png",
+      "prompt": "Use case: stylized-concept. Asset type: TURNTALE fantasy game inventory relic icon. One standalone centered object filling 75 percent of a square canvas with transparent margins. Rich polished hand-painted fantasy cartoon collectible, substantial dark brown outlines, softly beveled aged gold metal with jewel-like highlights, warm storybook game art, strong silhouette readable at 48 pixels. Genuine transparent alpha background. No text, letters, numbers, UI frame, scene, people, watermark. Not flat vector, no photorealism. A LIFE SIGIL: a polished emerald gemstone shaped like a sprouting heart, wrapped in three ivory leaves and a small gold sacred knot; soft green healing light contained close to the object, inviting, clear symmetrical silhouette.",
+      "destination": "public/item-battle-v1/relics/life-sigil.webp",
+      "originalWorkspace": "../artifacts/item-battle-1033-originals/relics/life-sigil.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "hasAlpha": true
+    },
+    {
+      "id": "sun-sigil",
+      "kind": "relics",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f79-ccd9-7e81-8b8e-f4020b5059d5\\exec-13110417-47e2-49e1-8def-d89241f74f71.png",
+      "prompt": "Use case: stylized-concept. Asset type: TURNTALE fantasy game inventory relic icon. One standalone centered object filling 75 percent of a square canvas with transparent margins. Rich polished hand-painted fantasy cartoon collectible, substantial dark brown outlines, softly beveled aged gold metal with jewel-like highlights, warm storybook game art, strong silhouette readable at 48 pixels. Genuine transparent alpha background. No text, letters, numbers, UI frame, scene, people, watermark. Not flat vector, no photorealism. A SUN SIGIL: a round amber-and-gold sun medallion with a warm ruby center and eight chunky sun rays, five small polished golden facets subtly around the rim, radiant but readable, gold and fiery orange enamel.",
+      "destination": "public/item-battle-v1/relics/sun-sigil.webp",
+      "originalWorkspace": "../artifacts/item-battle-1033-originals/relics/sun-sigil.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "hasAlpha": true
+    },
+    {
+      "id": "crimson-fang",
+      "kind": "relics",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f79-ccd9-7e81-8b8e-f4020b5059d5\\exec-f4130608-9eac-4f0b-976f-010491501790.png",
+      "prompt": "Use case: stylized-concept. Asset type: TURNTALE fantasy game inventory relic icon. One standalone centered object filling 75 percent of a square canvas with transparent margins. Rich polished hand-painted fantasy cartoon collectible, substantial dark brown outlines, softly beveled aged gold metal with jewel-like highlights, warm storybook game art, strong silhouette readable at 48 pixels. Genuine transparent alpha background. No text, letters, numbers, UI frame, scene, people, watermark. Not flat vector, no photorealism. A CRIMSON FANG: one curved red crystal fang suspended from a gold claw-shaped pendant cap, deep ruby enamel and amber inner glow; fierce elegant collectible talisman, no blood or gore.",
+      "destination": "public/item-battle-v1/relics/crimson-fang.webp",
+      "originalWorkspace": "../artifacts/item-battle-1033-originals/relics/crimson-fang.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "hasAlpha": true
+    },
+    {
+      "id": "cloud-blessing",
+      "kind": "relics",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f79-ccd9-7e81-8b8e-f4020b5059d5\\exec-a6d7afe4-a308-4c9d-a8f1-659b703dd665.png",
+      "prompt": "Use case: stylized-concept. Asset type: TURNTALE fantasy game inventory relic icon. One standalone centered object filling 75 percent of a square canvas with transparent margins. Rich polished hand-painted fantasy cartoon collectible, substantial dark brown outlines, softly beveled aged gold metal with jewel-like highlights, warm storybook game art, strong silhouette readable at 48 pixels. Genuine transparent alpha background. No text, letters, numbers, UI frame, scene, people, watermark. Not flat vector, no photorealism. A CLOUD BLESSING charm: a rounded silver-and-ivory cloud with three soft sculpted lobes, dark slate-blue enamel curls, a small pale green healing jewel and short gold tassel, gentle protective mood.",
+      "destination": "public/item-battle-v1/relics/cloud-blessing.webp",
+      "originalWorkspace": "../artifacts/item-battle-1033-originals/relics/cloud-blessing.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "hasAlpha": true
+    },
+    {
+      "id": "pioneers-eye",
+      "kind": "relics",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f79-ccd9-7e81-8b8e-f4020b5059d5\\exec-2850eee5-f395-4e00-a9e3-8f16f31c4f0e.png",
+      "prompt": "Use case: stylized-concept. Asset type: TURNTALE fantasy game inventory relic icon. One standalone centered object filling 75 percent of a square canvas with transparent margins. Rich polished hand-painted fantasy cartoon collectible, substantial dark brown outlines, softly beveled aged gold metal with jewel-like highlights, warm storybook game art, strong silhouette readable at 48 pixels. Genuine transparent alpha background. No text, letters, numbers, UI frame, scene, people, watermark. Not flat vector, no photorealism. A PIONEER'S EYE talisman: one luminous amber eye in an antique gold compass bezel, with a small dark-silver cloud emblem under the eye and a folded ivory card-like charm behind it. Clear ancient pathfinder relic with warm golden glow and dark teal accents; no written numerals or text.",
+      "destination": "public/item-battle-v1/relics/pioneers-eye.webp",
+      "originalWorkspace": "../artifacts/item-battle-1033-originals/relics/pioneers-eye.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "hasAlpha": true
+    },
+    {
+      "id": "swordsman",
+      "kind": "professions",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f79-ccd9-7e81-8b8e-f4020b5059d5\\exec-c4cfdcb5-42f6-4ee3-bd2c-224908f264d0.png",
+      "prompt": "Use case: stylized-concept. Asset type: TURNTALE fantasy card game's profession selection illustration. Single friendly heroic adult character, waist-up three-quarter portrait with complete head, shoulders, hands and signature equipment inside frame, centered and filling 80 percent of a square canvas. Warm hand-painted Korean storybook fantasy cartoon RPG art, expressive appealing face, slightly stylized proportions, rich soft brush texture, dark warm outlines, gold metal and jewel highlights, high-quality collectible game illustration. Genuine transparent alpha background, clean silhouette, no setting, no ground plane, no UI, no text, no letters, no watermark, not photorealistic, not pixel art. A brave adult male swordsman with short chestnut hair and kind determined eyes, practical silver plate shoulder armor over deep red tunic, brown leather gloves, holding a handsome broad steel sword upright beside his shoulder, ruby clasp and restrained gold trim. Strong reliable guardian expression, attractive adventurous silhouette.",
+      "destination": "public/item-battle-v1/professions/swordsman.webp",
+      "originalWorkspace": "../artifacts/item-battle-1033-originals/professions/swordsman.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "hasAlpha": true
+    },
+    {
+      "id": "mage",
+      "kind": "professions",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f79-ccd9-7e81-8b8e-f4020b5059d5\\exec-6a3388cf-4395-41c6-b804-14fdc7ef7ddd.png",
+      "prompt": "Use case: stylized-concept. Asset type: TURNTALE fantasy card game's profession selection illustration. Single friendly heroic adult character, waist-up three-quarter portrait with complete head, shoulders, hands and signature equipment inside frame, centered and filling 80 percent of a square canvas. Warm hand-painted Korean storybook fantasy cartoon RPG art, expressive appealing face, slightly stylized proportions, rich soft brush texture, dark warm outlines, gold metal and jewel highlights, high-quality collectible game illustration. Genuine transparent alpha background, clean silhouette, no setting, no ground plane, no UI, no text, no letters, no watermark, not photorealistic, not pixel art. A confident adult woman mage with violet hair and bright thoughtful eyes, deep indigo pointed wizard hat with a moon-shaped gold clasp, plum and blue layered robe, holding a staff topped by a luminous amber crystal and a small controlled magical flame near her free hand. Friendly clever expression, elegant readable silhouette.",
+      "destination": "public/item-battle-v1/professions/mage.webp",
+      "originalWorkspace": "../artifacts/item-battle-1033-originals/professions/mage.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "hasAlpha": true
+    },
+    {
+      "id": "rogue",
+      "kind": "professions",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f79-ccd9-7e81-8b8e-f4020b5059d5\\exec-ff5c3611-0461-41a3-b703-7fe28b91f4e6.png",
+      "prompt": "Use case: stylized-concept. Asset type: TURNTALE fantasy card game's profession selection illustration. Single friendly heroic adult character, waist-up three-quarter portrait with complete head, shoulders, hands and signature equipment inside frame, centered and filling 80 percent of a square canvas. Warm hand-painted Korean storybook fantasy cartoon RPG art, expressive appealing face, slightly stylized proportions, rich soft brush texture, dark warm outlines, gold metal and jewel highlights, high-quality collectible game illustration. Genuine transparent alpha background, clean silhouette, no setting, no ground plane, no UI, no text, no letters, no watermark, not photorealistic, not pixel art. A clever adult woman rogue with short dark teal hair, mischievous watchful eyes, forest-green hood pushed back enough to show face, fitted brown leather adventurer armor, bronze goggles resting on head, holding a small brass spyglass and a compact round fantasy trap device with a short unlit fuse. Cunning but welcoming, no threatening pose or violence.",
+      "destination": "public/item-battle-v1/professions/rogue.webp",
+      "originalWorkspace": "../artifacts/item-battle-1033-originals/professions/rogue.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "hasAlpha": true
+    },
+    {
+      "id": "cleric",
+      "kind": "professions",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f79-ccd9-7e81-8b8e-f4020b5059d5\\exec-d43683af-0a5a-4435-916e-e249250541b9.png",
+      "prompt": "Use case: stylized-concept. Asset type: TURNTALE fantasy card game's profession selection illustration. Single friendly heroic adult character, waist-up three-quarter portrait with complete head, shoulders, hands and signature equipment inside frame, centered and filling 80 percent of a square canvas. Warm hand-painted Korean storybook fantasy cartoon RPG art, expressive appealing face, slightly stylized proportions, rich soft brush texture, dark warm outlines, gold metal and jewel highlights, high-quality collectible game illustration. Genuine transparent alpha background, clean silhouette, no setting, no ground plane, no UI, no text, no letters, no watermark, not photorealistic, not pixel art. A warm adult male cleric with soft silver-blond hair and gentle steady eyes, ivory hooded mantle with sage-green lining and aged gold trim, holding an ornate staff with an emerald leaf-shaped crystal and presenting a small soft green healing light in his free hand. Calm capable healer, no real-world religious symbols.",
+      "destination": "public/item-battle-v1/professions/cleric.webp",
+      "originalWorkspace": "../artifacts/item-battle-1033-originals/professions/cleric.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "hasAlpha": true
+    }
+  ]
+}

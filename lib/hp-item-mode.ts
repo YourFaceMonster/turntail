@@ -7,6 +7,8 @@ import {uid,type Game} from './game.ts';
 import {createRpgTestGame} from './rpg-game.ts';
 import {rpgRanks,RPG_RELICS} from './rpg.ts';
 import {refundLegacyEmbers} from './rpg-items.ts';
+import {ITEM_BATTLE_RELIC_POOL} from './item-battle-relics.ts';
+import {applyPioneerDeal,newItemBattleState} from './item-battle-rules.ts';
 
 export const HP_ITEM_STORAGE_KEY='turntale-hp-items-v1';
 export const HP_ITEM_SHOP_STORAGE_KEY='turntale-hp-items-2-v1';
@@ -30,7 +32,12 @@ export function createHpItemGame(name:string,avatar='',now=Date.now(),variant:Hp
  }else{
   pickHpOpponents().forEach((id,index)=>{const person=hpCharacter(id);game.players[index+1].name=person.name;game.players[index+1].avatar=person.avatar;});
  }
- if(variant===2&&profession)game.rpgRun!.combat=newProfessionCombat(profession,game.players.map(player=>player.avatar||''),game.round);
+ if(variant===2&&profession){
+  const run=game.rpgRun!,combat=newProfessionCombat(profession,game.players.map(player=>player.avatar||''),game.round);combat.itemBattle=newItemBattleState(game.players.length);run.combat=combat;
+  const pool=ITEM_BATTLE_RELIC_POOL.map(relic=>relic.id as string),relics:string[]=[];
+  while(relics.length<3&&pool.length){const random=new Uint32Array(1);crypto.getRandomValues(random);relics.push(pool.splice(random[0]%pool.length,1)[0]);}
+  run.relics=[...relics];run.equipped=[...relics];run.discovered=[...relics];applyPioneerDeal(game,now);
+ }
  return game;
 }
 export function hpItemRanks(game:Pick<Game,'players'|'rpgRun'>){return rpgRanks(game.rpgRun!.hp,game.players.map(player=>player.hand.length));}

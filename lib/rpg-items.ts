@@ -7,6 +7,7 @@ import type {Game,Tile} from './game.ts';
 import {sorted,uid,legalOptions,rank,view} from './game.ts';
 import type {RpgRun} from './rpg.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
+import {itemBattleState,recordTrapIntel} from './item-battle-rules.ts';
 
 export const RPG_ITEMS_PER_ROUND=3;
 export type RpgExchangeItem='swapped-fate'|'fates-scales';
@@ -65,7 +66,7 @@ export function rpgItemAvailability(game:ReturnType<typeof view>,id:string,enabl
  const state=stateFor(run,game.me,game.round);
  if(state.used>=rpgItemLimit(game))return {usable:false,reason:`이번 판 사용 한도 ${rpgItemLimit(game)}개`};
  if(state.turn===game.roundActions)return {usable:false,reason:'이번 차례 사용 완료'};
- if(id==='scout-lens')return game.stacks.some(stack=>stack.upper)?{usable:true,reason:'원하는 2층 패 1장 투시'}:{usable:false,reason:'남은 2층 패 없음'};
+ if(id==='scout-lens')return itemBattleState(game)?{usable:game.stacks.some(stack=>stack.upper||stack.lowerPresent),reason:'바닥패 한 장의 내용과 함정 유무 확인'}:game.stacks.some(stack=>stack.upper)?{usable:true,reason:'원하는 2층 패 1장 투시'}:{usable:false,reason:'남은 2층 패 없음'};
  if(id==='emergency-herb')return {usable:hpItemEffectiveHp(game,game.me)<100,reason:hpItemEffectiveHp(game,game.me)<100?'자신의 HP 10 회복':'HP가 이미 가득 찼어요'};
  if(id==='ward-seal')return {usable:!run.itemGuards?.[game.me],reason:run.itemGuards?.[game.me]?'비밀 방패가 이미 준비됐어요':'다음 공격·패 교환 아이템 1회 방어'};
  if(id==='whisper-eye')return {usable:game.players.some((player,index)=>index!==game.me&&player.count>0),reason:'선택한 상대의 손패 무작위 1장 확인 · 나에게만 공개'};
@@ -90,8 +91,10 @@ export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:numbe
  if(!available.usable)throw Error(available.reason);
  const state:RpgTacticalState={...old};let blocked=false;
  if(id==='scout-lens'){
-  if(!Number.isInteger(target)||!g.stacks[target]?.[1])throw Error('확인할 2층 패를 선택해 주세요.');
-  state.peek={round:g.round,index:target,tile:{...g.stacks[target][1]!}};state.peeks=[...(old.peeks||(old.peek?[old.peek]:[])).filter(peek=>peek.index!==target),state.peek];
+  const tile=g.stacks[target]?.[1]||(itemBattleState(g)?g.stacks[target]?.[0]:null);
+  if(!Number.isInteger(target)||!tile)throw Error('확인할 바닥패를 선택해 주세요.');
+  if(g.stacks[target][1]){state.peek={round:g.round,index:target,tile:{...tile}};state.peeks=[...(old.peeks||(old.peek?[old.peek]:[])).filter(peek=>peek.index!==target),state.peek];}
+  recordTrapIntel(g,who,target,tile.id);
  }else if(id==='whisper-eye'){
   if(!Number.isInteger(target)||target===who||!g.players[target]?.hand.length)throw Error('확인할 상대를 선택해 주세요.');
   state.handPeek={round:g.round,target,tile:{...takeRandom(g.players[target].hand,1)[0]}};record(g,who,id,target,'reveal');
@@ -152,7 +155,9 @@ function applyRpgEmberDamage(g:Game,who:number,target:number,now:number,id:RpgTa
 export function resetRpgTactics(run:RpgRun){run.tactics={};run.tacticalPeeks=undefined;run.tacticalPeek=undefined;run.tacticalRound=undefined;run.tacticalUsed=0;run.tacticalTurn=undefined;run.protectedCounts=undefined;}
 export function scoutRpgBotDraw(g:Game,who:number,index:number){
  const state=g.rpgRun&&stateFor(g.rpgRun,who,g.round),peek=state?.peek;
- return peek?.round===g.round&&g.stacks[peek.index]?.[1]?.id===peek.tile.id&&view(g,g.players[who].token).stacks[peek.index]?.available?peek.index:index;
+ const position=view(g,g.players[who].token),extra=position.rpgRun?.combat?.itemBattle,knownTrap=(at:number)=>!!extra?.trapIntel[who]?.some(intel=>intel.index===at&&intel.trapped);
+ const preferred=peek?.round===g.round&&g.stacks[peek.index]?.[1]?.id===peek.tile.id&&position.stacks[peek.index]?.available?peek.index:index;
+ return knownTrap(preferred)?position.stacks.findIndex((stack,at)=>stack.available&&!knownTrap(at))>=0?position.stacks.findIndex((stack,at)=>stack.available&&!knownTrap(at)):preferred:preferred;
 }
 export type RpgBotItemChoice={id:RpgTacticalItem,target?:number,ids?:number[]};
 /** Decisions accept only the same redacted view as an ordinary player. */

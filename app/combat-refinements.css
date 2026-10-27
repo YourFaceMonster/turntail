@@ -78,6 +78,31 @@
 .profession-picker span{font-size:10px;line-height:1.4}
 .profession-picker button small,.profession-picker>p{font-size:9px;line-height:1.5;color:#becbbe}
 .profession-picker>p{margin:7px 0 0}
+/* Illustrated profession choices share the world's painted character art. */
+.profession-picker.has-art{padding:12px;background:linear-gradient(155deg,#253b32,#14241f);border-color:#c6a96a66}
+.profession-picker.has-art h3{justify-content:space-between;flex-wrap:wrap;gap:4px 12px;font-size:15px}
+.profession-picker.has-art>.profession-choice-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.profession-picker.has-art .profession-choice{position:relative;align-items:center;justify-content:flex-end;gap:3px;overflow:hidden;height:240px;padding:0 8px 12px;border-radius:11px;background:linear-gradient(180deg,#3c5041,#20372d);text-align:center;box-shadow:inset 0 1px #f1e2b510}
+.profession-picker.has-art .profession-choice[data-profession="rogue"]{background:linear-gradient(180deg,#3f4059,#282c40)}
+.profession-picker.has-art .profession-choice[data-profession="cleric"]{background:linear-gradient(180deg,#514b37,#343a2c)}
+.profession-picker.has-art .profession-choice[data-profession="mage"]{background:linear-gradient(180deg,#41415c,#282b43)}
+.profession-picker.has-art .profession-choice.chosen{border-color:#f0cf87;box-shadow:inset 0 0 0 1px #f0cf8780,0 3px 12px #0003}
+.profession-picker.has-art .profession-choice:focus-visible{outline:3px solid #bce6ce;outline-offset:2px}
+.profession-picker.has-art .profession-art{position:absolute;inset:0;display:block;width:100%;height:100%;margin:0;background:radial-gradient(ellipse at 50% 40%,#ead5a64a,transparent 75%)}
+.profession-picker.has-art .profession-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:center top;transform:scale(1.4);transform-origin:50% 7%;filter:drop-shadow(0 4px 4px #0005)}
+.profession-picker.has-art .profession-art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,#10211933 53%,#101c19e8 76%,#0b1714 100%);pointer-events:none}
+.profession-picker.has-art .profession-choice>strong,.profession-picker.has-art .profession-role,.profession-picker.has-art .profession-signature{position:relative;z-index:1;text-shadow:0 1px 3px #000b}
+.profession-picker.has-art .profession-selected-mark{position:absolute;z-index:2;top:7px;right:7px;display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:#f0cf87;color:#283326;font-size:14px;box-shadow:0 2px 5px #0004}
+.profession-picker.has-art .profession-choice>strong{justify-content:center;font-size:15px;line-height:1.4}
+.profession-picker.has-art .profession-role{font-size:11px;line-height:1.5;color:#efdfbb}
+.profession-picker.has-art .profession-signature{font-size:10px;line-height:1.45;color:#cbd6c9;word-break:keep-all;overflow-wrap:anywhere}
+.profession-picker.has-art .profession-selected-detail{display:flex;flex-direction:column;gap:3px;min-height:86px;margin-top:9px;padding:10px 11px;border:1px solid #c7b07550;border-radius:9px;background:#101f19b3}
+.profession-picker.has-art .profession-selected-detail>strong{gap:6px;margin-bottom:2px;font-size:13px}
+.profession-picker.has-art .profession-selected-detail>strong>small{margin-left:auto;color:#d7c391;font-size:10px;font-weight:400}
+.profession-picker.has-art .profession-selected-detail>span{font-size:11px;line-height:1.65;color:#e0e8d8;word-break:keep-all;overflow-wrap:anywhere}
+.profession-picker.has-art>p{font-size:10px;line-height:1.6}
+@media(max-width:600px){.profession-picker.has-art>.profession-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.profession-picker.has-art .profession-choice{height:218px;padding-bottom:10px}.profession-picker.has-art .profession-choice>strong{font-size:14px}.profession-picker.has-art .profession-signature{font-size:10px}.profession-picker.has-art .profession-selected-detail{min-height:101px}}
+@media(max-height:450px) and (min-width:601px){.profession-picker.has-art .profession-choice{height:176px}.profession-picker.has-art .profession-choice-grid{gap:6px}.profession-picker.has-art .profession-selected-detail{min-height:0}.profession-picker.has-art .profession-selected-detail>span{font-size:10px}}
 .profession-status{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font-size:10px;color:#f1d69c;padding:3px 5px;border:1px solid #cab07650;border-radius:6px;background:#14271fcc}
 .profession-status svg{width:12px;height:12px;flex:none}
 .profession-status small{font-size:8px;color:#c1cfbf}
