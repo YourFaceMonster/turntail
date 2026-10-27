@@ -8,5 +8,5 @@ export function hpBattleSummary(event:HpBattleEvent,players:readonly {name:strin
   return {seat,rank:index+1,before:event.hpBefore[seat],hp:event.hpAfter[seat],damage,note};
  });
  const totalDamage=rows.reduce((sum,row)=>sum+row.damage,0);
- return {rows,totalDamage,text:`${players[event.actor].name} ${event.label} 승리 · 총 HP 피해 ${totalDamage}`};
+ return {rows,totalDamage,text:`${players[event.actor].name} ${event.label} 승리${event.playedCount?` · 제출 ${event.playedCount}장`:""} · 총 HP 피해 ${totalDamage}`};
 }

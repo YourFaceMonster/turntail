@@ -415,7 +415,7 @@ export default function Home(){
  const dimensions=tileLayout({width:tableSize.width,height:tableSize.height,floorWidth:floorSize.width,handWidth:rackSize.width,handCount:sizingCount,cols:game?.cols||5,rows:game?.rows||3,players:game?.capacity||3,landscape:landscapeTable,desktop:landscapeTable&&viewport.width>=1000&&viewport.height>=650||!!game?.rpgRun&&!touchScreen&&viewport.width>=600,rpg:!!game});
  const rackColumns=dimensions.columns,rackGap=dimensions.gap,rackCardHeight=dimensions.height,rackTileWidth=rackCardHeight*.76;
  const floorCellW=dimensions.floorWidth,floorCellH=dimensions.floorHeight;
- const playedSizing=playedTileLayout(floorCellH,Math.max(20,floorSize.width-(landscapeTable?dimensions.playedLabelWidth+18:16)),game?.trick.length||1,!!game);
+ const playedSizing=playedTileLayout(floorCellH,Math.max(20,floorSize.width-(landscapeTable?dimensions.playedLabelWidth+18:16)),5,!!game);
  const rackStyle={"--hand-cols":rackColumns,"--hand-gap":`${rackGap}px`,"--hand-card-height":`${rackCardHeight}px`} as CSSProperties;
  const handKey=hand.map(t=>t.id).join(','),trickKey=game?.trick.map(t=>t.id).join(',')||"";
  const options=useMemo(()=>game?.phase==="playing"?legalOptions(hand,game.trick):[],[handKey,trickKey,game?.phase]);
@@ -512,7 +512,7 @@ export default function Home(){
  </section><section className={`trick-area ${!game.trick.length?"has-lead":""}`} data-trick style={{"--play-cols":game.trick.length===1?1:2,"--shown-w":`${playedSizing.width}px`,"--shown-h":`${playedSizing.height}px`} as CSSProperties}>
 
  <div className="trick-label">{game.trick.length?<><span className="trick-owner"><SeatAvatar seat={game.lastBy!} photo={game.players[game.lastBy!]?.avatar}/><strong>{game.players[game.lastBy!]?.name}</strong></span><PatternBadge tiles={game.trick}/></>:<span className={`lead-label ${game.turn===game.me?"my-lead":""}`} key={`${game.round}:${game.lastEvent?.id}`} role="status">✦ {game.turn===game.me?"내가 선!":`${game.players[game.turn].name} · 선`}</span>}</div>
- <div className="trick-tiles" data-active-trick={!!game.trick.length} key={displayedPlay?.tiles.map(t=>t.id).join(',')}>
+ <div className="trick-tiles" data-active-trick={!!game.trick.length}>
  {!!game.trick.length&&!!previousPlay.length&&(watchingPlay||flights.some(f=>f.kind==="play"))&&<div className="previous-trick" aria-hidden="true">{previousPlay.map(t=><TileFace key={t.id} tile={t}/>)}</div>}
  {displayedPlay?.previous&&<span className="last-play-caption">마지막 제출 패 · 새 선에서는 원하는 조합을 내세요</span>}<div className="trick-current">{displayedPlay?displayedPlay.tiles.map(t=><span data-arrival={t.id} className="landed-tile" style={{visibility:flights.some(f=>f.kind==="play"&&f.tile?.id===t.id)?"hidden":"visible"}} key={t.id}><TileFace tile={t}/></span>):<span className="new-trick">{game.lastEvent?.type==="deal"?"첫 선 · 원하는 조합으로 시작하세요":game.turn===game.me?"선을 잡았습니다 · 원하는 조합을 내세요":`${game.players[game.turn].name}님이 선을 잡았습니다`}</span>}</div>
  </div>

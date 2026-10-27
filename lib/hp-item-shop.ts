@@ -5,7 +5,7 @@ import {isBattleItemMode,usesOriginalItemShop,type HpBattleEvent} from './hp-ite
 
 export type HpItemVariant=1|2;
 export type HpItemRoundReport={round:number,hpBefore:number[],hpAfter:number[],earned:number[],skills?:HpSkillUse[],skillMoney?:number[],battleDamage?:number[],battlePoints?:number[],moneyDamage?:number[],moneyDelta?:number[],moneyBefore?:number[],moneyAfter?:number[],moneySkipped?:boolean,endReason?:'battle'|'item'|'bankruptcy',itemDamage?:number[],itemHealing?:number[],cardDamage?:number[],itemPoints?:number[],cardPoints?:number[],items:{actor:number,target:number,id:string,kind:string,amount?:number}[]};
-export type HpItemMatchState={points:number[],skills?:HpSkillState,shopRound:number,roundStartHp:number[],roundItems:HpItemRoundReport['items'],roundEarned:number[],pendingItemDelta?:number[],pendingItemPoints?:number[],battles?:HpBattleEvent[],lastBattle?:HpBattleEvent,roundMoneyBefore?:number[],moneyBefore?:number[],moneyDelta?:number[],moneyDamage?:number[],moneySkipped?:boolean,endReason?:'battle'|'item'|'bankruptcy',moneySettlementId?:string,report?:HpItemRoundReport};
+export type HpItemMatchState={points:number[],skills?:HpSkillState,shopRound:number,roundStartHp:number[],roundItems:HpItemRoundReport['items'],roundEarned:number[],pendingItemDelta?:number[],pendingItemPoints?:number[],battleTiles?:number[],battles?:HpBattleEvent[],lastBattle?:HpBattleEvent,roundMoneyBefore?:number[],moneyBefore?:number[],moneyDelta?:number[],moneyDamage?:number[],moneySkipped?:boolean,endReason?:'battle'|'item'|'bankruptcy',moneySettlementId?:string,report?:HpItemRoundReport};
 export const HP_ITEM_PRICES:Record<string,number>={'whisper-eye':4,'spark-dart':4,'scout-lens':3,'swapped-fate':6,'ward-seal':6,'ember-bomb':10,'emergency-herb':5};
 export const HP_ITEM_START_POINTS=20;
 // Keep starter data independent of the item/game import cycle.
@@ -61,7 +61,7 @@ export function beginHpItemRound(game:Game){
  const state=game.hpItemMatch,run=game.rpgRun;if(!game.hpItemMode||!state||!run)return;
  if(game.hpItemVariant===2&&(!isBattleItemMode(game)||usesOriginalItemShop(game))&&game.round>1)state.points=state.points.map(points=>points+HP_ITEM_ROUND_ALLOWANCE);
  state.roundStartHp=[...run.hp];state.roundItems=[];state.roundEarned=game.players.map(()=>0);state.pendingItemDelta=game.players.map(()=>0);state.pendingItemPoints=game.players.map(()=>0);
- if(isBattleItemMode(game)){resetHpSkills(game);state.battles=[];state.lastBattle=undefined;state.roundMoneyBefore=[...state.points];state.moneyBefore=undefined;state.moneyDelta=undefined;state.moneyDamage=undefined;state.moneySkipped=false;state.endReason=undefined;}
+ if(isBattleItemMode(game)){resetHpSkills(game);state.battleTiles=game.players.map(()=>0);state.battles=[];state.lastBattle=undefined;state.roundMoneyBefore=[...state.points];state.moneyBefore=undefined;state.moneyDelta=undefined;state.moneyDamage=undefined;state.moneySkipped=false;state.endReason=undefined;}
 }
 export function hpItemEffectiveHp(game:Pick<Game,'hpItemMode'|'hpItemMatch'|'rpgRun'>,seat:number){return Math.max(0,Math.min(100,(game.rpgRun?.hp[seat]||0)+(game.hpItemMode?game.hpItemMatch?.pendingItemDelta?.[seat]||0:0)));}
 /** Apply queued HP once, immediately before the card settlement. */

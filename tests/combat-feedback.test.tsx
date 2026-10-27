@@ -24,7 +24,7 @@ const original=g.turnReadyAt;resolveHpItemBattle(g,now+500);assert.equal(g.turnR
 
 const fatal=createHpItemGame('나','',now,2);buyHpItemLoadout(fatal,[]);fatal.players[0].hand=[tile(10)];fatal.turn=0;fatal.turnReadyAt=0;fatal.trick=[];fatal.lastBy=null;fatal.rpgRun!.hp[1]=1;fatal.rpgRun!.equipped=[];
 act(fatal,0,'play',[tile(10).id],undefined,now);
-assert.equal(fatal.rpgRun!.status,'complete');assert.ok(fatal.turnReadyAt>=now+HP_BATTLE_REVIEW_MS,'final-card KO has the same readable pause before the result');
+assert.equal(fatal.rpgRun!.status,'complete');assert.equal(fatal.hpItemMatch!.lastBattle?.roundFinal,true,'the last fight skips its review and advances to the round result');
 const markup=renderToStaticMarkup(createElement(HpItemResult,{game:view(fatal,fatal.players[0].token),busy:false,next:()=>{},restart:()=>{},exit:()=>{}}));
 assert.equal((markup.match(/has-identity/g)||[]).length,3,'each result meter contains player identity and total change');
 assert.ok(markup.includes('hp-change-float'));assert.ok(!markup.includes('<header>'));

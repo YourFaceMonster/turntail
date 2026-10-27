@@ -1,4 +1,4 @@
-import {isBattleItemMode,resolveHpItemBattle,settleHpBattleMoney} from './hp-item-battle.ts';
+import {isBattleItemMode,recordHpBattlePlay,resolveHpItemBattle,settleHpBattleMoney} from './hp-item-battle.ts';
 import {applyPendingHpItems,beginHpItemRound,finishHpItemRoundReport,hpItemShopPending,type HpItemMatchState} from './hp-item-shop.ts';
 import {finishHpItemMatch} from './hp-item-mode.ts';
 import {newItemRun,itemView,scoutBotDraw,type ItemRun} from './items';
@@ -154,6 +154,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
    if(!(g.rpgRun.gloveRoundIds||[]).includes(roundId))g.rpgRun=withRelicActivations({...g.rpgRun,points:g.rpgRun.points+2,gloveRoundIds:[...(g.rpgRun.gloveRoundIds||[]),roundId]},[{relicId:'gamblers-gloves',message:'포인트 +2'}],now);
   }
   g.roundActions=(g.roundActions??(g.playedTiles?.length||0))+1;
+  recordHpBattlePlay(g,who,tiles.length);
   p.hand=p.hand.filter(t=>!ids.includes(t.id));const protection=g.rpgRun?.tactics?.[who];if(protection?.sealed)protection.sealed=protection.sealed.filter(id=>!ids.includes(id));g.playedTiles=[...(g.playedTiles||[]),...tiles];if(g.publicDraws?.[p.id])g.publicDraws[p.id]=g.publicDraws[p.id].filter(t=>!ids.includes(t.id));g.trick=tiles;g.lastBy=who;
   const introductions=new Set(g.announcedCombos??[1,2,3].filter(n=>g.log.some(line=>line.includes(`· ${['싱글','페어','트리플'][n-1]} ${n}개 제출`))));
   const showNotice=shouldShowPlayNotice(introductions,tiles.length),reviewMs=showNotice?PLAY_REVIEW_MS:QUICK_PLAY_MS;g.announcedCombos=[...introductions];
@@ -161,7 +162,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   g.lastEvent={id:uid(),type:"play",who,tiles,label:combo(tiles)!.label,at:now,rally:g.rally,showNotice,reviewMs};
   g.tablePlay={tiles:tiles.map(t=>({...t})),who,id:g.lastEvent.id};
   note(g,`${p.name} · ${combo(tiles)!.label} ${tiles.length}개 제출`);
-  if(!p.hand.length){resolveHpItemBattle(g,now);if(g.rpgRun?.status==='complete')return;g.phase="ended";g.turnDeadline=0;g.winner=who;if(!automatic)p.timeouts=0;settle(g);note(g,g.result?.voided?`${p.name} 손패 소진 · AI 대체로 무효 경기입니다.`:`${p.name} 승리! 손패를 모두 냈습니다.`);return;}
+  if(!p.hand.length){resolveHpItemBattle(g,now,true);if(g.rpgRun?.status==='complete')return;g.phase="ended";g.turnDeadline=0;g.winner=who;if(!automatic)p.timeouts=0;settle(g);note(g,g.result?.voided?`${p.name} 손패 소진 · AI 대체로 무효 경기입니다.`:`${p.name} 승리! 손패를 모두 냈습니다.`);return;}
  }else if(action==="draw"){
   if(!g.trick.length)throw Error("선을 잡은 차례에는 패를 반드시 내야 해요.");
   if(!Number.isInteger(index)||!accessible(g,index))throw Error("밝게 표시된 외곽 타일만 가져올 수 있어요.");
