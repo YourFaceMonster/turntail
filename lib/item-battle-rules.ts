@@ -1,18 +1,18 @@
 import {assertTurnReady,lowestHandLead,sorted,uid,view,type Game,type Tile} from './game.ts';
-import {hpItemShopPending} from './hp-item-shop.ts';
 import {finishHpItemMatch} from './hp-item-mode.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
 import {AMBUSH_IMPACT_MS,AMBUSH_PRESENTATION_MS,TRAP_IMPACT_MS,TRAP_PRESENTATION_MS} from './pickup-presentation.ts';
+import {professionActiveAvailability,consumeProfessionGauge} from './profession-actives.ts';
 
 export type FloorTrap={id:string,owner:number,index:number,tileId:number,round:number};
 export type TrapIntel={index:number,tileId:number,trapped:boolean};
 export type TrapBurst={id:string,owner:number,owners?:number[],target:number,index:number,damage:number,hpBefore:number,hpAfter:number,at:number,safe:boolean};
 export type AmbushBurst={id:string,round:number,owner:number,index:number,damage:number[],hpBefore:number[],hpAfter:number[],at:number};
-export type ItemBattleState={version:1,pairWins:number[],firstFiveUsed:boolean[],trapUsed:boolean[],traps:FloorTrap[],trapIntel:Record<number,TrapIntel[]>,trapEvents:TrapBurst[],lastTrap?:TrapBurst,ambushEvents?:AmbushBurst[],lastAmbush?:AmbushBurst,pioneerApplied?:boolean};
+export type ItemBattleState={version:1,pairWins:number[],firstFiveUsed:boolean[],trapUsed:boolean[],traps:FloorTrap[],trapIntel:Record<number,TrapIntel[]>,trapEvents:TrapBurst[],lastTrap?:TrapBurst,ambushEvents?:AmbushBurst[],ambushedTileIds?:number[],lastAmbush?:AmbushBurst,pioneerApplied?:boolean};
 export function newItemBattleState(size:number):ItemBattleState{return {version:1,pairWins:Array(size).fill(0),firstFiveUsed:Array(size).fill(false),trapUsed:Array(size).fill(false),traps:[],trapIntel:{},trapEvents:[]};}
 export function itemBattleState(game:{rpgRun?:{combat?:{itemBattle?:ItemBattleState}}|null}){return game.rpgRun?.combat?.itemBattle;}
 /** Reset only round resources, preserving the once-per-match first-deal marker. */
-export function resetItemBattle(game:Game){const state=itemBattleState(game);if(state)Object.assign(state,newItemBattleState(game.players.length),{pioneerApplied:state.pioneerApplied,lastTrap:undefined,ambushEvents:[],lastAmbush:undefined});}
+export function resetItemBattle(game:Game){const state=itemBattleState(game);if(state)Object.assign(state,newItemBattleState(game.players.length),{pioneerApplied:state.pioneerApplied,lastTrap:undefined,ambushEvents:[],ambushedTileIds:[],lastAmbush:undefined});}
 export function applyPioneerDeal(game:Game,now=Date.now()){
  const run=game.rpgRun,state=itemBattleState(game);if(!run||!state||state.pioneerApplied||game.round!==1)return;
  state.pioneerApplied=true;if(!run.equipped.includes('pioneers-eye'))return;
@@ -30,17 +30,14 @@ export function applyPioneerDeal(game:Game,now=Date.now()){
 export function trapAvailability(game:Pick<Game,'phase'|'turn'|'rpgRun'|'round'|'turnReadyAt'|'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'roundActions'|'result'>,who:number,enabled=true,now=Date.now()){
  const state=itemBattleState(game),combat=game.rpgRun?.combat;
  if(!state||combat?.professions[who]!=='rogue')return {usable:false,reason:'도적의 함정'};
- if(game.phase!=='playing'||game.rpgRun?.status!=='playing')return {usable:false,reason:'대전 종료'};
- if(hpItemShopPending(game))return {usable:false,reason:'상점 준비를 마쳐 주세요'};
- if(state.trapUsed[who])return {usable:false,reason:'이번 판 함정 사용 완료'};
- if(!enabled||game.turn!==who)return {usable:false,reason:'내 차례에 설치 가능'};
- if(now<(game.turnReadyAt||0))return {usable:false,reason:'패 확인 후 설치 가능'};
- return {usable:true,reason:'매판 1회 · 바닥패 어디든 설치 · 피해 4'};
+ return professionActiveAvailability(game,who,enabled,now);
 }
 export function placeFloorTrap(game:Game,who:number,index:number,now=Date.now()){
  const availability=trapAvailability(game,who,true,now);if(!availability.usable)throw Error(availability.reason);
  if(!game.practice||!Number.isInteger(index)||!game.stacks[index]?.some(Boolean))throw Error('남아 있는 바닥패를 선택해 주세요.');
  assertTurnReady(game,now);const state=itemBattleState(game)!,tile=game.stacks[index][1]||game.stacks[index][0]!;
+ if(state.traps.some(trap=>trap.owner===who&&trap.tileId===tile.id&&trap.round===game.round))throw Error('이미 내 함정이 설치된 패예요.');
+ consumeProfessionGauge(game,who,now);
  state.traps.push({id:uid(),owner:who,index,tileId:tile.id,round:game.round});state.trapUsed[who]=true;game.rpgRun!.updatedAt=now;
  // No public event/log, turn, item inventory or action counter changes on installation.
 }
@@ -74,9 +71,9 @@ export function triggerFloorTrap(game:Game,who:number,index:number,tile:Tile,now
 export function triggerScoutedPickup(game:Game,who:number,index:number,tile:Tile,now=Date.now()){
  const run=game.rpgRun,state=itemBattleState(game),tactic=run?.tactics?.[who];
  if(!run||!state||run.combat?.professions[who]!=='rogue'||tactic?.round!==game.round)return null;
- const peeks=tactic.peeks||(tactic.peek?[tactic.peek]:[]);if(!peeks.some(peek=>peek.source==='profession'&&peek.round===game.round&&peek.tile.id===tile.id))return null;
- tactic.peeks=peeks.filter(peek=>peek.tile.id!==tile.id);tactic.peek=tactic.peeks.at(-1);
- const hpBefore=[...run.hp],damage=game.players.map((_,seat)=>seat===who?0:Math.min(run.hp[seat],blockItemBattleDamage(game,seat,1,now)));
+ const peeks=tactic.peeks||(tactic.peek?[tactic.peek]:[]);if(!peeks.some(peek=>peek.source==='profession'&&peek.round===game.round&&peek.tile.id===tile.id)||state.ambushedTileIds?.includes(tile.id))return null;
+ tactic.peeks=peeks.filter(peek=>peek.tile.id!==tile.id);tactic.peek=tactic.peeks.at(-1);state.ambushedTileIds=[...(state.ambushedTileIds||[]),tile.id];
+ const hpBefore=[...run.hp],damage=game.players.map((_,seat)=>seat===who||run.hp[seat]<=0?0:Math.min(run.hp[seat],blockItemBattleDamage(game,seat,1,now)));
  run.hp=run.hp.map((hp,seat)=>Math.max(0,hp-damage[seat]));run.updatedAt=now;
  const event:AmbushBurst={id:uid(),round:game.round,owner:who,index,damage,hpBefore,hpAfter:[...run.hp],at:now+AMBUSH_IMPACT_MS};state.lastAmbush=event;state.ambushEvents=[...(state.ambushEvents||[]),event];
  game.turnReadyAt=Math.max(game.turnReadyAt||0,now+AMBUSH_PRESENTATION_MS);game.log=[`${game.players[who].name} · 투시 패 회수 기습 · ${game.players.map((player,seat)=>seat===who?null:`${player.name} HP −${damage[seat]}`).filter(Boolean).join(' · ')}`,...game.log].slice(0,40);return event;

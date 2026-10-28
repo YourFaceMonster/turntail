@@ -1,5 +1,5 @@
 import type {Game,Tile} from './game.ts';
-import {COIN_DISCOVERY_MS,COIN_PRESENTATION_MS} from './pickup-presentation.ts';
+import {COIN_DISCOVERY_MS,COIN_TURN_READY_MS} from './pickup-presentation.ts';
 
 export type FloorCoinPickup={id:string,round:number,who:number,index:number,layer:1|2,amount:number,kind:'random'|'last'|'overlap',at:number,moneyBefore?:number,moneyAfter?:number};
 export type FloorCoinDiscovery={id:string,round:number,index:number,at:number};
@@ -38,7 +38,7 @@ export function claimFloorCoin(game:Game,who:number,index:number,tile:Tile,layer
  const amount=(last?5:0)+(random?floorCoinReward(game.rpgRun?.combat?.professions[who]):0);
  if(random)state.randomTileId=null;if(last)state.lastAwarded=true;
  const moneyBefore=wallet.points[who];wallet.points[who]+=amount;state.earned[who]=(state.earned[who]||0)+amount;
- const event:FloorCoinPickup={id:`${game.lastEvent?.id||game.code+':'+game.round+':'+index}:coin`,round:game.round,who,index,layer,amount,kind:last?random?'overlap':'last':'random',at:now,moneyBefore,moneyAfter:wallet.points[who]};state.events.push(event);game.rpgRun!.updatedAt=now;game.turnReadyAt=Math.max(game.turnReadyAt||0,now+COIN_PRESENTATION_MS);
+ const event:FloorCoinPickup={id:`${game.lastEvent?.id||game.code+':'+game.round+':'+index}:coin`,round:game.round,who,index,layer,amount,kind:last?random?'overlap':'last':'random',at:now,moneyBefore,moneyAfter:wallet.points[who]};state.events.push(event);game.rpgRun!.updatedAt=now;game.turnReadyAt=Math.max(game.turnReadyAt||0,now+COIN_TURN_READY_MS);
  game.log=[`${game.players[who].name} · ${last?'마지막 바닥 주화':'바닥 주화'} +${amount}P`,...game.log].slice(0,40);return event;
 }
 /** A small draw preference uses public rewards and own-hand matches only. */

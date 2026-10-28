@@ -13,7 +13,7 @@ import type {RpgProfessionId} from '../lib/rpg-professions.ts';
 const t=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 const pair=[t(7),t(7,3)],triple=[...pair,t(7,1)],full=[...triple,t(8),t(8,1)],four=[...triple,t(7,2),t(8)],flush=[t(3,3),t(5,3),t(7,3),t(9,3),t(11,3)];
 function fresh(profession:RpgProfessionId='rogue'){
- const g=createHpItemGame('테스터','',Date.now(),2,'toto',profession);buyHpItemLoadout(g,[]);g.turn=0;g.turnReadyAt=0;g.roundActions=3;g.completedBattles=1;g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};return g;
+ const g=createHpItemGame('테스터','',Date.now(),2,'toto',profession);buyHpItemLoadout(g,[]);g.rpgRun!.combat!.actives!.gauge=g.players.map(()=>4);g.turn=0;g.turnReadyAt=0;g.roundActions=3;g.completedBattles=1;g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};return g;
 }
 function fight(g:Game,tiles:Tile[],count=tiles.length,actor=0){
  g.trick=tiles;g.lastBy=actor;g.tablePlay={id:crypto.randomUUID(),who:actor,tiles};g.hpItemMatch!.battleTiles=g.players.map(()=>0);recordHpBattlePlay(g,actor,count);return resolveHpItemBattle(g)!;

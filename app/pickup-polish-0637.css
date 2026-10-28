@@ -1,6 +1,10 @@
 /* Reserve a fixed hand slot; only the cards inside it respond to hand count. */
 .turntale.table-v211.active-table[data-impact],body:has(.turntale.table-v211.active-table[data-impact]) .live-table-scene{animation:none!important;translate:0 0!important;rotate:0deg!important}
 .turntale.table-v211.active-table .play-column>.felt{animation:none!important;translate:0 0!important;rotate:0deg!important}
+/* The old .felt>* rule must never turn overlay alerts into implicit grid rows. */
+.turntale.table-v211.active-table .play-column>.felt>:is(.opponent-hand-alert,.rally-pressure){position:absolute!important;pointer-events:none}
+.turntale.table-v211.active-table .play-column>.trick-area{animation:none!important;translate:0 0!important;rotate:0deg!important;transform:none!important}
+.turntale.table-v211.active-table .floor-stage :is(.wall,.stack,.upper-tile,.lower-tile){animation:none!important;transition:none!important;translate:0 0!important;rotate:0deg!important;transform:none!important}
 .turntale.table-v211.active-table.rpg-mode.portrait-table .play-column{grid-template-rows:minmax(0,1fr) calc(var(--played-card-height) + var(--trick-chrome,32px) + 2px) calc(var(--hand-space-h)*2 + var(--hand-chrome,122px))!important}
 .turntale.table-v211.active-table.rpg-mode.portrait-table .hand-panel .rpg-equipped-relics{height:clamp(112px,calc(var(--stage-height) - var(--seat-height) - var(--hand-space-h)*2 - var(--hand-chrome) - 108px),258px)}
 .turntale.table-v211.active-table .hand-tools .rogue-trap-control{display:inline-grid;place-items:center;line-height:0;gap:0;padding:2px!important}

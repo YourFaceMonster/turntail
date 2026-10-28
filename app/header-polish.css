@@ -2,7 +2,7 @@
 .turntale.table-v211.in-game.compact-game-hud>.topbar{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;column-gap:8px;position:relative}
 .compact-game-hud>.topbar>.brand{justify-self:start;min-width:0}
 .compact-game-hud>.topbar>.top-actions{justify-self:end;justify-content:flex-end;white-space:nowrap;min-width:0}
-.ingame-round{justify-self:center;white-space:nowrap;font-size:14px;font-weight:800;color:#fff1cb;text-shadow:0 1px 2px #17170e,0 0 3px #17170e;line-height:1.2;letter-spacing:0}
+.ingame-round{justify-self:center;white-space:nowrap;font-size:14px;font-weight:800;color:#fff1cb;text-shadow:0 1px 2px #17170e,0 0 3px #17170e;line-height:1.2;letter-spacing:0;padding:4px 8px;border:1px solid #f1d99b55;border-radius:7px;background:#1d160dc9;box-shadow:0 2px 5px #0006,inset 0 1px 0 #fff1c312}
 .turntale.table-v211.compact-game-hud>.room-bar.is-room-tools-only{position:static;transform:none;width:100%;max-width:none;justify-content:flex-end;overflow:visible}
 /* The wallet belongs to the player's identity, ahead of the existing hand tools. */
 .turntale.table-v211.active-table.hp-item-mode .own-status-card>.own-wallet{display:inline-flex;align-items:center;gap:4px;flex:none;margin-left:8px;white-space:nowrap;padding:4px 6px;border:1px solid #edc56c80;border-radius:6px;background:#36260eb8;color:#ffd46b;text-shadow:0 1px 2px #211500;line-height:1}

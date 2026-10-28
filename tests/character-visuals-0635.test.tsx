@@ -17,7 +17,7 @@ for(const profession of RPG_PROFESSIONS){
   const effects=[...html.matchAll(/<b class="profession-effect-value">([^<]+)<\/b>/g)].map(match=>match[1]);
   assert.ok(effects.length>=2,'both passive and active effects remain readable');
   assert.ok(effects.every(effect=>!effect.includes('판당')&&!/싱글|페어|트리플|스트레이트|풀하우스|포카드/.test(effect)),'conditions and usage limits stay outside bold effect phrases');
-  assert.ok(text(html).includes('판당 1회'),'once-per-round restriction remains visible');
+  assert.ok(text(html).includes('(1회)'),'compact once-per-round restriction remains visible');
  }
  const legacy=renderToStaticMarkup(<RpgProfessionPicker selected={profession.id} choose={()=>{}}/>);
  if(profession.id==='rogue'){assert.ok(text(picker).includes('바닥 1장 투시'));assert.ok(text(legacy).includes('상대 패 1장 확인'));assert.ok(!text(legacy).includes('함정'));}

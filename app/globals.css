@@ -1974,7 +1974,7 @@ button.exchange-stage-tile:not(:disabled){pointer-events:auto;cursor:pointer}but
 @keyframes rpg-grunt-text{0%,8%{opacity:0}18%,55%{opacity:1}100%{opacity:0}}
 @media(max-height:360px){.turntale.table-v211.active-table.rpg-mode.landscape-table .opponent .rpg-seat-count{width:24px;height:24px;min-width:24px}.turntale.table-v211.active-table.rpg-mode.landscape-table .opponent .rpg-seat-count b{font-size:17px}}
 @media(prefers-reduced-motion:reduce){.rpg-item-notice{animation:none}.rpg-hit-flash{animation:none;opacity:.55}.rpg-hit-overlay .rpg-hit-number{animation:none;transform:translate(-50%,-50%)}.rpg-hurt-line{animation:none}}
-.turntale.table-v211.active-table.rpg-mode.portrait-table .play-column{grid-template-rows:minmax(0,1fr) calc(var(--played-card-height) + var(--trick-chrome,32px) + 2px) calc(var(--hand-tile-h)*2 + var(--hand-chrome,122px))!important}
+.turntale.table-v211.active-table.rpg-mode.portrait-table .play-column{grid-template-rows:minmax(0,1fr) calc(var(--played-card-height) + var(--trick-chrome,32px) + 2px) calc(var(--hand-space-h)*2 + var(--hand-chrome,122px))!important}
 .turntale.table-v211.active-table.rpg-mode.landscape-table .play-column{grid-template-rows:minmax(0,1fr) calc(var(--played-card-height) + var(--trick-chrome,8px) + 2px)!important}
 .turntale.table-v211.active-table.rpg-mode.landscape-table .play-column>.hand-panel{grid-template-areas:"heading" "legal" "rack" "actions"!important;grid-template-rows:44px 22px minmax(0,1fr) 42px!important}
 .turntale.table-v211.active-table.rpg-mode.landscape-table[data-landscape-density="compact"] .play-column>.hand-panel{grid-template-rows:30px 20px minmax(0,1fr) 30px!important}
