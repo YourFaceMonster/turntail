@@ -8,7 +8,7 @@ export type TrapHpPresentation={id:string,target:number,before:number};
 export function RogueTrapControl({game,enabled,targeting,choose}:{game:View,enabled:boolean,targeting:boolean,choose:()=>void}){
  const state=game.rpgRun?.combat;if(!state?.itemBattle||state.professions[game.me]!=='rogue')return null;
  const availability=trapAvailability(game,game.me,enabled),hasFloor=game.stacks.some(stack=>stack.trapAvailable);
- return <button type="button" className={`text-btn rogue-trap-control ${targeting?'is-targeting':''}`} disabled={!availability.usable||!hasFloor} title={hasFloor?availability.reason:'남은 바닥패 없음'} aria-label={state.itemBattle.trapUsed[game.me]?'함정 사용함':'함정 설치'} aria-pressed={targeting} onClick={choose}><img src="/item-battle-v1/trap-v1.webp" alt=""/><span>{state.itemBattle.trapUsed[game.me]?'사용함':'함정'}</span></button>;
+ return <button type="button" className={`text-btn rogue-trap-control ${targeting?'is-targeting':''}`} disabled={!availability.usable||!hasFloor} title={hasFloor?availability.reason:'남은 바닥패 없음'} aria-label={targeting?'함정 설치 취소':state.itemBattle.trapUsed[game.me]?'함정 사용함':'함정 설치'} aria-pressed={targeting} onClick={choose}><img src="/item-battle-v1/trap-v1.webp" alt=""/></button>;
 }
 export function FloorTrapMarker({game,index}:{game:View,index:number}){
  const state=game.rpgRun?.combat?.itemBattle,own=state?.traps.some(trap=>trap.index===index),intel=state?.trapIntel[game.me]?.find(value=>value.index===index);

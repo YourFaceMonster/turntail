@@ -9,6 +9,7 @@ import {rpgRanks,RPG_RELICS} from './rpg.ts';
 import {refundLegacyEmbers} from './rpg-items.ts';
 import {ITEM_BATTLE_RELIC_POOL} from './item-battle-relics.ts';
 import {applyPioneerDeal,newItemBattleState} from './item-battle-rules.ts';
+import {prepareFloorCoins} from './floor-coins.ts';
 
 export const HP_ITEM_STORAGE_KEY='turntale-hp-items-v1';
 export const HP_ITEM_SHOP_STORAGE_KEY='turntale-hp-items-2-v1';
@@ -22,7 +23,7 @@ export function createHpItemGame(name:string,avatar='',now=Date.now(),variant:Hp
  game.hpItemMatch={pendingItemDelta:[0,0,0],pendingItemPoints:[0,0,0],points:[HP_ITEM_START_POINTS,HP_ITEM_START_POINTS,HP_ITEM_START_POINTS],shopRound:0,roundStartHp:[...game.rpgRun!.hp],roundItems:[],roundEarned:[0,0,0]};
  if(variant===2){
   game.hpItemRules=4;pickHpOpponents().forEach((id,index)=>{const person=hpCharacter(id);game.players[index+1].name=person.name;game.players[index+1].avatar=person.avatar;});game.hpItemMatch.battleTiles=game.players.map(()=>0);game.hpItemMatch.battles=[];game.hpItemMatch.roundMoneyBefore=[...game.hpItemMatch.points];
-  // This mode earns money only from the card score, so do not offer RPG point bonuses.
+  // Keep RPG point-bonus relics out of this wallet; floor coins have their own ledger.
   const excluded=['gamblers-gloves','stopped-hourglass','mor-quill','twin-needle-compass','split-mirror'],run=game.rpgRun!;
   run.consumables=[];
   run.enemyConsumables={1:[],2:[]};
@@ -36,7 +37,7 @@ export function createHpItemGame(name:string,avatar='',now=Date.now(),variant:Hp
   const run=game.rpgRun!,combat=newProfessionCombat(profession,game.players.map(player=>player.avatar||''),game.round);combat.itemBattle=newItemBattleState(game.players.length);run.combat=combat;
   const pool=ITEM_BATTLE_RELIC_POOL.map(relic=>relic.id as string),relics:string[]=[];
   while(relics.length<3&&pool.length){const random=new Uint32Array(1);crypto.getRandomValues(random);relics.push(pool.splice(random[0]%pool.length,1)[0]);}
-  run.relics=[...relics];run.equipped=[...relics];run.discovered=[...relics];applyPioneerDeal(game,now);
+  run.relics=[...relics];run.equipped=[...relics];run.discovered=[...relics];applyPioneerDeal(game,now);prepareFloorCoins(game);
  }
  return game;
 }

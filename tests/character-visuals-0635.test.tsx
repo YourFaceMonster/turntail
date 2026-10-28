@@ -33,11 +33,12 @@ for(let stage=0;stage<=10;stage++)for(let s=0;s<4;s++)for(let n=1;n<=15;n++){
  const tile={id:(n-1)*4+s,n,s},face=<TileFace tile={tile}/>;
  const html=renderToStaticMarkup(stage?<StageVisuals stage={stage}>{face}</StageVisuals>:face);
  assert.ok(html.includes(`data-number="${n}"`)&&html.includes(`data-suit="${s}"`),'all 60 identities survive every material');
- assert.match(html,/data-number-medallion="true" cx="50" cy="54" r="38"/,'numbers and suit plaque share one center');
+ assert.match(html,/<circle cx="45" cy="46" r="(?:28|30)" fill="#fffdf5"/,'original suit medallion stays at its approved position and size');
  const numbers=[...html.matchAll(/<text\b([^>]*)>(\d+)<\/text>/g)];
  assert.equal(numbers.length,stage?2:1,'regional number halo and outline remain paired');
- for(const [,attributes,value] of numbers){assert.equal(Number(value),n);assert.match(attributes,/x="50"/);assert.ok(n<10||attributes.includes('textLength="48"'),'two-digit numbers fit inside the medallion');}
- if(s===1||s===3)assert.ok(html.includes(`data-number-container="${s===1?'star':'sun'}"`),'star and sun explicitly surround their central number');
+ for(const [,attributes,value] of numbers){assert.equal(Number(value),n);assert.match(attributes,/x="45"/);assert.ok(n<10||attributes.includes('textLength="32"'),'two-digit numbers fit inside the original medallion');}
+ if(s===3)assert.ok(html.includes('transform="translate(45 46)"'),'sun retains its original center and rays');
+ assert.ok(!html.includes('r="38"')&&!html.includes('r="35.5"'),'no enlarged plaque covers the original suit artwork');
  if(n===2&&!stage)assert.ok(html.includes(`data-motif="${s}:2"`),'approved suit-specific two emblems remain');
 }
 console.log('PASS: compact item/legacy descriptions, isolated effect emphasis, mirrored opponent labels, and all 60 centered tile faces across eleven materials.');

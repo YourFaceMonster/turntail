@@ -1,0 +1,36 @@
+/* One centered round label replaces the duplicate solo-game information row. */
+.turntale.table-v211.in-game.compact-game-hud>.topbar{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;column-gap:8px;position:relative}
+.compact-game-hud>.topbar>.brand{justify-self:start;min-width:0}
+.compact-game-hud>.topbar>.top-actions{justify-self:end;justify-content:flex-end;white-space:nowrap;min-width:0}
+.ingame-round{justify-self:center;white-space:nowrap;font-size:14px;font-weight:800;color:#fff1cb;text-shadow:0 1px 2px #17170e,0 0 3px #17170e;line-height:1.2;letter-spacing:0}
+.turntale.table-v211.compact-game-hud>.room-bar.is-room-tools-only{position:static;transform:none;width:100%;max-width:none;justify-content:flex-end;overflow:visible}
+/* The wallet belongs to the player's identity, ahead of the existing hand tools. */
+.turntale.table-v211.active-table.hp-item-mode .own-status-card>.own-wallet{display:inline-flex;align-items:center;gap:4px;flex:none;margin-left:8px;white-space:nowrap;padding:4px 6px;border:1px solid #edc56c80;border-radius:6px;background:#36260eb8;color:#ffd46b;text-shadow:0 1px 2px #211500;line-height:1}
+.own-wallet>svg{width:17px;height:17px;flex:none}.own-wallet>b{color:#ffd46b!important;font-size:14px!important;font-weight:850;font-variant-numeric:tabular-nums}
+.turntale.table-v211.active-table.hp-item-mode.portrait-table .hand-heading>.own-status-card{padding-right:160px!important}
+/* Only the left classic opponent moves its score beneath the portrait. */
+.turntale.table-v211.active-table.classic-mode .classic-opponent-portrait{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;flex:none;min-width:32px;align-self:center;line-height:1}
+.turntale.table-v211.active-table.classic-mode .classic-opponent-portrait>.portrait{width:26px!important;height:26px!important;min-width:26px!important;flex:none!important;font-size:18px!important;margin:0!important}
+.classic-portrait-score{display:block!important;color:#ffe4ac!important;font-size:11px!important;font-weight:800;line-height:1!important;white-space:nowrap;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px #10170f}
+@media(max-width:600px){
+ .turntale.table-v211.in-game.compact-game-hud>.topbar{column-gap:3px}
+ .compact-game-hud .ingame-round{font-size:12px}
+ .turntale.table-v211.in-game.compact-game-hud .top-actions{gap:3px!important}
+ .turntale.table-v211.in-game.compact-game-hud .top-actions .text-btn{font-size:9px!important;min-height:24px;padding:2px 0!important}
+ .turntale.table-v211.in-game.compact-game-hud .top-actions :is(.icon-btn,.display-trigger){width:24px!important;min-width:24px!important;height:24px!important;min-height:24px!important}
+ .turntale.table-v211.in-game.compact-game-hud .top-actions .profile-trigger{width:24px!important;height:24px!important}.compact-game-hud .top-actions .profile-trigger .portrait{width:22px!important;height:22px!important}
+ .turntale.table-v211.active-table.hp-item-mode .own-status-card>.own-wallet{gap:3px;margin-left:5px;padding:3px 4px}.own-wallet>svg{width:14px;height:14px}.own-wallet>b{font-size:12px!important}
+}
+@media(max-width:360px){.turntale.table-v211.in-game.compact-game-hud .top-actions .profile-trigger{display:none}.compact-game-hud .ingame-round{font-size:11px}}
+@media(max-width:380px){
+ .turntale.table-v211.active-table.hp-item-mode.portrait-table .hand-heading>.own-status-card{padding-right:118px!important;gap:4px}
+ .turntale.table-v211.active-table.hp-item-mode.portrait-table .hand-heading>.own-status-card>.portrait{width:28px!important;height:28px!important;min-width:28px!important;font-size:18px!important}
+ .turntale.table-v211.active-table.hp-item-mode.portrait-table .own-status-card .own-status-info strong{font-size:11px!important}.turntale.table-v211.active-table.hp-item-mode.portrait-table .own-status-card .own-status-info small{font-size:12px!important}
+ .turntale.table-v211.active-table.hp-item-mode .own-status-card>.own-wallet{margin-left:2px;gap:2px;padding:3px}.turntale.hp-item-mode .own-wallet>svg{width:12px;height:12px}.turntale.hp-item-mode .own-wallet>b{font-size:11px!important}
+ .turntale.table-v211.active-table.hp-item-mode .hand-heading>.hand-tools{gap:3px!important}.turntale.table-v211.active-table.hp-item-mode .hand-tools button{font-size:8px!important}
+ .turntale.hp-item-mode .hand-tools .rogue-trap-control>span{display:none}.turntale.hp-item-mode .hand-tools .rogue-trap-control{padding:2px!important;min-height:28px}.turntale.hp-item-mode .hand-tools .rogue-trap-control>img{width:22px;height:22px}
+}
+@media(max-height:450px) and (min-width:601px){
+ .turntale.table-v211.active-table.classic-mode .classic-opponent-portrait>.portrait{width:19px!important;height:19px!important;min-width:19px!important;font-size:13px!important}.classic-portrait-score{font-size:9px!important}
+ .turntale.table-v211.active-table.hp-item-mode .own-status-card>.own-wallet{margin-left:8px;padding:1px 4px}.own-wallet>svg{width:12px;height:12px}.own-wallet>b{font-size:11px!important}
+}

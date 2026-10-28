@@ -8,6 +8,7 @@ import {sorted,uid,legalOptions,rank,view} from './game.ts';
 import type {RpgRun} from './rpg.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
 import {itemBattleState,recordTrapIntel} from './item-battle-rules.ts';
+import {choosePublicCoinDraw} from './floor-coins.ts';
 
 export const RPG_ITEMS_PER_ROUND=3;
 export type RpgExchangeItem='swapped-fate'|'fates-scales';
@@ -157,7 +158,8 @@ export function scoutRpgBotDraw(g:Game,who:number,index:number){
  const state=g.rpgRun&&stateFor(g.rpgRun,who,g.round),peek=state?.peek;
  const position=view(g,g.players[who].token),extra=position.rpgRun?.combat?.itemBattle,knownTrap=(at:number)=>!!extra?.trapIntel[who]?.some(intel=>intel.index===at&&intel.trapped);
  const preferred=peek?.round===g.round&&g.stacks[peek.index]?.[1]?.id===peek.tile.id&&position.stacks[peek.index]?.available?peek.index:index;
- return knownTrap(preferred)?position.stacks.findIndex((stack,at)=>stack.available&&!knownTrap(at))>=0?position.stacks.findIndex((stack,at)=>stack.available&&!knownTrap(at)):preferred:preferred;
+ const safe=knownTrap(preferred)?position.stacks.findIndex((stack,at)=>stack.available&&!knownTrap(at)):preferred;
+ return choosePublicCoinDraw(position,safe>=0?safe:preferred,knownTrap);
 }
 export type RpgBotItemChoice={id:RpgTacticalItem,target?:number,ids?:number[]};
 /** Decisions accept only the same redacted view as an ordinary player. */

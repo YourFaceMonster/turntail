@@ -43,3 +43,13 @@ export function deleteSaveSlot(storage:Pick<Storage,'getItem'|'setItem'|'removeI
  try{for(const [target,next] of after)next===null?storage.removeItem(target):storage.setItem(target,next);}
  catch{for(const [target,previous] of before){try{previous===null?storage.removeItem(target):storage.setItem(target,previous);}catch{}}throw Error('저장을 삭제하지 못했어요. 기존 진행을 다시 확인해 주세요.');}
 }
+
+/** Validate every checked slot first; commit the entire selection or restore it all. */
+export function deleteSaveSlots(storage:Pick<Storage,'getItem'|'setItem'|'removeItem'>,slots:SaveSlot[]){
+ if(!slots.length)throw Error('삭제할 저장을 선택해 주세요.');
+ const changes=new Map<string,string|null>(),staging={getItem:(key:string)=>changes.has(key)?changes.get(key)!:storage.getItem(key),setItem:(key:string,value:string)=>{changes.set(key,value);},removeItem:(key:string)=>{changes.set(key,null);}};
+ for(const slot of new Map(slots.map(slot=>[slot.mode,slot])).values())deleteSaveSlot(staging,slot);
+ const before=new Map([...changes.keys()].map(key=>[key,storage.getItem(key)]));
+ try{for(const [key,value] of changes)value===null?storage.removeItem(key):storage.setItem(key,value);}
+ catch{for(const [key,value] of before){try{value===null?storage.removeItem(key):storage.setItem(key,value);}catch{}}throw Error('선택한 저장을 삭제하지 못했어요. 기존 진행을 다시 확인해 주세요.');}
+}

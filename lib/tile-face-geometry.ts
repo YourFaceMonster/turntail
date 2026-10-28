@@ -1,3 +1,3 @@
-/** One numeric plaque for hand, floor, trick, flight and all regional materials. */
-export const TILE_NUMBER_MEDALLION={x:50,y:54,radius:38,innerRadius:35.5};
-export function tileNumberGeometry(n:number){return {x:TILE_NUMBER_MEDALLION.x,y:n>9?75:79,textAnchor:'middle' as const,fontFamily:'Trebuchet MS,Arial,sans-serif',fontWeight:900,fontSize:n>9?58:70,letterSpacing:n>9?-1:0,...(n>9?{textLength:48,lengthAdjust:'spacingAndGlyphs' as const}:{})};}
+/** Number bounds follow the original engraving; the suit artwork never resizes. */
+export const TILE_NUMBER_MEDALLION={x:45,y:46,radius:28,innerRadius:26};
+export function tileNumberGeometry(n:number){return {x:TILE_NUMBER_MEDALLION.x,y:n>9?62:64,textAnchor:'middle' as const,fontFamily:'Trebuchet MS,Arial,sans-serif',fontWeight:900,fontSize:n>9?44:50,letterSpacing:0,...(n>9?{textLength:32,lengthAdjust:'spacingAndGlyphs' as const}:{})};}

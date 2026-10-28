@@ -1,4 +1,4 @@
-import {accessible,assertTurnReady,lowestHandLead,sorted,uid,view,type Game,type Tile} from './game.ts';
+import {assertTurnReady,lowestHandLead,sorted,uid,view,type Game,type Tile} from './game.ts';
 import {hpItemShopPending} from './hp-item-shop.ts';
 import {finishHpItemMatch} from './hp-item-mode.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
@@ -33,11 +33,11 @@ export function trapAvailability(game:Pick<Game,'phase'|'turn'|'rpgRun'|'round'|
  if(state.trapUsed[who])return {usable:false,reason:'이번 판 함정 사용 완료'};
  if(!enabled||game.turn!==who)return {usable:false,reason:'내 차례에 설치 가능'};
  if(now<(game.turnReadyAt||0))return {usable:false,reason:'패 확인 후 설치 가능'};
- return {usable:true,reason:'매판 1회 · 가져갈 수 있는 바닥패에 설치 · 피해 4'};
+ return {usable:true,reason:'매판 1회 · 바닥패 어디든 설치 · 피해 4'};
 }
 export function placeFloorTrap(game:Game,who:number,index:number,now=Date.now()){
  const availability=trapAvailability(game,who,true,now);if(!availability.usable)throw Error(availability.reason);
- if(!game.practice||!Number.isInteger(index)||!accessible(game,index))throw Error('가져갈 수 있는 바닥패에 설치해 주세요.');
+ if(!game.practice||!Number.isInteger(index)||!game.stacks[index]?.some(Boolean))throw Error('남아 있는 바닥패를 선택해 주세요.');
  assertTurnReady(game,now);const state=itemBattleState(game)!,tile=game.stacks[index][1]||game.stacks[index][0]!;
  state.traps.push({id:uid(),owner:who,index,tileId:tile.id,round:game.round});state.trapUsed[who]=true;game.rpgRun!.updatedAt=now;
  // No public event/log, turn, item inventory or action counter changes on installation.
@@ -82,6 +82,6 @@ export function scoutProfessionFloor(game:Game,who:number,count:number){
 /** Bot decisions use only the bot's filtered view, including its own trap/intel. */
 export function tryBotFloorTrap(game:Game,now=Date.now()){
  const who=game.turn;if(!game.players[who]?.bot||!trapAvailability(game,who,true,now).usable)return false;
- const position=view(game,game.players[who].token),own=position.rpgRun?.combat?.itemBattle?.traps||[],choices=position.stacks.flatMap((stack,index)=>accessible(game,index)&&!own.some(trap=>trap.index===index)?[{index,score:stack.lower?stack.lower.n:0}]:[]);
+ const position=view(game,game.players[who].token),own=position.rpgRun?.combat?.itemBattle?.traps||[],choices=position.stacks.flatMap((stack,index)=>(stack.upper||stack.lowerPresent)&&!own.some(trap=>trap.index===index)?[{index,score:(stack.coinAmount||0)*5+(stack.lower?stack.lower.n:0)}]:[]);
  choices.sort((a,b)=>b.score-a.score||a.index-b.index);if(!choices.length)return false;placeFloorTrap(game,who,choices[0].index,now);return true;
 }
