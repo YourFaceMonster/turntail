@@ -4,6 +4,10 @@
 .floor .upper-tile,.floor .lower-tile{overflow:hidden;border-radius:5px}
 .floor-trap-inset{position:absolute;z-index:4;bottom:2px;left:2px;width:clamp(10px,1.1vw,15px);height:clamp(10px,1.1vw,15px);display:grid;place-items:center;border-radius:3px;background:#172119d9;box-shadow:0 0 0 1px #e8cb8877;pointer-events:none;font-size:10px;color:#4dff88}
 .floor-trap-inset img{width:100%;height:100%;object-fit:contain}.floor-trap-inset.is-detected{background:#7b291ae8;box-shadow:0 0 0 1px #ff8266}.floor-trap-inset.is-clear{box-shadow:0 0 0 1px #4dff8877}
+.floor-trap-inset:is(.is-own,.is-detected){width:14px;height:14px;background:#651f20;box-shadow:0 0 0 1px #ef645c,inset 0 0 3px #ff6652;animation:trap-marker-breathe 2.2s ease-in-out infinite}
+.floor-trap-inset:is(.is-own,.is-detected)>img{filter:drop-shadow(0 0 1px #ff6652)}
+@keyframes trap-marker-breathe{0%,100%{opacity:.65;background:#481b1c;box-shadow:0 0 0 1px #b74641,inset 0 0 1px #ff665244}50%{opacity:1;background:#ef3b36;box-shadow:0 0 0 1px #ffb09b,inset 0 0 5px #ff8e7a}}
+@media(prefers-reduced-motion:reduce){.floor-trap-inset:is(.is-own,.is-detected){animation:none;opacity:1}}
 .trap-recovery-notice{position:fixed;bottom:26%;left:50%;transform:translateX(-50%);z-index:220;padding:10px 15px;border:1px solid #9ab98a;border-radius:9px;background:#10291ef2;color:#b7ffce;max-width:90vw;text-align:center;font-size:12px;pointer-events:none}
 /* Healing uses one bright RPG green and a dark shadow for contrast. */
 body .item-fx-scene.fx-heal .item-emblem-owner,body .item-fx-scene.fx-heal .item-heal-caption,body .item-fx-scene.fx-heal .item-heal-caption b,body .rpg-hit-overlay.is-heal .rpg-hit-number{color:#4dff88!important;-webkit-text-stroke:0!important;text-shadow:0 2px 3px #07190d,0 0 6px #07190dbb!important}

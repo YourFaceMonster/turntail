@@ -25,7 +25,7 @@ for(const item of [false,true]){
  const sword=fresh('swordsman',item),first=fight(sword,pair,4);assert.equal(first.damage,4);assert.deepEqual(first.damageTaken,[0,5,5]);assert.equal(first.professions![0].kind,'passive');
  const before=sword.rpgRun!.hp[1];fight(sword,pair);assert.equal(sword.rpgRun!.hp[1],before-3,'passive repeats');
  const active=fight(sword,straight);assert.equal(active.damageTaken![1],8);assert.equal(sword.rpgRun!.combat!.activeUsed[0],true);const next=fight(sword,straight);assert.equal(next.damageTaken![1],5);assert.equal(next.professions!.length,0);
- const mage=fresh('mage',item);assert.equal(fight(mage,triple).damageTaken![1],5);assert.equal(fight(mage,four).damageTaken![1],11);assert.equal(fight(mage,four).damageTaken![1],5);
+ const mage=fresh('mage',item);assert.equal(fight(mage,triple).damageTaken![1],5);assert.equal(fight(mage,four).damageTaken![1],11);assert.equal(fight(mage,four).damageTaken![1],11);
  const cleric=fresh('cleric',item);cleric.rpgRun!.hp[0]=95;fight(cleric,pair);assert.equal(cleric.rpgRun!.hp[0],96);fight(cleric,pair);assert.equal(cleric.rpgRun!.hp[0],97);cleric.rpgRun!.hp[0]=98;assert.equal(fight(cleric,full).professions![0].heal,2);assert.equal(cleric.rpgRun!.hp[0],100);cleric.rpgRun!.hp[0]=95;fight(cleric,full);assert.equal(cleric.rpgRun!.hp[0],95,'active does not repeat before the next card round');
  if(item){finishHpItemRoundReport(cleric);assert.equal(cleric.hpItemMatch!.report!.cardDamage![0],0);assert.equal(cleric.hpItemMatch!.report!.professionHealing![0],4);}
  const lost=fresh('mage',item);fight(lost,triple,3,1);assert.equal(lost.rpgRun!.combat!.effects.some(effect=>effect.actor===0),false,'a matching submission by a loser never activates');

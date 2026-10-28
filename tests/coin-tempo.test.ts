@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {act,assertTurnReady,advanceRoom} from '../lib/game.ts';
+import {act,assertTurnReady,advanceRoom,DRAW_TRAVEL_MS} from '../lib/game.ts';
 import {createHpItemGame} from '../lib/hp-item-mode.ts';
 import {buyHpItemLoadout} from '../lib/hp-item-shop.ts';
 import {placeFloorTrap} from '../lib/item-battle-rules.ts';
@@ -12,7 +12,7 @@ const room=structuredClone(ordinary);room.practice=false;room.players[room.turn]
 const closing=fresh(true);act(closing,0,'draw',[],0,now);const pickup=closing.floorCoins!.events[0],battle=closing.hpItemMatch!.lastBattle!;
 assert.equal(battle.at,pickup.at+COIN_TURN_READY_MS,'fight timeline starts only after the coin and quiet beat');assert.ok(battle.at+HP_BATTLE_WIN_DELAY_MS>pickup.at+COIN_PRESENTATION_MS+COIN_AFTER_PICKUP_MS);assert.equal(closing.turnReadyAt,battle.at+HP_BATTLE_REVIEW_MS);assert.equal(closing.trick.length,0);assert.equal(closing.phase,'playing');
 // Old coin history must not add another quiet beat to a later, ordinary fight.
-closing.turn=0;closing.turnReadyAt=0;closing.lastBy=1;const tile=closing.players[1].hand.pop()!;closing.trick=[tile];closing.playedTiles!.push(tile);closing.tablePlay={id:'later-trick',who:1,tiles:[tile]};act(closing,0,'draw',[],0,now+20000);assert.equal(closing.hpItemMatch!.lastBattle!.at,now+20000);assert.equal(closing.floorCoins!.events.length,1);
+closing.turn=0;closing.turnReadyAt=0;closing.lastBy=1;const tile=closing.players[1].hand.pop()!;closing.trick=[tile];closing.playedTiles!.push(tile);closing.tablePlay={id:'later-trick',who:1,tiles:[tile]};act(closing,0,'draw',[],0,now+20000);assert.equal(closing.hpItemMatch!.lastBattle!.at,closing.lastEvent!.at!+DRAW_TRAVEL_MS);assert.equal(closing.floorCoins!.events.length,1);
 // A fatal trap on the same coin still allows the complete pickup before final results.
 const fatal=fresh();fatal.rpgRun!.combat!.professions[1]='rogue';fatal.turn=1;placeFloorTrap(fatal,1,0,now);fatal.turn=0;fatal.rpgRun!.hp[0]=3;act(fatal,0,'draw',[],0,now);assert.equal(fatal.phase,'ended');assert.ok(fatal.turnReadyAt!>=fatal.floorCoins!.events[0].at+COIN_TURN_READY_MS);assert.equal(fatal.hpItemMatch!.report!.floorCoinMoney![0],1);
 console.log('PASS: coin credit/banner followed by a quiet beat, AI/action lock, delayed fight winner/damage and final report, no delay from stale coin history, rewards retained on lethal trap.');

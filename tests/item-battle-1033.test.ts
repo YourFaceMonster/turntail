@@ -25,7 +25,7 @@ assert.equal(createHpItemGame('legacy','',Date.now(),2).rpgRun!.combat,undefined
 assert.equal(newRpgRun('old').combat,undefined);
 
 const sword=fresh('swordsman');assert.equal(fight(sword,[t(7)]).damageTaken![1],2);assert.equal(fight(sword,pair).damageTaken![1],3);
-const mage=fresh('mage');assert.equal(fight(mage,four).damageTaken![1],13);assert.equal(fight(mage,four).damageTaken![1],5);assert.equal(fight(mage,triple).damageTaken![1],5);
+const mage=fresh('mage');assert.equal(fight(mage,four).damageTaken![1],13);assert.equal(fight(mage,four).damageTaken![1],13);assert.equal(fight(mage,triple).damageTaken![1],5);
 const priest=fresh('cleric');priest.rpgRun!.hp[0]=80;fight(priest,pair);assert.equal(priest.rpgRun!.hp[0],81);fight(priest,pair);assert.equal(priest.rpgRun!.hp[0],84);fight(priest,pair);assert.equal(priest.rpgRun!.hp[0],85);fight(priest,full);assert.equal(priest.rpgRun!.hp[0],90);
 const stacked=fresh('swordsman');stacked.rpgRun!.hp[0]=90;stacked.rpgRun!.equipped=['wind-sigil','crimson-fang','cloud-blessing'];const win=fight(stacked,pair);assert.deepEqual(win.damageTaken,[0,5,5]);assert.equal(win.hpAfter[0],91);const once=JSON.stringify(stacked);resolveHpItemBattle(stacked);assert.equal(JSON.stringify(stacked),once,'duplicate fight does not activate twice');
 assert.equal(itemBattleRelicWin(['crimson-fang'],'플러시',flush).damage,1,'multiple suns activate only once');assert.equal(itemBattleRelicWin(['sun-sigil'],'플러시',flush).damage,3);assert.equal(itemBattleRelicWin(['sun-sigil'],'스트레이트 플러시',flush).damage,0);

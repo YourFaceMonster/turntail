@@ -11,6 +11,6 @@ export function rpgProfession(id:RpgProfessionId){return RPG_PROFESSIONS.find(pr
 /** Only a resolved fight winner may request these effects; playing a matching combo alone is insufficient. */
 export function rpgProfessionTriggers(id:RpgProfessionId,winningLabel:string,activeUsed:boolean){
  const profession=rpgProfession(id);
- return {passive:profession.passive.label===winningLabel?profession.passive:null,active:!activeUsed&&profession.active.label===winningLabel?profession.active:null};
+ return {passive:profession.passive.label===winningLabel?profession.passive:null,active:(id==='mage'||!activeUsed)&&profession.active.label===winningLabel?profession.active:null};
 }
 export function rpgProfessionHeal(hp:number,healing:number){return Math.max(0,Math.min(100,hp+Math.max(0,healing)));}

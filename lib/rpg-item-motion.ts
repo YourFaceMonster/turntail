@@ -22,11 +22,17 @@ export function dartFacingFrames():Keyframe[]{
 export function itemTurnReadyAt(event:RpgItemEvent,me=0){const timing=itemSceneTiming(event,me);return event.at+timing.duration+timing.gap;}
 const bound=(value:number,min:number,max:number)=>Math.max(min,Math.min(Math.max(min,max),value));
 /** Visual coordinates use public seat rectangles, never hands or prepared defenses. */
-export function itemScenePoints(width:number,height:number,source:ExchangeRect,target:ExchangeRect,board:ExchangeRect,options:{impact?:'center'|'lower-edge'}={}){
+export function itemScenePoints(width:number,height:number,source:ExchangeRect,target:ExchangeRect,board:ExchangeRect,options:{impact?:'center'|'lower-edge'|'floor-edge'}={}){
  const point=(rect:ExchangeRect)=>({x:bound(rect.left+rect.width/2,24,width-24),y:bound(rect.top+rect.height/2,24,height-24)});
  const from=point(source),to=point(target),center={x:width/2,y:bound(height/2-40,100,height-100)};
  if(options.impact==='lower-edge')to.y=bound(target.top+target.height-2,24,height-24);
- return {from,to,center,apex:{x:center.x,y:Math.max(48,Math.min(from.y,to.y,center.y)-70)},blockHit:{x:to.x,y:to.y},recoil:{x:to.x+(from.x<to.x?-100:100),y:Math.max(45,to.y-110)}};
+ let impactAngle=0;
+ if(options.impact==='floor-edge'){
+  const dx=board.left+board.width/2-to.x,dy=board.top+board.height/2-to.y;
+  if(Math.abs(dx)/Math.max(1,target.width)>Math.abs(dy)/Math.max(1,target.height)){to.x=bound(dx<0?target.left-6:target.left+target.width+6,24,width-24);impactAngle=dx<0?90:-90;}
+  else{to.y=bound(dy<0?target.top-6:target.top+target.height+6,24,height-24);impactAngle=dy<0?180:0;}
+ }
+ return {from,to,center,impactAngle,apex:{x:center.x,y:Math.max(48,Math.min(from.y,to.y,center.y)-70)},blockHit:{x:to.x,y:to.y},recoil:{x:to.x+(from.x<to.x?-100:100),y:Math.max(45,to.y-110)}};
 }
 type Point={x:number,y:number};
 const mix=(a:number,b:number,t:number)=>a+(b-a)*t;

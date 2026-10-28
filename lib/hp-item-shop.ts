@@ -72,5 +72,7 @@ export function hpItemDisplayHp(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpI
  if(heldItem&&game.rpgRun?.lastItem?.id===heldItem.id&&heldItem.target===seat)return heldItem.before;
  // Presentation only: the authoritative HP remains immediate for all game decisions.
  if(heldBattle&&(game.hpItemMatch?.lastBattle||game.rpgRun?.combat?.lastBattle)?.id===heldBattle.id)return heldBattle.hpBefore[seat];
+ const finalBattle=game.hpItemMatch?.lastBattle||game.rpgRun?.combat?.lastBattle;
+ if(isBattleItemMode(game)&&game.phase==='ended'&&!reveal&&finalBattle?.roundFinal)return finalBattle.hpAfter[seat];
  return !isBattleItemMode(game)&&game.hpItemMode&&game.phase==='ended'&&!reveal?game.hpItemMatch?.report?.hpBefore[seat]??game.rpgRun?.hp[seat]??0:game.rpgRun?.hp[seat]??0;
 }

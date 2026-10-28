@@ -14,7 +14,7 @@ export function RpgEquippedRelics({run}:{run:RpgRun}){
   if(seen.current.id!==run.id){seen.current={id:run.id,seq:latest};setTriggered([]);setSelected(null);return;}
   const fresh=(run.relicActivations||[]).filter(event=>event.seq>seen.current.seq);
   seen.current.seq=latest;if(!fresh.length)return;
-  setTriggered(fresh);const timer=setTimeout(()=>setTriggered([]),3200);return()=>clearTimeout(timer);
+  const delay=Math.max(0,Math.min(...fresh.map(event=>event.at))-Date.now()),start=setTimeout(()=>setTriggered(fresh),delay),timer=setTimeout(()=>setTriggered([]),delay+3200);return()=>{clearTimeout(start);clearTimeout(timer);};
  },[run.id,latest]);
  useEffect(()=>{if(!selected)return;const outside=(event:PointerEvent)=>{if(!trayRef.current?.contains(event.target as Node))setSelected(null);};const escape=(event:KeyboardEvent)=>{if(event.key==='Escape')setSelected(null);};document.addEventListener('pointerdown',outside);document.addEventListener('keydown',escape);return()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',escape);};},[selected]);
  return <div ref={trayRef} className="rpg-equipped-relics" role="group" aria-label="내 장착 유물">

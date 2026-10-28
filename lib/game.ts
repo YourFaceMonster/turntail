@@ -14,11 +14,12 @@ import {settleStageRun,type StageRun} from './stage-challenge.ts';
 import {RPG_TEST_ROUNDS,settleRpgRound,type RpgRun} from './rpg.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
 import {rpgTacticalView,resetRpgTactics,tryRpgBotItem,scoutRpgBotDraw} from './rpg-items.ts';
+import {itemTurnReadyAt} from './rpg-item-motion.ts';
 import {twinIndex} from './rpg-twins.ts';
 import {applyPioneerDeal,itemBattleState,triggerFloorTrap,triggerScoutedPickup} from './item-battle-rules.ts';
 import {prepareFloorCoins,hasFloorCoins,claimFloorCoin,revealFloorCoin,floorCoinsView,publicFloorCoinAmount,type FloorCoinState} from './floor-coins.ts';
 import {tryBotProfessionActive} from './profession-actives.ts';
-import {COIN_TURN_READY_MS} from './pickup-presentation.ts';
+import {COIN_TURN_READY_MS,TRAP_IMPACT_MS,TRAP_PRESENTATION_MS} from './pickup-presentation.ts';
 export type Tile = {id:number,n:number,s:number};
 export type Player = {id:string,token:string,name:string,hand:Tile[],wins:number,bot?:boolean,points?:number,losses?:number,games?:number,profile?:string,avatar?:string,timeouts?:number,replaced?:boolean};
 export type RoundResult = {id:string,at:number,round:number,players:{id:string,name:string,count:number,place:number,delta:number,total:number,winner:boolean}[],transfers:{from:number,to:number,points:number}[],voided?:boolean,voidReason?:string,challenge?:Challenge|null,stageRun?:StageRun|null};
@@ -167,7 +168,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   g.lastEvent={id:uid(),type:"play",who,tiles,label:combo(tiles)!.label,at:now,rally:g.rally,showNotice,reviewMs};
   g.tablePlay={tiles:tiles.map(t=>({...t})),who,id:g.lastEvent.id};
   note(g,`${p.name} · ${combo(tiles)!.label} ${tiles.length}개 제출`);
-  if(!p.hand.length){resolveHpItemBattle(g,now,true);resolveProfessionRpgBattle(g,now,true);if(g.rpgRun&&g.rpgRun.status!=='playing')return;g.phase="ended";g.turnDeadline=0;g.winner=who;if(!automatic)p.timeouts=0;settle(g);note(g,g.result?.voided?`${p.name} 손패 소진 · AI 대체로 무효 경기입니다.`:`${p.name} 승리! 손패를 모두 냈습니다.`);return;}
+  if(!p.hand.length){resolveHpItemBattle(g,now+reviewMs,true);resolveProfessionRpgBattle(g,now+reviewMs,true);if(g.rpgRun&&g.rpgRun.status!=='playing')return;g.phase="ended";g.turnDeadline=0;g.winner=who;if(!automatic)p.timeouts=0;settle(g);note(g,g.result?.voided?`${p.name} 손패 소진 · AI 대체로 무효 경기입니다.`:`${p.name} 승리! 손패를 모두 냈습니다.`);return;}
  }else if(action==="draw"){
   if(!g.trick.length)throw Error("선을 잡은 차례에는 패를 반드시 내야 해요.");
   if(!Number.isInteger(index)||!accessible(g,index))throw Error("밝게 표시된 외곽 타일만 가져올 수 있어요.");
@@ -176,7 +177,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   g.turnReadyAt=now+DRAW_TRAVEL_MS;g.lastEvent={id:uid(),type:"draw",who,index,tiles:[t],concealed:z===1,at:now};note(g,`${p.name} · ${z===1?"위층 비공개":"아래층 공개"} 패 1개 가져오기`);
   const coin=claimFloorCoin(g,who,index,t,z===1?2:1,now),ambush=triggerScoutedPickup(g,who,index,t,now);
   triggerFloorTrap(g,who,index,t,now,true);
-  const trap=itemBattleState(g)?.lastTrap,pickupBeat=trap&&!trap.safe&&trap.index===index&&trap.at>=now?trap.at+450:ambush?ambush.at+350:now;
+  const trap=itemBattleState(g)?.lastTrap,pickupBeat=trap&&!trap.safe&&trap.index===index&&trap.at>=now?trap.at-TRAP_IMPACT_MS+TRAP_PRESENTATION_MS:ambush?ambush.at+350:now;
   if(coin){coin.at=pickupBeat;g.turnReadyAt=Math.max(g.turnReadyAt||0,pickupBeat+COIN_TURN_READY_MS);}
   revealFloorCoin(g,index,pickupBeat);
   if(g.rpgRun?.hp.some(hp=>hp<=0)){if(g.hpItemMatch)g.hpItemMatch.endReason=g.rpgRun.hp[who]<=0?'trap':'ambush';finishHpItemMatch(g);return;}
@@ -186,7 +187,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
  }else throw Error("지원하지 않는 동작이에요.");
  if(!automatic)p.timeouts=0;
  g.turn=(who+1)%g.players.length;
- if(g.lastBy===g.turn){const coin=g.floorCoins?.events.at(-1),battleAt=action==='draw'&&coin?.id===`${g.lastEvent?.id}:coin`?Math.max(now,coin.at+COIN_TURN_READY_MS):now;
+ if(g.lastBy===g.turn){const battleAt=Math.max(now,g.turnReadyAt||0);
   const battle=resolveHpItemBattle(g,battleAt)||resolveProfessionRpgBattle(g,battleAt);if(g.rpgRun&&g.rpgRun.status!=='playing')return;g.completedBattles=(g.completedBattles||0)+1;g.rally=0;g.trick=[];g.tablePlay=null;g.lastBy=null;if(!battle)g.turnReadyAt=Math.max(now,g.turnReadyAt||0)+LEAD_REVIEW_MS;note(g,`${g.players[g.turn].name}이 선을 잡았습니다.`);}
  scheduleTurn(g,now);
 }
@@ -207,9 +208,11 @@ export function findMove(hand:Tile[],trick:Tile[]):Tile[]|null{
 }
 export function botMove(g:Game,now=Date.now()){
  const p=g.players[g.turn];if(!p||!automated(p)||g.phase!=="playing")return;
+ if(now<(g.turnReadyAt||0))return;
  if(!g.practice&&!p.bot)g.aiAssisted=true;
  if(tryBotProfessionActive(g,now))return;
- tryRpgBotItem(g);
+ const lastItem=g.rpgRun?.lastItem?.id;tryRpgBotItem(g);
+ if(g.rpgRun?.lastItem&&g.rpgRun.lastItem.id!==lastItem){g.turnReadyAt=Math.max(g.turnReadyAt||0,itemTurnReadyAt(g.rpgRun.lastItem));scheduleTurn(g,now);return;}
  if(g.rpgRun?.status==='complete')return;
  let decision=chooseBotAction(rpgTwinBotView(g,g.turn));
  if(g.rpgRun&&decision.type==='draw')decision={type:'draw',index:scoutRpgBotDraw(g,g.turn,decision.index)};

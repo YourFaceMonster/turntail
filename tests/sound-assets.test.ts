@@ -33,6 +33,7 @@ const originalFetch=globalThis.fetch;let fetches=0;
 globalThis.fetch=(async ()=>{fetches++;return {ok:true,arrayBuffer:async ()=>new ArrayBuffer(4)} as Response;}) as typeof fetch;
 try{
  const c=context();
+ playTileSound(c.ctx,'draw');assert.equal(c.sources.length,0,'cold draw/flip is silent, without synth fallback');
  assert.equal(playSoundAsset(c.ctx,'tap'),false,'cold playback uses synth instead of a delayed cue');
  await Promise.all([preloadSoundAssets(c.ctx),preloadSoundAssets(c.ctx)]);
  assert.equal(fetches,9);assert.equal(c.decodes(),9,'concurrent gestures share decoding');
@@ -48,6 +49,7 @@ try{
  const first=c.sources[0];playTileSound(c.ctx,'tap');
  assert.equal(c.sources.length,10,'tile playback uses one recording, no parallel synth');
  assert.equal(c.sources.at(-1)!.buffer,first.buffer,'repeat playback reuses buffer');
+ playTileSound(c.ctx,'draw');assert.equal(c.sources.length,10,'decoded draw recording also stays silent');
  setEffectVolume(c.ctx,25);assert.equal(effectOutput(c.ctx).gain.value,.25);
  setEffectVolume(c.ctx,25,false);assert.equal(effectOutput(c.ctx).gain.value,0);
  c.raw.state='suspended';assert.equal(playSoundAsset(c.ctx,'victory'),false);assert.equal(c.sources.length,10);

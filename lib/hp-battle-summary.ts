@@ -5,7 +5,7 @@ export function hpBattleSummary(event:HpBattleEvent,players:readonly {name:strin
  const rows=order.map((seat,index)=>{
   const damage=Math.max(0,event.hpBefore[seat]-event.hpAfter[seat]),healed=Math.max(0,event.hpAfter[seat]-event.hpBefore[seat]);
   const classExtra=event.professions?.reduce((sum,effect)=>sum+effect.damage,0)||0,extra=classExtra+(event.relicDamage||0)+(event.skills?.filter(skill=>skill.actor===event.actor&&skill.outcome==='attack').reduce((sum,skill)=>sum+(skill.amount||0),0)||0),guard=(event.skills?.filter(skill=>skill.actor===seat&&skill.outcome==='guard').reduce((sum,skill)=>sum+(skill.amount||0),0)||0)+(event.blockedDamage?.[seat]||0);
-  const note=seat===event.actor?(healed?`승리 · 회복 +${healed}`:'승리 · 피해 없음'):event.playedCount?[extra?`추가 피해 +${extra}`:'',guard?`방어 ${guard}`:''].filter(Boolean).join(' · '):damage?`싸움 피해 −${damage}`:'방어 · 피해 없음';
+  const note=seat===event.actor?(healed?`회복 +${healed}`:'피해 없음'):event.playedCount?[extra?`추가 피해 −${extra}`:'',guard?`방어 ${guard}`:''].filter(Boolean).join(' · '):damage?`싸움 피해 −${damage}`:'방어 · 피해 없음';
   return {seat,rank:index+1,before:event.hpBefore[seat],hp:event.hpAfter[seat],damage,healed,note};
  });
  const totalDamage=rows.reduce((sum,row)=>sum+row.damage,0);

@@ -62,6 +62,7 @@ export function rpgItemAvailability(game:ReturnType<typeof view>,id:string,enabl
  const run=game.rpgRun;
  if(!run||!RPG_TACTICAL_ITEMS.includes(id as RpgTacticalItem))return {usable:false,reason:'준비 구간 전용'};
  if(!enabled||run.status!=='playing'||game.phase!=='playing'||game.turn!==game.me)return {usable:false,reason:game.phase==='playing'&&game.turn===game.me?'패와 연출을 확인한 뒤 사용 가능':'내 차례에 사용 가능'};
+ if(Date.now()<(game.turnReadyAt||0))return {usable:false,reason:'패와 연출이 끝난 뒤 사용 가능'};
  if(hpItemShopPending(game))return {usable:false,reason:'상점 준비를 마쳐 주세요 · 구매는 선택이에요'};
  if(!rpgItemsUnlocked(game))return {usable:false,reason:game.hpItemMode?'첫 판의 첫 싸움이 끝난 뒤 사용 가능 · 다음 판부터 첫 선도 사용 가능':'첫 바퀴가 끝나면 사용 가능'};
  const state=stateFor(run,game.me,game.round);
@@ -181,7 +182,8 @@ export function chooseRpgBotItem(position:ReturnType<typeof view>):RpgBotItemCho
 }
 export function tryRpgBotItem(g:Game){
  const run=g.rpgRun,who=g.turn;if(!run||!g.players[who]?.bot||hpItemShopPending(g))return;
- if(!run.enemyConsumables?.[who]){run.enemyConsumables={...run.enemyConsumables,[who]:[...RPG_BASIC_ITEMS]};}
+ if(Date.now()<(g.turnReadyAt||0))return;
+ if(!run.enemyConsumables?.[who]){run.enemyConsumables={...run.enemyConsumables,[who]:g.hpItemMode?[]:[...RPG_BASIC_ITEMS]};}
  const choice=chooseRpgBotItem(view(g,g.players[who].token));if(choice)useRpgTacticalItem(g,choice.id,choice.target??-1,choice.ids||[],who);
 }
 

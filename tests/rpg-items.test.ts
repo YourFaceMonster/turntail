@@ -40,7 +40,7 @@ for(const id of ['emergency-herb','ward-seal','ember-bomb','swapped-fate','scout
  if(id==='swapped-fate'||id==='scout-lens')g.trick=[{id:999,n:2,s:3}];
  const position=view(g,g.players[1].token);assert.equal(position.players[0].hand,undefined);
  const choice=chooseRpgBotItem(position);assert.equal(choice?.id,id,`AI has a meaningful use for ${id}`);
- botMove(g);assert.equal(g.rpgRun!.enemyConsumables![1].length,0,`AI executes ${id} and completes a legal main action`);assert.notEqual(g.turn,1);
+ botMove(g);assert.equal(g.rpgRun!.enemyConsumables![1].length,0,`AI executes ${id} and completes a legal main action`);assert.equal(g.turn,1);g.turnReadyAt=0;botMove(g);assert.notEqual(g.turn,1);
 }
 const quota=fresh();take(quota,1,'emergency-herb');quota.rpgRun!.enemyConsumables![1]=['emergency-herb','emergency-herb','emergency-herb','emergency-herb'];quota.rpgRun!.hp[1]=40;
 for(let use=0;use<3;use++){quota.turn=1;useRpgTacticalItem(quota,'emergency-herb',-1,[],1);quota.roundActions!++;}
@@ -51,7 +51,7 @@ const privateA=fresh();privateA.turn=1;take(privateA,1,'swapped-fate');privateA.
 assert.deepEqual(chooseRpgBotItem(view(privateA,privateA.players[1].token)),chooseRpgBotItem(view(privateB,privateB.players[1].token)),'hidden enemy faces cannot alter the AI item decision');
 const values=new Map<string,string>(),storage={getItem:(key:string)=>values.get(key)??null,setItem:(key:string,value:string)=>{values.set(key,value);}};
 const saved=fresh();useRpgTacticalItem(saved,'ward-seal');saveRpgTestGame(storage,saved);const loaded=readRpgTestGame(storage)!;assert.deepEqual(loaded.rpgRun,JSON.parse(JSON.stringify(saved.rpgRun)),'new inventory and protection survive save/restore');
-const legacy=createRpgGame('이전 저장');delete legacy.rpgRun!.tactics;delete legacy.rpgRun!.enemyConsumables;legacy.turn=1;legacy.trick=[];botMove(legacy);assert.ok(legacy.rpgRun!.enemyConsumables?.[1],'old saves safely initialize an enemy kit without changing human inventory');
+const legacy=createRpgGame('이전 저장');delete legacy.rpgRun!.tactics;delete legacy.rpgRun!.enemyConsumables;legacy.turn=1;legacy.trick=[];legacy.turnReadyAt=0;botMove(legacy);assert.ok(legacy.rpgRun!.enemyConsumables?.[1],'old saves safely initialize an enemy kit without changing human inventory');
 const oldPrepared=fresh();take(oldPrepared,0,'ember-bomb');oldPrepared.rpgRun!.consumables=[];oldPrepared.rpgRun!.tactics={0:{round:oldPrepared.round,used:1,turn:0,ember:{target:1,turn:0}}};oldPrepared.rpgRun!.tacticalUsed=1;saveRpgTestGame(storage,oldPrepared);const recovered=readRpgTestGame(storage)!;assert.deepEqual(recovered.rpgRun!.consumables,['ember-bomb']);assert.equal(recovered.rpgRun!.tactics![0].used,0);assert.equal(recovered.rpgRun!.tactics![0].ember,undefined,'old prepared bombs are refunded without silently damaging anyone on resume');assert.deepEqual(readRpgTestGame(storage)!.rpgRun!.consumables,['ember-bomb'],'reading an old save repeatedly never accumulates refunds');
 const people=[{name:'나'},{name:'로웬'},{name:'루미'}];
 const notice={id:'item-notice',actor:1,target:0,itemId:'ember-bomb' as const,kind:'damage' as const,amount:8,at:1};

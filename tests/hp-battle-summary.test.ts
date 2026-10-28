@@ -7,7 +7,7 @@ const summary=hpBattleSummary(event,players);
 assert.deepEqual(summary.rows.map(row=>row.seat),[2,1,0],'all characters appear by current HP, including a winner with less HP');
 assert.deepEqual(summary.rows.map(row=>row.rank),[1,2,3]);
 assert.deepEqual(summary.rows.map(row=>row.damage),[1,1,0]);
-assert.equal(summary.rows[2].note,'승리 · 피해 없음');
+assert.equal(summary.rows[2].note,'피해 없음');
 assert.equal(summary.rows[0].note,'싸움 피해 −1');
 assert.equal(summary.totalDamage,2);assert.equal(summary.text,'나 싱글 승리 · 총 HP 피해 2');
 const guarded=hpBattleSummary({...event,hpAfter:[70,81,86]},players);

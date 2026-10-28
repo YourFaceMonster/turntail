@@ -10,7 +10,8 @@ import {withRelicActivations} from './rpg-relic-feedback.ts';
 export type HpBattleEvent={id:string,round:number,actor:number,label:string,damage:number,playedCount?:number,roundFinal?:boolean,damageTaken?:number[],blockedDamage?:number[],pointsEarned?:number,skills?:HpSkillUse[],professions?:ProfessionEffect[],relics?:{relicId:string,message:string}[],relicDamage?:number,relicHealing?:number,hpBefore:number[],hpAfter:number[],at:number};
 /** Impact beat before the click-to-dismiss result; the client holds turns until acknowledged. */
 export const HP_BATTLE_WIN_DELAY_MS=1250;
-export const HP_BATTLE_REVIEW_MS=2600;
+export const HP_BATTLE_REVIEW_MS=1500;
+export const FINAL_SETTLEMENT_DELAY_MS=1000;
 /** Rules 2 preserves previously saved mode-1 trials; new battles belong to mode 2. */
 export function isBattleItemMode(game:{hpItemMode?:boolean,hpItemVariant?:number,hpItemRules?:number}){return !!game.hpItemMode&&(game.hpItemVariant===2&&(game.hpItemRules===3||game.hpItemRules===4)||game.hpItemVariant===1&&game.hpItemRules===2);}
 /** Original purchase-start shop and allowance; HP damage never creates coins. */
@@ -48,7 +49,7 @@ export function resolveHpItemBattle(game:Game,now=Date.now(),roundEnding=false):
  const battle:HpBattleEvent={id,round:game.round,actor,label,damage,playedCount,roundFinal,damageTaken:resolved.damage,...(blockedDamage.some(Boolean)?{blockedDamage}:{}),pointsEarned,skills:resolved.effects,professions:profession.effects,...(relicEffects.length?{relics:relicEffects,relicDamage:relic.damage,relicHealing:relicHeal}:{}),hpBefore,hpAfter:[...hpAfter],at:now};
  run.hp=hpAfter;run.updatedAt=now;state.battles=[...(state.battles||[]),battle];state.lastBattle=battle;
  state.battleTiles=game.players.map(()=>0);
- game.turnReadyAt=Math.max(game.turnReadyAt||0,now+(roundFinal?700:HP_BATTLE_REVIEW_MS));
+ game.turnReadyAt=Math.max(game.turnReadyAt||0,now+HP_BATTLE_REVIEW_MS+(roundFinal?FINAL_SETTLEMENT_DELAY_MS:0));
  game.log=[`${game.players[actor].name} · ${label} 승리 · ${game.players.map((player,seat)=>seat===actor?null:`${player.name} HP −${hpBefore[seat]-hpAfter[seat]}`).filter(Boolean).join(" · ")}`,...game.log].slice(0,40);
  if(run.hp.some(hp=>hp<=0)){state.endReason='battle';state.moneySkipped=true;finishHpItemMatch(game);}
  return battle;

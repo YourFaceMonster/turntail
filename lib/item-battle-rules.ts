@@ -1,7 +1,7 @@
 import {assertTurnReady,lowestHandLead,sorted,uid,view,type Game,type Tile} from './game.ts';
 import {finishHpItemMatch} from './hp-item-mode.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
-import {AMBUSH_IMPACT_MS,AMBUSH_PRESENTATION_MS,TRAP_IMPACT_MS,TRAP_PRESENTATION_MS} from './pickup-presentation.ts';
+import {AMBUSH_IMPACT_MS,AMBUSH_PRESENTATION_MS,TRAP_IMPACT_MS,TRAP_TURN_READY_MS} from './pickup-presentation.ts';
 import {professionActiveAvailability,consumeProfessionGauge} from './profession-actives.ts';
 
 export type FloorTrap={id:string,owner:number,index:number,tileId:number,round:number};
@@ -61,7 +61,7 @@ export function triggerFloorTrap(game:Game,who:number,index:number,tile:Tile,now
  for(const trap of traps){
   const safe=trap.owner===who,hpBefore=run.hp[who],damage=safe?0:blockItemBattleDamage(game,who,4,now);run.hp[who]=Math.max(0,hpBefore-damage);
   state.lastTrap={id:uid(),owner:trap.owner,target:who,index,damage:hpBefore-run.hp[who],hpBefore,hpAfter:run.hp[who],at:now+TRAP_IMPACT_MS,safe};state.trapEvents.push(state.lastTrap);triggered.push(state.lastTrap);
-  if(!safe){game.log=[`${game.players[trap.owner].name}의 함정 발동 · ${game.players[who].name} HP −${state.lastTrap.damage}`,...game.log].slice(0,40);game.turnReadyAt=Math.max(game.turnReadyAt||0,now+TRAP_PRESENTATION_MS);}
+  if(!safe){game.log=[`${game.players[trap.owner].name}의 함정 발동 · ${game.players[who].name} HP −${state.lastTrap.damage}`,...game.log].slice(0,40);game.turnReadyAt=Math.max(game.turnReadyAt||0,now+TRAP_TURN_READY_MS);}
  }
  const hostile=triggered.filter(event=>!event.safe);
  if(hostile.length)state.lastTrap={...hostile[0],id:uid(),owners:hostile.map(event=>event.owner),damage:hpBeforePickup-run.hp[who],hpBefore:hpBeforePickup,hpAfter:run.hp[who]};

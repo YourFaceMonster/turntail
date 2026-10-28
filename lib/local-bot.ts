@@ -3,6 +3,7 @@ import {scoutBotDraw} from './items';
 import {isHiboringji,hiboringjiAction} from './hiboringji';
 import {act,legalOptions,view,type Game} from './game';
 import {tryBotProfessionActive} from './profession-actives.ts';
+import {itemTurnReadyAt} from './rpg-item-motion.ts';
 /** Search belongs off the UI thread. Unsupported workers use a bounded simple move. */
 export function runLocalBot(game:Game,signal:AbortSignal):Promise<Game>{
  return new Promise((resolve,reject)=>{
@@ -10,7 +11,8 @@ export function runLocalBot(game:Game,signal:AbortSignal):Promise<Game>{
   const cleanup=()=>{clearTimeout(timer);worker?.terminate();signal.removeEventListener('abort',abort);};
   const abort=()=>{cleanup();reject(new DOMException('Paused','AbortError'));};
   const fallback=()=>{cleanup();if(signal.aborted){abort();return;}try{
-   if(tryBotProfessionActive(game)){resolve(game);return;}tryRpgBotItem(game);
+   if(tryBotProfessionActive(game)){resolve(game);return;}const lastItem=game.rpgRun?.lastItem?.id;tryRpgBotItem(game);
+   if(game.rpgRun?.lastItem&&game.rpgRun.lastItem.id!==lastItem){game.turnReadyAt=Math.max(game.turnReadyAt||0,itemTurnReadyAt(game.rpgRun.lastItem));resolve(game);return;}
    if(game.rpgRun?.status==='complete'){resolve(game);return;}
    const p=game.players[game.turn],position=view(game,p.token),options=legalOptions(p.hand,game.trick),finish=options.find(o=>o.tiles.length===p.hand.length),move=finish||options[0];
    const index=position.stacks.findIndex(s=>s.available),simple=move?{type:'play' as const,tiles:move.tiles}:index>=0?{type:'draw' as const,index}:{type:'pass' as const};

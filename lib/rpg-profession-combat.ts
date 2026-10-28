@@ -1,6 +1,6 @@
 import {combo,settle,sorted,uid,type Game,type Tile} from './game.ts';
 import type {HpBattleEvent} from './hp-item-battle.ts';
-import {HP_BATTLE_REVIEW_MS} from './hp-item-battle.ts';
+import {HP_BATTLE_REVIEW_MS,FINAL_SETTLEMENT_DELAY_MS} from './hp-item-battle.ts';
 import {blockHostileItem,exchangeEligible} from './rpg-items.ts';
 import {withRelicActivations,type RpgRelicEffect} from './rpg-relic-feedback.ts';
 import {rpgProfession,rpgProfessionTriggers,type RpgProfessionId} from './rpg-professions.ts';
@@ -36,7 +36,7 @@ export function resolveProfessionWin(game:Game,actor:number,label:string,now:num
  const profession=state.professions[actor],triggers=rpgProfessionTriggers(profession,label,state.activeUsed[actor]);
  for(const kind of ['passive','active'] as const){
   const trigger=triggers[kind];if(!trigger)continue;
-  if(kind==='active')state.activeUsed[actor]=true;
+  if(kind==='active'&&profession!=='mage')state.activeUsed[actor]=true;
   const event:ProfessionEffect={id:uid(),round:game.round,actor,profession,kind,label,damage:trigger.damage,heal:Math.min(trigger.heal,100-game.rpgRun!.hp[actor]),revealed:0,at:now};
   damage+=event.damage;heal[actor]+=event.heal;
   if(trigger.reveal&&state.itemBattle&&game.hpItemMode&&profession==='rogue'){
@@ -66,7 +66,7 @@ export function resolveProfessionWin(game:Game,actor:number,label:string,now:num
   let extraDamage=0,extraHeal=0,trait='';
   if(profession==='swordsman'&&label==='싱글'){extraDamage=1;trait='날카로운 한 수';}
   if(profession==='cleric'&&label==='페어'){extra.pairWins[actor]++;if(extra.pairWins[actor]===2){extraHeal=2;trait='이어지는 기도';}}
-  if(profession==='mage'&&game.trick.length===5&&!extra.firstFiveUsed[actor]){extra.firstFiveUsed[actor]=true;extraDamage=2;trait='첫 비전';}
+  if(profession==='mage'&&game.trick.length===5){extraDamage=2;trait='비전 증폭';}
   if(trait){const event:ProfessionEffect={id:uid(),round:game.round,actor,profession,kind:'passive',label,damage:extraDamage,heal:Math.min(extraHeal,Math.max(0,100-game.rpgRun!.hp[actor]-heal[actor])),revealed:0,trait,at:now};damage+=event.damage;heal[actor]+=event.heal;effects.push(event);state.effects.push(event);}
  }
  return {effects,heal,damage};
@@ -95,7 +95,7 @@ export function resolveProfessionRpgBattle(game:Game,now=Date.now(),roundEnding=
  const event:HpBattleEvent={id,round:game.round,actor,label,damage:playedCount,playedCount,hpBefore,hpAfter:[...run.hp],damageTaken,blockedDamage,professions:profession.effects,roundFinal:roundEnding||run.hp.some(hp=>hp<=0),at:now};
  state.battles.push(event);state.lastBattle=event;state.battleTiles=game.players.map(()=>0);
  if(relics.length)game.rpgRun=withRelicActivations(run,relics,now);
- game.turnReadyAt=Math.max(game.turnReadyAt||0,now+(event.roundFinal?700:HP_BATTLE_REVIEW_MS));
+ game.turnReadyAt=Math.max(game.turnReadyAt||0,now+HP_BATTLE_REVIEW_MS+(event.roundFinal?FINAL_SETTLEMENT_DELAY_MS:0));
  game.log=[`${game.players[actor].name} · ${label} 승리 · 제출 ${playedCount}장 · 기본 피해 ${playedCount}`,...profession.effects.map(effect=>`${game.players[actor].name} · ${professionEffectText(effect)}`),...game.log].slice(0,40);
  if(run.hp.some(hp=>hp<=0)){game.phase='ended';game.turnDeadline=0;game.winner=actor;settle(game);}
  return event;

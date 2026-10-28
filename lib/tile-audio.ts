@@ -24,7 +24,8 @@ export function tileSoundPlan(kind:TileSoundKind,variant:number,detail:TileSound
 }
 const cachedNoise=new WeakMap<AudioContext,AudioBuffer>(),lastVariant=new WeakMap<AudioContext,Map<string,number>>();
 export function playTileSound(ctx:AudioContext,kind:TileSoundKind,detail:TileSoundDetail={}){
- if(ctx.state!=='running')return;
+ // Drawing/flipping a floor tile is deliberately silent, including synth fallback.
+ if(kind==='draw'||ctx.state!=='running')return;
  if(playSoundAsset(ctx,kind))return;
  let history=lastVariant.get(ctx);if(!history){history=new Map();lastVariant.set(ctx,history);}
  let hash=0;for(const c of detail.seed||String(ctx.currentTime))hash=(hash*31+c.charCodeAt(0))>>>0;

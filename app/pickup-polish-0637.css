@@ -39,6 +39,12 @@
 .trap-owner-laugh{position:fixed;z-index:218;transform:translate(-50%,4px);padding:5px 8px;border-radius:10px;border:1px solid #f5cb8d;background:#372015f5;color:#fff0c8;font-size:12px;font-weight:800;white-space:nowrap;pointer-events:none;box-shadow:0 3px 7px #0006;animation:trap-laugh 1.1s ease-in-out both}
 .ambush-presentation{z-index:215;border:1px solid #bca4ee;background:linear-gradient(145deg,#362047f5,#201829f5);color:#f0dfff;padding:10px 17px;animation:coin-discovery-in .25s ease-out both}.ambush-presentation>svg{width:28px;height:28px}.ambush-presentation strong{font-size:19px}.ambush-presentation span{font-size:12px}.ambush-presentation.yields-to-coin.is-impact{animation:trap-title-short .35s ease-out both}
 .ambush-target-hit{position:absolute;inset:0;z-index:85;display:flex;align-items:center;justify-content:center;gap:4px;color:#ff7662;background:radial-gradient(ellipse,#ba456b66,transparent 75%);pointer-events:none;animation:trap-target-flash 1.2s ease-out both}.ambush-target-hit svg{width:22px;height:22px}.ambush-target-hit b{font-size:32px;font-weight:950;text-shadow:0 2px 3px #281018}
+/* Seat-card b rules set white explicitly, so damage must set its own color. */
+body .ambush-target-hit.is-damage :is(b,svg){color:#ff6652!important;-webkit-text-fill-color:#ff6652!important}.ambush-target-hit.is-damage b{text-shadow:0 2px 3px #34100e,0 0 5px #34100e}.ambush-target-hit.is-blocked b{color:#ead9b3!important}
+.ambush-target-hit{animation:ambush-hit-arrive .18s ease-out both}
+.turntale.table-v211.active-table .seat-card>.ambush-target-hit{position:absolute!important;inset:0!important;display:flex!important;align-items:center;justify-content:center;margin:0!important;border-radius:inherit}
+.turntale.table-v211.active-table .seat-card .ambush-target-hit b{position:static!important;margin:0!important;font-size:28px!important;line-height:1;font-weight:950}
+@keyframes ambush-hit-arrive{from{opacity:0}to{opacity:1}}
 @keyframes coin-discovery-in{from{opacity:0;translate:0 10px;scale:.9}to{opacity:1;translate:0 0;scale:1}}
 @keyframes coin-halo{50%{scale:1.13;box-shadow:0 0 25px #ffd86daa}}
 @keyframes coin-wallet-flight{from{transform:translate(var(--coin-from-x),var(--coin-from-y)) translate(-50%,-50%) scale(1.2);opacity:1}75%{opacity:1}to{transform:translate(var(--coin-to-x),var(--coin-to-y)) translate(-50%,-50%) scale(.65);opacity:0}}

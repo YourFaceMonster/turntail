@@ -1,0 +1,18 @@
+/* Shared RPG green matches positive money settlement. */
+body .compact-item-result .compact-hp-breakdown .hp-recovered,body .compact-item-result .hp-change-float .positive,body .battle-healing,body .battle-review-0641 .positive{color:#4dff88!important}
+body .battle-damage,body .battle-review-0641 .negative{color:#ff756b!important}
+.battle-review-0641 .battle-final-formula{margin:2px 0 10px;font-size:15px;font-weight:850;color:#f5dfae}
+body .battle-review-0641 .battle-hp-row .rpg-hp-bar.has-identity{height:64px;min-height:64px;overflow:visible}
+body .battle-review-0641 .battle-hp-row .hp-bar-identity>small{display:flex!important;flex-direction:column;gap:3px;overflow:visible;white-space:normal}
+.battle-hp-transition{color:#fff0cf;font-size:11px}.battle-row-effects{font-size:10px}.battle-row-effects b,.battle-inline-effects b{font-size:inherit!important}
+.battle-inline-effects{padding:8px 0 2px;border-top:1px solid #d7bc7944;margin-top:8px;display:grid;gap:5px;font-size:11px;text-align:left;line-height:1.5}.battle-inline-effects p{margin:0}
+.keeps-hp-change .hp-change-float{animation:hp-delta-settle 1.15s ease-out both;transform-origin:50% 50%}
+.keeps-hp-change.has-identity .has-hp-change>b{animation:hp-value-return .9s ease-in-out both}
+.keeps-hp-change .hp-change-float>em{font-size:25px!important}
+@keyframes hp-delta-settle{0%{opacity:0;transform:translateY(0) scale(1)}15%,42%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:1;transform:translateY(-19px) scale(.56)}}
+body .item-fx-scene.fx-ember.fx-damage .ember-impact-visual{transform:translate(-50%,-100%) rotate(var(--ember-angle,0deg));transform-origin:50% 100%}
+body .item-fx-scene.fx-heal .item-emblem-owner{font-size:24px!important;color:#4dff88!important;line-height:1.4;text-shadow:0 2px 4px #07190d,0 0 7px #07190d!important;-webkit-text-stroke:0!important}
+body .smooth-item-scene .item-seat-badge{width:28px;height:28px;z-index:8}
+body .rpg-relic-activation-notice{background:rgba(15,30,24,.66)!important;backdrop-filter:blur(2px)}
+.turntale.table-v211.active-table .previous-trick.is-arriving{opacity:1!important}.turntale.table-v211.active-table .previous-trick{transition:opacity .2s ease-out}
+@media(prefers-reduced-motion:reduce){.keeps-hp-change .hp-change-float{display:grid!important;animation:none!important;opacity:1;transform:translateY(-19px) scale(.56)}.keeps-hp-change.has-identity .has-hp-change>b{animation:none!important;opacity:1}.turntale.table-v211.active-table .previous-trick{transition:none}}
