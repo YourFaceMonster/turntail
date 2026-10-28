@@ -263,3 +263,16 @@ export function analyzeBotDecision(input:BotPosition,level?:number):BotAnalysis{
  return {action:evaluated[0].root.action,method:'lookahead',samples:worlds.length,candidates:roots.length,nodes};
 }
 export function chooseStrategicAction(p:BotPosition,level?:number):BotAction{return analyzeBotDecision(p,level).action;}
+
+/** Shared, bounded card candidates. No caller-supplied opponent hand or covered
+ * lower face enters this assessment. Probabilities are estimates, not knowledge. */
+export function publicBotCandidates(input:BotPosition){
+ const p=publicPosition(input),pool=poolFor(p),ctx=context();
+ return rankActions(p,ctx).map(candidate=>({...candidate,...(candidate.action.type==='play'?{
+  counters:p.players.flatMap((player,seat)=>seat===p.me?[]:[{seat,chance:counterChance(candidate.action.type==='play'?candidate.action.tiles:[],player,pool)}])
+ }:{counters:[] as {seat:number,chance:number}[]})}));
+}
+export function publicControlChance(input:BotPosition,tiles:Tile[],actor:number,ignored:number[]=[]){
+ const p=publicPosition(input),pool=poolFor(p);
+ return p.players.reduce((chance,player,seat)=>seat===actor||ignored.includes(seat)?chance:chance*(1-counterChance(tiles,player,pool)),1);
+}

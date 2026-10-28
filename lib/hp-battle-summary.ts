@@ -1,7 +1,7 @@
 import type {HpBattleEvent} from './hp-item-battle.ts';
 /** The fight winner and the current HP standing are separate pieces of information. */
 export function hpBattleSummary(event:HpBattleEvent,players:readonly {name:string,count:number}[]){
- const order=players.map((_,seat)=>seat).sort((a,b)=>event.hpAfter[b]-event.hpAfter[a]||players[a].count-players[b].count||a-b);
+ const order=[event.actor,...players.flatMap((_,seat)=>seat===event.actor?[]:[seat])];
  const rows=order.map((seat,index)=>{
   const damage=Math.max(0,event.hpBefore[seat]-event.hpAfter[seat]),healed=Math.max(0,event.hpAfter[seat]-event.hpBefore[seat]);
   const classExtra=event.professions?.reduce((sum,effect)=>sum+effect.damage,0)||0,extra=classExtra+(event.relicDamage||0)+(event.skills?.filter(skill=>skill.actor===event.actor&&skill.outcome==='attack').reduce((sum,skill)=>sum+(skill.amount||0),0)||0),guard=(event.skills?.filter(skill=>skill.actor===seat&&skill.outcome==='guard').reduce((sum,skill)=>sum+(skill.amount||0),0)||0)+(event.blockedDamage?.[seat]||0);

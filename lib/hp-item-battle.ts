@@ -7,14 +7,14 @@ import {itemBattleRelicWin} from './item-battle-relics.ts';
 import {blockItemBattleDamage,itemBattleState} from './item-battle-rules.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
 
-export type HpBattleEvent={id:string,round:number,actor:number,label:string,damage:number,playedCount?:number,roundFinal?:boolean,damageTaken?:number[],blockedDamage?:number[],pointsEarned?:number,skills?:HpSkillUse[],professions?:ProfessionEffect[],relics?:{relicId:string,message:string}[],relicDamage?:number,relicHealing?:number,hpBefore:number[],hpAfter:number[],at:number};
+export type HpBattleEvent={id:string,round:number,actor:number,label:string,damage:number,ordinal?:number,winningTiles?:Tile[],playedCount?:number,roundFinal?:boolean,damageTaken?:number[],blockedDamage?:number[],pointsEarned?:number,skills?:HpSkillUse[],professions?:ProfessionEffect[],relics?:{relicId:string,message:string}[],relicDamage?:number,relicHealing?:number,hpBefore:number[],hpAfter:number[],at:number};
 /** Impact beat before the click-to-dismiss result; the client holds turns until acknowledged. */
 export const HP_BATTLE_WIN_DELAY_MS=1250;
-export const HP_BATTLE_REVIEW_MS=1500;
+export const HP_BATTLE_REVIEW_MS=2000;
 export const FINAL_SETTLEMENT_DELAY_MS=1000;
 /** Rules 2 preserves previously saved mode-1 trials; new battles belong to mode 2. */
 export function isBattleItemMode(game:{hpItemMode?:boolean,hpItemVariant?:number,hpItemRules?:number}){return !!game.hpItemMode&&(game.hpItemVariant===2&&(game.hpItemRules===3||game.hpItemRules===4)||game.hpItemVariant===1&&game.hpItemRules===2);}
-/** Original purchase-start shop and allowance; HP damage never creates coins. */
+/** Original purchase-start shop; HP damage never creates coins. */
 export function usesOriginalItemShop(game:{hpItemMode?:boolean,hpItemVariant?:number,hpItemRules?:number}){return !!game.hpItemMode&&game.hpItemVariant===2&&game.hpItemRules===4;}
 export const HP_BATTLE_DAMAGE:Readonly<Record<string,number>>={'싱글':1,'페어':2,'트리플':3,'스트레이트':4,'플러시':4,'풀하우스':5,'포카드':6,'스트레이트 플러시':10};
 export function hpBattleDamage(tiles:Tile[]){const label=combo(tiles)?.label;return label?HP_BATTLE_DAMAGE[label]||0:0;}
@@ -46,7 +46,7 @@ export function resolveHpItemBattle(game:Game,now=Date.now(),roundEnding=false):
  const hpAfter=run.hp.map((hp,seat)=>Math.min(100,Math.max(0,hp+profession.heal[seat]+(seat===actor?relicHeal:0)-resolved.damage[seat])));
  const pointsEarned=0;
  const roundFinal=roundEnding||hpAfter.some(hp=>hp<=0);
- const battle:HpBattleEvent={id,round:game.round,actor,label,damage,playedCount,roundFinal,damageTaken:resolved.damage,...(blockedDamage.some(Boolean)?{blockedDamage}:{}),pointsEarned,skills:resolved.effects,professions:profession.effects,...(relicEffects.length?{relics:relicEffects,relicDamage:relic.damage,relicHealing:relicHeal}:{}),hpBefore,hpAfter:[...hpAfter],at:now};
+ const battle:HpBattleEvent={id,round:game.round,actor,label,damage,ordinal:(state.battles?.length||0)+1,winningTiles:game.trick.map(tile=>({...tile})),playedCount,roundFinal,damageTaken:resolved.damage,...(blockedDamage.some(Boolean)?{blockedDamage}:{}),pointsEarned,skills:resolved.effects,professions:profession.effects,...(relicEffects.length?{relics:relicEffects,relicDamage:relic.damage,relicHealing:relicHeal}:{}),hpBefore,hpAfter:[...hpAfter],at:now};
  run.hp=hpAfter;run.updatedAt=now;state.battles=[...(state.battles||[]),battle];state.lastBattle=battle;
  state.battleTiles=game.players.map(()=>0);
  game.turnReadyAt=Math.max(game.turnReadyAt||0,now+HP_BATTLE_REVIEW_MS+(roundFinal?FINAL_SETTLEMENT_DELAY_MS:0));

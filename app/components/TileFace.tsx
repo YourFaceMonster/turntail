@@ -53,8 +53,8 @@ function SpecialMotif({s,n}:{s:number,n:number}){
  </>;
 }
 /** The exact same art and body render in hand, flight and table. */
-export default function TileFace({tile:t,small=false}:{tile:Tile,small?:boolean}){
- const special=t.n===2,ink=colors[t.s],stage=useStageVisual(),artId=useId().replace(/:/g,'');
+export default function TileFace({tile:t,small=false,muted=false}:{tile:Tile,small?:boolean,muted?:boolean}){
+ const special=t.n===2,ink=muted?'#737770':colors[t.s],stage=useStageVisual(),artId=useId().replace(/:/g,'');
  if(stage){
   const dark=[6,9,10].includes(stage),numberProps=tileNumberGeometry(t.n);
   return <span data-tile-id={t.id} data-number={t.n} data-suit={t.s} data-tile-material={TILE_MATERIAL_NAMES[stage-1]} title={`${TILE_MATERIAL_NAMES[stage-1]} 패`} className={`tile face stage-material-tile suit${t.s} ${small?'small':''}`} style={{color:ink}}><svg className="tile-art" data-number-layout="classic" style={{color:ink}} viewBox="0 0 100 132" aria-hidden="true" focusable="false"><defs><clipPath id={`${artId}-cartoon`}><path d={CARTOON_TILE_PATH}/></clipPath></defs><g clipPath={`url(#${artId}-cartoon)`}><g className="tile-main-art"><StageMaterial stage={stage} id={`material-${artId}`} seed={t.id}/><TileMaterialFinish stage={stage} id={artId}/><g opacity={dark?.17:.12}><StageTileEngraving stage={stage} s={t.s} special={special}/></g><ClassicTileOrnament s={t.s} special={special}/>

@@ -1,6 +1,7 @@
 import {chargeProfessionActives} from './profession-actives.ts';
 import {expireHpSkills,resetHpSkills,type HpSkillState,type HpSkillUse} from './hp-item-skills.ts';
-import type {Game} from './game.ts';
+import {view,type Game} from './game.ts';
+import {chooseItemBattlePurchases} from './item-battle-shopping';
 import {RPG_SHOP_ITEMS,type RpgTacticalItem} from './rpg-items.ts';
 import {isBattleItemMode,usesOriginalItemShop,type HpBattleEvent} from './hp-item-battle.ts';
 
@@ -11,7 +12,7 @@ export const HP_ITEM_PRICES:Record<string,number>={'whisper-eye':4,'spark-dart':
 export const HP_ITEM_START_POINTS=20;
 // Keep starter data independent of the item/game import cycle.
 export const HP_ITEM_STARTER_ITEMS:readonly RpgTacticalItem[]=['scout-lens','swapped-fate','ward-seal','ember-bomb','emergency-herb','whisper-eye'];
-export const HP_ITEM_ROUND_ALLOWANCE=8;
+export const HP_ITEM_ROUND_ALLOWANCE=0;
 export function hpItemShopAfterResult(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'>){return isBattleItemMode(game)&&!usesOriginalItemShop(game);}
 export function hpItemShopPending(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'|'round'|'result'>){
  if(usesOriginalItemShop(game))return game.phase==='playing'&&game.rpgRun?.status==='playing'&&game.hpItemMatch?.shopRound!==game.round;
@@ -28,6 +29,7 @@ export function buyHpItemLoadout(game:Game,cart:string[]){
  if(price>state.points[0])throw Error('구매 포인트가 부족해요.');
  const kits:string[][]=[cart];
  for(let seat=1;seat<game.players.length;seat++){
+  if(game.hpItemRules===4&&run.combat?.itemBattle){kits.push(chooseItemBattlePurchases(view(game,game.players[seat].token),state.points[seat]));continue;}
   const held=run.enemyConsumables?.[seat]||[],kit:string[]=[],preferred=[...(run.hp[seat]<=85?['emergency-herb']:[]),...(run.itemGuards?.[seat]?[]:['ward-seal']),'ember-bomb','whisper-eye','swapped-fate','scout-lens'];let budget=state.points[seat];
   for(const id of preferred){
    if(kit.length>=2||held.includes(id)||HP_ITEM_PRICES[id]>budget)continue;
@@ -61,7 +63,7 @@ export function finishHpItemRoundReport(game:Game,hpBeforeSettlement?:number[]){
 }
 export function beginHpItemRound(game:Game){
  const state=game.hpItemMatch,run=game.rpgRun;if(!game.hpItemMode||!state||!run)return;
- if(game.hpItemVariant===2&&(!isBattleItemMode(game)||usesOriginalItemShop(game))&&game.round>1)state.points=state.points.map(points=>points+HP_ITEM_ROUND_ALLOWANCE);
+ // No automatic round allowance. Existing wallets and unused items carry over.
  state.roundStartHp=[...run.hp];state.roundItems=[];state.roundEarned=game.players.map(()=>0);state.pendingItemDelta=game.players.map(()=>0);state.pendingItemPoints=game.players.map(()=>0);
  if(isBattleItemMode(game)){resetHpSkills(game);state.battleTiles=game.players.map(()=>0);state.battles=[];state.lastBattle=undefined;state.roundMoneyBefore=[...state.points];state.moneyBefore=undefined;state.moneyDelta=undefined;state.moneyDamage=undefined;state.moneySkipped=false;state.endReason=undefined;}
 }

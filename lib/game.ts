@@ -4,9 +4,11 @@ import {applyPendingHpItems,beginHpItemRound,finishHpItemRoundReport,hpItemShopP
 import {finishHpItemMatch} from './hp-item-mode.ts';
 import {newItemRun,itemView,scoutBotDraw,type ItemRun} from './items';
 import {chooseKoreanOpponents} from './korean-opponents';
-import {shouldShowPlayNotice,QUICK_PLAY_MS,ANNOUNCED_PLAY_MS} from './play-notices.ts';
+import {shouldShowPlayNotice,QUICK_PLAY_MS,ANNOUNCED_PLAY_MS,announcedPlayDuration} from './play-notices.ts';
 import {accessibleStack} from './table-access.ts';
 import {chooseStrategicAction} from './bot.ts';
+import {chooseItemBattleAction} from './item-battle-ai.ts';
+import {runItemBattleBotTurn} from './item-battle-bot.ts';
 import {isHiboringji,hiboringjiAction,hiboringjiTemperament} from './hiboringji';
 import {newChallenge,advanceChallenge,type Challenge} from './challenge.ts';
 import type {TablePlay} from './table-play';
@@ -163,7 +165,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   recordHpBattlePlay(g,who,tiles.length);recordProfessionBattlePlay(g,who,tiles.length);
   p.hand=p.hand.filter(t=>!ids.includes(t.id));const protection=g.rpgRun?.tactics?.[who];if(protection?.sealed)protection.sealed=protection.sealed.filter(id=>!ids.includes(id));g.playedTiles=[...(g.playedTiles||[]),...tiles];if(g.publicDraws?.[p.id])g.publicDraws[p.id]=g.publicDraws[p.id].filter(t=>!ids.includes(t.id));g.trick=tiles;g.lastBy=who;
   const introductions=new Set(g.announcedCombos??[1,2,3].filter(n=>g.log.some(line=>line.includes(`· ${['싱글','페어','트리플'][n-1]} ${n}개 제출`))));
-  const showNotice=shouldShowPlayNotice(introductions,tiles.length),reviewMs=showNotice?PLAY_REVIEW_MS:QUICK_PLAY_MS;g.announcedCombos=[...introductions];
+  const showNotice=shouldShowPlayNotice(introductions,tiles.length),reviewMs=showNotice?announcedPlayDuration(tiles.length):QUICK_PLAY_MS;g.announcedCombos=[...introductions];
   g.rally=(g.rally||0)+1;g.turnReadyAt=now+reviewMs;
   g.lastEvent={id:uid(),type:"play",who,tiles,label:combo(tiles)!.label,at:now,rally:g.rally,showNotice,reviewMs};
   g.tablePlay={tiles:tiles.map(t=>({...t})),who,id:g.lastEvent.id};
@@ -210,6 +212,7 @@ export function botMove(g:Game,now=Date.now()){
  const p=g.players[g.turn];if(!p||!automated(p)||g.phase!=="playing")return;
  if(now<(g.turnReadyAt||0))return;
  if(!g.practice&&!p.bot)g.aiAssisted=true;
+ if(runItemBattleBotTurn(g,now))return;
  if(tryBotProfessionActive(g,now))return;
  const lastItem=g.rpgRun?.lastItem?.id;tryRpgBotItem(g);
  if(g.rpgRun?.lastItem&&g.rpgRun.lastItem.id!==lastItem){g.turnReadyAt=Math.max(g.turnReadyAt||0,itemTurnReadyAt(g.rpgRun.lastItem));scheduleTurn(g,now);return;}
@@ -259,6 +262,7 @@ export type BotPosition=ReturnType<typeof view>;
 export type BotAction={type:'play',tiles:Tile[]}|{type:'draw',index:number}|{type:'pass'};
 /** Shared single-player and timeout policy. Only the public seat view is accepted. */
 export function chooseBotAction(position:BotPosition):BotAction{
+ if(position.hpItemMode&&position.hpItemRules===4)return chooseItemBattleAction(position);
  if(!position.stageRun&&isHiboringji(position.players[position.me])){
   const best=chooseStrategicAction(position,hiboringjiTemperament(position.roundActions).level);return hiboringjiAction(position,best);
  }

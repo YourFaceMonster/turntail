@@ -92,7 +92,7 @@ export function resolveProfessionRpgBattle(game:Game,now=Date.now(),roundEnding=
   if(run.shield>0){const blocked=Math.min(run.shield,damageTaken[0]);damageTaken[0]-=blocked;blockedDamage[0]+=blocked;run.shield-=blocked;}
  }
  run.hp=run.hp.map((hp,seat)=>Math.min(100,Math.max(0,hp+profession.heal[seat]-damageTaken[seat])));run.updatedAt=now;
- const event:HpBattleEvent={id,round:game.round,actor,label,damage:playedCount,playedCount,hpBefore,hpAfter:[...run.hp],damageTaken,blockedDamage,professions:profession.effects,roundFinal:roundEnding||run.hp.some(hp=>hp<=0),at:now};
+ const event:HpBattleEvent={id,round:game.round,actor,label,damage:playedCount,ordinal:state.battles.length+1,winningTiles:game.trick.map(tile=>({...tile})),playedCount,hpBefore,hpAfter:[...run.hp],damageTaken,blockedDamage,professions:profession.effects,roundFinal:roundEnding||run.hp.some(hp=>hp<=0),at:now};
  state.battles.push(event);state.lastBattle=event;state.battleTiles=game.players.map(()=>0);
  if(relics.length)game.rpgRun=withRelicActivations(run,relics,now);
  game.turnReadyAt=Math.max(game.turnReadyAt||0,now+HP_BATTLE_REVIEW_MS+(event.roundFinal?FINAL_SETTLEMENT_DELAY_MS:0));

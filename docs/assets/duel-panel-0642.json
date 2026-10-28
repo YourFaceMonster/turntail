@@ -1,0 +1,12 @@
+{
+  "createdFor": "0.6.42 local only",
+  "mode": "built-in image_gen.imagegen",
+  "original": "C:/Users/SONG/.codex/generated_images/01a17f5f-b26d-7b53-98a9-a27125e714fa/exec-e4fcef7b-f169-49b9-8bc5-7e26f3e4c778.png",
+  "projectFile": "public/item-battle-v1/duel-panel-v1.png",
+  "transparentBackground": false,
+  "width": 1024,
+  "height": 1536,
+  "bytes": 2199621,
+  "sha256": "ba1d27ec17a7553b3c30d361bbc53d3ce2b0c660bedce458358ded95179f428b",
+  "prompt": "Use case: stylized-concept. Asset type: portrait fantasy card-game victory dialog background, a single clean flat UI texture for the Korean game TURNTALE. Create an elegant hand-painted 2D blank popup panel in a 2:3 portrait composition: deep emerald and dark jade interior, fine antique brass and warm gold inlaid rim, softly carved stone and worn wood hints only around the outer corners, restrained small sun/star/moon/cloud ornamentation integrated into the border. Warm golden celebratory glow at the upper rim. The center 80 percent must remain very dark, calm, low-detail negative space suitable for white Korean text and three colored HP rows overlaid by code. Rounded corners visually suggested, symmetrical border extending neatly to the image edges, front view with no perspective tilt. Rich polished game-art texture, readable on a phone. No writing, letters, numbers, logos, watermark, UI controls, characters, faces, swords, coins or loose cards in the center. This is only the decorative BACKGROUND, not a mockup of the whole game screen."
+}

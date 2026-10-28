@@ -36,7 +36,7 @@ function stateFor(run:RpgRun,who:number,round:number):RpgTacticalState{
  return {round,used:who===0&&run.tacticalRound===round?(run.tacticalUsed||0):0,turn:who===0&&run.tacticalRound===round?run.tacticalTurn:undefined};
 }
 export function protectedTileIds(_run:RpgRun,_who:number,_round:number):number[]{return [];}
-export function rpgItemsUnlocked(game:{roundActions?:number,players:readonly unknown[],hpItemMode?:boolean,completedBattles?:number,round?:number}){return game.hpItemMode?((game.round||1)>1||(game.completedBattles||0)>0):(game.roundActions||0)>=game.players.length;}
+export function rpgItemsUnlocked(game:{roundActions?:number,players:readonly unknown[],hpItemMode?:boolean,completedBattles?:number,round?:number}){return game.hpItemMode?(game.completedBattles||0)>0:(game.roundActions||0)>=game.players.length;}
 export function rpgItemLimit(game:{hpItemMode?:boolean}){return game.hpItemMode?2:RPG_ITEMS_PER_ROUND;}
 export function rpgInventory(run:RpgRun,who:number){return who===0?run.consumables:run.enemyConsumables?.[who]||[];}
 export function giveRpgEnemyItems(run:RpgRun,copies=1){run.enemyConsumables=Object.fromEntries([1,2].map(who=>[who,RPG_BASIC_ITEMS.flatMap(id=>Array(copies).fill(id))]));}
@@ -64,7 +64,7 @@ export function rpgItemAvailability(game:ReturnType<typeof view>,id:string,enabl
  if(!enabled||run.status!=='playing'||game.phase!=='playing'||game.turn!==game.me)return {usable:false,reason:game.phase==='playing'&&game.turn===game.me?'패와 연출을 확인한 뒤 사용 가능':'내 차례에 사용 가능'};
  if(Date.now()<(game.turnReadyAt||0))return {usable:false,reason:'패와 연출이 끝난 뒤 사용 가능'};
  if(hpItemShopPending(game))return {usable:false,reason:'상점 준비를 마쳐 주세요 · 구매는 선택이에요'};
- if(!rpgItemsUnlocked(game))return {usable:false,reason:game.hpItemMode?'첫 판의 첫 싸움이 끝난 뒤 사용 가능 · 다음 판부터 첫 선도 사용 가능':'첫 바퀴가 끝나면 사용 가능'};
+ if(!rpgItemsUnlocked(game))return {usable:false,reason:game.hpItemMode?'매 라운드 첫 결투가 끝난 뒤 사용 가능':'첫 바퀴가 끝나면 사용 가능'};
  const state=stateFor(run,game.me,game.round);
  if(state.used>=rpgItemLimit(game))return {usable:false,reason:`이번 판 사용 한도 ${rpgItemLimit(game)}개`};
  if(state.turn===game.roundActions)return {usable:false,reason:'이번 차례 사용 완료'};

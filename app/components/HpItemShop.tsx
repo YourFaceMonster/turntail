@@ -5,7 +5,7 @@ import {Check,Coins,Info,ShoppingBag,Store,X} from 'lucide-react';
 import type {view} from '../../lib/game.ts';
 import {RPG_SHOP_ITEMS,type RpgTacticalItem} from '../../lib/rpg-items.ts';
 import {RPG_CONSUMABLES} from '../../lib/rpg.ts';
-import {HP_ITEM_PRICES,HP_ITEM_ROUND_ALLOWANCE,hpItemShopAfterResult} from '../../lib/hp-item-shop.ts';
+import {HP_ITEM_PRICES,hpItemShopAfterResult} from '../../lib/hp-item-shop.ts';
 import RpgItemIcon from './RpgItemIcon';
 type View=ReturnType<typeof view>;
 const nameOf=(id:string)=>RPG_CONSUMABLES.find(item=>item.id===id)?.name||id;
@@ -28,7 +28,7 @@ export function HpItemShop({game,busy,error,buy,exit}:{game:View,busy:boolean,er
   <section className="market-description" aria-live="polite"><Info aria-hidden="true"/><div><h3>{selected?nameOf(selected):'필요한 물품을 살펴보세요'}</h3><p>{selected?(game.rpgRun?.combat?.itemBattle&&selected==='scout-lens'?'바닥패 1장을 나만 확인하고 적의 함정도 찾아요. 투시한 패를 가져오는 것만으로 공격하지는 않아요.':game.rpgRun?.combat?.itemBattle&&selected==='ward-seal'?'다음 아이템 공격 또는 패 교환 1회를 막아요. 막은 뒤 봉인은 사라져요.':descriptions[selected]):'한 번 누르면 설명을 보고, 두 번 누르면 구매 목록에 담아요.'}</p></div><small>종류마다 판당 1개 구매</small></section>
   <section className="market-stock"><h3><ShoppingBag aria-hidden="true"/>내 아이템 <small>보유 {held.length}개 · 수량 제한 없음</small></h3><div className="market-stock-row" data-shop-stock>{groups.map(({id,count})=><span className="market-owned" key={id} title={`${nameOf(id)} ${count}개`}><RpgItemIcon id={id}/><strong>{nameOf(id)}</strong><b>×{count}</b></span>)}{!groups.length&&<p className="market-empty">아직 보유한 아이템이 없어요. 쓰지 않은 아이템은 다음 판에도 남아요.</p>}</div></section>
   <section className="market-basket"><h3>이번 구매 <small>{cart.length}종 · {total}P</small></h3><div className="market-cart-row" data-shop-cart>{cart.map(id=><button type="button" data-cart-item={id} className={flight?.id===id?"is-arriving":""} key={id} disabled={busy} onClick={()=>{setCart(old=>old.filter(item=>item!==id));if(flight?.id===id)setFlight(null);setHint('');}} aria-label={`${nameOf(id)} 구매 취소`} title={`${nameOf(id)} · 눌러서 담기 취소`}><RpgItemIcon id={id}/><span>{nameOf(id)}</span><X aria-hidden="true"/></button>)}{!cart.length&&<p className="market-empty">아이템을 두 번 눌러 담으세요. 구매 없이 시작할 수도 있어요.</p>}</div></section></div>
-  <footer className="market-checkout"><div className="market-shop-message" role="status">{error||hint}</div><p>판당 아이템 2개 사용 · 다음 판 준비금 +{HP_ITEM_ROUND_ALLOWANCE}P</p><div><button type="button" className="primary" disabled={busy||total>points} onClick={()=>buy(cart)}>{cart.length?`${total}P 구매하고 시작`:'구매 없이 시작'} →</button><button type="button" className="secondary" disabled={busy} onClick={exit}>저장하고 나가기</button></div></footer>
+  <footer className="market-checkout"><div className="market-shop-message" role="status">{error||hint}</div><p>판당 아이템 2개 사용 · 자동 준비금 없음</p><div><button type="button" className="primary" disabled={busy||total>points} onClick={()=>buy(cart)}>{cart.length?`${total}P 구매하고 시작`:'구매 없이 시작'} →</button><button type="button" className="secondary" disabled={busy} onClick={exit}>저장하고 나가기</button></div></footer>
  </section>{flight&&cart.includes(flight.id)&&<ShopArrival id={flight.id} from={flight.from} done={()=>setFlight(null)}/>}</div>;
 }
 

@@ -1,9 +1,10 @@
 import {tryRpgBotItem,scoutRpgBotDraw} from './rpg-items.ts';
 import {scoutBotDraw} from './items';
 import {isHiboringji,hiboringjiAction} from './hiboringji';
-import {act,legalOptions,view,type Game} from './game';
+import {act,view,chooseBotAction,type Game} from './game';
 import {tryBotProfessionActive} from './profession-actives.ts';
 import {itemTurnReadyAt} from './rpg-item-motion.ts';
+import {runItemBattleBotTurn} from './item-battle-bot.ts';
 /** Search belongs off the UI thread. Unsupported workers use a bounded simple move. */
 export function runLocalBot(game:Game,signal:AbortSignal):Promise<Game>{
  return new Promise((resolve,reject)=>{
@@ -11,12 +12,12 @@ export function runLocalBot(game:Game,signal:AbortSignal):Promise<Game>{
   const cleanup=()=>{clearTimeout(timer);worker?.terminate();signal.removeEventListener('abort',abort);};
   const abort=()=>{cleanup();reject(new DOMException('Paused','AbortError'));};
   const fallback=()=>{cleanup();if(signal.aborted){abort();return;}try{
+   if(runItemBattleBotTurn(game)){resolve(game);return;}
    if(tryBotProfessionActive(game)){resolve(game);return;}const lastItem=game.rpgRun?.lastItem?.id;tryRpgBotItem(game);
    if(game.rpgRun?.lastItem&&game.rpgRun.lastItem.id!==lastItem){game.turnReadyAt=Math.max(game.turnReadyAt||0,itemTurnReadyAt(game.rpgRun.lastItem));resolve(game);return;}
    if(game.rpgRun?.status==='complete'){resolve(game);return;}
-   const p=game.players[game.turn],position=view(game,p.token),options=legalOptions(p.hand,game.trick),finish=options.find(o=>o.tiles.length===p.hand.length),move=finish||options[0];
-   const index=position.stacks.findIndex(s=>s.available),simple=move?{type:'play' as const,tiles:move.tiles}:index>=0?{type:'draw' as const,index}:{type:'pass' as const};
-   let decision=isHiboringji(p)?hiboringjiAction(position,simple):simple;
+   const p=game.players[game.turn],position=view(game,p.token);
+   let decision=chooseBotAction(position);
    if(game.rpgRun&&decision.type==='draw')decision={type:'draw',index:scoutRpgBotDraw(game,game.turn,decision.index)};
    if(game.itemRun&&decision.type==='draw')decision={type:'draw',index:scoutBotDraw(game,game.turn,decision.index)};
    act(game,game.turn,decision.type,decision.type==='play'?decision.tiles.map(t=>t.id):[],decision.type==='draw'?decision.index:-1,Date.now(),true);

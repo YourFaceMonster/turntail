@@ -26,10 +26,10 @@ export function HpItemLobby({archive,start,resume,close,error,character,chooseCh
   <p className="hp-random-opponents">세계의 주민 30명 중 상대 2명이 무작위로 찾아와요.<small>한 대전 동안 같은 상대와 겨루며, 새 대전을 시작하면 다시 만나요.</small></p>
   <details className="hp-item-rule-details"><summary>규칙 보기</summary><div className="hp-item-rules">
    <span>나와 AI 2명 · 시작 HP 100 · 누군가 HP 0이면 대전 종료</span>
-   <span>첫 판 첫 싸움 종료 후 사용 · 이후 판은 첫 선도 가능 · 자기 차례 아이템 1개 · 판당 아이템 2개</span>
+   <span>매 라운드 첫 결투 종료 후 사용 · 자기 차례 아이템 1개 · 판당 아이템 2개</span>
    <span>승자가 이번 싸움에서 낸 패 수만큼 상대 두 명을 각각 공격</span><span>싱글 두 번 = 2피해 · 페어 두 번 = 4피해 · 패 1장당 1피해</span>
    <span>아이템은 즉시 반영 · 싸움·아이템으로 HP 0이면 이번 판 돈 미정산</span><span>시작 20P · 정상 판 점수는 돈으로 정산 · 부족한 1P당 HP −1</span>
-   <span>첫판부터 20P로 상점 구매 · 다음 판 준비금 +8P · 구매는 선택</span><span>주화는 판 종료 시 남은 패 차이 점수로 정산 · HP 피해 추가 보상 없음</span>
+   <span>첫판 20P로 선택 구매 · 자동 준비금 없음</span><span>주화는 판 종료 시 남은 패 차이 점수로 정산 · HP 피해 추가 보상 없음</span>
    <span>직업별 승리 조건을 만족하면 자동 스킬 발동</span><span>미사용 아이템 계속 보관 · 무작위 유물 3개</span>
   </div></details>
   <RpgProfessionPicker selected={profession} choose={chooseProfession} itemBattle/>

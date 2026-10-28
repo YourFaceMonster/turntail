@@ -1,0 +1,35 @@
+/* Geometry stays fixed while hand selection and dimming change. */
+.turntale.table-v211.active-table .play-column,.turntale.table-v211.active-table .play-column>.felt,.turntale.table-v211.active-table .play-column>.trick-area,.turntale.table-v211.active-table .floor-stage{overflow:clip!important;overflow-anchor:none}
+.turntale.table-v211.active-table .hand-panel{overflow-anchor:none;contain:layout}
+.turntale.table-v211.active-table .action-bar{position:relative;min-height:0;min-width:0}
+.turntale.table-v211.active-table .action-context{position:absolute;bottom:calc(100% + 2px);left:0;right:0;max-height:18px;overflow:hidden;pointer-events:none;font-size:10px;line-height:18px}
+.turntale.table-v211.active-table .legal-panel,.turntale.table-v211.active-table .hand-panel{min-height:0;min-width:0}
+.turntale.table-v211.active-table .legal-panel{overflow:hidden}
+.turntale.table-v211.active-table .hand-tile:disabled:not(.selected){animation:none!important;transform:none!important;translate:0 0!important;transition:none!important;filter:none!important}
+.turntale.table-v211.active-table .hand-tile.unplayable:not(.selected) .tile-main-art{filter:none!important;opacity:.53}
+.turntale.table-v211.active-table .hand-tile .tile-art{backface-visibility:hidden}
+.turntale.table-v211.active-table :is(.new-trick,.lead-label){background:rgba(15,23,18,.72)!important;border-radius:6px;padding:4px 8px;color:#fff3d1!important;text-shadow:0 1px 2px #000;line-height:1.4}
+.turntale.table-v211.active-table .trick-current.battle-victory-glow .tile{outline:2px solid #ffe29b!important;box-shadow:0 0 10px #ffd15cc9,0 0 24px #ffc94b66!important;animation:winning-tile-glow 1s ease-in-out infinite!important}
+.trick-victory-caption{padding:2px 8px;border-radius:6px;border:1px solid #ffdd83;background:#2c2114ed;color:#ffe8a3;font-weight:950;white-space:nowrap;text-shadow:0 1px 2px #000}
+@keyframes winning-tile-glow{50%{box-shadow:0 0 17px #ffdf80,0 0 30px #ffc94b88}}
+body .battle-review-0641{background:#0b2017 url('/item-battle-v1/duel-panel-v1.png') center/100% 100% no-repeat!important;border:0!important;border-radius:16px;padding:28px 19px 19px!important;box-shadow:0 7px 30px #0009}
+body .battle-review-0641 .duel-ordinal{font-size:12px!important;color:#efcf8f!important;margin:0 0 12px;text-align:center;letter-spacing:1px}
+.duel-winner{margin-bottom:8px}.duel-winner .rpg-hp-bar{box-shadow:0 0 0 1px #ffe1a1,0 0 13px #e8c56c40}.duel-winner .hp-bar-identity strong{font-size:15px!important;color:#fff1bd!important}
+.duel-losers{gap:7px}.duel-loser-row .rpg-hp-bar{opacity:.95}
+body .battle-review-0641 .battle-final-formula{font-size:14px;margin:10px 0;color:#ffe4a0}
+body .battle-review-0641 :is(.battle-damage,.negative){color:#e53935!important;text-shadow:0 1px 1px #170403!important}
+.keeps-hp-change .hp-bar-current{position:relative}
+body .keeps-hp-change .hp-change-pinned{position:absolute;inset:auto 0 calc(100% + 2px) auto;display:block;width:max-content;opacity:1;transform:none;animation:hp-delta-pin .95s ease-out both;transform-origin:100% 100%}
+body .keeps-hp-change .hp-change-pinned>em{font-size:14px!important;line-height:1!important}
+@keyframes hp-delta-pin{0%{opacity:0;transform:translate(-10px,23px) scale(1.6)}20%,45%{opacity:1;transform:translate(-10px,18px) scale(1.6)}100%{opacity:1;transform:translate(0,0) scale(1)}}
+body .item-fx-scene.fx-ember.fx-damage .ember-impact-visual{left:var(--ember-baseline-x);top:var(--ember-baseline-y);transform:translate(-50%,-100%)!important;transform-origin:50% 100%}
+body .item-fx-scene .item-emblem-owner,body .item-fx-scene.fx-heal .item-emblem-owner{color:#fff0ce!important;-webkit-text-fill-color:#fff0ce!important;-webkit-text-stroke:1.2px #100d09!important;paint-order:stroke fill;text-shadow:0 2px 3px #000,1px 0 1px #000,-1px 0 1px #000!important;font-size:23px!important}
+.turntale[data-profession-targeting="true"] .trap-inline-instruction{background:#3a1514ed!important;border:1px solid #e53935!important;color:#ff796b!important;font-weight:950;text-shadow:0 1px 2px #000;box-shadow:0 0 14px #ef443657}
+.turntale[data-profession-targeting="true"] .opponents .seat-card{outline:2px solid #ed4a40!important;outline-offset:2px;box-shadow:0 0 13px #f4433666}
+.profession-active-scene.profession-swordsman{min-width:155px;gap:3px;padding:9px 14px;background:#382314e8}.profession-active-scene.profession-swordsman>svg{display:none}.profession-active-scene.profession-swordsman>strong{color:#ffde9a}
+.swordsman-slash{position:absolute;inset:-12px;z-index:90;pointer-events:none;display:block;overflow:visible}.swordsman-slash>svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 5px #ffe7ad)}
+.swordsman-slash path{fill:none;stroke-linecap:round;stroke-dasharray:190;stroke-dashoffset:190;animation:sword-cut 1.05s cubic-bezier(.12,.8,.15,1) both}.slash-wide{stroke:#f7c35c;stroke-width:14}.slash-core{stroke:#fff6d9;stroke-width:4}.slash-cross{stroke:#ffd99d;stroke-width:5;animation-delay:.35s!important}
+.swordsman-slash>i{position:absolute;inset:0;background:radial-gradient(ellipse,#ffca7180,transparent 65%);opacity:0}.swordsman-slash.is-impact>i{animation:slash-hit .48s ease-out both}
+@keyframes sword-cut{0%,35%{stroke-dashoffset:190;opacity:0}45%{opacity:1}100%{stroke-dashoffset:0;opacity:1}}@keyframes slash-hit{0%,25%{opacity:1}100%{opacity:0}}
+@media(max-height:450px) and (min-width:601px){body .battle-review-0641{padding:20px 16px 12px!important}.battle-review-0641 .duel-ordinal{margin-bottom:6px!important}.trick-victory-caption{font-size:12px}.item-emblem-owner{font-size:18px!important}}
+@media(prefers-reduced-motion:reduce){.trick-current.battle-victory-glow .tile{animation:none!important}.keeps-hp-change .hp-change-float.hp-change-pinned{animation:none!important;transform:none!important;opacity:1!important}.swordsman-slash path{animation:none;stroke-dashoffset:0;opacity:1}.swordsman-slash.is-impact>i{animation:none;opacity:.5}}
