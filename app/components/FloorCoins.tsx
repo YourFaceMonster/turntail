@@ -3,19 +3,38 @@ import {useLayoutEffect,useRef,useState,type CSSProperties} from 'react';
 import {createPortal} from 'react-dom';
 import {Coins} from 'lucide-react';
 import type {view} from '../../lib/game.ts';
-import type {FloorCoinPickup} from '../../lib/floor-coins.ts';
+import type {FloorCoinPickup,FloorCoinDiscovery} from '../../lib/floor-coins.ts';
+import {COIN_DISCOVERY_MS,COIN_COLLECT_MS,COIN_CREDIT_MS,COIN_PRESENTATION_MS} from '../../lib/pickup-presentation.ts';
 type View=ReturnType<typeof view>;
+export type CoinWalletPresentation={id:string,before:number};
+type Scene={event:FloorCoinPickup|FloorCoinDiscovery,pickup:boolean,from:{x:number,y:number},to:{x:number,y:number},center:{x:number,y:number}};
+const isPickup=(event:FloorCoinPickup|FloorCoinDiscovery):event is FloorCoinPickup=>'who' in event;
 export function FloorCoinMarker({amount=0}:{amount?:number}){return amount>0?<span className="floor-coin-marker" aria-label={`획득 주화 ${amount}P`} title={`가져오면 +${amount}P`}><Coins aria-hidden="true"/><b>{amount}</b></span>:null;}
-export function FloorCoinEffects({game}:{game:View}){
- const event=game.floorCoins?.events.at(-1),seen=useRef(event?.id),flight=useRef<HTMLSpanElement>(null),[shown,setShown]=useState<{event:FloorCoinPickup,from:{x:number,y:number},to:{x:number,y:number}}|null>(null);
+export function FloorCoinEffects({game,onWalletPresentation}:{game:View,onWalletPresentation?:(value:CoinWalletPresentation|null)=>void}){
+ const pickup=game.floorCoins?.events.at(-1),discovery=game.floorCoins?.lastDiscovery,event=pickup&&(!discovery||pickup.at>=discovery.at)?pickup:discovery;
+ const seen=useRef(event?.id),callback=useRef(onWalletPresentation);callback.current=onWalletPresentation;
+ const [scene,setScene]=useState<Scene|null>(null),[clock,setClock]=useState(Date.now());
  useLayoutEffect(()=>{
-  if(!event){setShown(null);return;}if(seen.current===event.id)return;seen.current=event.id;
-  const source=document.querySelector(`[data-stack="${event.index}"]`)?.getBoundingClientRect(),target=document.querySelector(event.who===game.me?'.own-wallet':`.opponents [data-seat="${event.who}"] .seat-card`)?.getBoundingClientRect();if(!source||!target)return;
-  setShown({event,from:{x:source.left+source.width/2,y:source.top+source.height/2},to:{x:target.left+target.width/2,y:target.top+target.height/2}});const timer=setTimeout(()=>setShown(null),1500);return()=>clearTimeout(timer);
+  if(!event){setScene(null);callback.current?.(null);return;}if(seen.current===event.id)return;seen.current=event.id;
+  const collecting=isPickup(event),duration=collecting?COIN_PRESENTATION_MS:COIN_DISCOVERY_MS;if(Date.now()>event.at+duration)return;
+  const source=document.querySelector(`[data-stack="${event.index}"]`)?.getBoundingClientRect(),board=document.querySelector('.floor-stage')?.getBoundingClientRect();if(!source||!board)return;
+  const target=collecting?document.querySelector(event.who===game.me?'.own-wallet':`.opponents [data-seat="${event.who}"] .seat-card`)?.getBoundingClientRect():null;
+  const center={x:Math.max(115,Math.min(innerWidth-115,board.left+board.width/2)),y:Math.max(75,Math.min(innerHeight-75,board.top+board.height/2))};
+  setScene({event,pickup:collecting,from:{x:source.left+source.width/2,y:source.top+source.height/2},to:target?{x:target.left+target.width/2,y:target.top+target.height/2}:center,center});setClock(Date.now());
+  if(collecting&&event.who===game.me&&event.moneyBefore!==undefined)callback.current?.({id:event.id,before:event.moneyBefore});
+  const tick=setInterval(()=>setClock(Date.now()),70),credit=setTimeout(()=>callback.current?.(null),Math.max(0,event.at+COIN_CREDIT_MS-Date.now())),done=setTimeout(()=>{setScene(null);callback.current?.(null);},Math.max(0,event.at+duration-Date.now()));
+  return()=>{clearInterval(tick);clearTimeout(credit);clearTimeout(done);callback.current?.(null);};
  },[event?.id,game.me]);
- useLayoutEffect(()=>{if(!shown||!flight.current)return;const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,{from,to}=shown,move=(x:number,y:number)=>`translate(${x}px,${y}px) translate(-50%,-50%)`;
-  const animation=flight.current.animate(reduced?[{transform:move(to.x,to.y),opacity:1},{transform:move(to.x,to.y),opacity:0}]:[{transform:move(from.x,from.y),opacity:1},{transform:move((from.x+to.x)/2,Math.min(from.y,to.y)-45),opacity:1,offset:.5},{transform:move(to.x,to.y),opacity:0}],{duration:reduced?180:750,easing:'ease-in-out',fill:'both'});return()=>animation.cancel();
- },[shown]);
- if(!shown)return null;const {event:pickup,to}=shown;
- return createPortal(<div className="floor-coin-pickup" role="status" aria-label={`${game.players[pickup.who].name} ${pickup.kind==='random'?'주화':'마지막 바닥 주화'} +${pickup.amount}P`}><span className="floor-coin-flight" ref={flight} aria-hidden="true"><Coins/></span><strong className="floor-coin-credit" style={{left:Math.min(innerWidth-38,Math.max(38,to.x)),top:Math.max(12,to.y-27)} as CSSProperties}>+{pickup.amount}P</strong></div>,document.body);
+ if(!scene||clock<scene.event.at)return null;
+ const elapsed=clock-scene.event.at,collecting=scene.pickup&&elapsed>=1100,credited=scene.pickup&&elapsed>=COIN_CREDIT_MS,coin=scene.pickup?scene.event as FloorCoinPickup:null;
+ const phase=credited?'credited':collecting?'collecting':'discovered';
+ return createPortal(<div className="coin-presentation" data-coin-phase={phase}>
+  <span className="coin-source-halo" style={{left:scene.from.x,top:scene.from.y}} aria-hidden="true"><Coins/></span>
+  <div className="coin-discovery-card" style={{left:scene.center.x,top:scene.center.y}} role="status" aria-live="polite" aria-atomic="true">
+   <Coins aria-hidden="true"/><strong>{collecting?`${game.players[coin!.who].name} 획득!`:'주화 발견!'}</strong>
+   <span>{collecting?<><b>+{coin!.amount}P</b>{coin!.kind!=='random'&&<small>마지막 패 보너스 포함</small>}</>:scene.pickup?'바닥패에서 주화를 찾았어요':'이 패를 가져가면 주화를 얻어요'}</span>
+  </div>
+  {coin&&elapsed>=COIN_COLLECT_MS&&elapsed<COIN_CREDIT_MS&&<span className="coin-slow-flight" style={{'--coin-from-x':`${scene.center.x}px`,'--coin-from-y':`${scene.center.y}px`,'--coin-to-x':`${scene.to.x}px`,'--coin-to-y':`${scene.to.y}px`,'--coin-flight-ms':`${COIN_CREDIT_MS-COIN_COLLECT_MS}ms`} as CSSProperties} aria-hidden="true"><Coins/></span>}
+  {coin&&credited&&<strong className="coin-wallet-credit" style={{left:Math.max(40,Math.min(innerWidth-40,scene.to.x)),top:Math.max(14,scene.to.y-25)}}>+{coin.amount}P</strong>}
+ </div>,document.body);
 }

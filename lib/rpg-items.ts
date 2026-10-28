@@ -18,7 +18,7 @@ export const RPG_SHOP_ITEMS:readonly RpgTacticalItem[]=[...RPG_BASIC_ITEMS,'whis
 export const RPG_TACTICAL_ITEMS:readonly RpgTacticalItem[]=[...RPG_SHOP_ITEMS,'fates-scales'];
 export const isAttackItem=(id:string):id is 'ember-bomb'|'spark-dart'=>id==='ember-bomb'||id==='spark-dart';
 export const exchangeEligible=(tile:Tile)=>tile.n!==1&&tile.n!==2;
-export type RpgTacticalState={round:number,used:number,turn?:number,peek?:{round:number,index:number,tile:Tile},peeks?:{round:number,index:number,tile:Tile}[],handPeek?:{round:number,target:number,tile:Tile},sealed?:number[],ember?:{target:number,turn:number}};
+export type RpgTacticalState={round:number,used:number,turn?:number,peek?:{round:number,index:number,tile:Tile,source?:'profession'},peeks?:{round:number,index:number,tile:Tile,source?:'profession'}[],handPeek?:{round:number,target:number,tile:Tile},sealed?:number[],ember?:{target:number,turn:number}};
 export type RpgItemEvent={id:string,actor:number,target:number,itemId:RpgTacticalItem,kind:'heal'|'damage'|'seal'|'scout'|'exchange'|'blocked'|'armed'|'cancel'|'reveal'|'failed',amount?:number,hpBefore?:number,hpAfter?:number,at:number,tiles?:Tile[]};
 export type RpgExchangeEvent={source?:'profession',id:string,itemId:RpgExchangeItem,actor?:number,target:number,round:number,outgoing:Tile[],incoming:Tile[],at:number};
 export const exchangeMinimum=(id:string)=>id==='fates-scales'?5:4;
@@ -94,7 +94,7 @@ export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:numbe
  if(id==='scout-lens'){
   const tile=g.stacks[target]?.[1]||(itemBattleState(g)?g.stacks[target]?.[0]:null);
   if(!Number.isInteger(target)||!tile)throw Error('확인할 바닥패를 선택해 주세요.');
-  if(g.stacks[target][1]){state.peek={round:g.round,index:target,tile:{...tile}};state.peeks=[...(old.peeks||(old.peek?[old.peek]:[])).filter(peek=>peek.index!==target),state.peek];}
+  if(g.stacks[target][1]){state.peek={round:g.round,index:target,tile:{...tile},source:(old.peeks||(old.peek?[old.peek]:[])).find(peek=>peek.tile.id===tile.id)?.source};state.peeks=[...(old.peeks||(old.peek?[old.peek]:[])).filter(peek=>peek.index!==target),state.peek];}
   recordTrapIntel(g,who,target,tile.id);
  }else if(id==='whisper-eye'){
   if(!Number.isInteger(target)||target===who||!g.players[target]?.hand.length)throw Error('확인할 상대를 선택해 주세요.');

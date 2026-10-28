@@ -36,7 +36,11 @@ for(let stage=0;stage<=10;stage++)for(let s=0;s<4;s++)for(let n=1;n<=15;n++){
  assert.match(html,/<circle cx="45" cy="46" r="(?:28|30)" fill="#fffdf5"/,'original suit medallion stays at its approved position and size');
  const numbers=[...html.matchAll(/<text\b([^>]*)>(\d+)<\/text>/g)];
  assert.equal(numbers.length,stage?2:1,'regional number halo and outline remain paired');
- for(const [,attributes,value] of numbers){assert.equal(Number(value),n);assert.match(attributes,/x="45"/);assert.ok(n<10||attributes.includes('textLength="32"'),'two-digit numbers fit inside the original medallion');}
+ for(const [,attributes,value] of numbers){
+  assert.equal(Number(value),n);assert.match(attributes,/x="45"/);assert.match(attributes,/font-weight="900"/,'both digit groups retain the same bold font');
+  assert.ok(!/textLength|lengthAdjust|scale\(/.test(attributes),'digits retain their natural glyph proportions');
+  if(n>9){assert.match(attributes,/font-size="33"/,'two digits fit by reducing font size');assert.match(attributes,/y="58"/,'smaller digits keep the original optical center');if(!stage)assert.match(attributes,/stroke-width="0.65"/,'the classic two-digit face preserves a firm stroke');}
+ }
  if(s===3)assert.ok(html.includes('transform="translate(45 46)"'),'sun retains its original center and rays');
  assert.ok(!html.includes('r="38"')&&!html.includes('r="35.5"'),'no enlarged plaque covers the original suit artwork');
  if(n===2&&!stage)assert.ok(html.includes(`data-motif="${s}:2"`),'approved suit-specific two emblems remain');

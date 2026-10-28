@@ -1,0 +1,53 @@
+/* Reserve a fixed hand slot; only the cards inside it respond to hand count. */
+.turntale.table-v211.active-table[data-impact],body:has(.turntale.table-v211.active-table[data-impact]) .live-table-scene{animation:none!important;translate:0 0!important;rotate:0deg!important}
+.turntale.table-v211.active-table .play-column>.felt{animation:none!important;translate:0 0!important;rotate:0deg!important}
+.turntale.table-v211.active-table.rpg-mode.portrait-table .play-column{grid-template-rows:minmax(0,1fr) calc(var(--played-card-height) + var(--trick-chrome,32px) + 2px) calc(var(--hand-space-h)*2 + var(--hand-chrome,122px))!important}
+.turntale.table-v211.active-table.rpg-mode.portrait-table .hand-panel .rpg-equipped-relics{height:clamp(112px,calc(var(--stage-height) - var(--seat-height) - var(--hand-space-h)*2 - var(--hand-chrome) - 108px),258px)}
+.turntale.table-v211.active-table .hand-tools .rogue-trap-control{display:inline-grid;place-items:center;line-height:0;gap:0;padding:2px!important}
+.turntale .hand-tools .rogue-trap-control>img{display:block;object-fit:contain;transform:translate(-.8%,1.5%);transform-origin:center}
+/* All pickup graphics are overlays. They never enter the floor's grid. */
+.coin-presentation,.trap-presentation{position:fixed;inset:0;z-index:212;pointer-events:none}
+.coin-discovery-card,.trap-impact-title,.ambush-presentation{position:fixed;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;width:max-content;max-width:calc(100vw - 28px);padding:14px 23px;border-radius:18px;pointer-events:none;line-height:1.3;box-shadow:0 7px 25px #0008}
+.coin-discovery-card{min-width:200px;border:1px solid #ffe197;background:linear-gradient(145deg,#442e12f7,#20190df5);color:#ffe6a3;animation:coin-discovery-in .35s ease-out both}
+.coin-discovery-card>svg{width:38px;height:38px;stroke:#ffe095;fill:#b079244d;filter:drop-shadow(0 0 9px #ffc94b77)}
+.coin-discovery-card>strong{font-size:23px;font-weight:900;color:#fff2c1}
+.coin-discovery-card>span{font-size:12px;color:#e8d5ac;display:flex;flex-direction:column;gap:4px}
+.coin-discovery-card b{font-size:27px;color:#4dff88;line-height:1.1}.coin-discovery-card small{font-size:11px;color:#dcc795}
+.coin-source-halo{position:fixed;display:grid;place-items:center;transform:translate(-50%,-50%);width:64px;height:64px;border:2px solid #ffe08a;border-radius:50%;background:radial-gradient(circle,#ffcc6055,transparent 70%);box-shadow:0 0 17px #ffcf6a99;animation:coin-halo 1s ease-in-out infinite}
+.coin-source-halo svg{width:26px;height:26px;color:#ffe092;filter:drop-shadow(0 2px 2px #422100)}
+.coin-slow-flight{position:fixed;left:0;top:0;width:35px;height:35px;color:#ffe598;filter:drop-shadow(0 2px 5px #6a4205);animation:coin-wallet-flight var(--coin-flight-ms) ease-in-out both}
+.coin-slow-flight svg{width:100%;height:100%;fill:#a6722477}
+.coin-wallet-credit{position:fixed;transform:translate(-50%,-50%);font-size:26px;font-weight:900;color:#4dff88;text-shadow:0 2px 4px #092112,0 0 8px #092112;white-space:nowrap;animation:coin-credit-pop 1s ease-out both}
+.coin-presentation[data-coin-phase="credited"] .coin-discovery-card{opacity:.5;transition:opacity .4s}.coin-presentation[data-coin-phase="credited"] .coin-source-halo{display:none}
+.round-money-detail .floor-coin-report{font-size:inherit;white-space:nowrap}.round-money-detail .floor-coin-report b{color:#4dff88}
+.trap-presentation{z-index:216}.trap-impact-title{min-width:210px;background:linear-gradient(145deg,#572018f7,#24110ef5);border:1px solid #ffae62;color:#ffdfb5;animation:trap-warning .35s ease-out both}
+.trap-impact-title strong{font-size:24px;font-weight:950;color:#ffe8bb;text-shadow:0 2px 1px #5d160c}.trap-impact-title span{font-size:12px;color:#ffd5b4}
+.trap-presentation.is-impact .trap-impact-title{border-color:#ffd68a;animation:trap-title-bang .5s cubic-bezier(.1,.8,.2,1) both}.trap-presentation.is-impact .trap-impact-title strong{color:#ffc777}
+.trap-presentation.yields-to-coin.is-impact .trap-impact-title{animation:trap-title-short .45s ease-out both}
+.trap-floor-scene{position:absolute;inset:0;z-index:40;display:grid;place-items:center;pointer-events:none;overflow:visible;isolation:isolate}
+.trap-floor-scene>img{position:absolute;width:135%;max-width:none;height:135%;object-fit:contain;filter:drop-shadow(0 0 7px #ff9f39);animation:trap-reveal 1.3s ease-in both}
+.trap-floor-scene>i{position:absolute;inset:-8%;border:2px solid #ffb86e;border-radius:50%;box-shadow:0 0 9px #ff982555;opacity:.7}
+.trap-floor-scene>b{display:none}.trap-floor-scene.is-impact{background:radial-gradient(circle,#fff6afbb,#ff9a2d66 40%,transparent 73%)}
+.trap-floor-scene.is-impact>img{animation:trap-snap .65s cubic-bezier(.15,.8,.25,1) both}.trap-floor-scene.is-impact>i{animation:trap-shockwave .85s ease-out both}.trap-floor-scene.is-impact>i:nth-of-type(2){animation-delay:.14s}
+.trap-floor-scene.is-impact>b{display:block;position:absolute;left:50%;top:50%;font-size:clamp(25px,5vw,44px);font-weight:950;color:#fff3b0;text-shadow:2px 3px 0 #a23412,-1px -1px 0 #a23412;white-space:nowrap;animation:trap-boom-word 1.3s ease-out both}
+.trap-target-impact{position:absolute;inset:0;z-index:85;pointer-events:none;border-radius:inherit;background:radial-gradient(ellipse,#ff571a66,transparent 75%);box-shadow:inset 0 0 17px #ff704288;animation:trap-target-flash .9s ease-out both}
+.trap-damage-float{position:fixed;z-index:219;pointer-events:none;font-size:35px;font-weight:950;color:#ff6652;text-shadow:0 2px 3px #34100e,0 0 6px #fff7;animation:trap-hit-number 1.8s ease-out both}
+.trap-owner-laugh{position:fixed;z-index:218;transform:translate(-50%,4px);padding:5px 8px;border-radius:10px;border:1px solid #f5cb8d;background:#372015f5;color:#fff0c8;font-size:12px;font-weight:800;white-space:nowrap;pointer-events:none;box-shadow:0 3px 7px #0006;animation:trap-laugh 1.1s ease-in-out both}
+.ambush-presentation{z-index:215;border:1px solid #bca4ee;background:linear-gradient(145deg,#362047f5,#201829f5);color:#f0dfff;padding:10px 17px;animation:coin-discovery-in .25s ease-out both}.ambush-presentation>svg{width:28px;height:28px}.ambush-presentation strong{font-size:19px}.ambush-presentation span{font-size:12px}.ambush-presentation.yields-to-coin.is-impact{animation:trap-title-short .35s ease-out both}
+.ambush-target-hit{position:absolute;inset:0;z-index:85;display:flex;align-items:center;justify-content:center;gap:4px;color:#ff7662;background:radial-gradient(ellipse,#ba456b66,transparent 75%);pointer-events:none;animation:trap-target-flash 1.2s ease-out both}.ambush-target-hit svg{width:22px;height:22px}.ambush-target-hit b{font-size:32px;font-weight:950;text-shadow:0 2px 3px #281018}
+@keyframes coin-discovery-in{from{opacity:0;translate:0 10px;scale:.9}to{opacity:1;translate:0 0;scale:1}}
+@keyframes coin-halo{50%{scale:1.13;box-shadow:0 0 25px #ffd86daa}}
+@keyframes coin-wallet-flight{from{transform:translate(var(--coin-from-x),var(--coin-from-y)) translate(-50%,-50%) scale(1.2);opacity:1}75%{opacity:1}to{transform:translate(var(--coin-to-x),var(--coin-to-y)) translate(-50%,-50%) scale(.65);opacity:0}}
+@keyframes coin-credit-pop{0%{opacity:0;translate:0 8px;scale:.75}20%,75%{opacity:1;translate:0 0;scale:1}100%{opacity:0;translate:0 -10px;scale:1}}
+@keyframes trap-warning{from{opacity:0;scale:.8}to{opacity:1;scale:1}}
+@keyframes trap-title-bang{0%{scale:.85}35%{scale:1.16}65%{scale:.97}100%{scale:1}}
+@keyframes trap-title-short{0%{opacity:1;scale:1.12}60%{opacity:1;scale:1}100%{opacity:0;scale:.96}}
+@keyframes trap-reveal{0%{scale:.4;opacity:0;rotate:-15deg}45%{scale:1.1;opacity:1;rotate:5deg}100%{scale:1.2;opacity:1;rotate:0deg}}
+@keyframes trap-snap{0%{scale:1.1;opacity:1;rotate:-10deg}35%{scale:2.25;opacity:1;rotate:10deg}75%{scale:1.65;opacity:1;rotate:-3deg}100%{scale:1.8;opacity:0;rotate:0deg}}
+@keyframes trap-shockwave{from{scale:.4;opacity:1;border-width:5px}to{scale:3.2;opacity:0;border-width:1px}}
+@keyframes trap-boom-word{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}20%{transform:translate(-50%,-50%) scale(1.35);opacity:1}50%,80%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-65%) scale(1.1);opacity:0}}
+@keyframes trap-target-flash{0%,30%{opacity:1}15%{opacity:.25}100%{opacity:0}}
+@keyframes trap-hit-number{0%{transform:translate(-50%,0) scale(.5);opacity:0}18%,70%{transform:translate(-50%,-12px) scale(1.1);opacity:1}100%{transform:translate(-50%,-24px) scale(1);opacity:0}}
+@keyframes trap-laugh{0%{opacity:0;translate:0 5px}20%,40%,60%,80%,100%{opacity:1;translate:0 0}30%,50%,70%{translate:0 -4px}}
+@media(max-height:450px) and (min-width:601px){.coin-discovery-card,.trap-impact-title{padding:9px 18px;gap:3px}.coin-discovery-card>svg{width:27px;height:27px}.coin-discovery-card>strong,.trap-impact-title strong{font-size:19px}.coin-discovery-card b{font-size:22px}.trap-owner-laugh{font-size:10px;padding:3px 6px}}
+@media(prefers-reduced-motion:reduce){.coin-presentation *,.trap-presentation *,.trap-floor-scene *,.trap-target-impact,.trap-damage-float,.trap-owner-laugh,.ambush-presentation,.ambush-target-hit{animation:none!important;transition:none!important}.coin-source-halo{box-shadow:0 0 9px #ffcf6a99}.coin-slow-flight{display:none}.trap-floor-scene.is-impact>img{opacity:0}.trap-floor-scene.is-impact>i{display:none}.trap-floor-scene.is-impact>b{transform:translate(-50%,-50%)}.trap-damage-float{transform:translate(-50%,-15%)}.trap-presentation.yields-to-coin.is-impact .trap-impact-title,.ambush-presentation.yields-to-coin.is-impact{display:none}}

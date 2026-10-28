@@ -69,7 +69,7 @@ export default function TileFace({tile:t,small=false}:{tile:Tile,small?:boolean}
  <g opacity=".1" stroke="#86734b" strokeWidth=".5">{Array.from({length:12},(_,i)=><path key={i} d={`M${(i*31)%97} ${97+(i*13)%30}l${2+i%3} -1`}/>)}</g>
  <TileWear seed={t.id}/><ClassicTileOrnament s={t.s} special={special}/>
  <g stroke={t.s===2?'#8c3e08':undefined} strokeWidth={t.s===2?.65:undefined} paintOrder="stroke fill">
- <text className={special?'special-number':'tile-number'} {...tileNumberGeometry(t.n)}>{t.n}</text></g></g>
+ <text className={special?'special-number':'tile-number'} {...tileNumberGeometry(t.n)} stroke={t.n>9?(t.s===2?'#8c3e08':ink):undefined} strokeWidth={t.n>9?.65:undefined}>{t.n}</text></g></g>
  <g className="engraved-suit-mark tile-suit-identity" fill={ink} color={ink} stroke={t.s===2?'#8c3e08':undefined} strokeWidth={t.s===2?.65:undefined} paintOrder="stroke fill" data-motif={`${t.s}:${t.n}`} transform={`translate(${special?70:74} 111) scale(${(special?.44:.5)*(t.s===1?1.35:t.s===2?.73:1)})`}>{special?<SpecialMotif s={t.s} n={t.n}/>:<Motif s={t.s}/>}</g>
  <TileCartoon seed={t.id}/></g></svg></span>;
 }

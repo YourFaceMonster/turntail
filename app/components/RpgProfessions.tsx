@@ -17,7 +17,7 @@ const professionRoles:Record<RpgProfessionId,{role:string,signature:string}>= {
 };
 function itemBattleDescription(id:RpgProfessionId){
  return id==='swordsman'?['싱글·페어 추가 피해 +1','스트레이트 추가 피해 +3 · 판당 1회']:
-  id==='rogue'?['싱글 바닥 1장 투시','트리플 바닥 2장 투시 · 판당 1회','함정 피해 4 · 자기 차례 설치 · 판당 1회']:
+  id==='rogue'?['싱글 바닥 1장 투시','트리플 바닥 2장 투시 · 판당 1회','직업 투시 패 직접 회수 · 상대 각각 피해 1','함정 피해 4 · 자기 차례 설치 · 판당 1회']:
   id==='cleric'?['페어 HP +1 · 두 번째 페어 추가 회복 +2','풀하우스 HP +5 · 판당 1회']:
   ['트리플 추가 피해 +2','첫 5장 족보 추가 피해 +2 · 판당 1회','포카드 추가 피해 +6 · 판당 1회'];
 }

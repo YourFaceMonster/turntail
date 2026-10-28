@@ -15,8 +15,9 @@ import {RPG_TEST_ROUNDS,settleRpgRound,type RpgRun} from './rpg.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
 import {rpgTacticalView,resetRpgTactics,tryRpgBotItem,scoutRpgBotDraw} from './rpg-items.ts';
 import {twinIndex} from './rpg-twins.ts';
-import {applyPioneerDeal,itemBattleState,triggerFloorTrap,tryBotFloorTrap} from './item-battle-rules.ts';
-import {prepareFloorCoins,hasFloorCoins,claimFloorCoin,floorCoinsView,publicFloorCoinAmount,type FloorCoinState} from './floor-coins.ts';
+import {applyPioneerDeal,itemBattleState,triggerFloorTrap,triggerScoutedPickup,tryBotFloorTrap} from './item-battle-rules.ts';
+import {prepareFloorCoins,hasFloorCoins,claimFloorCoin,revealFloorCoin,floorCoinsView,publicFloorCoinAmount,type FloorCoinState} from './floor-coins.ts';
+import {COIN_PRESENTATION_MS} from './pickup-presentation.ts';
 export type Tile = {id:number,n:number,s:number};
 export type Player = {id:string,token:string,name:string,hand:Tile[],wins:number,bot?:boolean,points?:number,losses?:number,games?:number,profile?:string,avatar?:string,timeouts?:number,replaced?:boolean};
 export type RoundResult = {id:string,at:number,round:number,players:{id:string,name:string,count:number,place:number,delta:number,total:number,winner:boolean}[],transfers:{from:number,to:number,points:number}[],voided?:boolean,voidReason?:string,challenge?:Challenge|null,stageRun?:StageRun|null};
@@ -172,7 +173,12 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   g.roundActions=(g.roundActions??(g.playedTiles?.length||0))+1;const z=g.stacks[index][1]?1:0,t=g.stacks[index][z]!;g.stacks[index][z]=null;p.hand=sorted([...p.hand,t]);
   g.publicDraws=g.publicDraws||{};if(z===0)g.publicDraws[p.id]=[...(g.publicDraws[p.id]||[]),t];
   g.turnReadyAt=now+DRAW_TRAVEL_MS;g.lastEvent={id:uid(),type:"draw",who,index,tiles:[t],concealed:z===1,at:now};note(g,`${p.name} · ${z===1?"위층 비공개":"아래층 공개"} 패 1개 가져오기`);
-  claimFloorCoin(g,who,index,t,z===1?2:1,now);triggerFloorTrap(g,who,index,t,now);if(g.rpgRun&&g.rpgRun.status!=='playing')return;
+  const coin=claimFloorCoin(g,who,index,t,z===1?2:1,now),ambush=triggerScoutedPickup(g,who,index,t,now);
+  triggerFloorTrap(g,who,index,t,now,true);
+  const trap=itemBattleState(g)?.lastTrap,pickupBeat=trap&&!trap.safe&&trap.index===index&&trap.at>=now?trap.at+450:ambush?ambush.at+350:now;
+  if(coin){coin.at=pickupBeat;g.turnReadyAt=Math.max(g.turnReadyAt||0,pickupBeat+COIN_PRESENTATION_MS);}
+  revealFloorCoin(g,index,pickupBeat);
+  if(g.rpgRun?.hp.some(hp=>hp<=0)){if(g.hpItemMatch)g.hpItemMatch.endReason=g.rpgRun.hp[who]<=0?'trap':'ambush';finishHpItemMatch(g);return;}
  }else if(action==="pass"){
   if(g.stacks.some(s=>s[0]||s[1]))throw Error("바닥 패가 남아 있으면 내거나 가져와야 해요.");
   if(!g.trick.length)throw Error("새 선에서는 타일을 내야 해요.");g.roundActions=(g.roundActions??(g.playedTiles?.length||0))+1;g.turnReadyAt=0;g.lastEvent={id:uid(),type:"pass",who,at:now};note(g,`${p.name} · 패스`);
@@ -185,7 +191,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
 export function view(g:Game,token:string){
  const me=g.players.findIndex(p=>p.token===token);if(me<0)throw Error("입장 정보가 없어요. 방 코드로 다시 입장해 주세요.");
  const event=g.lastEvent;const lastEvent=event?.type==="draw"&&event.concealed&&event.who!==me?{...event,tiles:undefined}:event;
- return {floorCoins:floorCoinsView(g),code:g.code,phase:g.phase,roundActions:g.roundActions??(g.playedTiles?.length||0),matchMode:g.matchMode||"unlimited",targetScore:g.targetScore||0,matchWinner:g.matchWinner??null,matchNo:g.matchNo||1,displayRound:g.round-(g.matchRoundOffset||0),capacity:capacity(g),...dimensions(g),turn:g.turn,host:hostSeat(g),turnReadyAt:g.turnReadyAt||0,turnDeadline:g.turnDeadline||0,turnStartedAt:g.turnStartedAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,tablePlay:g.tablePlay||null,log:g.log,winner:g.winner,round:g.round,practice:g.practice,challenge:g.challenge||null,stageRun:g.stageRun||null,rpgRun:g.rpgRun?rpgTacticalView(g.rpgRun,me,g.round,g):null,rpgTest:!!g.rpgTest,hpItemMode:!!g.hpItemMode,hpItemVariant:g.hpItemVariant||1,hpItemRules:g.hpItemRules,hpItemMatch:g.hpItemMatch?{...g.hpItemMatch,roundItems:g.hpItemMatch.roundItems.filter(item=>item.id!=="ward-seal"||item.actor===me).map(item=>item.kind==='scout'&&item.actor!==me?{...item,target:-1}:item)}:undefined,completedBattles:g.completedBattles||0,revealedHands:g.revealedHands||[],played:g.playedTiles||g.trick,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent,me,items:itemView(g,me),
+ return {floorCoins:floorCoinsView(g,me),code:g.code,phase:g.phase,roundActions:g.roundActions??(g.playedTiles?.length||0),matchMode:g.matchMode||"unlimited",targetScore:g.targetScore||0,matchWinner:g.matchWinner??null,matchNo:g.matchNo||1,displayRound:g.round-(g.matchRoundOffset||0),capacity:capacity(g),...dimensions(g),turn:g.turn,host:hostSeat(g),turnReadyAt:g.turnReadyAt||0,turnDeadline:g.turnDeadline||0,turnStartedAt:g.turnStartedAt||0,rally:g.rally||0,lastBy:g.lastBy,trick:g.trick,tablePlay:g.tablePlay||null,log:g.log,winner:g.winner,round:g.round,practice:g.practice,challenge:g.challenge||null,stageRun:g.stageRun||null,rpgRun:g.rpgRun?rpgTacticalView(g.rpgRun,me,g.round,g):null,rpgTest:!!g.rpgTest,hpItemMode:!!g.hpItemMode,hpItemVariant:g.hpItemVariant||1,hpItemRules:g.hpItemRules,hpItemMatch:g.hpItemMatch?{...g.hpItemMatch,roundItems:g.hpItemMatch.roundItems.filter(item=>item.id!=="ward-seal"||item.actor===me).map(item=>item.kind==='scout'&&item.actor!==me?{...item,target:-1}:item)}:undefined,completedBattles:g.completedBattles||0,revealedHands:g.revealedHands||[],played:g.playedTiles||g.trick,chat:g.chat||[],opening:g.opening||null,result:g.result||null,lastEvent,me,items:itemView(g,me),
  players:g.players.map((p,i)=>({id:p.id,name:p.name,avatar:p.avatar||"",count:p.hand.length,wins:p.wins,losses:p.losses||0,games:p.games||0,points:p.points||0,bot:p.bot,replaced:!!p.replaced,timeouts:p.timeouts||0,known:g.publicDraws?.[p.id]||[],hand:i===me||(g.phase==="ended"&&(g.practice||!!g.revealedHands?.includes(p.id)))?p.hand:undefined})),
  stacks:g.stacks.map((s,i)=>({...itemBattleState(g)?{trapAvailable:!!(s[0]||s[1])}:{},...hasFloorCoins(g)?{coinAmount:publicFloorCoinAmount(g,i,me)}:{},lower:s[1]?null:s[0],lowerPresent:!!s[0],upper:!!s[1],available:!!g.trick.length&&accessible(g,i)}))};
 }

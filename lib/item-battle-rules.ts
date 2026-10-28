@@ -2,15 +2,17 @@ import {assertTurnReady,lowestHandLead,sorted,uid,view,type Game,type Tile} from
 import {hpItemShopPending} from './hp-item-shop.ts';
 import {finishHpItemMatch} from './hp-item-mode.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
+import {AMBUSH_IMPACT_MS,AMBUSH_PRESENTATION_MS,TRAP_IMPACT_MS,TRAP_PRESENTATION_MS} from './pickup-presentation.ts';
 
 export type FloorTrap={id:string,owner:number,index:number,tileId:number,round:number};
 export type TrapIntel={index:number,tileId:number,trapped:boolean};
 export type TrapBurst={id:string,owner:number,owners?:number[],target:number,index:number,damage:number,hpBefore:number,hpAfter:number,at:number,safe:boolean};
-export type ItemBattleState={version:1,pairWins:number[],firstFiveUsed:boolean[],trapUsed:boolean[],traps:FloorTrap[],trapIntel:Record<number,TrapIntel[]>,trapEvents:TrapBurst[],lastTrap?:TrapBurst,pioneerApplied?:boolean};
+export type AmbushBurst={id:string,round:number,owner:number,index:number,damage:number[],hpBefore:number[],hpAfter:number[],at:number};
+export type ItemBattleState={version:1,pairWins:number[],firstFiveUsed:boolean[],trapUsed:boolean[],traps:FloorTrap[],trapIntel:Record<number,TrapIntel[]>,trapEvents:TrapBurst[],lastTrap?:TrapBurst,ambushEvents?:AmbushBurst[],lastAmbush?:AmbushBurst,pioneerApplied?:boolean};
 export function newItemBattleState(size:number):ItemBattleState{return {version:1,pairWins:Array(size).fill(0),firstFiveUsed:Array(size).fill(false),trapUsed:Array(size).fill(false),traps:[],trapIntel:{},trapEvents:[]};}
 export function itemBattleState(game:{rpgRun?:{combat?:{itemBattle?:ItemBattleState}}|null}){return game.rpgRun?.combat?.itemBattle;}
 /** Reset only round resources, preserving the once-per-match first-deal marker. */
-export function resetItemBattle(game:Game){const state=itemBattleState(game);if(state)Object.assign(state,newItemBattleState(game.players.length),{pioneerApplied:state.pioneerApplied,lastTrap:undefined});}
+export function resetItemBattle(game:Game){const state=itemBattleState(game);if(state)Object.assign(state,newItemBattleState(game.players.length),{pioneerApplied:state.pioneerApplied,lastTrap:undefined,ambushEvents:[],lastAmbush:undefined});}
 export function applyPioneerDeal(game:Game,now=Date.now()){
  const run=game.rpgRun,state=itemBattleState(game);if(!run||!state||state.pioneerApplied||game.round!==1)return;
  state.pioneerApplied=true;if(!run.equipped.includes('pioneers-eye'))return;
@@ -54,26 +56,37 @@ export function blockItemBattleDamage(game:Game,seat:number,damage:number,now=Da
  }
  return damage;
 }
-export function triggerFloorTrap(game:Game,who:number,index:number,tile:Tile,now=Date.now()){
+export function triggerFloorTrap(game:Game,who:number,index:number,tile:Tile,now=Date.now(),deferFinish=false){
  const state=itemBattleState(game),run=game.rpgRun;if(!state||!run)return;
  const traps=state.traps.filter(trap=>trap.tileId===tile.id&&trap.round===game.round);state.traps=state.traps.filter(trap=>!traps.includes(trap));
  for(const key of Object.keys(state.trapIntel))state.trapIntel[Number(key)]=state.trapIntel[Number(key)].filter(intel=>intel.tileId!==tile.id);
  const hpBeforePickup=run.hp[who],triggered:TrapBurst[]=[];
  for(const trap of traps){
   const safe=trap.owner===who,hpBefore=run.hp[who],damage=safe?0:blockItemBattleDamage(game,who,4,now);run.hp[who]=Math.max(0,hpBefore-damage);
-  state.lastTrap={id:uid(),owner:trap.owner,target:who,index,damage:hpBefore-run.hp[who],hpBefore,hpAfter:run.hp[who],at:now+1200,safe};state.trapEvents.push(state.lastTrap);triggered.push(state.lastTrap);
-  if(!safe){game.log=[`${game.players[trap.owner].name}의 함정 발동 · ${game.players[who].name} HP −${state.lastTrap.damage}`,...game.log].slice(0,40);game.turnReadyAt=Math.max(game.turnReadyAt||0,now+2100);}
+  state.lastTrap={id:uid(),owner:trap.owner,target:who,index,damage:hpBefore-run.hp[who],hpBefore,hpAfter:run.hp[who],at:now+TRAP_IMPACT_MS,safe};state.trapEvents.push(state.lastTrap);triggered.push(state.lastTrap);
+  if(!safe){game.log=[`${game.players[trap.owner].name}의 함정 발동 · ${game.players[who].name} HP −${state.lastTrap.damage}`,...game.log].slice(0,40);game.turnReadyAt=Math.max(game.turnReadyAt||0,now+TRAP_PRESENTATION_MS);}
  }
  const hostile=triggered.filter(event=>!event.safe);
  if(hostile.length)state.lastTrap={...hostile[0],id:uid(),owners:hostile.map(event=>event.owner),damage:hpBeforePickup-run.hp[who],hpBefore:hpBeforePickup,hpAfter:run.hp[who]};
- if(traps.length){run.updatedAt=now;if(run.hp.some(hp=>hp<=0)){if(game.hpItemMatch)game.hpItemMatch.endReason='trap';finishHpItemMatch(game);}}
+ if(traps.length){run.updatedAt=now;if(!deferFinish&&run.hp.some(hp=>hp<=0)){if(game.hpItemMatch)game.hpItemMatch.endReason='trap';finishHpItemMatch(game);}}
+}
+/** Only profession-origin scouting arms this pickup attack; lenses never arm it. */
+export function triggerScoutedPickup(game:Game,who:number,index:number,tile:Tile,now=Date.now()){
+ const run=game.rpgRun,state=itemBattleState(game),tactic=run?.tactics?.[who];
+ if(!run||!state||run.combat?.professions[who]!=='rogue'||tactic?.round!==game.round)return null;
+ const peeks=tactic.peeks||(tactic.peek?[tactic.peek]:[]);if(!peeks.some(peek=>peek.source==='profession'&&peek.round===game.round&&peek.tile.id===tile.id))return null;
+ tactic.peeks=peeks.filter(peek=>peek.tile.id!==tile.id);tactic.peek=tactic.peeks.at(-1);
+ const hpBefore=[...run.hp],damage=game.players.map((_,seat)=>seat===who?0:Math.min(run.hp[seat],blockItemBattleDamage(game,seat,1,now)));
+ run.hp=run.hp.map((hp,seat)=>Math.max(0,hp-damage[seat]));run.updatedAt=now;
+ const event:AmbushBurst={id:uid(),round:game.round,owner:who,index,damage,hpBefore,hpAfter:[...run.hp],at:now+AMBUSH_IMPACT_MS};state.lastAmbush=event;state.ambushEvents=[...(state.ambushEvents||[]),event];
+ game.turnReadyAt=Math.max(game.turnReadyAt||0,now+AMBUSH_PRESENTATION_MS);game.log=[`${game.players[who].name} · 투시 패 회수 기습 · ${game.players.map((player,seat)=>seat===who?null:`${player.name} HP −${damage[seat]}`).filter(Boolean).join(' · ')}`,...game.log].slice(0,40);return event;
 }
 /** Automatic scouting uses hidden upper tiles only and the receiver's own private map. */
 export function scoutProfessionFloor(game:Game,who:number,count:number){
  const run=game.rpgRun;if(!run)return 0;
  const old=run.tactics?.[who],known=old?.round===game.round?old.peeks||(old.peek?[old.peek]:[]):[];
  const candidates=game.stacks.flatMap((stack,index)=>stack[1]&&!known.some(peek=>peek.tile.id===stack[1]!.id)?[index]:[]);let revealed=0;
- while(candidates.length&&revealed<count){const random=new Uint32Array(1);crypto.getRandomValues(random);const index=candidates.splice(random[0]%candidates.length,1)[0],peek={round:game.round,index,tile:{...game.stacks[index][1]!}};
+ while(candidates.length&&revealed<count){const random=new Uint32Array(1);crypto.getRandomValues(random);const index=candidates.splice(random[0]%candidates.length,1)[0],peek={round:game.round,index,tile:{...game.stacks[index][1]!},source:'profession' as const};
   const current=run.tactics?.[who],state=current?.round===game.round?{...current}:{round:game.round,used:0};
   state.peek=peek;state.peeks=[...(state.peeks||[]),peek];run.tactics={...run.tactics,[who]:state};revealed++;
  }
