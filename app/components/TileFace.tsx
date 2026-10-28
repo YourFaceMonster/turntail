@@ -6,6 +6,7 @@ import StageTileEngraving from './StageTileEngraving';
 import TileCartoon,{CARTOON_TILE_PATH} from './TileCartoon';
 import TileMaterialFinish,{TILE_MATERIAL_NAMES} from './TileMaterialFinish';
 import {TILE_INKS} from '../../lib/tile-palette';
+import {tileNumberGeometry} from '../../lib/tile-face-geometry';
 import {useStageVisual,StageMaterial} from "./StageVisuals";
 import {type Tile} from '../../lib/game';
 const colors=TILE_INKS;
@@ -55,7 +56,7 @@ function SpecialMotif({s,n}:{s:number,n:number}){
 export default function TileFace({tile:t,small=false}:{tile:Tile,small?:boolean}){
  const special=t.n===2,ink=colors[t.s],stage=useStageVisual(),artId=useId().replace(/:/g,'');
  if(stage){
-  const dark=[6,9,10].includes(stage),numberProps={x:48,y:79,textAnchor:'middle' as const,fontFamily:'Trebuchet MS,Arial,sans-serif',fontWeight:900,fontSize:t.n>9?64:78,letterSpacing:t.n>9?-3:-1};
+  const dark=[6,9,10].includes(stage),numberProps=tileNumberGeometry(t.n);
   return <span data-tile-id={t.id} data-number={t.n} data-suit={t.s} data-tile-material={TILE_MATERIAL_NAMES[stage-1]} title={`${TILE_MATERIAL_NAMES[stage-1]} 패`} className={`tile face stage-material-tile suit${t.s} ${small?'small':''}`} style={{color:ink}}><svg className="tile-art" data-number-layout="classic" style={{color:ink}} viewBox="0 0 100 132" aria-hidden="true" focusable="false"><defs><clipPath id={`${artId}-cartoon`}><path d={CARTOON_TILE_PATH}/></clipPath></defs><g clipPath={`url(#${artId}-cartoon)`}><g className="tile-main-art"><StageMaterial stage={stage} id={`material-${artId}`} seed={t.id}/><TileMaterialFinish stage={stage} id={artId}/><g opacity={dark?.17:.12}><StageTileEngraving stage={stage} s={t.s} special={special}/></g><ClassicTileOrnament s={t.s} special={special}/>
   <g fill={ink} paintOrder="stroke" strokeLinejoin="round"><text {...numberProps} data-number-halo="true" stroke="#fff1d5" strokeWidth="5.6" aria-hidden="true">{t.n}</text><text {...numberProps} data-number-outline="dark" stroke="#111015" strokeWidth="2.6">{t.n}</text></g></g>
   <g className="tile-suit-identity" transform={`translate(${special?70:74} 111) scale(${(special?.44:.5)*(t.s===1?1.35:t.s===2?.73:1)})`} fill={ink} paintOrder="stroke" strokeLinejoin="round" stroke={dark?'#fff1d5':t.s===2?'#8c3e08':'none'} strokeWidth={dark?1.8:.65}>{special?<SpecialMotif s={t.s} n={t.n}/>:<Motif s={t.s}/>}</g><TileCartoon seed={t.id} dark={dark}/></g></svg></span>;
@@ -68,7 +69,7 @@ export default function TileFace({tile:t,small=false}:{tile:Tile,small?:boolean}
  <g opacity=".1" stroke="#86734b" strokeWidth=".5">{Array.from({length:12},(_,i)=><path key={i} d={`M${(i*31)%97} ${97+(i*13)%30}l${2+i%3} -1`}/>)}</g>
  <TileWear seed={t.id}/><ClassicTileOrnament s={t.s} special={special}/>
  <g stroke={t.s===2?'#8c3e08':undefined} strokeWidth={t.s===2?.65:undefined} paintOrder="stroke fill">
- <text className={special?'special-number':'tile-number'} x="48" y="79" textAnchor="middle" fontFamily="Trebuchet MS,Arial,sans-serif" fontWeight="900" fontSize={t.n>9?64:78} letterSpacing={t.n>9?-3:-1}>{t.n}</text></g></g>
+ <text className={special?'special-number':'tile-number'} {...tileNumberGeometry(t.n)}>{t.n}</text></g></g>
  <g className="engraved-suit-mark tile-suit-identity" fill={ink} color={ink} stroke={t.s===2?'#8c3e08':undefined} strokeWidth={t.s===2?.65:undefined} paintOrder="stroke fill" data-motif={`${t.s}:${t.n}`} transform={`translate(${special?70:74} 111) scale(${(special?.44:.5)*(t.s===1?1.35:t.s===2?.73:1)})`}>{special?<SpecialMotif s={t.s} n={t.n}/>:<Motif s={t.s}/>}</g>
  <TileCartoon seed={t.id}/></g></svg></span>;
 }

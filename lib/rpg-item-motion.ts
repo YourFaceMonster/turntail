@@ -22,9 +22,10 @@ export function dartFacingFrames():Keyframe[]{
 export function itemTurnReadyAt(event:RpgItemEvent,me=0){const timing=itemSceneTiming(event,me);return event.at+timing.duration+timing.gap;}
 const bound=(value:number,min:number,max:number)=>Math.max(min,Math.min(Math.max(min,max),value));
 /** Visual coordinates use public seat rectangles, never hands or prepared defenses. */
-export function itemScenePoints(width:number,height:number,source:ExchangeRect,target:ExchangeRect,board:ExchangeRect){
+export function itemScenePoints(width:number,height:number,source:ExchangeRect,target:ExchangeRect,board:ExchangeRect,options:{impact?:'center'|'lower-edge'}={}){
  const point=(rect:ExchangeRect)=>({x:bound(rect.left+rect.width/2,24,width-24),y:bound(rect.top+rect.height/2,24,height-24)});
  const from=point(source),to=point(target),center={x:width/2,y:bound(height/2-40,100,height-100)};
+ if(options.impact==='lower-edge')to.y=bound(target.top+target.height-2,24,height-24);
  return {from,to,center,apex:{x:center.x,y:Math.max(48,Math.min(from.y,to.y,center.y)-70)},blockHit:{x:to.x,y:to.y},recoil:{x:to.x+(from.x<to.x?-100:100),y:Math.max(45,to.y-110)}};
 }
 type Point={x:number,y:number};

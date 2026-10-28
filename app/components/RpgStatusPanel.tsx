@@ -3,9 +3,6 @@ import {useEffect,useLayoutEffect,useRef,useState,type CSSProperties} from 'reac
 import {createPortal} from 'react-dom';
 import type {view} from '../../lib/game.ts';
 import {RpgProfessionStatus} from './RpgProfessions';
-import {ALL_GAME_RELICS as RPG_RELICS,relicImage} from '../../lib/item-battle-relics.ts';
-import {RPG_CONSUMABLES} from '../../lib/rpg.ts';
-import {ALL_RELIC_HINTS as RPG_RELIC_HINTS} from '../../lib/rpg-relic-feedback.ts';
 
 type View=ReturnType<typeof view>;
 
@@ -17,17 +14,16 @@ export function RpgStatusPanel({game,seat,close}:{game:View,seat:number,close:()
   const mine=seat===game.me;
   const anchor=document.querySelector<HTMLElement>(mine?'.rpg-mode .own-status-card':`.rpg-mode .opponents [data-seat="${seat}"] .seat-card`);
   if(!anchor)return;
-  const place=()=>{const bounds=anchor.getBoundingClientRect(),width=Math.min(mine?260:360,bounds.width),rightSide=!mine&&bounds.left+bounds.width/2>=innerWidth/2;setPosition({left:rightSide?bounds.right-width:bounds.left,top:mine?Math.max(8,bounds.top-(panelRef.current?.offsetHeight||120)-6):bounds.bottom+4,right:'auto',width,visibility:bounds.bottom<0||bounds.top>innerHeight?'hidden':'visible'});};
-  place();const observer=new ResizeObserver(place);observer.observe(anchor);if(panelRef.current)observer.observe(panelRef.current);window.addEventListener('resize',place);window.addEventListener('scroll',place,true);
+  const fallback=mine?document.querySelector<HTMLElement>('.rpg-mode .own-avatar'):null;
+  const place=()=>{const original=anchor.getBoundingClientRect(),useFallback=mine&&(original.bottom<0||original.top>innerHeight),bounds=useFallback&&fallback?fallback.getBoundingClientRect():original,width=Math.min(mine?260:360,useFallback?innerWidth-16:bounds.width,innerWidth-16),height=panelRef.current?.offsetHeight||120,rightSide=!mine&&bounds.left+bounds.width/2>=innerWidth/2,left=Math.max(8,Math.min(innerWidth-width-8,rightSide?bounds.right-width:bounds.left)),preferred=mine&&!useFallback?bounds.top-height-6:bounds.bottom+4;setPosition({left,top:Math.max(8,Math.min(innerHeight-height-8,preferred)),right:'auto',width,visibility:bounds.bottom<0||bounds.top>innerHeight?'hidden':'visible'});};
+  place();const observer=new ResizeObserver(place);observer.observe(anchor);if(fallback)observer.observe(fallback);if(panelRef.current)observer.observe(panelRef.current);window.addEventListener('resize',place);window.addEventListener('scroll',place,true);
   return()=>{observer.disconnect();window.removeEventListener('resize',place);window.removeEventListener('scroll',place,true);};
  },[seat,game.me]);
  useEffect(()=>{const outside=(event:PointerEvent)=>{if(!panelRef.current?.contains(event.target as Node))close();};const escape=(event:KeyboardEvent)=>{if(event.key==='Escape')close();};document.addEventListener('pointerdown',outside);document.addEventListener('keydown',escape);return()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',escape);};},[close]);
  if(!run||typeof document==='undefined')return null;
- const inventory=seat===game.me?run.consumables:run.enemyConsumables?.[seat]||[];
- const mine=seat===game.me,player=game.players[seat],equipped=mine?run.equipped:[];
+ const mine=seat===game.me,player=game.players[seat];
  return createPortal(<div className="rpg-status-popover-layer"><section ref={panelRef} className={`modal rpg-status-panel ${mine?'is-own':'is-opponent'}`} style={position||{visibility:'hidden'}} role="dialog" aria-label={`${player.name} RPG 상태`}>
   <header className="rpg-status-heading"><h2>{player.name}</h2><span className="rpg-status-hp">HP <b>{run.hp[seat]}</b><small>/100</small></span><button className="close" aria-label="상태창 닫기" onClick={close}>×</button></header>
-  <RpgProfessionStatus game={game} seat={seat} detail/><p className="rpg-status-item-summary">{mine?`아이템 ${inventory.length}개${run.itemGuards?.[seat]?' · 비밀 방패 대기':''}`:'아이템과 방어 준비는 비공개'}</p>{mine&&<p className="rpg-status-item-names">{[...new Set(inventory)].map(id=>`${RPG_CONSUMABLES.find(item=>item.id===id)?.name||id} ×${inventory.filter(entry=>entry===id).length}`).join(' · ')}</p>}
-  <div className="rpg-status-relics"><span className="rpg-status-relic-label">장착 유물</span>{equipped.length?<div className="rpg-status-relic-items">{equipped.map(id=>{const relic=RPG_RELICS.find(item=>item.id===id),hint=RPG_RELIC_HINTS[id];return <div key={id}><img src={relicImage(id)} alt=""/><strong>{relic?.name||id}</strong><small>{hint?`${hint.label} ${hint.bonus}`:relic?.effect}</small></div>;})}</div>:<span className="rpg-status-empty">없음</span>}</div>
+  <RpgProfessionStatus game={game} seat={seat} detail/>{!mine&&<p className="rpg-status-item-summary">아이템과 방어 준비는 비공개</p>}
  </section></div>,document.body);
 }

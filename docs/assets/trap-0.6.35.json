@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-28",
+  "tool": "built-in image_gen",
+  "mode": "generate",
+  "prompt": "Use case: stylized-concept. Asset type: one standalone TURNTALE fantasy game trap ability icon, readable at tiny 16px and 24px UI sizes. Create a compact spring-jaw pressure-plate trap made of aged bronze and dark steel, seen in a simple clear three-quarter top view. Two open crescent jaws with a few broad chunky teeth surround one round brass pressure plate, a visible coiled spring at the side. Warm polished hand-painted fantasy cartoon item art, substantial dark outlines, bright gold/brass edge highlights, steel dark gray interior, subtle wear, strong clean silhouette with large readable shapes. Center one complete single trap and fill roughly 85 percent of the square canvas, with a little transparent padding on every side. Genuine fully transparent alpha background outside the object. No purple, no glow cloud, no floor, no ground plane, no scenery, no UI frame, no badge plate, no letters, no numbers, no text, no logo, no watermark, no character or hand. The trap must look like a trap immediately, not a bomb or compass. Avoid tiny filigree and thin loose wires; keep it bold and simple.",
+  "transparent_background": true,
+  "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a18013-d57a-7520-990e-90601238668b\\exec-8aeb7c31-d735-42a2-866b-397e38024350.png",
+  "workspaceOriginal": "../artifacts/trap-0635-original.png",
+  "destination": "public/item-battle-v1/trap-v1.webp",
+  "width": 256,
+  "height": 256,
+  "hasAlpha": true,
+  "alpha": {
+    "min": 0,
+    "max": 255
+  },
+  "use": [
+    "24px trap skill button",
+    "small inside-tile private trap mark"
+  ]
+}

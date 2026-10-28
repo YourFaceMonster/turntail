@@ -20,7 +20,7 @@ export function RpgItemNotice({game}:{game:View}){
    const seat=(who:number)=>document.querySelector<HTMLElement>(who===game.me?'.rpg-mode .own-status-card':`.rpg-mode .opponents [data-seat="${who}"] .seat-card`);
    const source=seat(shown.actor)?.getBoundingClientRect(),target=seat(shown.target)?.getBoundingClientRect()||source;if(!source||!target)return;
    const board=document.querySelector('.rpg-mode .floor-stage')?.getBoundingClientRect()||source;
-   setScene({points:itemScenePoints(innerWidth,innerHeight,source,target,board),source,target,elapsed:Math.max(0,Date.now()-shown.at)});
+   setScene({points:itemScenePoints(innerWidth,innerHeight,source,target,board,{impact:shown.itemId==='ember-bomb'&&shown.kind==='damage'?'lower-edge':'center'}),source,target,elapsed:Math.max(0,Date.now()-shown.at)});
   };measure();window.addEventListener('resize',measure);return()=>window.removeEventListener('resize',measure);
  },[shown?.id,game.me]);
  useLayoutEffect(()=>{

@@ -7,8 +7,8 @@ import type {view} from '../../lib/game.ts';
 import {professionEffectText} from '../../lib/rpg-profession-combat.ts';
 import TileFace from './TileFace';
 function ProfessionIcon({id}:{id:RpgProfessionId}){return id==='swordsman'?<Swords/>:id==='rogue'?<Eye/>:id==='cleric'?<Heart/>:<Sparkles/>;}
-const passiveText=(id:RpgProfessionId)=>id==='swordsman'?'페어 승리 · 피해 +1':id==='rogue'?'싱글 승리 · 상대 패 1장 확인':id==='cleric'?'페어 승리 · HP +1':'트리플 승리 · 피해 +2';
-const activeText=(id:RpgProfessionId)=>id==='swordsman'?'스트레이트 승리 · 피해 +3':id==='rogue'?'트리플 승리 · 2장 확인·1장 교환':id==='cleric'?'풀하우스 승리 · HP +5':'포카드 승리 · 피해 +6';
+const passiveText=(id:RpgProfessionId)=>id==='swordsman'?'페어 추가 피해 +1':id==='rogue'?'싱글 상대 패 1장 확인':id==='cleric'?'페어 HP +1':'트리플 추가 피해 +2';
+const activeText=(id:RpgProfessionId)=>id==='swordsman'?'스트레이트 추가 피해 +3':id==='rogue'?'트리플 상대 패 2장 확인 · 1장 교환':id==='cleric'?'풀하우스 HP +5':'포카드 추가 피해 +6';
 const professionRoles:Record<RpgProfessionId,{role:string,signature:string}>= {
  swordsman:{role:'꾸준한 압박',signature:'싱글 · 페어 추가 피해'},
  rogue:{role:'정찰과 유도',signature:'바닥 투시 · 비밀 함정'},
@@ -16,19 +16,21 @@ const professionRoles:Record<RpgProfessionId,{role:string,signature:string}>= {
  mage:{role:'강력한 한 수',signature:'큰 족보로 추가 피해'},
 };
 function itemBattleDescription(id:RpgProfessionId){
- return id==='swordsman'?['싱글·페어 승리마다 추가 피해 +1','스트레이트 승리 · 추가 피해 +3 · 판당 1회']:
-  id==='rogue'?['싱글 승리 · 숨겨진 바닥패 1장 투시','트리플 승리 · 바닥패 2장 투시 · 판당 1회','자기 차례 함정 설치 · 상대가 가져가면 피해 4 · 판당 1회']:
-  id==='cleric'?['페어 승리마다 HP +1 · 두 번째 페어 승리에는 HP +2 추가','풀하우스 승리 · HP +5 · 판당 1회']:
-  ['트리플 승리마다 추가 피해 +2','첫 5장 족보 승리 · 추가 피해 +2 · 판당 1회','포카드 승리 · 추가 피해 +6 · 판당 1회'];
+ return id==='swordsman'?['싱글·페어 추가 피해 +1','스트레이트 추가 피해 +3 · 판당 1회']:
+  id==='rogue'?['싱글 바닥 1장 투시','트리플 바닥 2장 투시 · 판당 1회','함정 피해 4 · 자기 차례 설치 · 판당 1회']:
+  id==='cleric'?['페어 HP +1 · 두 번째 페어 추가 회복 +2','풀하우스 HP +5 · 판당 1회']:
+  ['트리플 추가 피해 +2','첫 5장 족보 추가 피해 +2 · 판당 1회','포카드 추가 피해 +6 · 판당 1회'];
 }
+/** Only the outcome phrase is bold; its condition and usage limit stay quiet. */
+function EffectDescription({line}:{line:string}){const parts=line.split(/(추가 피해 \+\d+|추가 회복 \+\d+|HP \+\d+|바닥 \d+장 투시|상대 패 \d+장 확인|\d+장 교환|피해 \d+)/g);return <>{parts.map((part,index)=>index%2?<b className="profession-effect-value" key={index}>{part}</b>:part)}</>;}
 export function RpgProfessionPicker({selected,choose,itemBattle=false}:{selected:RpgProfessionId,choose:(id:RpgProfessionId)=>void,itemBattle?:boolean}){
  const description=itemBattle?itemBattleDescription(selected):[passiveText(selected),`판당 1회 · ${activeText(selected)}`];
- return <section className="profession-picker has-art" aria-label="전투 직업 선택"><h3>전투 직업 <small>나의 한 수를 고르세요</small></h3><div className="profession-choice-grid">{RPG_PROFESSIONS.map(profession=>{const role=professionRoles[profession.id];return <button type="button" key={profession.id} data-profession={profession.id} aria-label={`${profession.name} · ${role.role}`} aria-pressed={selected===profession.id} className={`profession-choice ${selected===profession.id?'chosen':''}`} onClick={()=>choose(profession.id)}><span className="profession-art" aria-hidden="true"><img src={`/item-battle-v1/professions/${profession.id}-front-v2.webp`} alt="" width={256} height={256} decoding="async"/>{selected===profession.id&&<b className="profession-selected-mark">✓</b>}</span><strong><ProfessionIcon id={profession.id}/>{profession.name}</strong><span className="profession-role">{role.role}</span><small className="profession-signature">{itemBattle?role.signature:passiveText(profession.id)}</small></button>;})}</div><aside className="profession-selected-detail" aria-live="polite" aria-atomic="true"><strong><ProfessionIcon id={selected}/>{rpgProfession(selected).name}<small>선택한 직업</small></strong>{description.map(line=><span key={line}>{line}</span>)}</aside><p>선택한 직업은 새 {itemBattle?'아이템전':'대전·여정'}부터 적용해요. 저장된 진행의 직업은 유지됩니다.</p></section>;
+ return <section className="profession-picker has-art" aria-label="전투 직업 선택"><h3>전투 직업 <small>나의 한 수를 고르세요</small></h3><div className="profession-choice-grid">{RPG_PROFESSIONS.map(profession=>{const role=professionRoles[profession.id];return <button type="button" key={profession.id} data-profession={profession.id} aria-label={`${profession.name} · ${role.role}`} aria-pressed={selected===profession.id} className={`profession-choice ${selected===profession.id?'chosen':''}`} onClick={()=>choose(profession.id)}><span className="profession-art" aria-hidden="true"><img src={`/item-battle-v1/professions/${profession.id}-front-v2.webp`} alt="" width={1024} height={1536} decoding="async"/>{selected===profession.id&&<b className="profession-selected-mark">✓</b>}</span><strong><ProfessionIcon id={profession.id}/>{profession.name}</strong><span className="profession-role">{role.role}</span><small className="profession-signature">{itemBattle?role.signature:passiveText(profession.id)}</small></button>;})}</div><aside className="profession-selected-detail" aria-live="polite" aria-atomic="true"><strong><ProfessionIcon id={selected}/>{rpgProfession(selected).name}<small>선택한 직업</small></strong>{description.map(line=><span key={line}><EffectDescription line={line}/></span>)}</aside><p>선택한 직업은 새 {itemBattle?'아이템전':'대전·여정'}부터 적용해요. 저장된 진행의 직업은 유지됩니다.</p></section>;
 }
 export function RpgProfessionStatus({game,seat,detail=false}:{game:ReturnType<typeof view>,seat:number,detail?:boolean}){
  const state=game.rpgRun?.combat;if(!state)return null;const id=state.professions[seat];
  const description=state.itemBattle?.version===1?itemBattleDescription(id):[passiveText(id),`판당 1회 · ${activeText(id)}`];
- return <span className={`profession-status ${detail?'is-detailed':''}`} title={description.join(' / ')}><ProfessionIcon id={id}/><b>{rpgProfession(id).name}</b><small>{state.activeUsed[seat]?'자동 스킬 소진':'자동 스킬 대기'}</small>{detail&&<span className="profession-description">{description.map((line,index)=><span key={line}>{index>0&&<br/>}{line}</span>)}</span>}</span>;
+ return <span className={`profession-status ${detail?'is-detailed':''}`} title={description.join(' / ')}><ProfessionIcon id={id}/><b>{rpgProfession(id).name}</b><small>{state.activeUsed[seat]?'자동 스킬 소진':'자동 스킬 대기'}</small>{detail&&<span className="profession-description">{description.map((line,index)=><span key={line}>{index>0&&<br/>}<EffectDescription line={line}/></span>)}</span>}</span>;
 }
 export function RpgProfessionIntel({game}:{game:ReturnType<typeof view>}){
  const state=game.rpgRun?.combat,reveal=state?.privateReveals[game.me]?.at(-1),button=useRef<HTMLButtonElement>(null),panel=useRef<HTMLElement>(null),[open,setOpen]=useState(false),[position,setPosition]=useState({left:0,top:0});

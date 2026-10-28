@@ -1,0 +1,16 @@
+/* Source portraits are 1024x1536. Visible cheek widths and eye anchors were
+   calibrated per character, so tall hats do not determine the face baseline. */
+.profession-picker.has-art .profession-choice{--portrait-face-size:58px;--portrait-eye-line:30%}
+.profession-choice[data-profession="swordsman"]{--portrait-width-factor:3.93846;--portrait-eye-x:2.01538;--portrait-eye-y:1.33462}
+.profession-choice[data-profession="rogue"]{--portrait-width-factor:4.096;--portrait-eye-x:2.044;--portrait-eye-y:1.396}
+.profession-choice[data-profession="cleric"]{--portrait-width-factor:3.96899;--portrait-eye-x:2.03101;--portrait-eye-y:1.09302}
+.profession-choice[data-profession="mage"]{--portrait-width-factor:4.35745;--portrait-eye-x:2.14255;--portrait-eye-y:1.97021}
+.profession-picker.has-art .profession-choice[data-profession] .profession-art img{position:absolute;display:block;max-width:none;width:calc(var(--portrait-face-size) * var(--portrait-width-factor));height:auto;left:calc(50% - var(--portrait-face-size) * var(--portrait-eye-x));top:calc(var(--portrait-eye-line) - var(--portrait-face-size) * var(--portrait-eye-y));object-fit:initial;object-position:initial;transform:none;transform-origin:initial}
+.profession-picker.has-art .profession-selected-detail>span,.profession-status .profession-description{font-weight:400}
+.profession-picker.has-art .profession-effect-value,.profession-status .profession-effect-value{font-weight:850;color:inherit}
+.turntale.table-v211.active-table .opponents .seat-card .op-info>strong.opponent-name{display:flex;align-items:baseline;gap:4px;min-width:0}
+.opponent-character-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.turntale.table-v211.active-table .opponents .seat-card .op-info>strong.opponent-name>.opponent-ai-label{display:inline;flex:none;white-space:nowrap}
+.turntale.table-v211.active-table .opponents .opponent.is-right-side .op-info>strong.opponent-name{flex-direction:row-reverse;justify-content:flex-start}
+@media(max-width:600px){.profession-picker.has-art .profession-choice{--portrait-face-size:53px}}
+@media(max-height:450px) and (min-width:601px){.profession-picker.has-art .profession-choice{--portrait-face-size:46px}}

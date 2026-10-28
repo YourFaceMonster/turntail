@@ -17,7 +17,7 @@ assert.equal(hpItemDisplayHp(game,1,false,null),95,'result and status bar can re
 assert.equal(hpItemDisplayHp(game,1,false,{...event,id:'previous'}),95,'stale display events do not hide a later result');
 const summary=hpBattleSummary(event,game.players.map(player=>({name:player.name,count:player.hand.length})));
 assert.deepEqual(summary.calculation,{count:4,base:4});
-assert.equal(summary.rows.find(row=>row.seat===2)!.note,'기본 −4 · 추가 −1 · 방어 +2 → 실제 −3');
+assert.equal(summary.rows.find(row=>row.seat===2)!.note,'추가 피해 +1 · 방어 2');
 for(let stage=1;stage<=10;stage++)for(let suit=0;suit<4;suit++)for(const number of [2,10]){
  const tile={id:(number-1)*4+suit,n:number,s:suit},html=renderToStaticMarkup(h(StageVisuals,{stage,children:h(TileFace,{tile})}));
  assert.ok(html.includes('data-number-layout="classic"')&&html.includes('data-material-finish=')&&html.includes('Trebuchet MS,Arial,sans-serif'));

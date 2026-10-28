@@ -24,3 +24,22 @@ export function saveSingleGame(storage:StoragePort,game:Game){
  if(!game.practice||game.stageRun||game.rpgRun)throw Error('일반모드 저장 대상이 아니에요.');
  try{storage.setItem(game.itemRun?ITEM_GAME_KEY:SINGLE_GAME_KEY,JSON.stringify(game));}catch{throw Error('일반모드를 저장하지 못해 이번 동작을 적용하지 않았어요. 브라우저 저장 공간을 확인해 주세요.');}
 }
+
+/** Delete only the explicitly selected progress; preserve archive records and unlocks. */
+export function deleteSaveSlot(storage:Pick<Storage,'getItem'|'setItem'|'removeItem'>,slot:SaveSlot){
+ const keys:Partial<Record<SaveSlot['mode'],string>>={single:SINGLE_GAME_KEY,rpg:'turntale-rpg-state-v1','rpg-test':'turntale-rpg-test-v1','hp-item-2':'turntale-hp-items-2-v1',multi:'jangseong-session'};
+ const key=keys[slot.mode];if(!key)throw Error('삭제할 저장을 다시 선택해 주세요.');
+ const raw=storage.getItem(key);if(raw===null)return;
+ let value:any;try{value=JSON.parse(raw);}catch{throw Error('저장이 변경됐어요. 목록을 다시 열어 주세요.');}
+ const archive=slot.mode==='rpg'||slot.mode==='hp-item-2',current=archive?value?.active:value;
+ const code=current?.code;
+ if(code!==slot.session.code)throw Error('저장이 변경됐어요. 목록을 다시 열어 주세요.');
+ if(archive&&(!Array.isArray(value.records)||value.version!==1))throw Error('기록을 보존할 수 없어 삭제하지 않았어요.');
+ const before=new Map<string,string|null>([[key,raw]]),after=new Map<string,string|null>([[key,archive?JSON.stringify({...value,active:null}):null]]);
+ if(slot.mode!=='multi'){
+  const sessionRaw=storage.getItem('jangseong-session');let pointer:Session|null=null;try{pointer=sessionRaw?JSON.parse(sessionRaw):null;}catch{}
+  if(pointer?.local&&pointer.code===slot.session.code){before.set('jangseong-session',sessionRaw);after.set('jangseong-session',null);}
+ }
+ try{for(const [target,next] of after)next===null?storage.removeItem(target):storage.setItem(target,next);}
+ catch{for(const [target,previous] of before){try{previous===null?storage.removeItem(target):storage.setItem(target,previous);}catch{}}throw Error('저장을 삭제하지 못했어요. 기존 진행을 다시 확인해 주세요.');}
+}
