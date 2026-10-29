@@ -38,7 +38,7 @@ assert.ok(html.indexOf('페어 전투')<html.indexOf('data-duel-role="loser"'));
 assert.equal((html.match(/data-duel-role="loser"/g)||[]).length,2);assert.ok(!html.includes('1등'));
 const hp=renderToStaticMarkup(<RpgHpBar hp={10} identity={<strong>검증</strong>} persistentChange change={<em className="negative">−7</em>}/>);
 assert.ok(hp.indexOf('/100')<hp.indexOf('hp-change-pinned'));assert.ok(hp.includes('−7'));
-assert.ok(renderToStaticMarkup(<SwordsmanSlash impact/>).includes('slash-core'));
+assert.ok(renderToStaticMarkup(<SwordsmanSlash impact/>).includes('steel-blade'));
 assert.equal(announcedPlayDuration(2),2000);assert.equal(announcedPlayDuration(5),3400);assert.equal(comboCaptionDuration('페어'),1100);assert.equal(comboCaptionDuration('풀하우스'),2250);assert.equal(QUICK_PLAY_MS,650);
 const decisions=[];
 for(const hand of [[tile(3),tile(3,1),tile(9)], [tile(3),tile(3,1),tile(3,2),tile(9)], [3,4,5,6,7,12].map(n=>tile(n))]){

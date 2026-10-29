@@ -4,6 +4,7 @@ export const ITEM_SCENE_IMAGES=[
  '/rpg-items-v1/consumables/ward-seal-v3.webp','/rpg-items-v1/consumables/ember-bomb-v2.webp',
  '/rpg-items-v1/consumables/emergency-herb-v2.webp','/rpg-items-v1/consumables/whisper-eye-v2.webp',
  '/rpg-items-v1/effects/ember-impact-v1.webp',
+ '/item-battle-v1/skills/rogue-ambush-0650.webp',
 ] as const;
 const prepared=new Map<string,{image:HTMLImageElement,promise:Promise<void>}>();
 function prepare(src:string){

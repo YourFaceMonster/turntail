@@ -1,5 +1,10 @@
 import type {view} from '../../lib/game.ts';
 import {isBattleItemMode,usesOriginalItemShop} from '../../lib/hp-item-battle';
+import {hpRoundTotals} from '../../lib/hp-round-totals';
+export function HpRoundTotals({game,seat,before}:{game:ReturnType<typeof view>,seat:number,before:number}){
+ const totals=hpRoundTotals(game.hpItemMatch?.report,seat,before,game.rpgRun!.hp[seat]);
+ return <span className="round-hp-totals" aria-label={`이번 판 총피해 ${totals.damage}, 총회복 ${totals.healing}`}><span className="hp-lost">피해 −{totals.damage}</span><span className="hp-recovered">회복 +{totals.healing}</span></span>;
+}
 export function HpRoundBreakdown({game,seat,before}:{game:ReturnType<typeof view>,seat:number,before:number}){
  const run=game.rpgRun!,report=game.hpItemMatch?.report,items=report?.items||[],battle=isBattleItemMode(game);
  const damage=report?.itemDamage?.[seat]??items.filter(item=>item.kind==='damage'&&item.target===seat).reduce((sum,item)=>sum+(item.amount||0),0);

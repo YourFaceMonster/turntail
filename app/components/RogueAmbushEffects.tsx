@@ -1,7 +1,7 @@
 'use client';
 import {useLayoutEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
-import {Eye,Swords} from 'lucide-react';
+import {Swords} from 'lucide-react';
 import type {view} from '../../lib/game.ts';
 import type {AmbushBurst} from '../../lib/item-battle-rules.ts';
 import {AMBUSH_IMPACT_MS,AMBUSH_PRESENTATION_MS} from '../../lib/pickup-presentation.ts';
@@ -18,5 +18,5 @@ export function RogueAmbushEffects({game,onHit,onHpPresentation}:{game:View,onHi
   return()=>{clearTimeout(impact);clearTimeout(done);callbacks.current.onHpPresentation(null);};
  },[event?.id,game.me]);
  if(!scene)return null;const coin=game.floorCoins?.events.at(-1),discovery=game.floorCoins?.lastDiscovery,yieldsToCoin=[coin,discovery].some(value=>value&&value.at>=scene.event.at&&value.at<scene.event.at+1000),trap=game.rpgRun?.combat?.itemBattle?.lastTrap,sharesTrap=trap&&Math.abs(trap.at-scene.event.at)<200;
- return <>{createPortal(<div className={`ambush-presentation ${scene.impact?'is-impact':''} ${yieldsToCoin?'yields-to-coin':''}`} style={{left:scene.x,top:scene.y-(sharesTrap?75:0)}} role="status"><Eye/><strong>{scene.impact?'투시 회수 기습!':'투시한 패 회수'}</strong><span>{game.players[scene.event.owner].name} · 상대 각각 피해 1</span></div>,document.body)}{scene.impact&&scene.targets.map(({node,seat})=>createPortal(<span className={`ambush-target-hit ${scene.event.damage[seat]?'is-damage':'is-blocked'}`} role="status" aria-label={`${game.players[seat].name} 투시 회수 ${scene.event.damage[seat]?`피해 ${scene.event.damage[seat]}`:'방어'}`}><Swords/><b>{scene.event.damage[seat]?`−${scene.event.damage[seat]}`:'방어'}</b></span>,node,`ambush:${seat}`))}</>;
+ return <>{createPortal(<div className={`ambush-presentation ${scene.impact?'is-impact':''} ${yieldsToCoin?'yields-to-coin':''}`} style={{left:scene.x,top:scene.y-(sharesTrap?75:0)}} role="status"><img className="ambush-art" src="/item-battle-v1/skills/rogue-ambush-0650.webp" alt=""/><strong>기습공격</strong><small>투시한 패 회수</small><span>{game.players[scene.event.owner].name} · 상대 각각 피해 1</span></div>,document.body)}{scene.impact&&scene.targets.map(({node,seat})=>createPortal(<span className={`ambush-target-hit ${scene.event.damage[seat]?'is-damage':'is-blocked'}`} role="status" aria-label={`${game.players[seat].name} 기습공격 ${scene.event.damage[seat]?`피해 ${scene.event.damage[seat]}`:'방어'}`}><Swords/><b>{scene.event.damage[seat]?`−${scene.event.damage[seat]}`:'방어'}</b></span>,node,`ambush:${seat}`))}</>;
 }

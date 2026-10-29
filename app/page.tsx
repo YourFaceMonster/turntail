@@ -22,6 +22,7 @@ import './feedback-polish-0645.css';
 import './mobile-menu-0647.css';
 import './profession-cartoon-0648.css';
 import './menu-scenes-0649.css';
+import './interaction-polish-0650.css';
 import ProfessionTargetPicker from './components/ProfessionTargetPicker';
 import {ProfessionActiveControl,ProfessionActiveEffects,type ActiveHpPresentation} from './components/ProfessionActives';
 import {RogueAmbushEffects,type AmbushHpPresentation} from './components/RogueAmbushEffects';

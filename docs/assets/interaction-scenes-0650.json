@@ -1,0 +1,42 @@
+{
+  "version": "0.6.50",
+  "tool": "built-in image_gen",
+  "assets": [
+    {
+      "name": "ambush",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a18782-a810-7bd1-b76e-c125f8f2bc50\\exec-5439cbb1-0288-4640-8b7d-d864e3547f09.png",
+      "destination": "public/item-battle-v1/skills/rogue-ambush-0650.webp",
+      "prompt": "Use case: stylized-concept. Asset type: transparent combat skill artwork for TURNTALE, a warm hand-painted fantasy tile game. Create one square isolated dynamic rogue ambush icon: a steel dagger sweeping across a luminous magical eye and a single ivory game tile being pulled back by a dark leather-gloved hand, a subtle violet magical trail and crisp silver impact glint. Readable at 100 pixels. Polished cartoon adult fantasy, bold silhouette, tactile paint, restrained gold, teal and violet accents. No text, letters, numbers, UI, frame, gore or watermark. True transparent background, generous clear margins, whole artwork inside canvas.",
+      "transparent_background": true,
+      "original": "D:\\CHATGPT_CODEX\\17_Turntail\\artifacts\\interaction-scenes-0650-originals\\ambush.png",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "bytes": 445388
+    },
+    {
+      "name": "status",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a18782-a810-7bd1-b76e-c125f8f2bc50\\exec-e9168147-6f20-4b82-9538-245ead90da78.png",
+      "destination": "public/ui/character-status-0650.webp",
+      "prompt": "Use case: stylized-concept. Asset type: portrait 2:3 background artwork behind real HTML character-status modal in TURNTALE cozy fantasy tile game. Warm dark walnut carved frame with restrained antique brass corners, subdued parchment and deep forest green velvet central field, very subtle red, gold, green and charcoal wisps in outer edges evoking four adventurer professions. A small elegant sun/star/moon/cloud crest in upper edge. Calm and low-contrast central 80 percent for avatar, HP, skills and relic text. Soft welcoming candle light, polished storybook cartoon fantasy. No people, readable text, numbers, letters, buttons, UI panels or watermark. Full bleed opaque image.",
+      "transparent_background": false,
+      "original": "D:\\CHATGPT_CODEX\\17_Turntail\\artifacts\\interaction-scenes-0650-originals\\status.png",
+      "width": 1024,
+      "height": 1536,
+      "hasAlpha": false,
+      "bytes": 219724
+    },
+    {
+      "name": "tutorial",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a18782-a810-7bd1-b76e-c125f8f2bc50\\exec-e6c0117e-23e4-40b5-85ee-207a6cf79cbc.png",
+      "destination": "public/ui/tutorial-0650.webp",
+      "prompt": "Use case: stylized-concept. Asset type: portrait 2:3 background behind actual HTML interactive tutorial for TURNTALE fantasy tile board game. A friendly inn study desk, softly painted carved walnut border, small warm lantern in far upper outer corner, open unmarked parchment edge and tiny brass sun/star/moon/cloud ornaments along border. Deep muted blue-green felt quiet central 80 percent, dark and low contrast so actual tutorial tiles, headings and next button remain readable. Warm amber rim lighting, cozy polished hand-painted storybook fantasy, broad finished shapes. Background only, no people, no loose playing tiles, no text, letters, numerals, buttons, control icons or watermark. Full bleed opaque image.",
+      "transparent_background": false,
+      "original": "D:\\CHATGPT_CODEX\\17_Turntail\\artifacts\\interaction-scenes-0650-originals\\tutorial.png",
+      "width": 1024,
+      "height": 1536,
+      "hasAlpha": false,
+      "bytes": 237568
+    }
+  ]
+}

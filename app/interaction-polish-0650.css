@@ -1,0 +1,85 @@
+/* Suit ink sits outside the muted body in every material. */
+.hand-tile.unplayable .tile-suit-identity{filter:none!important;opacity:1!important}
+.ambush-presentation>.ambush-art{display:block;width:94px;height:94px;object-fit:contain;margin:-9px auto 0;filter:drop-shadow(0 3px 6px #0008)}
+.ambush-presentation>small{display:block;font-size:12px;color:#d8d1e9;margin-top:2px}
+
+/* Close controls use the dialog's own bounds, or a normal header cell. */
+body .modal>.close{position:absolute!important;inset:12px 12px auto auto!important;display:grid!important;place-items:center;box-sizing:border-box;width:32px!important;height:32px!important;min-height:32px!important;padding:0!important;margin:0!important;line-height:1!important;font-size:24px!important;z-index:5;flex:none;transform:none!important;border:1px solid #dcc28b66;border-radius:8px;background:#10241de8;color:#fff0ce;text-shadow:none}
+body .modal:has(>.close)>h2{padding-right:34px}
+body .modal :is(.rpg-status-heading,.rpg-pouch-heading,.settings-heading,.shop-heading)>.close{position:static!important;inset:auto!important;display:grid!important;place-items:center;width:30px!important;height:30px!important;min-height:30px!important;padding:0!important;margin:0 0 0 auto!important;flex:none;line-height:1!important;font-size:23px!important;transform:none!important}
+body .modal .rpg-pouch-heading{padding-right:0!important;gap:8px;align-items:flex-start}
+body .modal .rpg-status-heading{padding-right:0!important;gap:7px;flex-wrap:wrap}
+body .modal .rpg-status-heading h2{flex:1;min-width:65px}
+body .modal .rpg-status-heading .rpg-status-hp{white-space:nowrap}
+body .rpg-status-popover-layer .modal.rpg-status-panel{padding:22px 17px 16px!important;background:#10261f!important;background-image:linear-gradient(#07160c33,#06170d55),url('/ui/character-status-0650.webp')!important;background-position:center!important;background-size:100% 100%!important;border:1px solid #bd9e64!important;box-shadow:0 10px 32px #000a!important;overflow-y:auto!important;max-height:calc(100dvh - 16px)}
+.rpg-status-panel .profession-status.is-detailed{padding:9px 5px 3px}
+html body .turntale .modal.tutorial-modal{background:#0d2327!important;background-image:linear-gradient(#071a200c,#061b2370),url('/ui/tutorial-0650.webp')!important;background-size:100% 100%!important;background-position:center!important;padding:66px 25px 24px!important;border-color:#bf9c62!important}
+.tutorial-modal .tutorial-heading{padding-right:0}
+.tutorial-modal .tutorial-book{width:35px;height:40px}
+.tutorial-flight-layer{position:fixed;inset:0;z-index:1200;pointer-events:none}
+.tutorial-flying-tile{position:absolute;display:block;animation:tutorial-flight-650 .5s cubic-bezier(.2,.7,.22,1) both;filter:drop-shadow(0 8px 5px #0007)}
+.tutorial-flying-tile .tile{width:100%!important;height:100%!important;margin:0!important;transform:none!important}
+.tutorial-table[data-tutorial-landing=true] .tutorial-tiles{animation:tutorial-land-650 .25s ease-out}
+@keyframes tutorial-flight-650{0%{transform:translate(0,0) rotate(-4deg) scale(1)}45%{scale:1.12}100%{transform:translate(var(--tutorial-flight-x),var(--tutorial-flight-y)) rotate(0deg) scale(1)}}
+@keyframes tutorial-land-650{0%{scale:1.06}100%{scale:1}}
+.turntale .tutorial-modal .tutorial-heading h2{font-size:21px!important}
+
+/* Four quiet color fields follow the visible left-to-right profession order. */
+.menu-theme-items .profession-choice[data-profession=swordsman]{--profession-tint:#9f4a424d;--profession-glow:#d18d7a55}
+.menu-theme-items .profession-choice[data-profession=rogue]{--profession-tint:#a18a3d40;--profession-glow:#d6bd7355}
+.menu-theme-items .profession-choice[data-profession=cleric]{--profession-tint:#3e8b6145;--profession-glow:#8cba9855}
+.menu-theme-items .profession-choice[data-profession=mage]{--profession-tint:#070a126b;--profession-glow:#7e849755}
+.turntale .menu-theme-items .profession-choice{background:linear-gradient(165deg,var(--profession-tint),#15241ee6)!important;border-color:var(--profession-glow)!important}
+.menu-theme-items .profession-choice .profession-art{background:radial-gradient(ellipse at 50% 60%,var(--profession-tint),transparent 75%)!important}
+.turntale .menu-theme-items .profession-choice.chosen{box-shadow:inset 0 0 0 1px #efd09388,0 0 9px var(--profession-glow)!important;border-color:#c8b383!important}
+
+.profession-gauge.is-full>i{animation:gauge-ready-650 1.65s ease-in-out infinite}
+.profession-gauge.is-full>i:nth-child(2n){animation-delay:.18s}
+.profession-active-control.is-full>button:not(:disabled){box-shadow:0 0 7px #f5d78788,inset 0 0 8px #ffdf8526}
+@keyframes gauge-ready-650{0%,100%{background:#dbb858;box-shadow:0 0 3px #ffd27166}50%{background:#fff6cb;box-shadow:0 0 7px 2px #ffe5a8bb}}
+
+/* A visible steel blade travels with its silver wake; no yellow panel flash. */
+.swordsman-slash.steel-strike{inset:-22px -20px;overflow:visible}
+.steel-strike>svg{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 2px 2px #102439aa)}
+.steel-strike path{animation:none;stroke-dasharray:none;stroke-dashoffset:0;stroke-linecap:round}
+.steel-strike .steel-wake{fill:#cceafa55;stroke:none}
+.steel-strike .steel-edge{fill:none;stroke:#f2fdff;stroke-width:2}
+.steel-strike .steel-sweep{opacity:0;animation:steel-wake-650 1.05s ease-out both}
+.steel-strike .steel-blade{transform-origin:18% 85%;animation:steel-swing-650 1.05s cubic-bezier(.12,.74,.12,1) both}
+.steel-strike .blade-shadow{fill:#34485a;stroke:#15212c;stroke-width:2}
+.steel-strike .blade-face{fill:#f0faff;stroke:#fff;stroke-width:1}
+.steel-strike .blade-ridge{fill:#98afc1;stroke:none}
+.steel-strike .blade-guard{fill:#9ba8b3;stroke:#344454;stroke-width:1.5}
+.steel-strike .blade-grip{fill:#393c43;stroke:#b1b8ba;stroke-width:1}
+.steel-strike.is-impact .steel-blade{animation:steel-follow-650 .38s ease-out both}
+.steel-contact{position:absolute;left:52%;top:50%;width:5px;height:5px}
+.steel-contact>i{position:absolute;width:33px;height:2px;background:#e8fbff;box-shadow:0 0 4px #c5eaff;rotate:35deg;animation:steel-sparks-650 .4s ease-out both}
+.steel-contact>i:nth-child(2){rotate:135deg}.steel-contact>i:nth-child(3){rotate:225deg}.steel-contact>i:nth-child(4){rotate:305deg}
+@keyframes steel-swing-650{0%,30%{opacity:0;transform:rotate(-100deg) scale(.65)}42%{opacity:1;transform:rotate(-65deg) scale(.85)}90%,100%{opacity:1;transform:rotate(18deg) scale(1.08)}}
+@keyframes steel-wake-650{0%,35%{opacity:0;transform:rotate(-45deg) scale(.65)}62%{opacity:.9}100%{opacity:.25;transform:rotate(12deg) scale(1.13)}}
+@keyframes steel-follow-650{from{opacity:1;transform:rotate(18deg) scale(1.08)}to{opacity:0;transform:rotate(56deg) scale(1.2)}}
+@keyframes steel-sparks-650{from{opacity:1;translate:0 0;scale:.4}to{opacity:0;translate:18px 0;scale:1.5}}
+
+/* Body portals escape the opponent/felt clipping and center flames on the hit card. */
+.mage-impact-anchor{position:fixed;z-index:204;width:150px;height:100px;transform:translate(-50%,-50%);pointer-events:none;overflow:visible}
+.mage-impact-anchor .mage-spell-hit{inset:0}
+body .mage-impact-anchor .mage-spell-hit.spell-wall>img{top:50%;bottom:auto;left:50%;width:190px;height:135px;transform:translate(-50%,-50%);transform-origin:50% 65%;animation:firewall-burst-650 1.3s ease-out both;filter:drop-shadow(0 0 13px #ff6e1b)}
+.firewall-core{position:absolute;inset:12% 8%;border-radius:40%;background:radial-gradient(ellipse,#fff3afaa,#ff8c2f77 35%,#f2381340 60%,transparent 75%);animation:firewall-core-650 1.2s ease-out both;mix-blend-mode:screen}
+.firewall-shockwave{position:absolute;inset:20% 0;border:3px solid #ffd39a;border-radius:50%;box-shadow:0 0 18px #ff832a,inset 0 0 12px #ff502a;animation:firewall-shock-650 .9s ease-out both}
+.firewall-embers{position:absolute;inset:0}.firewall-embers>i{position:absolute;left:calc(10% + var(--ember-index)*10%);top:65%;width:4px;height:7px;background:#ffe2a1;border-radius:50%;box-shadow:0 0 7px #ff6d23;animation:firewall-ember-650 1.1s calc(var(--ember-index)*17ms) ease-out both}
+@keyframes firewall-burst-650{0%{opacity:0;scale:.55 .3}18%{opacity:1;scale:1.12 1.18}35%{scale:.96 1}55%{opacity:1;scale:1.04 1.1}80%{opacity:.9}100%{opacity:0;scale:1.1 1.18}}
+@keyframes firewall-core-650{0%{opacity:0;scale:.2}18%{opacity:1;scale:1.3}50%{opacity:.8}100%{opacity:0;scale:1.6}}
+@keyframes firewall-shock-650{0%{opacity:1;scale:.3}100%{opacity:0;scale:1.65}}
+@keyframes firewall-ember-650{0%{opacity:0;transform:translateY(0) scale(.3)}15%{opacity:1}100%{opacity:0;transform:translateY(-85px) scale(.5)}}
+
+.hp-item-result .rpg-hp-bar.has-identity{min-height:77px!important;height:auto!important;padding:10px!important}
+.hp-item-result .hp-bar-current.has-round-summary{position:relative;padding-top:24px;flex:none}
+.hp-round-summary{position:absolute;top:0;right:0;white-space:nowrap;line-height:1.3}
+.round-hp-totals{display:flex;justify-content:flex-end;gap:6px;font-size:10px;font-weight:800;text-shadow:0 1px 2px #000}
+.round-hp-totals .hp-lost{color:#ff9887}.round-hp-totals .hp-recovered{color:#85edab}
+html body .turntale .title-screen .title-play>.menu-single{width:max-content!important;max-width:100%!important;min-width:0!important;min-height:58px!important;height:auto!important;align-self:center!important;margin-inline:auto!important;padding:9px 39px!important}
+html body .turntale .title-play>.menu-single .menu-button-copy>strong{font-size:22px!important}
+html body .turntale .title-play>.menu-single .menu-button-copy>small{display:none!important}
+@media(max-width:370px){html body .turntale .modal.tutorial-modal{padding:58px 18px 20px!important}.turntale .tutorial-modal .tutorial-heading h2{font-size:18px!important}.hp-item-result .rpg-hp-bar.has-identity{padding:8px!important}.round-hp-totals{gap:4px;font-size:9px}}
+@media(prefers-reduced-motion:reduce){.profession-gauge.is-full>i,.steel-strike .steel-blade,.steel-strike .steel-sweep,.steel-strike.is-impact .steel-blade,.steel-contact>i,.mage-impact-anchor .mage-spell-hit.spell-wall>img,.firewall-core,.firewall-shockwave,.firewall-embers>i{animation:none!important}.steel-strike .steel-sweep{opacity:.7}.steel-strike .steel-blade{opacity:1;transform:none}.firewall-embers{display:none}.mage-impact-anchor .mage-spell-hit.spell-wall>img{opacity:.9;scale:1}}
+@media(prefers-reduced-motion:reduce){.tutorial-flying-tile,.tutorial-table[data-tutorial-landing=true] .tutorial-tiles{animation:none!important}}
