@@ -1,0 +1,7 @@
+/* Cartoon proportions use their own face anchors; hats never define the crop. */
+.profession-picker.has-art .profession-choice.profession-cartoon{--portrait-face-size:66px;--portrait-eye-line:38%}
+.profession-picker.has-art .profession-choice.profession-cartoon .profession-art img{filter:drop-shadow(0 3px 3px #0006)}
+.profession-picker.has-art .profession-choice.profession-cartoon .profession-art{background:radial-gradient(ellipse at 50% 37%,#f2dba33d,transparent 78%)}
+.menu-mode-scene>.profession-menu-portrait{width:56px!important;height:87px!important;object-fit:cover;object-position:center 20%}
+@media(max-width:600px){.profession-picker.has-art .profession-choice.profession-cartoon{--portrait-face-size:60px}}
+@media(max-height:450px) and (min-width:601px){.profession-picker.has-art .profession-choice.profession-cartoon{--portrait-face-size:52px;--portrait-eye-line:35%}}

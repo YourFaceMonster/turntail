@@ -1,0 +1,118 @@
+{
+  "date": "2026-10-29",
+  "appVersion": "0.6.48",
+  "tool": "built-in image_gen",
+  "mode": "style-transfer",
+  "userDirection": "Halfway between original adult fantasy v2 and cute cartoon v3; moderate adult-cartoon proportions.",
+  "transparent_background_requested": true,
+  "assets": [
+    {
+      "id": "swordsman",
+      "detail": "Brown-haired adult male swordsman; red scarf, silver armor with broad gold trim, brown leather gloves and upright sword. Moderately tousled chestnut hair, warm brown eyes, a confident friendly closed-mouth smile; restore a little adult facial structure and shoulder width while keeping the cartoon illustration approach.",
+      "prompt": "Use case: style-transfer. Asset type: a transparent TURNTALE profession-selection illustration. Image 1 is the edit target, the current very cute large-headed cartoon version. Image 2 is its older more realistic adult fantasy portrait, used only as a proportion/style reference. The user wants a TRUE MIDDLE STAGE between these two versions: retain the warm hand-painted fantasy-cartoon charm, readable soft outlines, simplified materials and expressive personality from Image 1, but move the head/eyes/body proportions about halfway toward the adult adventurer in Image 2. Reduce the current oversized head relative to the shoulders by about 20%, reduce the very large cartoon eyes/irises by about 25%, make cheeks less baby-round, give the face a gently defined adult jaw and a slightly more developed small nose. Keep friendly young-adult human features and moderately stylized eyes; a cozy illustrated fantasy RPG adventurer, around 4.5-head-tall stylization rather than a three-head chibi. The result must sit between realistic fantasy promotional art and a tiny chibi doll. No photographic skin, glamorous beauty-model face, extreme anime eyes, baby face, bobblehead or photorealism. Keep the same identity, hair color, equipment, costume palette and profession. Use broad painterly shading, a moderate amount of readable costume detail, slightly rounded shapes and cozy storybook warmth. One adult character only, fully clothed, centered waist-up on a tall 2:3 canvas. Head upright and STRICTLY FRONT-FACING, level shoulders and horizontal eye line, both eyes looking at the viewer. Keep head centered, no head tilt or three-quarter angle. Face and hands remain readable, equipment stays beside the head. Genuine transparent alpha background around the silhouette, no backdrop, ground, panel, text, UI, border or watermark. Brown-haired adult male swordsman; red scarf, silver armor with broad gold trim, brown leather gloves and upright sword. Moderately tousled chestnut hair, warm brown eyes, a confident friendly closed-mouth smile; restore a little adult facial structure and shoulder width while keeping the cartoon illustration approach.",
+      "references": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/swordsman-cartoon-v3.webp",
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/swordsman-front-v2.webp"
+      ],
+      "faceWidth": 340,
+      "eyeX": 528,
+      "eyeY": 431,
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-f3522f76-e9c0-4947-83cb-5f6bf2c33b5a.png",
+      "destination": "public/item-battle-v1/professions/swordsman-cartoon-v4.webp",
+      "original": "../artifacts/profession-cartoon-v4-originals/swordsman-cartoon-v4.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "fullyTransparentPixels": 431831
+      },
+      "bytes": 390936,
+      "formatConversionOnly": true
+    },
+    {
+      "id": "rogue",
+      "detail": "Dark-teal-haired adult female rogue, brass goggles on her head, green hooded cape, practical brown leather armor, a spyglass and brass trap device. Warm amber eyes and a small mischievous smile. Modestly stylized adult face, less round cheeks, less oversized eyes and eyelashes; practical closed-neck clothing, no cleavage. The head must be straight, with the two eyes on a level horizontal line.",
+      "prompt": "Use case: style-transfer. Asset type: a transparent TURNTALE profession-selection illustration. Image 1 is the edit target, the current very cute large-headed cartoon version. Image 2 is its older more realistic adult fantasy portrait, used only as a proportion/style reference. The user wants a TRUE MIDDLE STAGE between these two versions: retain the warm hand-painted fantasy-cartoon charm, readable soft outlines, simplified materials and expressive personality from Image 1, but move the head/eyes/body proportions about halfway toward the adult adventurer in Image 2. Reduce the current oversized head relative to the shoulders by about 20%, reduce the very large cartoon eyes/irises by about 25%, make cheeks less baby-round, give the face a gently defined adult jaw and a slightly more developed small nose. Keep friendly young-adult human features and moderately stylized eyes; a cozy illustrated fantasy RPG adventurer, around 4.5-head-tall stylization rather than a three-head chibi. The result must sit between realistic fantasy promotional art and a tiny chibi doll. No photographic skin, glamorous beauty-model face, extreme anime eyes, baby face, bobblehead or photorealism. Keep the same identity, hair color, equipment, costume palette and profession. Use broad painterly shading, a moderate amount of readable costume detail, slightly rounded shapes and cozy storybook warmth. One adult character only, fully clothed, centered waist-up on a tall 2:3 canvas. Head upright and STRICTLY FRONT-FACING, level shoulders and horizontal eye line, both eyes looking at the viewer. Keep head centered, no head tilt or three-quarter angle. Face and hands remain readable, equipment stays beside the head. Genuine transparent alpha background around the silhouette, no backdrop, ground, panel, text, UI, border or watermark. Dark-teal-haired adult female rogue, brass goggles on her head, green hooded cape, practical brown leather armor, a spyglass and brass trap device. Warm amber eyes and a small mischievous smile. Modestly stylized adult face, less round cheeks, less oversized eyes and eyelashes; practical closed-neck clothing, no cleavage. The head must be straight, with the two eyes on a level horizontal line. Image 3 is a STYLE ANCHOR ONLY: the newly made intermediate-proportion swordsman. Match its moderate adult-cartoon face proportions, eye scale, painterly linework and level of costume detail. Keep your own character's hair, gender, costume and profession; do not turn this character into the swordsman.",
+      "references": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/rogue-cartoon-v3.webp",
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/rogue-front-v2.webp",
+        "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-f3522f76-e9c0-4947-83cb-5f6bf2c33b5a.png"
+      ],
+      "faceWidth": 370,
+      "eyeX": 543,
+      "eyeY": 422,
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-7fc0fe36-bf2a-49b3-a59b-d4164fa1b566.png",
+      "destination": "public/item-battle-v1/professions/rogue-cartoon-v4.webp",
+      "original": "../artifacts/profession-cartoon-v4-originals/rogue-cartoon-v4.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "fullyTransparentPixels": 428256
+      },
+      "bytes": 396984,
+      "formatConversionOnly": true
+    },
+    {
+      "id": "cleric",
+      "detail": "Silver-haired adult male cleric in ivory-and-green robes with gold leaf accents, green crystal staff, gentle small healing glow. Warm sage-green eyes, subtle silver stubble, mature but friendly adult facial structure. Shorten the very round baby cheeks and reduce the huge head of Image 1 while retaining the kindly cartoon face and approachable smile.",
+      "prompt": "Use case: style-transfer. Asset type: a transparent TURNTALE profession-selection illustration. Image 1 is the edit target, the current very cute large-headed cartoon version. Image 2 is its older more realistic adult fantasy portrait, used only as a proportion/style reference. The user wants a TRUE MIDDLE STAGE between these two versions: retain the warm hand-painted fantasy-cartoon charm, readable soft outlines, simplified materials and expressive personality from Image 1, but move the head/eyes/body proportions about halfway toward the adult adventurer in Image 2. Reduce the current oversized head relative to the shoulders by about 20%, reduce the very large cartoon eyes/irises by about 25%, make cheeks less baby-round, give the face a gently defined adult jaw and a slightly more developed small nose. Keep friendly young-adult human features and moderately stylized eyes; a cozy illustrated fantasy RPG adventurer, around 4.5-head-tall stylization rather than a three-head chibi. The result must sit between realistic fantasy promotional art and a tiny chibi doll. No photographic skin, glamorous beauty-model face, extreme anime eyes, baby face, bobblehead or photorealism. Keep the same identity, hair color, equipment, costume palette and profession. Use broad painterly shading, a moderate amount of readable costume detail, slightly rounded shapes and cozy storybook warmth. One adult character only, fully clothed, centered waist-up on a tall 2:3 canvas. Head upright and STRICTLY FRONT-FACING, level shoulders and horizontal eye line, both eyes looking at the viewer. Keep head centered, no head tilt or three-quarter angle. Face and hands remain readable, equipment stays beside the head. Genuine transparent alpha background around the silhouette, no backdrop, ground, panel, text, UI, border or watermark. Silver-haired adult male cleric in ivory-and-green robes with gold leaf accents, green crystal staff, gentle small healing glow. Warm sage-green eyes, subtle silver stubble, mature but friendly adult facial structure. Shorten the very round baby cheeks and reduce the huge head of Image 1 while retaining the kindly cartoon face and approachable smile. Image 3 is a STYLE ANCHOR ONLY: the newly made intermediate-proportion swordsman. Match its moderate adult-cartoon face proportions, eye scale, painterly linework and level of costume detail. Keep your own character's hair, gender, costume and profession; do not turn this character into the swordsman.",
+      "references": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/cleric-cartoon-v3.webp",
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/cleric-front-v2.webp",
+        "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-f3522f76-e9c0-4947-83cb-5f6bf2c33b5a.png"
+      ],
+      "faceWidth": 330,
+      "eyeX": 530,
+      "eyeY": 369,
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-8d2f1937-3c19-456d-ba21-24d34be0e795.png",
+      "destination": "public/item-battle-v1/professions/cleric-cartoon-v4.webp",
+      "original": "../artifacts/profession-cartoon-v4-originals/cleric-cartoon-v4.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "fullyTransparentPixels": 415628
+      },
+      "bytes": 346478,
+      "formatConversionOnly": true
+    },
+    {
+      "id": "mage",
+      "detail": "Violet-haired adult female mage with purple pointed hat, gold crescent/star, purple robes and golden crystal staff; small flame over an open gloved hand. Moderately sized purple eyes, lightly defined adult facial structure, warm confident expression and a small smile. Keep the cozy covered robe, no glamorous fitted bodice. A large soft hat stays distinctive, but the face should have halfway adult-cartoon proportions; no huge doll eyes. Head straight forward.",
+      "prompt": "Use case: style-transfer. Asset type: a transparent TURNTALE profession-selection illustration. Image 1 is the edit target, the current very cute large-headed cartoon version. Image 2 is its older more realistic adult fantasy portrait, used only as a proportion/style reference. The user wants a TRUE MIDDLE STAGE between these two versions: retain the warm hand-painted fantasy-cartoon charm, readable soft outlines, simplified materials and expressive personality from Image 1, but move the head/eyes/body proportions about halfway toward the adult adventurer in Image 2. Reduce the current oversized head relative to the shoulders by about 20%, reduce the very large cartoon eyes/irises by about 25%, make cheeks less baby-round, give the face a gently defined adult jaw and a slightly more developed small nose. Keep friendly young-adult human features and moderately stylized eyes; a cozy illustrated fantasy RPG adventurer, around 4.5-head-tall stylization rather than a three-head chibi. The result must sit between realistic fantasy promotional art and a tiny chibi doll. No photographic skin, glamorous beauty-model face, extreme anime eyes, baby face, bobblehead or photorealism. Keep the same identity, hair color, equipment, costume palette and profession. Use broad painterly shading, a moderate amount of readable costume detail, slightly rounded shapes and cozy storybook warmth. One adult character only, fully clothed, centered waist-up on a tall 2:3 canvas. Head upright and STRICTLY FRONT-FACING, level shoulders and horizontal eye line, both eyes looking at the viewer. Keep head centered, no head tilt or three-quarter angle. Face and hands remain readable, equipment stays beside the head. Genuine transparent alpha background around the silhouette, no backdrop, ground, panel, text, UI, border or watermark. Violet-haired adult female mage with purple pointed hat, gold crescent/star, purple robes and golden crystal staff; small flame over an open gloved hand. Moderately sized purple eyes, lightly defined adult facial structure, warm confident expression and a small smile. Keep the cozy covered robe, no glamorous fitted bodice. A large soft hat stays distinctive, but the face should have halfway adult-cartoon proportions; no huge doll eyes. Head straight forward. Image 3 is a STYLE ANCHOR ONLY: the newly made intermediate-proportion swordsman. Match its moderate adult-cartoon face proportions, eye scale, painterly linework and level of costume detail. Keep your own character's hair, gender, costume and profession; do not turn this character into the swordsman.",
+      "references": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/mage-cartoon-v3.webp",
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/mage-front-v2.webp",
+        "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-f3522f76-e9c0-4947-83cb-5f6bf2c33b5a.png"
+      ],
+      "faceWidth": 330,
+      "eyeX": 516,
+      "eyeY": 550,
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-a07520fd-f402-418e-9b62-b21a33abf628.png",
+      "destination": "public/item-battle-v1/professions/mage-cartoon-v4.webp",
+      "original": "../artifacts/profession-cartoon-v4-originals/mage-cartoon-v4.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "fullyTransparentPixels": 282678
+      },
+      "bytes": 424836,
+      "formatConversionOnly": true
+    }
+  ],
+  "active": true
+}

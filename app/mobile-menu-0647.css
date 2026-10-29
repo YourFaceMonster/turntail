@@ -1,0 +1,58 @@
+/* A fixed played-card plane: arrivals never move or crop the previous group. */
+.turntale.table-v211.active-table .play-column>section.trick-area[data-trick]{contain:layout!important;overflow:visible!important;grid-template-rows:22px minmax(0,1fr)!important}
+.turntale.table-v211.active-table section[data-trick] .trick-tiles,.turntale.table-v211.active-table section[data-trick] .trick-tiles:has(.landed-tile){height:var(--shown-h)!important;min-height:var(--shown-h)!important;max-height:var(--shown-h)!important;align-self:center!important;contain:layout!important;overflow:visible!important;flex:none}
+.turntale.table-v211.active-table section[data-trick] .trick-current,.turntale.table-v211.active-table section[data-trick] .previous-trick{height:var(--shown-h)!important;min-height:var(--shown-h)!important;align-items:center!important;gap:5px!important}
+.turntale.table-v211.active-table section[data-trick] .previous-trick{inset:0!important;transform:none!important;translate:none!important;overflow:visible!important;transition:opacity .2s ease-out;pointer-events:none}
+.turntale.table-v211.active-table section[data-trick] .previous-trick .tile{width:var(--shown-w)!important;height:var(--shown-h)!important;flex:none!important;transform:none!important}
+.turntale.table-v211.active-table section[data-trick] .previous-trick.is-arriving{opacity:1!important}
+.turntale.table-v211.active-table.landscape-table .play-column>section.trick-area[data-trick]{grid-template-rows:minmax(0,1fr)!important}
+/* Grow toward the outside edge without narrowing or re-centering the floor. */
+.turntale.table-v211.active-table.rpg-mode .floor-stage{overflow:visible!important}
+.turntale.table-v211.active-table.rpg-mode .floor-relic-dock{width:63px!important;right:-9px!important;height:min(190px,100%)!important}
+.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-equipped-relics{width:63px!important;padding:3px!important;overflow:visible!important;display:grid!important;grid-template-rows:14px minmax(0,1fr);gap:3px}
+.floor-relic-dock .rpg-relic-tray-heading{height:14px!important;margin:0!important}
+.floor-relic-dock .rpg-relic-slots{height:100%!important;min-height:0}
+.floor-relic-dock .rpg-relic-slot-condition{margin-top:0!important}
+.floor-relic-dock :is(.rpg-relic-slot-condition,.rpg-relic-slot-bonus){font-size:7.5px!important;line-height:1.2!important;max-width:57px!important;width:100%;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:break-word}
+.floor-relic-dock .rpg-relic-tray-heading strong{font-size:8px!important;letter-spacing:0}
+.turntale.table-v211.active-table.classic-mode .opponent:not(.is-right-side) .op-info .seat-points{text-align:left!important}
+.turntale.table-v211.active-table.classic-mode .opponent.is-right-side .op-info .seat-points{text-align:right!important}
+/* Shared carved wood, inset metal and familiar tile art throughout the menu. */
+.menu-surface,.turntale .modal:is(.single-mode-menu,.resume-picker,.setup-modal,.tutorial-modal){border:1px solid #d4b77c!important;border-radius:18px!important;background:linear-gradient(145deg,#27362af2,#101e1af7 76%),url('/turntale-walnut-051.webp')!important;box-shadow:inset 0 0 0 4px #d8b87612,inset 0 1px #fff0bf52,0 18px 65px #000b!important;color:#f6e7c7}
+.menu-surface h2,.tutorial-modal h2{font-family:var(--menu-display-font)!important;text-wrap:balance}
+.turntale .modal.menu-surface{scrollbar-width:thin;scrollbar-color:#baa373 #11221a;max-height:calc(100dvh - 24px)!important}
+.menu-surface .eyebrow,.tutorial-modal .eyebrow{color:#dfc38b}
+.turntale .title-play .pixel-button{grid-template-columns:57px minmax(0,1fr) 18px!important;text-align:left!important;gap:9px!important;min-height:68px!important;padding:8px 16px 8px 10px!important;isolation:isolate;box-shadow:inset 0 2px #fff1c966,inset 0 -5px #120c116b,0 4px 0 #241b18,0 8px 15px #0006!important}
+.turntale .title-play .pixel-button .menu-button-copy{display:flex;flex-direction:column;gap:4px;min-width:0;line-height:1.1}
+.menu-button-copy strong{font:inherit!important;font-size:21px!important;color:#fff1ce;white-space:nowrap}
+.menu-button-copy small{font-size:10px!important;font-weight:500!important;color:#e5d9bc;letter-spacing:0;line-height:1.3;white-space:nowrap}
+.menu-button-arrow{width:17px!important;height:17px!important;color:#f4d49b}
+.turntale .title-play .pixel-button:disabled{opacity:.65!important;filter:saturate(.5);cursor:default}
+.menu-table-art{display:block;position:relative;width:56px;height:45px;flex:none;pointer-events:none;perspective:250px;filter:drop-shadow(0 3px 2px #0008)}
+.menu-table-art>span{position:absolute;left:10px;top:3px;display:block;width:28px;height:38px;transform:rotate(-13deg) translateX(-7px)}
+.menu-table-art>span+span{transform:rotate(12deg) translateX(12px);top:1px}
+.menu-table-art .tile{width:28px!important;height:38px!important;min-width:0!important;display:block!important;filter:none!important}
+.menu-table-art.is-resume:after{content:'↻';position:absolute;right:0;bottom:0;display:grid;place-items:center;width:23px;height:23px;border:1px solid #f1d398;border-radius:50%;background:#1c4538;color:#ffe3a0;font-size:21px;line-height:1;text-shadow:0 1px #000}
+.menu-table-art.is-multi>span:first-child{transform:rotate(-16deg) translateX(-9px)}
+.turntale .title-screen .menu-tutorial{min-height:48px;gap:10px;background:linear-gradient(150deg,#61482ce8,#30251de8);box-shadow:inset 0 1px #f9dda54d,0 3px #201710,0 5px 13px #0006}
+.menu-tutorial-copy{display:flex;flex-direction:column;gap:3px;text-align:left}.menu-tutorial-copy small{font-size:9px;color:#e6d3ae;font-weight:500}
+.turntale .title-tools .menu-tool-icon{box-shadow:inset 0 2px #ffedbf52,inset 0 -4px #160e196b,0 3px #221625!important}
+.menu-mode-scene{position:relative;display:flex!important;justify-content:center;align-items:center;height:76px!important;width:100%!important;margin:0 0 9px!important;border:1px solid #c6a16b66;border-radius:10px;overflow:hidden;background:linear-gradient(0deg,#1a221549,transparent),url('/turntale-walnut-051.webp') center/cover;box-shadow:inset 0 0 16px #0007}
+.menu-mode-scene .menu-table-art{transform:scale(1.35);font-size:initial}
+.menu-mode-scene>img{width:50px;height:77px;object-fit:cover;object-position:50% 20%;filter:drop-shadow(0 2px 2px #0009)}
+.menu-mode-scene.is-rpg{background:linear-gradient(0deg,#122321aa,#12232111),url('/turntale-stage-map-0515.webp') center 40%/cover}
+.menu-mode-scene.is-rpg>svg{width:35px;height:35px;color:#ffe5a6;filter:drop-shadow(0 2px 3px #000)}
+.turntale .single-mode-cards:has(.mode-hp-items){grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.turntale .single-mode-cards:has(.mode-hp-items)>button{padding:10px!important;border-radius:12px;border-color:#d4b77c77;box-shadow:inset 0 1px #fff3,0 4px #0b1413;min-height:0;text-align:left}
+.turntale .single-mode-cards:has(.mode-hp-items)>button strong{font-size:20px!important}.turntale .single-mode-cards:has(.mode-hp-items)>button p{font-size:10px;line-height:1.6}
+.turntale .single-mode-cards .mode-rpg{grid-column:1/-1;display:grid;grid-template-columns:94px 1fr;column-gap:12px;align-items:center}.single-mode-cards .mode-rpg .menu-mode-scene{grid-row:1/5;height:100%!important;margin:0!important}.single-mode-cards .mode-rpg :is(small,strong,p,b){grid-column:2;margin-block:2px!important}
+.turntale .resume-picker .save-slot-resume{display:grid;grid-template-columns:56px minmax(0,1fr);gap:10px;padding:12px;border:1px solid #c5ab7370;border-radius:11px;background:linear-gradient(120deg,#354435d9,#18271ee6);box-shadow:inset 0 1px #fff1,0 3px #0d1713;text-align:left}
+.save-slot-resume>.menu-table-art{grid-row:1/3}.save-slot-resume>div{min-width:0}.save-slot-resume small{white-space:normal;line-height:1.5}.turntale .resume-picker .save-slot-resume>b{grid-column:2;font-size:11px;color:#f2d497;justify-self:start}.save-slot-resume .menu-table-art{font-size:initial!important}
+.menu-surface.setup-modal:before{content:'✦';display:grid;place-items:center;width:52px;height:52px;border:1px solid #d4b77c;border-radius:14px;margin:0 0 13px;color:#ffe0a2;font-size:29px;background:linear-gradient(140deg,#52624a,#1e3026);box-shadow:inset 0 0 0 4px #dfc1821a,0 4px #0c1714}
+.turntale .menu-surface.setup-modal{padding:20px!important}.menu-surface.setup-modal:before{position:absolute;left:20px;top:20px;width:40px;height:43px;font-size:24px}.menu-surface.setup-modal>.eyebrow{display:block;padding-left:54px;min-height:13px;font-size:9px}.menu-surface.setup-modal>h2{padding-left:54px;margin:5px 0 16px!important;font-size:25px!important}.menu-surface.setup-modal>.setup-explain{margin:10px 0;font-size:11px;line-height:1.6}.menu-surface.setup-modal .segmented{margin:10px 0}.menu-surface.setup-modal>label{margin:12px 0;font-size:11px}.menu-surface.setup-modal>label input{min-height:43px;padding:10px;margin-top:6px}.menu-surface.setup-modal>.primary{margin-top:14px;min-height:44px}
+@media(orientation:portrait){.turntale .title-screen .title-content{width:min(340px,84vw);padding-top:54px;padding-bottom:40px}.turntale .title-content .title-logo-approved{width:260px}.turntale .title-suits{margin:12px 0 16px}.turntale .title-tools{margin-top:19px}.turntale .title-play{gap:12px}}
+@media(max-width:370px),(orientation:portrait) and (max-height:740px){.turntale .title-content .title-logo-approved{width:220px}.turntale .title-screen .title-content{padding-top:49px;padding-bottom:30px}.turntale .title-play .pixel-button{min-height:59px!important;padding-block:5px!important}.menu-button-copy strong{font-size:19px!important}.menu-button-copy small{font-size:9px!important}.turntale .title-suits{margin:9px 0 12px}.turntale .title-screen .menu-tutorial{margin-top:12px;min-height:42px}.turntale .title-tools{margin-top:14px;gap:30px}}
+@media(orientation:landscape) and (max-height:600px){.turntale .title-play .pixel-button{grid-template-columns:40px minmax(0,1fr) 10px!important;gap:5px!important;min-height:63px!important;padding:6px!important}.title-play .menu-table-art{transform:scale(.75);transform-origin:left center;width:40px}.menu-button-copy strong{font-size:16px!important}.menu-button-copy small{font-size:8px!important;white-space:normal}.turntale .title-screen .menu-tutorial{min-height:40px;margin-top:10px}.turntale .title-tools{margin-top:10px}.turntale .title-play .menu-button-arrow{width:11px!important}.menu-mode-scene{height:56px!important}}
+@media(orientation:portrait) and (max-height:700px){.floor-relic-dock .rpg-relic-slot-frame{width:22px!important;height:22px!important;box-sizing:border-box}.floor-relic-dock .rpg-relic-slot-frame img{width:18px!important;height:18px!important}}
+@media(max-height:450px) and (min-width:601px){.floor-relic-dock .rpg-relic-slot{display:grid!important;grid-template-columns:20px minmax(0,1fr);gap:1px 3px;align-content:center}.floor-relic-dock .rpg-relic-slot-frame{grid-row:1/3;width:20px!important;height:20px!important;box-sizing:border-box}.floor-relic-dock .rpg-relic-slot-frame img{width:16px!important;height:16px!important}.floor-relic-dock :is(.rpg-relic-slot-condition,.rpg-relic-slot-bonus){font-size:6.5px!important}}
+@media(prefers-reduced-motion:reduce){.turntale.table-v211.active-table section[data-trick] .previous-trick{transition:none}}

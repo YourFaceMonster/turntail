@@ -1,0 +1,116 @@
+{
+  "date": "2026-10-29",
+  "appVersion": "0.6.48",
+  "tool": "built-in image_gen",
+  "mode": "style-transfer",
+  "transparent_background_requested": true,
+  "assets": [
+    {
+      "id": "swordsman",
+      "detail": "Keep the brown-haired male swordsman with a red scarf, simplified silver armor, warm gold trim and upright sword beside him. Turn him into a cheerful round-faced little knight with tousled chunky brown hair, thick expressive eyebrows, a confident slightly goofy grin, broad rounded pauldrons, short sturdy gloved hands and an oversized simple sword. His eyes are warm brown. No muscular realism.",
+      "prompt": "Use case: style-transfer. Asset type: transparent profession-selection portrait for the TURNTALE fantasy board game. Image 1 is the edit target: preserve this adult human character's profession, hair color, costume colors, signature equipment and front-facing direction. Image 2 is a STYLE REFERENCE ONLY: the game's cozy, whimsical, small rounded fantasy characters; do not copy its animals, multiple-character atlas or seated poses. Redraw Image 1 thoroughly as a charming compact storybook fantasy cartoon adventurer: oversized rounded head, short stocky torso, chubby cheeks, tiny simple nose, lively readable eyes and expressive eyebrows, appealing quirky personality, approximately 3-head-tall stylization. Warm hand-painted colors with a few broad rounded shapes, confident soft outlines, tactile illustrated board-game quality. Simplify costume ornament and materials into chunky readable details. Avoid realistic facial anatomy, glamour-model features, photorealism, sharp beauty-portrait jawlines, shiny makeup, fashion illustration, thin elongated anime proportions and intricate gold filigree. Keep an unmistakably adult adventurer, fully clothed, friendly and approachable. Exactly ONE character, head and shoulders STRICTLY FRONT-FACING with both eyes looking straight at viewer, no head tilt or three-quarter turn; centered waist-up portrait. Use a tall 2:3 canvas, same framing for the four-character set: centered face at x=50%, eye line around y=36%, generous large face roughly 40% canvas width; keep hat/hair and shoulders fully inside the canvas with a little alpha padding. Weapons and held items stay to either side without covering the face. Genuine transparent alpha background, no scenery, ground, panel, border, lettering, logo, watermark or other characters. Keep the brown-haired male swordsman with a red scarf, simplified silver armor, warm gold trim and upright sword beside him. Turn him into a cheerful round-faced little knight with tousled chunky brown hair, thick expressive eyebrows, a confident slightly goofy grin, broad rounded pauldrons, short sturdy gloved hands and an oversized simple sword. His eyes are warm brown. No muscular realism.",
+      "references": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/swordsman-front-v2.webp",
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/stage-company-0627.webp"
+      ],
+      "faceWidth": 420,
+      "eyeX": 537,
+      "eyeY": 505,
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-5159ca5b-fd1a-4bfe-b0d2-1b06596994f7.png",
+      "destination": "public/item-battle-v1/professions/swordsman-cartoon-v3.webp",
+      "original": "../artifacts/profession-cartoon-v3-originals/swordsman-cartoon-v3.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "fullyTransparentPixels": 387033
+      },
+      "bytes": 438330,
+      "formatConversionOnly": true
+    },
+    {
+      "id": "rogue",
+      "detail": "Keep the female rogue with short dark-teal hair, brass goggles on her head, green hooded cape and brown leather armor. Give her a mischievous rounded face, slightly uneven playful eyebrows, warm amber eyes, a cheeky little smile and a short sturdy adventurer silhouette. Show a small spyglass beside one shoulder and a simple brass spring-trap gadget near her waist. Outfit is practical and fully closed at the chest, no cleavage; chunky pouches and minimal leather buckles.",
+      "prompt": "Use case: style-transfer. Asset type: transparent profession-selection portrait for the TURNTALE fantasy board game. Image 1 is the edit target: preserve this adult human character's profession, hair color, costume colors, signature equipment and front-facing direction. Image 2 is a STYLE REFERENCE ONLY: the game's cozy, whimsical, small rounded fantasy characters; do not copy its animals, multiple-character atlas or seated poses. Redraw Image 1 thoroughly as a charming compact storybook fantasy cartoon adventurer: oversized rounded head, short stocky torso, chubby cheeks, tiny simple nose, lively readable eyes and expressive eyebrows, appealing quirky personality, approximately 3-head-tall stylization. Warm hand-painted colors with a few broad rounded shapes, confident soft outlines, tactile illustrated board-game quality. Simplify costume ornament and materials into chunky readable details. Avoid realistic facial anatomy, glamour-model features, photorealism, sharp beauty-portrait jawlines, shiny makeup, fashion illustration, thin elongated anime proportions and intricate gold filigree. Keep an unmistakably adult adventurer, fully clothed, friendly and approachable. Exactly ONE character, head and shoulders STRICTLY FRONT-FACING with both eyes looking straight at viewer, no head tilt or three-quarter turn; centered waist-up portrait. Use a tall 2:3 canvas, same framing for the four-character set: centered face at x=50%, eye line around y=36%, generous large face roughly 40% canvas width; keep hat/hair and shoulders fully inside the canvas with a little alpha padding. Weapons and held items stay to either side without covering the face. Genuine transparent alpha background, no scenery, ground, panel, border, lettering, logo, watermark or other characters. Keep the female rogue with short dark-teal hair, brass goggles on her head, green hooded cape and brown leather armor. Give her a mischievous rounded face, slightly uneven playful eyebrows, warm amber eyes, a cheeky little smile and a short sturdy adventurer silhouette. Show a small spyglass beside one shoulder and a simple brass spring-trap gadget near her waist. Outfit is practical and fully closed at the chest, no cleavage; chunky pouches and minimal leather buckles.",
+      "references": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/rogue-front-v2.webp",
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/stage-company-0627.webp"
+      ],
+      "faceWidth": 420,
+      "eyeX": 539,
+      "eyeY": 507,
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-041eead1-538e-422e-ba6f-c9caf1a5a44e.png",
+      "destination": "public/item-battle-v1/professions/rogue-cartoon-v3.webp",
+      "original": "../artifacts/profession-cartoon-v3-originals/rogue-cartoon-v3.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "fullyTransparentPixels": 416363
+      },
+      "bytes": 411296,
+      "formatConversionOnly": true
+    },
+    {
+      "id": "cleric",
+      "detail": "Keep the silver-haired male cleric with ivory-and-green robes, gold accents, a green gem and green crystal staff. Make him a kind whimsical round-cheeked healer, wavy silver hair, gentle thick eyebrows, tiny silver stubble/beard, warm sage-green eyes and an amiable slightly bashful smile; cozy rounded robes with a closed collar. Hold the chunky green crystal staff to one side and a little green healing glow cupped in the other hand. Simplified leaf motifs.",
+      "prompt": "Use case: style-transfer. Asset type: transparent profession-selection portrait for the TURNTALE fantasy board game. Image 1 is the edit target: preserve this adult human character's profession, hair color, costume colors, signature equipment and front-facing direction. Image 2 is a STYLE REFERENCE ONLY: the game's cozy, whimsical, small rounded fantasy characters; do not copy its animals, multiple-character atlas or seated poses. Redraw Image 1 thoroughly as a charming compact storybook fantasy cartoon adventurer: oversized rounded head, short stocky torso, chubby cheeks, tiny simple nose, lively readable eyes and expressive eyebrows, appealing quirky personality, approximately 3-head-tall stylization. Warm hand-painted colors with a few broad rounded shapes, confident soft outlines, tactile illustrated board-game quality. Simplify costume ornament and materials into chunky readable details. Avoid realistic facial anatomy, glamour-model features, photorealism, sharp beauty-portrait jawlines, shiny makeup, fashion illustration, thin elongated anime proportions and intricate gold filigree. Keep an unmistakably adult adventurer, fully clothed, friendly and approachable. Exactly ONE character, head and shoulders STRICTLY FRONT-FACING with both eyes looking straight at viewer, no head tilt or three-quarter turn; centered waist-up portrait. Use a tall 2:3 canvas, same framing for the four-character set: centered face at x=50%, eye line around y=36%, generous large face roughly 40% canvas width; keep hat/hair and shoulders fully inside the canvas with a little alpha padding. Weapons and held items stay to either side without covering the face. Genuine transparent alpha background, no scenery, ground, panel, border, lettering, logo, watermark or other characters. Keep the silver-haired male cleric with ivory-and-green robes, gold accents, a green gem and green crystal staff. Make him a kind whimsical round-cheeked healer, wavy silver hair, gentle thick eyebrows, tiny silver stubble/beard, warm sage-green eyes and an amiable slightly bashful smile; cozy rounded robes with a closed collar. Hold the chunky green crystal staff to one side and a little green healing glow cupped in the other hand. Simplified leaf motifs.",
+      "references": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/cleric-front-v2.webp",
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/stage-company-0627.webp"
+      ],
+      "faceWidth": 415,
+      "eyeX": 535,
+      "eyeY": 452,
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-dd5f83d2-e479-426c-9b6a-4c50fd593ea6.png",
+      "destination": "public/item-battle-v1/professions/cleric-cartoon-v3.webp",
+      "original": "../artifacts/profession-cartoon-v3-originals/cleric-cartoon-v3.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "fullyTransparentPixels": 441213
+      },
+      "bytes": 358900,
+      "formatConversionOnly": true
+    },
+    {
+      "id": "mage",
+      "detail": "Keep the violet-haired female mage, purple floppy pointed hat with a simple gold crescent and star, purple robes and golden crystal staff. Make her a spirited compact round-cheeked little wizard with a short wavy violet bob, expressive purple eyes, tiny nose and delighted impish smile; oversized soft floppy hat, cozy fully closed robe with simple broad gold trim, no cleavage or fitted glamorous bodice. Staff beside one shoulder, a small playful warm flame hovering over a stubby gloved hand at waist. The hat must not push her eye line lower than the other portraits.",
+      "prompt": "Use case: style-transfer. Asset type: transparent profession-selection portrait for the TURNTALE fantasy board game. Image 1 is the edit target: preserve this adult human character's profession, hair color, costume colors, signature equipment and front-facing direction. Image 2 is a STYLE REFERENCE ONLY: the game's cozy, whimsical, small rounded fantasy characters; do not copy its animals, multiple-character atlas or seated poses. Redraw Image 1 thoroughly as a charming compact storybook fantasy cartoon adventurer: oversized rounded head, short stocky torso, chubby cheeks, tiny simple nose, lively readable eyes and expressive eyebrows, appealing quirky personality, approximately 3-head-tall stylization. Warm hand-painted colors with a few broad rounded shapes, confident soft outlines, tactile illustrated board-game quality. Simplify costume ornament and materials into chunky readable details. Avoid realistic facial anatomy, glamour-model features, photorealism, sharp beauty-portrait jawlines, shiny makeup, fashion illustration, thin elongated anime proportions and intricate gold filigree. Keep an unmistakably adult adventurer, fully clothed, friendly and approachable. Exactly ONE character, head and shoulders STRICTLY FRONT-FACING with both eyes looking straight at viewer, no head tilt or three-quarter turn; centered waist-up portrait. Use a tall 2:3 canvas, same framing for the four-character set: centered face at x=50%, eye line around y=36%, generous large face roughly 40% canvas width; keep hat/hair and shoulders fully inside the canvas with a little alpha padding. Weapons and held items stay to either side without covering the face. Genuine transparent alpha background, no scenery, ground, panel, border, lettering, logo, watermark or other characters. Keep the violet-haired female mage, purple floppy pointed hat with a simple gold crescent and star, purple robes and golden crystal staff. Make her a spirited compact round-cheeked little wizard with a short wavy violet bob, expressive purple eyes, tiny nose and delighted impish smile; oversized soft floppy hat, cozy fully closed robe with simple broad gold trim, no cleavage or fitted glamorous bodice. Staff beside one shoulder, a small playful warm flame hovering over a stubby gloved hand at waist. The hat must not push her eye line lower than the other portraits.",
+      "references": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/item-battle-v1/professions/mage-front-v2.webp",
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/stage-company-0627.webp"
+      ],
+      "faceWidth": 400,
+      "eyeX": 529,
+      "eyeY": 674,
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-1e82e590-bd6a-47f1-bd29-d2b155bfba7d.png",
+      "destination": "public/item-battle-v1/professions/mage-cartoon-v3.webp",
+      "original": "../artifacts/profession-cartoon-v3-originals/mage-cartoon-v3.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "fullyTransparentPixels": 357263
+      },
+      "bytes": 417636,
+      "formatConversionOnly": true
+    }
+  ],
+  "priorLocalSourceFilesVerified": 14,
+  "active": false,
+  "activeReplacement": "profession-cartoon-v4.json"
+}
