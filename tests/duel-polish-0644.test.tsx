@@ -27,7 +27,7 @@ const legacy=structuredClone(g);delete legacy.hpItemMatch;values.set(HP_ITEM_SHO
 const legacyStage=readHpItemArchive(storage,2).active!.hpItemMatch!.visualStage;assert.equal(legacyStage,itemBattleVisualStage(g.rpgRun!.id));assert.equal(readHpItemArchive(storage,2).active!.hpItemMatch!.visualStage,legacyStage);
 for(const amount of [1,3,5,6,8]){
  const html=renderToStaticMarkup(<CoinNoticeBody event={{id:'coin',round:1,who:1,index:0,layer:1,amount,kind:'random',at:1000}} players={[{name:'나'},{name:'로웬'}]}/>);
- assert.ok(html.includes('주화 발견'));assert.ok(html.includes('로웬'));assert.ok(html.includes('+'+amount+'P'));assert.ok(html.includes('coin-gold-v1.png'));
+ assert.ok(html.includes('주화 획득'));assert.ok(html.includes('로웬'));assert.ok(html.includes('+'+amount+'P'));assert.ok(html.includes('coin-gold-v1.png'));
 }
 const discovery=renderToStaticMarkup(<CoinNoticeBody event={{id:'discovery',round:1,index:0,at:1000}} players={[{name:'나'}]}/>);assert.ok(!discovery.includes('coin-reward-owner'));
 assert.equal(floorCoinReward('rogue'),1);assert.equal(floorCoinReward('mage'),3);

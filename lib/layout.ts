@@ -1,5 +1,5 @@
 /** Floor/trick geometry is fixed by the viewport. Only the hand responds to its count. */
-export function tileLayout({width,height,floorWidth,handWidth,handCount,cols,rows,players,landscape,desktop=false,rpg=false}:{width:number,height:number,floorWidth:number,handWidth:number,handCount:number,cols:number,rows:number,players:number,landscape:boolean,desktop?:boolean,rpg?:boolean}){
+export function tileLayout({width,height,floorWidth,handWidth,handCount,cols,rows,players,landscape,desktop=false,rpg=false,classicLandscape=false}:{width:number,height:number,floorWidth:number,handWidth:number,handCount:number,cols:number,rows:number,players:number,landscape:boolean,desktop?:boolean,rpg?:boolean,classicLandscape?:boolean}){
  const columns=Math.max(5,Math.ceil(handCount/2)),gap=handCount>30?2:handCount>18?4:6;
  const baseColumns=players===2?6:5,baseGap=6;
  const compactLandscape=landscape&&height<300;
@@ -12,7 +12,12 @@ export function tileLayout({width,height,floorWidth,handWidth,handCount,cols,row
  // The left column holds seats, floor and played tiles; the full-height right column
  // sizes its hand independently, so a floor row cannot limit the hand height.
  const landscapeChrome=seatHeight+4+8+(rows-1)*4+trickChrome+6;
- const vertical=landscape?(height-surfaceInset-landscapeChrome)/(rows+1):(height-portraitChrome)/(rows+(rpg?3.72:3));
+ // Keep the existing seats and hand; fit only the classic floor to the rendered column: border 4 + padding 12 + gap 6; felt padding 8
+ // + gap 4; played-row chrome; floor row gaps and its 2px inset/outline.
+ // The submitted face is enlarged to 1.28x, so reserve that full height too.
+ const classicChrome=4+12+6+8+4+seatHeight+trickChrome+2+(rows-1)*4+4;
+ const landscapeVertical=classicLandscape?(height-classicChrome)/(rows+1.28):(height-surfaceInset-landscapeChrome)/(rows+1);
+ const vertical=landscape?landscapeVertical:(height-portraitChrome)/(rows+(rpg?3.72:3));
  const floorLimit=(floorWidth-(cols-1)*6)/cols/.76;
  const handLimit=Math.min((handWidth-4-(columns-1)*gap)/columns/.76,handCount>18?(handWidth-4-8*6)/9/.76:Infinity,handCount>30?(handWidth-4-14*4)/15/.76:Infinity);
  const playedLabelWidth=84;

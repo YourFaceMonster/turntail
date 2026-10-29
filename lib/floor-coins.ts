@@ -1,6 +1,6 @@
 import {publicCoinEvents,nextCoinPresentationAt} from './coin-presentation';
 import type {Game,Tile} from './game.ts';
-import {COIN_DISCOVERY_MS,COIN_DISCOVERY_AFTER_MS,COIN_TURN_READY_MS} from './pickup-presentation.ts';
+import {COIN_TURN_READY_MS} from './pickup-presentation.ts';
 
 export type FloorCoinPickup={id:string,round:number,who:number,index:number,layer:1|2,amount:number,kind:'random'|'last'|'overlap',at:number,moneyBefore?:number,moneyAfter?:number};
 export type FloorCoinDiscovery={id:string,round:number,index:number,at:number,kind?:'random'|'last'|'overlap'};
@@ -18,12 +18,6 @@ export function prepareFloorCoins(game:Game){
 export function floorCoinsView(game:Game,who?:number){
  const state=game.floorCoins;if(!hasFloorCoins(game)||state?.round!==game.round)return undefined;
  return {version:state.version,round:state.round,earned:[...state.earned],events:state.events.map(({moneyBefore,moneyAfter,...event})=>({...event,...(event.who===who?{moneyBefore,moneyAfter}:{})})),discoveries:state.discoveries?.map(event=>({...event})),lastDiscovery:state.lastDiscovery?{...state.lastDiscovery}:undefined};
-}
-/** Only removing its cover can announce the lower coin. This public event contains no tile identity. */
-export function revealFloorCoin(game:Game,index:number,now:number){
- const state=game.floorCoins,stack=game.stacks[index];if(!hasFloorCoins(game)||state?.round!==game.round||stack?.[1]||!stack?.[0]||stack[0].id!==state.randomTileId||state.lastDiscovery)return null;
- const event:FloorCoinDiscovery={kind:'random',id:`${game.lastEvent?.id}:coin-discovery`,round:game.round,index,at:now};event.at=nextCoinPresentationAt(publicCoinEvents(state),event.id,now);state.lastDiscovery=event;(state.discoveries??=[]).push(event);
- game.turnReadyAt=Math.max(game.turnReadyAt||0,event.at+COIN_DISCOVERY_MS+COIN_DISCOVERY_AFTER_MS);return event;
 }
 /** A covered lower coin and every upper coin stay hidden, including during scouting. */
 export function publicFloorCoinAmount(game:Game,index:number,who:number){

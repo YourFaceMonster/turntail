@@ -20,7 +20,7 @@ import {rpgTacticalView,resetRpgTactics,tryRpgBotItem,scoutRpgBotDraw} from './r
 import {itemTurnReadyAt} from './rpg-item-motion.ts';
 import {twinIndex} from './rpg-twins.ts';
 import {applyPioneerDeal,itemBattleState,triggerFloorTrap,triggerScoutedPickup} from './item-battle-rules.ts';
-import {prepareFloorCoins,hasFloorCoins,claimFloorCoin,revealFloorCoin,floorCoinsView,publicFloorCoinAmount,type FloorCoinState} from './floor-coins.ts';
+import {prepareFloorCoins,hasFloorCoins,claimFloorCoin,floorCoinsView,publicFloorCoinAmount,type FloorCoinState} from './floor-coins.ts';
 import {tryBotProfessionActive} from './profession-actives.ts';
 import {COIN_TURN_READY_MS,TRAP_IMPACT_MS,TRAP_PRESENTATION_MS} from './pickup-presentation.ts';
 export type Tile = {id:number,n:number,s:number};
@@ -182,7 +182,6 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   triggerFloorTrap(g,who,index,t,now,true);
   const trap=itemBattleState(g)?.lastTrap,pickupBeat=trap&&!trap.safe&&trap.index===index&&trap.at>=now?trap.at-TRAP_IMPACT_MS+TRAP_PRESENTATION_MS:ambush?ambush.at+350:now;
   if(coin){coin.at=nextCoinPresentationAt(publicCoinEvents(g.floorCoins),coin.id,Math.max(pickupBeat,now+DRAW_TRAVEL_MS));g.turnReadyAt=Math.max(g.turnReadyAt||0,coin.at+COIN_TURN_READY_MS);}
-  revealFloorCoin(g,index,pickupBeat);
   if(g.rpgRun?.hp.some(hp=>hp<=0)){if(g.hpItemMatch)g.hpItemMatch.endReason=g.rpgRun.hp[who]<=0?'trap':'ambush';finishHpItemMatch(g);return;}
  }else if(action==="pass"){
   if(g.stacks.some(s=>s[0]||s[1]))throw Error("바닥 패가 남아 있으면 내거나 가져와야 해요.");

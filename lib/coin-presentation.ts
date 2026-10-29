@@ -4,8 +4,9 @@ export type PublicCoinEvent=FloorCoinDiscovery|FloorCoinPickup;
 export function isCoinPickup(event:PublicCoinEvent):event is FloorCoinPickup{return 'who' in event;}
 export function coinEventDuration(event:PublicCoinEvent){return isCoinPickup(event)?COIN_PRESENTATION_MS:COIN_DISCOVERY_MS;}
 export function publicCoinEvents(state?:{events:FloorCoinPickup[],lastDiscovery?:FloorCoinDiscovery,discoveries?:FloorCoinDiscovery[]}){
- const unique=new Map<string,PublicCoinEvent>();for(const event of [...(state?.discoveries||[]),...(state?.lastDiscovery?[state.lastDiscovery]:[]),...(state?.events||[])])unique.set(event.id,event);
- return [...unique.values()].sort((a,b)=>a.at-b.at||Number(isCoinPickup(a))-Number(isCoinPickup(b)));
+ // Legacy lower-floor discovery records remain saved, but no longer interrupt play.
+ const unique=new Map<string,FloorCoinPickup>();for(const event of state?.events||[])unique.set(event.id,event);
+ return [...unique.values()].sort((a,b)=>a.at-b.at);
 }
 export function nextCoinPresentationAt(events:readonly PublicCoinEvent[],eventId:string,earliest:number){return Math.max(earliest,...events.filter(event=>event.id!==eventId).map(event=>event.at+coinEventDuration(event)+COIN_EVENT_GAP_MS));}
 /** Never truncate a new arrival because rendering/networking started late. */
