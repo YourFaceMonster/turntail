@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-29",
+  "tool": "built-in image_gen",
+  "transparent_background": false,
+  "assets": [
+    {
+      "id": "single-menu",
+      "destination": "public/ui/single-menu-0649.webp",
+      "prompt": "Use case: stylized-concept. Asset type: portrait background artwork behind real HTML game-menu controls for TURNTALE, a cozy hand-painted fantasy tile board game. Create ONE polished full-bleed 2:3 portrait bitmap. A tasteful carved walnut and antique-brass frame around a deep dark quiet central panel, warm amber rim light, rounded hand-painted storybook fantasy styling, tactile wood and softly worn metal, restrained elegant gold ornament. This is background artwork only, not a screenshot, not a completed UI layout. Keep the central 75 percent very calm, dark, low-contrast and open so real headings, input fields, buttons and character cards will be readable on top. Concentrate visual interest in the upper 18 percent and outer corners/edges; no large objects across the central area. Broad softly painted shapes and smooth finished surfaces, not scratchy sketch lines. The edges form one unified decorative panel rather than multiple boxes. No text, lettering, logos, numerals, labels, buttons, icons of controls, card grids, characters or people. Do not bake in interface elements or legible playing tiles. No watermark.  Theme: selecting an adventure in a welcoming moonlit fantasy inn. The upper edge suggests a carved rounded arch, muted burgundy drapery, one tiny warm lantern near an outer corner, distant soft blue moonlit window glow and a small elegant four-suit brass ornament at the very top edge. Deep forest-green velvet/wood in the calm center. Rich brown walnut frame, subtle antique-gold highlights. Cozy, inviting, visually related to a magical board-game tavern.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-9f26f52d-a9de-4923-bff9-9535a03d1227.png",
+      "original": "../artifacts/menu-scenes-0649-originals/single-menu.png",
+      "editPrompt": "Use case: precise-object-edit. Edit target: this generated TURNTALE menu background. Keep the whole composition, frame, lantern, curtains, moonlit window, colors, lighting and dark empty central field unchanged. Change ONLY the small gold four-symbol crest at the top center. Replace the poker/card-suit shapes with the game's four simple gold symbols: a circular SUN with short rays, a five-point STAR, a CRESCENT MOON, and a soft puffy CLOUD. Arrange those four symbols as a tasteful compact 2-by-2 crest in the existing carved position. No hearts, spades, clubs or diamonds. No words or numerals. Preserve full opaque background and portrait canvas.",
+      "initialSource": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-123c6883-3f9d-4598-9822-aeeca9e99f96.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "bytes": 119252,
+      "formatConversionOnly": true
+    },
+    {
+      "id": "classic-setup",
+      "destination": "public/ui/classic-setup-0649.webp",
+      "prompt": "Use case: stylized-concept. Asset type: portrait background artwork behind real HTML game-menu controls for TURNTALE, a cozy hand-painted fantasy tile board game. Create ONE polished full-bleed 2:3 portrait bitmap. A tasteful carved walnut and antique-brass frame around a deep dark quiet central panel, warm amber rim light, rounded hand-painted storybook fantasy styling, tactile wood and softly worn metal, restrained elegant gold ornament. This is background artwork only, not a screenshot, not a completed UI layout. Keep the central 75 percent very calm, dark, low-contrast and open so real headings, input fields, buttons and character cards will be readable on top. Concentrate visual interest in the upper 18 percent and outer corners/edges; no large objects across the central area. Broad softly painted shapes and smooth finished surfaces, not scratchy sketch lines. The edges form one unified decorative panel rather than multiple boxes. No text, lettering, logos, numerals, labels, buttons, icons of controls, card grids, characters or people. Do not bake in interface elements or legible playing tiles. No watermark.  Theme: preparing a classic friendly tile match at a polished inn table. Smooth dark walnut tabletop and muted forest-green felt in the quiet center, an understated carved wooden crest at the top, softly glowing amber candlelight just outside the frame edges, a few restrained brass corner inlays inspired by sun/star/moon/cloud shapes. The scene is warm and grounded, with a visibly polished finish. Do not show loose playing tiles or cards. The center must stay empty and dark for form controls.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-166f9c9d-0c15-44f1-8fb6-435d752e55b8.png",
+      "original": "../artifacts/menu-scenes-0649-originals/classic-setup.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "bytes": 199380,
+      "formatConversionOnly": true
+    },
+    {
+      "id": "item-lobby",
+      "destination": "public/ui/item-lobby-0649.webp",
+      "prompt": "Use case: stylized-concept. Asset type: portrait background artwork behind real HTML game-menu controls for TURNTALE, a cozy hand-painted fantasy tile board game. Create ONE polished full-bleed 2:3 portrait bitmap. A tasteful carved walnut and antique-brass frame around a deep dark quiet central panel, warm amber rim light, rounded hand-painted storybook fantasy styling, tactile wood and softly worn metal, restrained elegant gold ornament. This is background artwork only, not a screenshot, not a completed UI layout. Keep the central 75 percent very calm, dark, low-contrast and open so real headings, input fields, buttons and character cards will be readable on top. Concentrate visual interest in the upper 18 percent and outer corners/edges; no large objects across the central area. Broad softly painted shapes and smooth finished surfaces, not scratchy sketch lines. The edges form one unified decorative panel rather than multiple boxes. No text, lettering, logos, numerals, labels, buttons, icons of controls, card grids, characters or people. Do not bake in interface elements or legible playing tiles. No watermark.  Theme: a friendly fantasy adventurers' guild preparing an item battle. Deep muted teal and plum in the quiet center; a carved arch at the upper edge with a restrained emerald crystal and brass star accents, a tiny rolled parchment and small potion bottle only in far lower outer corners, soft violet magical light around the border. This should complement cartoon adult swordsman, rogue, cleric and mage portraits without adding another character. Keep the central field quiet enough for four overlaid portrait cards and small Korean descriptions.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a17f5f-b26d-7b53-98a9-a27125e714fa\\exec-94b5fe4f-9478-4726-a12d-f8dd043fea97.png",
+      "original": "../artifacts/menu-scenes-0649-originals/item-lobby.png",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "bytes": 173842,
+      "formatConversionOnly": true
+    }
+  ]
+}

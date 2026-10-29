@@ -2,7 +2,6 @@
 import {APP_VERSION} from '../../lib/version';
 import RoomAmbience from './RoomAmbience';
 import TurntaleWordmark from './TurntaleWordmark';
-import MenuTableArt from './MenuTableArt';
 import {SuitEmblem} from './TileFace';
 import {BookOpen,Settings,Trophy,Award,UserRound,ChevronRight} from 'lucide-react';
 
@@ -20,9 +19,9 @@ export default function MainMenu(p:Props){return <section className="title-scree
   <p className="title-tagline">한 장의 선택, 새로운 이야기</p>
   <div className="title-suits" aria-label="해 · 별 · 달 · 구름">{[3,1,2,0].map(s=><span key={s} className={`title-suit-${s}`}><SuitEmblem s={s}/></span>)}</div>
   <div className="title-play">
-   <button className="pixel-button menu-single" onClick={p.single}><MenuTableArt/><span className="menu-button-copy"><strong>싱글플레이</strong><small>일반 대전 · 아이템전 · RPG 여정</small></span><ChevronRight className="menu-button-arrow" aria-hidden="true"/></button>
-   <button className="pixel-button menu-continue" disabled={!p.canResume} onClick={p.resume} title={p.canResume?'저장된 게임을 이어서 플레이합니다':'저장된 게임이 없어요'}><MenuTableArt kind="resume"/><span className="menu-button-copy"><strong>이어서 하기</strong><small>{p.canResume?'멈춰 둔 테이블로 돌아가기':'저장된 게임이 없어요'}</small></span><ChevronRight className="menu-button-arrow" aria-hidden="true"/></button>
-   <button className="pixel-button menu-multi" onClick={p.multi}><MenuTableArt kind="multi"/><span className="menu-button-copy"><strong>멀티플레이</strong><small>초대 코드로 친구와 한 테이블</small></span><ChevronRight className="menu-button-arrow" aria-hidden="true"/></button>
+   <button className="pixel-button menu-single" onClick={p.single}><span className="menu-button-copy"><strong>싱글플레이</strong><small>일반 대전 · 아이템전 · RPG 여정</small></span><ChevronRight className="menu-button-arrow" aria-hidden="true"/></button>
+   <button className="pixel-button menu-continue" disabled={!p.canResume} onClick={p.resume} title={p.canResume?'저장된 게임을 이어서 플레이합니다':'저장된 게임이 없어요'}><span className="menu-button-copy"><strong>이어서 하기</strong><small>{p.canResume?'멈춰 둔 테이블로 돌아가기':'저장된 게임이 없어요'}</small></span><ChevronRight className="menu-button-arrow" aria-hidden="true"/></button>
+   <button className="pixel-button menu-multi" onClick={p.multi}><span className="menu-button-copy"><strong>멀티플레이</strong><small>초대 코드로 친구와 한 테이블</small></span><ChevronRight className="menu-button-arrow" aria-hidden="true"/></button>
   </div>
   <button className="menu-tutorial" onClick={p.tutorial}><BookOpen aria-hidden="true"/><span className="menu-tutorial-copy">튜토리얼<small>패 내기부터 직업·주화까지</small></span><ChevronRight aria-hidden="true"/></button>
 

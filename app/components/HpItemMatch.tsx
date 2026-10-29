@@ -21,7 +21,7 @@ const itemName=(id:string)=>RPG_CONSUMABLES.find(item=>item.id===id)?.name||id;
 
 export function HpItemLobby({archive,start,resume,close,error,character,chooseCharacter,profession='swordsman',chooseProfession=()=>{}}:{archive:HpItemArchive,profession?:RpgProfessionId,chooseProfession?:(id:RpgProfessionId)=>void,start:()=>void,resume:()=>void,close:()=>void,error:string,character?:HpCharacterId,chooseCharacter?:(id:HpCharacterId)=>void}){
  const starter=RPG_SHOP_ITEMS,legacy=!!archive.active&&!archive.active.rpgRun?.combat?.itemBattle;
- return <div className="modal-shade" onClick={close}><section className="modal hp-item-lobby" role="dialog" aria-modal="true" aria-label="싱글플레이 아이템전" onClick={event=>event.stopPropagation()}>
+ return <div className="modal-shade" onClick={close}><section className="modal hp-item-lobby menu-surface menu-theme-items" role="dialog" aria-modal="true" aria-label="싱글플레이 아이템전" onClick={event=>event.stopPropagation()}>
   <button className="close" onClick={close} aria-label="아이템전 닫기">×</button><h2>아이템전</h2>
   <p>포인트 상점 · 싸움마다 HP 공격 · 직업 스킬</p>
   <p className="hp-random-opponents">세계의 주민 30명 중 상대 2명이 무작위로 찾아와요.<small>한 대전 동안 같은 상대와 겨루며, 새 대전을 시작하면 다시 만나요.</small></p>
