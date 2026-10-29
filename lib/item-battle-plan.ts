@@ -58,7 +58,7 @@ function battleEffect(p:BotPosition,seat:number,tiles:Tile[],submitted:number){
  const combat=p.rpgRun!.combat!,label=combo(tiles)?.label||'싱글',role=combat.professions[seat],trigger=rpgProfessionTriggers(role,label,combat.activeUsed[seat]);
  let damage=submitted+(trigger.passive?.damage||0)+(trigger.active?.damage||0),heal=(trigger.passive?.heal||0)+(trigger.active?.heal||0);
  if(role==='swordsman'&&label==='싱글')damage++;
- if(role==='mage'&&tiles.length===5)damage+=2;
+ if(role==='mage'&&tiles.length===5)damage+=4;
  if(role==='cleric'&&label==='페어'&&combat.itemBattle?.pairWins[seat]===1)heal+=2;
  const relicIds=seat===0&&p.me===0?p.rpgRun!.equipped:publicBattleRelicIds(p.hpItemMatch,seat);
  const relic=itemBattleRelicWin(relicIds,label,tiles);damage+=relic.damage;heal+=relic.heal;
@@ -77,7 +77,7 @@ function terminalThreat(p:BotPosition,s:State){
  for(let seat=0;seat<p.players.length;seat++){
   if(seat===p.me||s.counts[seat]>5)continue;
   const player=p.players[seat],knownFinish=player.known.length===player.count&&!!combo(player.known),chance=knownFinish ? .8 : s.counts[seat]===1 ? .55 : s.counts[seat]===2 ? .16 : .06;
-  const hit=Math.max(1,totals(p,seat)+s.counts[seat]+(p.rpgRun!.combat!.professions[seat]==='mage'&&s.counts[seat]===5?2:0));
+  const hit=Math.max(1,totals(p,seat)+s.counts[seat]+(p.rpgRun!.combat!.professions[seat]==='mage'&&s.counts[seat]===5?4:0));
   if(s.hp[p.me]<=hit)expected+=chance;
  }
  return Math.min(.8,expected);

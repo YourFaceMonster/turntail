@@ -15,7 +15,7 @@ import {BattleEffectText} from '../app/components/HpBattleReview';
 import {RpgHpBar} from '../app/components/RpgHpBar';
 function fresh(){const g=createHpItemGame('검증','',Date.now(),2,'toto','mage',100);buyHpItemLoadout(g,[]);g.turn=0;g.turnReadyAt=0;g.completedBattles=1;g.roundActions=6;g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.rpgRun!.combat!.actives!.gauge=[0,0,0];g.rpgRun!.combat!.professions=['mage','swordsman','mage'];g.floorCoins!.randomTileId=null;return g;}
 const mage=fresh();mage.trick=Array.from({length:5},(_,id)=>({id,n:7,s:id%4}));mage.rpgRun!.combat!.activeUsed[0]=true;
-for(let i=0;i<3;i++){const effect=resolveProfessionWin(mage,0,'포카드',Date.now());assert.equal(effect.damage,8);assert.ok(effect.effects.some(e=>e.trait==='비전 증폭'));}
+for(let i=0;i<3;i++){const effect=resolveProfessionWin(mage,0,'포카드',Date.now());assert.equal(effect.damage,10);assert.ok(effect.effects.some(e=>e.trait==='5장 족보 강화'));}
 const audit=[];
 for(const budget of [0,3,4,5,6,8,10,20]){const g=createHpItemGame('예산','',Date.now(),2,'toto','rogue',100);g.hpItemMatch!.points=[20,budget,budget];g.rpgRun!.hp=[100,60,100];buyHpItemLoadout(g,[]);for(const seat of [1,2]){const held=g.rpgRun!.enemyConsumables![seat],spent=held.reduce((sum,id)=>sum+HP_ITEM_PRICES[id],0);assert.ok(spent<=budget);assert.equal(g.hpItemMatch!.points[seat],budget-spent);audit.push({seat,budget,spent,remaining:g.hpItemMatch!.points[seat],items:held});}}
 const missing=fresh();missing.turn=1;missing.hpItemMatch!.points[1]=0;delete missing.rpgRun!.enemyConsumables![1];tryRpgBotItem(missing);assert.deepEqual(missing.rpgRun!.enemyConsumables![1],[]);assert.equal(missing.rpgRun!.lastItem,undefined,'no free kit for a missing saved inventory');

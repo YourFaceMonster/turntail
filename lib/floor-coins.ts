@@ -1,10 +1,11 @@
+import {publicCoinEvents,nextCoinPresentationAt} from './coin-presentation';
 import type {Game,Tile} from './game.ts';
-import {COIN_DISCOVERY_MS,COIN_TURN_READY_MS} from './pickup-presentation.ts';
+import {COIN_DISCOVERY_MS,COIN_DISCOVERY_AFTER_MS,COIN_TURN_READY_MS} from './pickup-presentation.ts';
 
 export type FloorCoinPickup={id:string,round:number,who:number,index:number,layer:1|2,amount:number,kind:'random'|'last'|'overlap',at:number,moneyBefore?:number,moneyAfter?:number};
-export type FloorCoinDiscovery={id:string,round:number,index:number,at:number};
+export type FloorCoinDiscovery={id:string,round:number,index:number,at:number,kind?:'random'|'last'|'overlap'};
 /** This object is persisted with the game, never sent directly to a player or AI. */
-export type FloorCoinState={version:1,round:number,randomTileId:number|null,lastAwarded:boolean,earned:number[],events:FloorCoinPickup[],lastDiscovery?:FloorCoinDiscovery};
+export type FloorCoinState={version:1,round:number,randomTileId:number|null,lastAwarded:boolean,earned:number[],events:FloorCoinPickup[],discoveries?:FloorCoinDiscovery[],lastDiscovery?:FloorCoinDiscovery};
 export function hasFloorCoins(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'rpgRun'>){return !!game.hpItemMode&&game.hpItemVariant===2&&game.hpItemRules===4&&!!game.rpgRun?.combat?.itemBattle;}
 export function floorCoinReward(profession?:string){return profession==='rogue'?1:3;}
 /** Called after the final deal/pioneer swap, or once when resuming a pre-coin save. */
@@ -16,13 +17,13 @@ export function prepareFloorCoins(game:Game){
 /** No hidden tile ID, location, layer or remaining-coin flag crosses the view boundary. */
 export function floorCoinsView(game:Game,who?:number){
  const state=game.floorCoins;if(!hasFloorCoins(game)||state?.round!==game.round)return undefined;
- return {version:state.version,round:state.round,earned:[...state.earned],events:state.events.map(({moneyBefore,moneyAfter,...event})=>({...event,...(event.who===who?{moneyBefore,moneyAfter}:{})})),lastDiscovery:state.lastDiscovery?{...state.lastDiscovery}:undefined};
+ return {version:state.version,round:state.round,earned:[...state.earned],events:state.events.map(({moneyBefore,moneyAfter,...event})=>({...event,...(event.who===who?{moneyBefore,moneyAfter}:{})})),discoveries:state.discoveries?.map(event=>({...event})),lastDiscovery:state.lastDiscovery?{...state.lastDiscovery}:undefined};
 }
 /** Only removing its cover can announce the lower coin. This public event contains no tile identity. */
 export function revealFloorCoin(game:Game,index:number,now:number){
  const state=game.floorCoins,stack=game.stacks[index];if(!hasFloorCoins(game)||state?.round!==game.round||stack?.[1]||!stack?.[0]||stack[0].id!==state.randomTileId||state.lastDiscovery)return null;
- const event:FloorCoinDiscovery={id:`${game.lastEvent?.id}:coin-discovery`,round:game.round,index,at:now};state.lastDiscovery=event;
- game.turnReadyAt=Math.max(game.turnReadyAt||0,now+COIN_DISCOVERY_MS);return event;
+ const event:FloorCoinDiscovery={kind:'random',id:`${game.lastEvent?.id}:coin-discovery`,round:game.round,index,at:now};event.at=nextCoinPresentationAt(publicCoinEvents(state),event.id,now);state.lastDiscovery=event;(state.discoveries??=[]).push(event);
+ game.turnReadyAt=Math.max(game.turnReadyAt||0,event.at+COIN_DISCOVERY_MS+COIN_DISCOVERY_AFTER_MS);return event;
 }
 /** A covered lower coin and every upper coin stay hidden, including during scouting. */
 export function publicFloorCoinAmount(game:Game,index:number,who:number){
@@ -38,7 +39,7 @@ export function claimFloorCoin(game:Game,who:number,index:number,tile:Tile,layer
  const amount=(last?5:0)+(random?floorCoinReward(game.rpgRun?.combat?.professions[who]):0);
  if(random)state.randomTileId=null;if(last)state.lastAwarded=true;
  const moneyBefore=wallet.points[who];wallet.points[who]+=amount;state.earned[who]=(state.earned[who]||0)+amount;
- const event:FloorCoinPickup={id:`${game.lastEvent?.id||game.code+':'+game.round+':'+index}:coin`,round:game.round,who,index,layer,amount,kind:last?random?'overlap':'last':'random',at:now,moneyBefore,moneyAfter:wallet.points[who]};state.events.push(event);game.rpgRun!.updatedAt=now;game.turnReadyAt=Math.max(game.turnReadyAt||0,now+COIN_TURN_READY_MS);
+ const event:FloorCoinPickup={id:`${game.lastEvent?.id||game.code+':'+game.round+':'+index}:coin`,round:game.round,who,index,layer,amount,kind:last?random?'overlap':'last':'random',at:now,moneyBefore,moneyAfter:wallet.points[who]};event.at=nextCoinPresentationAt(publicCoinEvents(state),event.id,now);state.events.push(event);game.rpgRun!.updatedAt=now;game.turnReadyAt=Math.max(game.turnReadyAt||0,event.at+COIN_TURN_READY_MS);
  game.log=[`${game.players[who].name} · ${last?'마지막 바닥 주화':'바닥 주화'} +${amount}P`,...game.log].slice(0,40);return event;
 }
 /** A small draw preference uses public rewards and own-hand matches only. */

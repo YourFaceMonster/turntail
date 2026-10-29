@@ -1,3 +1,4 @@
+import {publicCoinEvents,nextCoinPresentationAt} from './coin-presentation';
 import {recordProfessionBattlePlay,resetProfessionCombat,resolveProfessionRpgBattle} from './rpg-profession-combat.ts';
 import {isBattleItemMode,recordHpBattlePlay,resolveHpItemBattle,settleHpBattleMoney} from './hp-item-battle.ts';
 import {applyPendingHpItems,beginHpItemRound,finishHpItemRoundReport,hpItemShopPending,type HpItemMatchState} from './hp-item-shop.ts';
@@ -180,7 +181,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   const coin=claimFloorCoin(g,who,index,t,z===1?2:1,now),ambush=triggerScoutedPickup(g,who,index,t,now);
   triggerFloorTrap(g,who,index,t,now,true);
   const trap=itemBattleState(g)?.lastTrap,pickupBeat=trap&&!trap.safe&&trap.index===index&&trap.at>=now?trap.at-TRAP_IMPACT_MS+TRAP_PRESENTATION_MS:ambush?ambush.at+350:now;
-  if(coin){coin.at=pickupBeat;g.turnReadyAt=Math.max(g.turnReadyAt||0,pickupBeat+COIN_TURN_READY_MS);}
+  if(coin){coin.at=nextCoinPresentationAt(publicCoinEvents(g.floorCoins),coin.id,Math.max(pickupBeat,now+DRAW_TRAVEL_MS));g.turnReadyAt=Math.max(g.turnReadyAt||0,coin.at+COIN_TURN_READY_MS);}
   revealFloorCoin(g,index,pickupBeat);
   if(g.rpgRun?.hp.some(hp=>hp<=0)){if(g.hpItemMatch)g.hpItemMatch.endReason=g.rpgRun.hp[who]<=0?'trap':'ambush';finishHpItemMatch(g);return;}
  }else if(action==="pass"){

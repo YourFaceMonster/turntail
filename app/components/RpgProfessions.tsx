@@ -21,7 +21,7 @@ function itemBattleDescription(id:RpgProfessionId){
  return id==='swordsman'?['싱글·페어 추가 피해 +1','스트레이트 추가 피해 +3 (1회)','강타 · 1/2/3/4칸 → 피해 1/2/4/6']:
   id==='rogue'?['싱글 바닥 1장 투시','트리플 바닥 2장 투시 (1회)','직업 투시 패 직접 회수 · 상대 각각 피해 1','함정 피해 4 · 2칸 소비 · 자기 턴 (1회)']:
   id==='cleric'?['페어 HP +1 · 두 번째 페어 추가 회복 +2','풀하우스 HP +5 (1회)','치유 · 1/2/3칸 → HP +1/+3/+5']:
-  ['트리플 추가 피해 +2','5장 족보 추가 피해 +2','포카드 추가 피해 +6','화염 파동 · 1/2/3/4/5칸 → 상대 각각 피해 1/2/3/4/6'];
+  ['트리플 추가 피해 +2','5장 족보 추가 피해 +4','포카드 추가 피해 +6','화염 파동 · 1/2/3/4/5칸 → 모두 피해 1/2/3/4/6'];
 }
 /** Only the outcome phrase is bold; its condition and usage limit stay quiet. */
 function EffectDescription({line}:{line:string}){const parts=line.split(/(추가 피해 \+\d+|추가 회복 \+\d+|HP \+\d+|바닥 \d+장 투시|상대 패 \d+장 확인|\d+장 교환|피해 \d+)/g);return <>{parts.map((part,index)=>index%2?<b className="profession-effect-value" key={index}>{part}</b>:part)}</>;}

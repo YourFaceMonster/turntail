@@ -25,7 +25,7 @@ export function createHpItemGame(name:string,avatar='',now=Date.now(),variant:Hp
  const game=createRpgTestGame(name,avatar,now);delete game.rpgTest;game.hpItemMode=true;game.hpItemVariant=variant;game.code='HP-ITEM-'+uid();
  game.hpItemMatch={pendingItemDelta:[0,0,0],pendingItemPoints:[0,0,0],points:[HP_ITEM_START_POINTS,HP_ITEM_START_POINTS,HP_ITEM_START_POINTS],shopRound:0,roundStartHp:[...game.rpgRun!.hp],roundItems:[],roundEarned:[0,0,0]};
  if(variant===2){
-  game.hpItemMatch.visualStage=newItemBattleVisualStage();game.hpItemRules=4;pickHpOpponents().forEach((id,index)=>{const person=hpCharacter(id);game.players[index+1].name=person.name;game.players[index+1].avatar=person.avatar;});game.hpItemMatch.battleTiles=game.players.map(()=>0);game.hpItemMatch.battles=[];game.hpItemMatch.roundMoneyBefore=[...game.hpItemMatch.points];
+  game.hpItemMatch.visualStage=newItemBattleVisualStage();game.hpItemMatch.tileSet=newItemBattleVisualStage();game.hpItemRules=4;pickHpOpponents().forEach((id,index)=>{const person=hpCharacter(id);game.players[index+1].name=person.name;game.players[index+1].avatar=person.avatar;});game.hpItemMatch.battleTiles=game.players.map(()=>0);game.hpItemMatch.battles=[];game.hpItemMatch.roundMoneyBefore=[...game.hpItemMatch.points];
   // Keep RPG point-bonus relics out of this wallet; floor coins have their own ledger.
   const excluded=['gamblers-gloves','stopped-hourglass','mor-quill','twin-needle-compass','split-mirror'],run=game.rpgRun!;
   run.consumables=[];
@@ -56,7 +56,7 @@ export function readHpItemArchive(storage:StoragePort,variant:HpItemVariant=1):H
  const raw=storage.getItem(storageKey(variant));if(!raw)return emptyHpItemArchive();
  let saved:HpItemArchive;try{saved=JSON.parse(raw);}catch{throw Error('아이템전 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
  if(saved?.version!==1||!Array.isArray(saved.records)||saved.active&&(!saved.active.hpItemMode||!saved.active.rpgRun||saved.active.players?.length!==3))throw Error('아이템전 저장 형식을 확인해 주세요. 기존 데이터는 보존했어요.');
- if(saved.active){refundLegacyEmbers(saved.active);const game=saved.active;game.completedBattles??=game.log.some(line=>line.includes('선을 잡았습니다'))?1:0;game.hpItemMatch??={points:[100,100,100],shopRound:game.round,roundStartHp:[...game.rpgRun!.hp],roundItems:[],roundEarned:[0,0,0]};if(!validItemBattleStage(game.hpItemMatch.visualStage))game.hpItemMatch.visualStage=itemBattleVisualStage(game.rpgRun!.id);game.hpItemMatch.pendingItemDelta??=[0,0,0];game.hpItemMatch.pendingItemPoints??=[0,0,0];ensureProfessionActives(game);}return saved;
+ if(saved.active){refundLegacyEmbers(saved.active);const game=saved.active;game.completedBattles??=game.log.some(line=>line.includes('선을 잡았습니다'))?1:0;game.hpItemMatch??={points:[100,100,100],shopRound:game.round,roundStartHp:[...game.rpgRun!.hp],roundItems:[],roundEarned:[0,0,0]};if(!validItemBattleStage(game.hpItemMatch.visualStage))game.hpItemMatch.visualStage=itemBattleVisualStage(game.rpgRun!.id);if(!validItemBattleStage(game.hpItemMatch.tileSet))game.hpItemMatch.tileSet=game.hpItemMatch.visualStage;game.hpItemMatch.pendingItemDelta??=[0,0,0];game.hpItemMatch.pendingItemPoints??=[0,0,0];ensureProfessionActives(game);}return saved;
 }
 function record(game:Game,status:HpItemRecord['status']):HpItemRecord{return {id:game.rpgRun!.id,name:game.players[0].name,rank:hpItemRanks(game)[0],hp:[...game.rpgRun!.hp],rounds:game.round,variant:game.hpItemVariant||1,rules:game.hpItemRules,at:game.rpgRun!.updatedAt,status};}
 export function saveHpItemGame(storage:StoragePort,game:Game,replace=false):HpItemArchive{

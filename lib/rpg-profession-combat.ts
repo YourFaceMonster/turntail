@@ -67,7 +67,7 @@ export function resolveProfessionWin(game:Game,actor:number,label:string,now:num
   let extraDamage=0,extraHeal=0,trait='';
   if(profession==='swordsman'&&label==='싱글'){extraDamage=1;trait='날카로운 한 수';}
   if(profession==='cleric'&&label==='페어'){extra.pairWins[actor]++;if(extra.pairWins[actor]===2){extraHeal=2;trait='이어지는 기도';}}
-  if(profession==='mage'&&game.trick.length===5){extraDamage=2;trait='비전 증폭';}
+  if(profession==='mage'&&game.trick.length===5){extraDamage=4;trait='5장 족보 강화';}
   if(trait){const event:ProfessionEffect={id:uid(),round:game.round,actor,profession,kind:'passive',label,damage:extraDamage,heal:Math.min(extraHeal,Math.max(0,hpLimit(game.rpgRun)-game.rpgRun!.hp[actor]-heal[actor])),revealed:0,trait,at:now};damage+=event.damage;heal[actor]+=event.heal;effects.push(event);state.effects.push(event);}
  }
  return {effects,heal,damage};
@@ -81,7 +81,7 @@ export function professionCombatView(state:RpgProfessionCombat|undefined,me:numb
  const actives=state.actives?{...state.actives,gauge:state.actives.gauge.map((value,seat)=>seat===me?value:0),lastUsedTurn:state.actives.lastUsedTurn.map((value,seat)=>seat===me?value:null)}:undefined;
  return {...state,itemBattle,actives,privateReveals:own.length?{[me]:own}:{}};
 }
-export function professionEffectText(effect:ProfessionEffect){return `${rpgProfession(effect.profession).name} ${effect.trait|| (effect.kind==='active'?'자동 스킬':'패시브')} · ${[effect.damage?`추가 피해 +${effect.damage}`:'',effect.heal?`HP +${effect.heal}`:'',effect.revealed?`${effect.floorScout?'바닥':'상대'} 패 ${effect.revealed}장 확인`:'',effect.floorScout&&!effect.revealed?'숨겨진 바닥패 없음':'',effect.exchange==='done'?'패 1장 교환':effect.exchange==='blocked'?'패 교환 · 수호의 봉인으로 방어':effect.exchange==='unavailable'?'교환할 수 없습니다':''].filter(Boolean).join(' · ')||'회복 한도 도달'}`;}
+export function professionEffectText(effect:ProfessionEffect){return `${rpgProfession(effect.profession).name} ${(effect.trait==='비전 증폭'?'5장 족보 강화':effect.trait)|| (effect.kind==='active'?'자동 스킬':'패시브')} · ${[effect.damage?`추가 피해 +${effect.damage}`:'',effect.heal?`HP +${effect.heal}`:'',effect.revealed?`${effect.floorScout?'바닥':'상대'} 패 ${effect.revealed}장 확인`:'',effect.floorScout&&!effect.revealed?'숨겨진 바닥패 없음':'',effect.exchange==='done'?'패 1장 교환':effect.exchange==='blocked'?'패 교환 · 수호의 봉인으로 방어':effect.exchange==='unavailable'?'교환할 수 없습니다':''].filter(Boolean).join(' · ')||'회복 한도 도달'}`;}
 /** RPG fight damage replaces score-based HP loss for new profession journeys only. */
 export function resolveProfessionRpgBattle(game:Game,now=Date.now(),roundEnding=false):HpBattleEvent|null{
  const run=game.rpgRun,state=run?.combat;if(!run||!state||game.hpItemMode||run.status!=='playing'||game.lastBy===null||!game.trick.length)return null;

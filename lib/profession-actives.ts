@@ -34,7 +34,7 @@ export function professionActiveAvailability(game:ActiveContext,who:number,enabl
  if(combat?.actives?.lastUsedTurn[who]===professionTurnKey(game))return {usable:false,reason:'이번 턴 스킬 사용 완료'};
  if(gauge<(profession==='rogue'?2:1))return {usable:false,reason:profession==='rogue'?'함정은 게이지 2칸 필요':'판 종료 시 게이지 +1'};
  if(profession==='cleric'&&game.rpgRun!.hp[who]>=hpLimit(game.rpgRun))return {usable:false,reason:'HP가 이미 가득 찼어요'};
- const value=config.values[gauge];return {usable:true,reason:profession==='rogue'?'2칸 소비 · 자기 턴 (1회) · 함정 피해 4':`${gauge}칸 전량 소비 · ${profession==='cleric'?`HP +${value}`:profession==='mage'?`상대 각각 피해 ${value}`:`선택 상대 피해 ${value}`}`};
+ const value=config.values[gauge];return {usable:true,reason:profession==='rogue'?'2칸 소비 · 자기 턴 (1회) · 함정 피해 4':`${gauge}칸 전량 소비 · ${profession==='cleric'?`HP +${value}`:profession==='mage'?`모두 피해 ${value}`:`선택 상대 피해 ${value}`}`};
 }
 /** Validate the target before calling this; invalid actions must consume nothing. */
 export function consumeProfessionGauge(game:ActiveContext,who:number,now=Date.now()){

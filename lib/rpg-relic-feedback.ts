@@ -14,7 +14,7 @@ export function withRelicActivations(run:RpgRun,effects:RpgRelicEffect[],at=Date
 export const ITEM_BATTLE_RELIC_HINTS:Record<string,{label:string,bonus:string,condition:string}>={
  'wind-sigil':{label:'페어 승리',bonus:'피해 +1',condition:'승리를 확정한 마지막 족보가 페어이면 상대 각각에게 추가 피해 1. 직업과 중첩돼요.'},
  'warrior-crest':{label:'트리플 승리',bonus:'피해 +2',condition:'승리를 확정한 마지막 족보가 트리플이면 상대 각각에게 추가 피해 2.'},
- 'life-sigil':{label:'트리플 승리',bonus:'HP +2',condition:'트리플로 싸움에서 이기면 자신의 HP 2 회복. 최대 HP 100.'},
+ 'life-sigil':{label:'트리플 승리',bonus:'HP +2',condition:'트리플로 싸움에서 이기면 자신의 HP 2 회복. 대전의 최대 HP까지 회복해요.'},
  'sun-sigil':{label:'플러시 승리',bonus:'피해 +3',condition:'플러시로 싸움에서 이기면 상대 각각에게 추가 피해 3. 스트레이트 플러시는 별도 족보예요.'},
  'crimson-fang':{label:'해 포함 승리',bonus:'피해 +1',condition:'마지막 승리 족보에 해 문양이 하나 이상 있으면 추가 피해 1. 해의 장수와 관계없이 한 번 적용해요.'},
  'cloud-blessing':{label:'구름 포함 승리',bonus:'HP +1',condition:'마지막 승리 족보에 구름 문양이 하나 이상 있으면 HP 1 회복. 붉은 송곳니와 함께 발동할 수 있어요.'},

@@ -1,4 +1,6 @@
 /** Authoritative turn locks and client effects share these pickup beats. */
+export const COIN_EVENT_GAP_MS=700;
+export const COIN_DISCOVERY_AFTER_MS=700;
 export const COIN_DISCOVERY_MS=2200;
 export const COIN_COLLECT_MS=1700;
 export const COIN_CREDIT_MS=2600;
