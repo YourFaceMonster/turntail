@@ -1,0 +1,47 @@
+{
+  "createdFor": "0.6.44 local",
+  "mode": "built-in image_gen.imagegen",
+  "transparentBackground": true,
+  "assets": [
+    {
+      "id": "coin",
+      "prompt": "Use case: stylized-concept. Asset type: a production-ready transparent PNG game UI asset for TURNTALE, a polished fantasy tile game. Hand-painted semi-realistic 2D object rendering, antique brass edging and convincing materials, bold readable silhouette at 32 pixels, restrained highlights, tightly centered subject with 9 percent clear margin. Genuine transparent background and clean antialiased alpha. No text, letters, numbers, border panel, watermark, scenery or cast floor shadow. Primary request: one round warm gold coin seen almost face-on with a very slight three-quarter depth, thick milled brass rim, a simple raised sun emblem in the center. Bright golden money icon, richer than a flat outline, one coin only. The whole circular coin is visible.",
+      "original": "C:/Users/SONG/.codex/generated_images/01a17f5f-b26d-7b53-98a9-a27125e714fa/exec-68c34435-14de-45f1-8bda-cc4133f952e9.png",
+      "projectFile": "public/item-battle-v1/coin-gold-v1.png",
+      "bytes": 1882912,
+      "sha256": "938e728845117a005a7a5bdc02fdcc76f4004facf7d26b730968362643db28ab"
+    },
+    {
+      "id": "swordsman",
+      "prompt": "Use case: stylized-concept. Asset type: a production-ready transparent PNG game UI asset for TURNTALE, a polished fantasy tile game. Hand-painted semi-realistic 2D object rendering, antique brass edging and convincing materials, bold readable silhouette at 32 pixels, restrained highlights, tightly centered subject with 9 percent clear margin. Genuine transparent background and clean antialiased alpha. No text, letters, numbers, border panel, watermark, scenery or cast floor shadow. Primary request: one distinctive warrior skill emblem: a short silver longsword with a dark leather grip and small antique gold guard, tilted from bottom left to top right, framed by one bold crimson-and-gold crescent slash. It must read as a powerful sword strike, not a character portrait. One unified icon, all tips visible.",
+      "original": "C:/Users/SONG/.codex/generated_images/01a17f5f-b26d-7b53-98a9-a27125e714fa/exec-da02812b-dd18-4f53-b340-e8856caef5da.png",
+      "projectFile": "public/item-battle-v1/skills/swordsman-strike-v1.png",
+      "bytes": 1448828,
+      "sha256": "950739b22c115a458dee96607b8004b1c908be4349aba05a5b3aa8d2fc66c46f"
+    },
+    {
+      "id": "mage",
+      "prompt": "Use case: stylized-concept. Asset type: a production-ready transparent PNG game UI asset for TURNTALE, a polished fantasy tile game. Hand-painted semi-realistic 2D object rendering, antique brass edging and convincing materials, bold readable silhouette at 32 pixels, restrained highlights, tightly centered subject with 9 percent clear margin. Genuine transparent background and clean antialiased alpha. No text, letters, numbers, border panel, watermark, scenery or cast floor shadow. Primary request: one distinctive mage skill emblem: a vivid orange-red fireball with a white-hot golden core and a curved flame tail, containing a small glowing arcane spark. Sculptural flowing flame, warm brass highlights, deep red contour for readability. One unified fireball icon, not a character portrait.",
+      "original": "C:/Users/SONG/.codex/generated_images/01a17f5f-b26d-7b53-98a9-a27125e714fa/exec-0cf7de31-0d3e-4bda-b80d-f5bf6cc59f1d.png",
+      "projectFile": "public/item-battle-v1/skills/mage-fireball-v1.png",
+      "bytes": 1207896,
+      "sha256": "6b2117e2a575e6abcfef541c16c7b307d85d847673f5495bd4409b84f88c06b6"
+    },
+    {
+      "id": "cleric",
+      "prompt": "Use case: stylized-concept. Asset type: a production-ready transparent PNG game UI asset for TURNTALE, a polished fantasy tile game. Hand-painted semi-realistic 2D object rendering, antique brass edging and convincing materials, bold readable silhouette at 32 pixels, restrained highlights, tightly centered subject with 9 percent clear margin. Genuine transparent background and clean antialiased alpha. No text, letters, numbers, border panel, watermark, scenery or cast floor shadow. Primary request: one distinctive healer skill emblem: a luminous emerald healing cross held inside a small ornate antique-gold staff-head ring, with two ivory-green leaves curving underneath. Rich fantasy restorative magic with clear green identity, compact readable symbol, not a character portrait.",
+      "original": "C:/Users/SONG/.codex/generated_images/01a17f5f-b26d-7b53-98a9-a27125e714fa/exec-7d8e4873-7bec-45a3-b293-8165cb0e4d9c.png",
+      "projectFile": "public/item-battle-v1/skills/cleric-heal-v1.png",
+      "bytes": 1395607,
+      "sha256": "1a410b87d95ab802b1aa16fcdccace61e1b809bab2412d3f06d88e61827179af"
+    },
+    {
+      "id": "firewall",
+      "prompt": "Use case: stylized-concept. Asset type: transparent PNG fantasy spell VFX sprite for TURNTALE. Primary request: a sweeping curved curtain of orange and crimson magical flames, golden-white hot tongues at the center, curling flame tips. A wide 3:2 front-facing spell effect, no perspective ground, no debris, no stone or floor, no environment. Hand-painted semi-realistic game VFX matching an antique-brass fantasy item icon family. The bottom edge is a shallow glowing arc, the top is irregular soft flame tips, the whole fire wall fits inside the frame with transparent margin. Genuine transparent background, preserve separate wisps with clean alpha. No text, numbers, logo, frame, characters or UI panel.",
+      "original": "C:/Users/SONG/.codex/generated_images/01a17f5f-b26d-7b53-98a9-a27125e714fa/exec-91966386-8660-49b0-9a19-519a3e31d5c7.png",
+      "projectFile": "public/item-battle-v1/skills/mage-firewall-v1.png",
+      "bytes": 2535468,
+      "sha256": "dcffd1593032cdbb0f3daea8a19ecb3b1b28b159b7355baf19f8b4a216e458ee"
+    }
+  ]
+}

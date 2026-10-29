@@ -1,3 +1,4 @@
+// Explicit 100 HP fixtures also cover compatibility with pre-0.6.44 saved matches.
 import assert from 'node:assert/strict';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {RpgProfessionPicker,RpgProfessionStatus} from '../app/components/RpgProfessions';
@@ -9,7 +10,7 @@ import {createHpItemGame} from '../lib/hp-item-mode';
 import {view} from '../lib/game';
 const text=(html:string)=>html.replace(/<[^>]*>/g,'');
 for(const profession of RPG_PROFESSIONS){
- const game=createHpItemGame('나','',Date.now(),2,'toto',profession.id),snapshot=view(game,game.players[0].token);
+ const game=createHpItemGame('나','',Date.now(),2,'toto',profession.id,100),snapshot=view(game,game.players[0].token);
  const picker=renderToStaticMarkup(<RpgProfessionPicker selected={profession.id} choose={()=>{}} itemBattle/>);
  const status=renderToStaticMarkup(<RpgProfessionStatus game={snapshot} seat={0} detail/>);
  for(const html of [picker,status]){

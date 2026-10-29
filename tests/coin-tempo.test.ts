@@ -1,3 +1,4 @@
+// Explicit 100 HP fixtures also cover compatibility with pre-0.6.44 saved matches.
 import assert from 'node:assert/strict';
 import {act,assertTurnReady,advanceRoom,DRAW_TRAVEL_MS} from '../lib/game.ts';
 import {createHpItemGame} from '../lib/hp-item-mode.ts';
@@ -5,7 +6,7 @@ import {buyHpItemLoadout} from '../lib/hp-item-shop.ts';
 import {placeFloorTrap} from '../lib/item-battle-rules.ts';
 import {COIN_PRESENTATION_MS,COIN_AFTER_PICKUP_MS,COIN_TURN_READY_MS} from '../lib/pickup-presentation.ts';
 import {HP_BATTLE_WIN_DELAY_MS,HP_BATTLE_REVIEW_MS} from '../lib/hp-item-battle.ts';
-function fresh(closing=false){const g=createHpItemGame('주화 템포','',Date.now(),2,'toto','rogue');buyHpItemLoadout(g,[]);g.rpgRun!.combat!.actives!.gauge=g.players.map(()=>4);g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.rpgRun!.combat!.professions=['rogue','swordsman','mage'];g.rpgRun!.hp=[90,90,90];g.completedBattles=1;g.turn=0;g.turnReadyAt=0;g.lastBy=closing?1:2;const tile=g.players[g.lastBy].hand.pop()!;g.trick=[tile];g.playedTiles=[tile];g.tablePlay={id:'tempo-trick',who:g.lastBy,tiles:[tile]};g.floorCoins!.randomTileId=g.stacks[0][1]!.id;return g;}
+function fresh(closing=false){const g=createHpItemGame('주화 템포','',Date.now(),2,'toto','rogue',100);buyHpItemLoadout(g,[]);g.rpgRun!.combat!.actives!.gauge=g.players.map(()=>4);g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.rpgRun!.combat!.professions=['rogue','swordsman','mage'];g.rpgRun!.hp=[90,90,90];g.completedBattles=1;g.turn=0;g.turnReadyAt=0;g.lastBy=closing?1:2;const tile=g.players[g.lastBy].hand.pop()!;g.trick=[tile];g.playedTiles=[tile];g.tablePlay={id:'tempo-trick',who:g.lastBy,tiles:[tile]};g.floorCoins!.randomTileId=g.stacks[0][1]!.id;return g;}
 const now=Date.now(),ordinary=fresh();act(ordinary,0,'draw',[],0,now);const coin=ordinary.floorCoins!.events[0];
 assert.equal(COIN_TURN_READY_MS,COIN_PRESENTATION_MS+COIN_AFTER_PICKUP_MS);assert.ok(COIN_AFTER_PICKUP_MS>=1200);assert.equal(ordinary.turnReadyAt,coin.at+COIN_TURN_READY_MS);assert.throws(()=>assertTurnReady(ordinary,coin.at+COIN_PRESENTATION_MS+COIN_AFTER_PICKUP_MS-1));assert.doesNotThrow(()=>assertTurnReady(ordinary,coin.at+COIN_TURN_READY_MS));
 const room=structuredClone(ordinary);room.practice=false;room.players[room.turn].bot=true;const before=JSON.stringify(room);assert.equal(advanceRoom(room,coin.at+COIN_PRESENTATION_MS+500),false);assert.equal(JSON.stringify(room),before,'AI cannot start during the quiet beat after a coin');

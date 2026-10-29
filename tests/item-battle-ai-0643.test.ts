@@ -1,3 +1,4 @@
+// Explicit 100 HP fixtures also cover compatibility with pre-0.6.44 saved matches.
 import assert from 'node:assert/strict';
 import {createHpItemGame} from '../lib/hp-item-mode';
 import {buyHpItemLoadout} from '../lib/hp-item-shop';
@@ -9,7 +10,7 @@ import {runLocalBot} from '../lib/local-bot';
 import type {RpgProfessionId} from '../lib/rpg-professions';
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 function fresh(role:RpgProfessionId='swordsman',who=1){
- const g=createHpItemGame('AI 검증','',Date.now(),2,'toto','swordsman');buyHpItemLoadout(g,[]);g.turn=who;g.turnReadyAt=0;g.completedBattles=1;g.roundActions=6;g.trick=[];g.lastBy=null;g.log=[];g.players.forEach(p=>p.bot=true);g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.rpgRun!.combat!.professions=['rogue',role,'rogue'];g.rpgRun!.combat!.professions[who]=role;g.rpgRun!.combat!.actives!.gauge=[0,0,0];g.floorCoins!.randomTileId=null;
+ const g=createHpItemGame('AI 검증','',Date.now(),2,'toto','swordsman',100);buyHpItemLoadout(g,[]);g.turn=who;g.turnReadyAt=0;g.completedBattles=1;g.roundActions=6;g.trick=[];g.lastBy=null;g.log=[];g.players.forEach(p=>p.bot=true);g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.rpgRun!.combat!.professions=['rogue',role,'rogue'];g.rpgRun!.combat!.professions[who]=role;g.rpgRun!.combat!.actives!.gauge=[0,0,0];g.floorCoins!.randomTileId=null;
  hands(g,[[tile(4),tile(8,1),tile(12,2),tile(1)],[tile(3),tile(7,1),tile(11,2),tile(2,3)],[tile(5),tile(9,1),tile(13,2),tile(15)]]);return g;
 }
 function hands(g:Game,sets:Tile[][]){

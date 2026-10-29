@@ -1,3 +1,4 @@
+// Explicit 100 HP fixtures also cover compatibility with pre-0.6.44 saved matches.
 import assert from 'node:assert/strict';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
@@ -12,7 +13,7 @@ import {DuelResultBody} from '../app/components/HpBattleReview';
 import {RpgHpBar} from '../app/components/RpgHpBar';
 import {SwordsmanSlash} from '../app/components/ProfessionActives';
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
-function fresh(){const g=createHpItemGame('검증','',1000,2,'toto','swordsman');buyHpItemLoadout(g,[]);g.turn=0;g.turnReadyAt=0;g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.floorCoins!.randomTileId=null;return g;}
+function fresh(){const g=createHpItemGame('검증','',1000,2,'toto','swordsman',100);buyHpItemLoadout(g,[]);g.turn=0;g.turnReadyAt=0;g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.floorCoins!.randomTileId=null;return g;}
 const wallet=fresh();wallet.hpItemMatch!.points=[31,4,0];wallet.round=3;beginHpItemRound(wallet);assert.deepEqual(wallet.hpItemMatch!.points,[31,4,0]);assert.equal(HP_ITEM_ROUND_ALLOWANCE,0);
 for(const round of [1,2,5])for(const seat of [0,1,2]){
  const g=fresh();g.round=round;g.hpItemMatch!.shopRound=round;g.completedBattles=0;g.roundActions=20;g.turn=seat;g.rpgRun!.hp[seat]=70;

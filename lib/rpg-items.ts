@@ -1,3 +1,4 @@
+import {hpLimit} from './hp-limit';
 import {retireLegacyLoadout} from './retired-loadout.ts';
 import {professionCombatView} from './rpg-profession-combat.ts';
 import {isBattleItemMode} from './hp-item-battle.ts';
@@ -69,7 +70,7 @@ export function rpgItemAvailability(game:ReturnType<typeof view>,id:string,enabl
  if(state.used>=rpgItemLimit(game))return {usable:false,reason:`이번 판 사용 한도 ${rpgItemLimit(game)}개`};
  if(state.turn===game.roundActions)return {usable:false,reason:'이번 차례 사용 완료'};
  if(id==='scout-lens')return itemBattleState(game)?{usable:game.stacks.some(stack=>stack.upper||stack.lowerPresent),reason:'바닥패 한 장의 내용과 함정 유무 확인'}:game.stacks.some(stack=>stack.upper)?{usable:true,reason:'원하는 2층 패 1장 투시'}:{usable:false,reason:'남은 2층 패 없음'};
- if(id==='emergency-herb')return {usable:hpItemEffectiveHp(game,game.me)<100,reason:hpItemEffectiveHp(game,game.me)<100?'자신의 HP 10 회복':'HP가 이미 가득 찼어요'};
+ if(id==='emergency-herb')return {usable:hpItemEffectiveHp(game,game.me)<hpLimit(game.rpgRun),reason:hpItemEffectiveHp(game,game.me)<hpLimit(game.rpgRun)?'자신의 HP 10 회복':'HP가 이미 가득 찼어요'};
  if(id==='ward-seal')return {usable:!run.itemGuards?.[game.me],reason:run.itemGuards?.[game.me]?'비밀 방패가 이미 준비됐어요':'다음 공격·패 교환 아이템 1회 방어'};
  if(id==='whisper-eye')return {usable:game.players.some((player,index)=>index!==game.me&&player.count>0),reason:'선택한 상대의 손패 무작위 1장 확인 · 나에게만 공개'};
  if(isAttackItem(id)){
@@ -103,7 +104,7 @@ export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:numbe
  }else if(id==='ward-seal'){
   run.itemGuards={...run.itemGuards,[who]:true};target=who;
  }else if(id==='emergency-herb'){
-  const amount=Math.min(10,100-hpItemEffectiveHp(g,who));if(g.hpItemMode&&!isBattleItemMode(g)&&g.hpItemMatch){g.hpItemMatch.pendingItemDelta??=g.players.map(()=>0);g.hpItemMatch.pendingItemDelta[who]+=amount;}else run.hp[who]+=amount;record(g,who,id,who,'heal',amount);
+  const amount=Math.min(10,hpLimit(run)-hpItemEffectiveHp(g,who));if(g.hpItemMode&&!isBattleItemMode(g)&&g.hpItemMatch){g.hpItemMatch.pendingItemDelta??=g.players.map(()=>0);g.hpItemMatch.pendingItemDelta[who]+=amount;}else run.hp[who]+=amount;record(g,who,id,who,'heal',amount);
  }else if(isAttackItem(id)){
   if(!Number.isInteger(target)||!g.players[target]||target===who||hpItemEffectiveHp(g,target)<=(g.hpItemMode?0:1))throw Error('공격할 수 있는 상대를 선택해 주세요.');
   applyRpgEmberDamage(g,who,target,Date.now(),id);

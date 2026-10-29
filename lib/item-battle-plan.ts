@@ -1,9 +1,11 @@
+import {hpLimit} from './hp-limit';
 import {combo,legalOptions,rank,sorted,type BotPosition,type BotAction,type Tile} from './game';
 import {chooseStrategicAction,publicBotCandidates,publicControlChance} from './bot';
 import {rpgProfessionTriggers} from './rpg-professions';
 import {PROFESSION_ACTIVES,activeGauge,professionActiveAvailability} from './profession-actives';
 import {rpgItemAvailability,exchangeEligible,exchangeTargetAvailable,type RpgTacticalItem} from './rpg-items';
 import {HP_ITEM_PRICES} from './hp-item-shop';
+import {publicBattleRelicIds} from './item-battle-public-relics';
 import {itemBattleRelicWin} from './item-battle-relics';
 
 export type ItemBattleAux={type:'profession',target:number}|{type:'item',id:RpgTacticalItem,target?:number,ids?:number[]};
@@ -58,12 +60,13 @@ function battleEffect(p:BotPosition,seat:number,tiles:Tile[],submitted:number){
  if(role==='swordsman'&&label==='싱글')damage++;
  if(role==='mage'&&tiles.length===5)damage+=2;
  if(role==='cleric'&&label==='페어'&&combat.itemBattle?.pairWins[seat]===1)heal+=2;
- if(seat===0&&p.me===0){const relic=itemBattleRelicWin(p.rpgRun!.equipped,label,tiles);damage+=relic.damage;heal+=relic.heal;}
+ const relicIds=seat===0&&p.me===0?p.rpgRun!.equipped:publicBattleRelicIds(p.hpItemMatch,seat);
+ const relic=itemBattleRelicWin(relicIds,label,tiles);damage+=relic.damage;heal+=relic.heal;
  return {damage,heal};
 }
 function resolveBattle(p:BotPosition,s:State,seat:number,tiles:Tile[],submitted:number){
  const result=copy(s),effect=battleEffect(p,seat,tiles,submitted);
- result.hp=result.hp.map((hp,index)=>index===seat?Math.min(100,hp+effect.heal):Math.max(0,hp-effect.damage));result.ended=result.hp.some(hp=>hp<=0);return result;
+ result.hp=result.hp.map((hp,index)=>index===seat?Math.min(hpLimit(p.rpgRun),hp+effect.heal):Math.max(0,hp-effect.damage));result.ended=result.hp.some(hp=>hp<=0);return result;
 }
 function roundMoney(p:BotPosition,s:State){
  if(s.ended)return s;const result=copy(s),delta=s.counts.reduce((sum,n)=>sum+n,0)-s.counts[p.me]*s.counts.length;
@@ -137,7 +140,7 @@ function shortlist(p:BotPosition){
   const moves=(tiles:Tile[])=>{const key=tiles.map(tile=>tile.id).join(',');if(cache.has(key))return cache.get(key)!;const remaining=new Set(tiles.map(tile=>tile.id));let count=0;for(const option of options)if(option.tiles.every(tile=>remaining.has(tile.id))){option.tiles.forEach(tile=>remaining.delete(tile.id));count++;}const n=count+remaining.size;cache.set(key,n);return n;},before=moves(hand);
   for(const candidate of ranked)if(candidate.action.type==='play'){
    const tiles=candidate.action.tiles,ids=new Set(tiles.map(tile=>tile.id)),effect=battleEffect(p,p.me,tiles,tiles.length),extra=effect.damage-tiles.length,known=p.players.filter((player,seat)=>seat!==p.me&&legalOptions(player.known,tiles).length).length;
-   candidate.score=tiles.length*12+(before-moves(hand.filter(tile=>!ids.has(tile.id))))*18+extra*7+Math.min(effect.heal,100-p.rpgRun!.hp[p.me])*3-known*25-tiles.reduce((sum,tile)=>sum+rank(tile),0)*.12-tiles.filter(tile=>tile.n===2).length*12;
+   candidate.score=tiles.length*12+(before-moves(hand.filter(tile=>!ids.has(tile.id))))*18+extra*7+Math.min(effect.heal,hpLimit(p.rpgRun)-p.rpgRun!.hp[p.me])*3-known*25-tiles.reduce((sum,tile)=>sum+rank(tile),0)*.12-tiles.filter(tile=>tile.n===2).length*12;
   }
   ranked.sort((a,b)=>b.score-a.score);
  }
@@ -172,14 +175,14 @@ function applyAux(p:BotPosition,before:State,action:ItemBattleAux,hasPlay:boolea
    const stack=p.stacks[action.target],chance=stack.available ? .55 : .16,next=(p.me+1)%p.players.length,damage=copy(s);damage.hp[next]=Math.max(0,damage.hp[next]-4);damage.ended=damage.hp.some(hp=>hp<=0);
    s.bonus+=chance*(value(p,damage)-value(p,s))+(stack.coinAmount||0)*4;s.cost+=70;return s;
   }
-  const amount=config.values[gauge];s.hp=s.hp.map((hp,seat)=>role==='cleric'&&seat===p.me?Math.min(100,hp+amount):seat!==p.me&&(role==='mage'||role==='swordsman'&&seat===action.target)?Math.max(0,hp-amount):hp);
+  const amount=config.values[gauge];s.hp=s.hp.map((hp,seat)=>role==='cleric'&&seat===p.me?Math.min(hpLimit(p.rpgRun),hp+amount):seat!==p.me&&(role==='mage'||role==='swordsman'&&seat===action.target)?Math.max(0,hp-amount):hp);
   const unit=copy(before);
-  unit.hp=unit.hp.map((hp,seat)=>role==='cleric'&&seat===p.me?Math.min(100,hp+1):seat!==p.me&&(role==='mage'||seat===action.target)?Math.max(.1,hp-1):hp);
+  unit.hp=unit.hp.map((hp,seat)=>role==='cleric'&&seat===p.me?Math.min(hpLimit(p.rpgRun),hp+1):seat!==p.me&&(role==='mage'||seat===action.target)?Math.max(.1,hp-1):hp);
   const marginal=Math.max(15,itemBattlePositionValue(unit.hp,unit.counts,p.me,false)-itemBattlePositionValue(before.hp,before.counts,p.me,false));
   const reserve=before.hp[p.me]<=15 ? .15 : gauge===config.maxGauge ? .30 : .95;
   s.cost+=marginal*(Math.max(...config.values)/config.maxGauge)*gauge*reserve;
  }else{
-  if(action.id==='emergency-herb')s.hp[p.me]=Math.min(100,s.hp[p.me]+10);
+  if(action.id==='emergency-herb')s.hp[p.me]=Math.min(hpLimit(p.rpgRun),s.hp[p.me]+10);
   if(action.id==='ember-bomb'&&action.target!==undefined)s.hp[action.target]=Math.max(0,s.hp[action.target]-8);
   s.cost+=(HP_ITEM_PRICES[action.id]||6)*16;
   if(action.id==='ward-seal')s.futureGuard=4.2;

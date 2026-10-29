@@ -1,3 +1,4 @@
+// Explicit 100 HP fixtures also cover compatibility with pre-0.6.44 saved matches.
 import assert from 'node:assert/strict';
 import {deleteSaveSlot,readSaveSlots} from '../lib/save-slots.ts';
 import {createHpItemGame,saveHpItemGame} from '../lib/hp-item-mode.ts';
@@ -7,7 +8,7 @@ import {saveRpgTestGame} from '../lib/rpg-test-storage.ts';
 import {itemScenePoints} from '../lib/rpg-item-motion.ts';
 import {hpBattleSummary} from '../lib/hp-battle-summary.ts';
 const values=new Map<string,string>(),storage={getItem:(key:string)=>values.get(key)??null,setItem:(key:string,value:string)=>{values.set(key,value);},removeItem:(key:string)=>{values.delete(key);}};
-const game=createHpItemGame('삭제 검증','',Date.now(),2,'toto','rogue');saveHpItemGame(storage,game);
+const game=createHpItemGame('삭제 검증','',Date.now(),2,'toto','rogue',100);saveHpItemGame(storage,game);
 const test=createRpgTestGame('이전 장비 테스트');saveRpgTestGame(storage,test);
 values.set('settings','keep');values.set('unlocks','keep');
 const archiveKey='turntale-hp-items-2-v1',archive=JSON.parse(values.get(archiveKey)!);archive.records=[{id:'preserved-record'}];archive.futureUnlocks=['sun'];values.set(archiveKey,JSON.stringify(archive));

@@ -1,3 +1,4 @@
+import {hpLimit} from './hp-limit';
 import {legalOptions,type BotPosition} from './game';
 import {itemBattlePositionValue} from './item-battle-plan';
 import {HP_ITEM_PRICES} from './hp-item-shop';
@@ -10,7 +11,7 @@ export function chooseItemBattlePurchases(p:BotPosition,budget:number){
  const candidates=RPG_SHOP_ITEMS.filter(id=>!held.includes(id)&&HP_ITEM_PRICES[id]<=budget),value=(next:number[])=>itemBattlePositionValue(next,counts,me)-base;
  const options=legalOptions((p.players[me].hand||[]).slice(0,18),[]),families=new Set(options.map(option=>option.label));
  const utility=(id:string)=>{
-  if(id==='emergency-herb')return value(hp.map((v,i)=>i===me?Math.min(100,v+10):v))/100+(hp[me]<=25?12:hp[me]<=60?5:0);
+  if(id==='emergency-herb')return value(hp.map((v,i)=>i===me?Math.min(hpLimit(run),v+10):v))/100+(hp[me]<=25?12:hp[me]<=60?5:0);
   if(id==='ember-bomb')return Math.max(...hp.map((v,i)=>i===me?-Infinity:value(hp.map((h,j)=>j===i?Math.max(0,h-8):h))))/50;
   if(id==='ward-seal')return run.itemGuards?.[me]?0:value(hp.map((v,i)=>i===me?v+7:v))*.75/100+2;
   if(id==='scout-lens')return role==='rogue'&&(families.has('싱글')||families.has('트리플'))?1.8:3.8;

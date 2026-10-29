@@ -1,3 +1,4 @@
+// Explicit 100 HP fixtures also cover compatibility with pre-0.6.44 saved matches.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createElement as h} from 'react';
@@ -30,7 +31,7 @@ for(const character of HP_BATTLE_CHARACTERS){
  const portrait=renderToStaticMarkup(h(StagePortrait,{index})),body=renderToStaticMarkup(h(StageModel,{index}));
  assert.ok(portrait.includes(model.src)&&portrait.includes(`${character.name} 아바타`));
  assert.ok(body.includes(model.src)&&body.includes(`data-stage-model="${index}"`));
- const g=createHpItemGame('내 이름','',Date.now(),2,character.id,'rogue');
+ const g=createHpItemGame('내 이름','',Date.now(),2,character.id,'rogue',100);
  assert.equal(g.hpItemMatch!.skills,undefined,'the retired three character skills are absent');
  const opponents=g.players.slice(1).map(player=>[player.name,player.avatar]);
  assert.equal(new Set(opponents.map(player=>player[1])).size,2);

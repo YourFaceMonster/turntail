@@ -1,3 +1,4 @@
+// Explicit 100 HP fixtures also cover compatibility with pre-0.6.44 saved matches.
 import assert from 'node:assert/strict';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
@@ -9,7 +10,7 @@ import {useRpgTacticalItem} from '../lib/rpg-items.ts';
 import {startRpgRound} from '../lib/rpg-game.ts';
 import {COIN_DISCOVERY_MS,COIN_PRESENTATION_MS,AMBUSH_PRESENTATION_MS,TRAP_IMPACT_MS} from '../lib/pickup-presentation.ts';
 import {HpRoundBreakdown} from '../app/components/HpRoundBreakdown.tsx';
-function fresh(){const g=createHpItemGame('회수 검증','',Date.now(),2,'toto','rogue');buyHpItemLoadout(g,[]);g.rpgRun!.combat!.actives!.gauge=g.players.map(()=>4);g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.combat!.professions[1]='swordsman';g.rpgRun!.combat!.professions[2]='mage';g.rpgRun!.hp=[90,90,90];g.floorCoins!.randomTileId=null;g.completedBattles=1;ready(g);return g;}
+function fresh(){const g=createHpItemGame('회수 검증','',Date.now(),2,'toto','rogue',100);buyHpItemLoadout(g,[]);g.rpgRun!.combat!.actives!.gauge=g.players.map(()=>4);g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.combat!.professions[1]='swordsman';g.rpgRun!.combat!.professions[2]='mage';g.rpgRun!.hp=[90,90,90];g.floorCoins!.randomTileId=null;g.completedBattles=1;ready(g);return g;}
 function ready(g:Game,who=0){g.turn=who;g.turnReadyAt=0;g.lastBy=(who+2)%3;if(!g.trick.length){const tile=g.players[g.lastBy].hand.pop()!;g.trick=[tile];g.playedTiles=[...(g.playedTiles||[]),tile];}}
 function scout(g:Game,who=0){g.rpgRun!.combat!.professions[who]='rogue';scoutProfessionFloor(g,who,99);}
 const g=fresh();scout(g);const hiddenTile=g.stacks[0][1]!,before=[...g.rpgRun!.hp],now=Date.now();act(g,0,'draw',[],0);

@@ -1,3 +1,4 @@
+// Explicit 100 HP fixtures also cover compatibility with pre-0.6.44 saved matches.
 import assert from 'node:assert/strict';
 import {createElement as h} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
@@ -8,7 +9,7 @@ import {itemScenePoints,itemProjectileFrames,itemSceneTiming} from '../lib/rpg-i
 import {tileLayout} from '../lib/layout.ts';
 import {view} from '../lib/game.ts';
 import {HpItemShop} from '../app/components/HpItemShop';
-const g=createHpItemGame('나','',Date.now(),2,undefined,'mage');
+const g=createHpItemGame('나','',Date.now(),2,undefined,'mage',100);
 g.hpItemMatch!.points=[100,100,100];g.rpgRun!.consumables=Array(20).fill('ward-seal');
 const before=JSON.stringify(g);assert.throws(()=>buyHpItemLoadout(g,['ember-bomb','ember-bomb']),/1개씩/);assert.equal(JSON.stringify(g),before);
 buyHpItemLoadout(g,['ember-bomb','emergency-herb']);assert.equal(g.rpgRun!.consumables.length,22);assert.equal(g.hpItemMatch!.points[0],85);assert.throws(()=>buyHpItemLoadout(g,['scout-lens']));

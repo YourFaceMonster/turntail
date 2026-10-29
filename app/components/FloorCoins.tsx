@@ -1,7 +1,6 @@
 'use client';
 import {useLayoutEffect,useRef,useState,type CSSProperties} from 'react';
 import {createPortal} from 'react-dom';
-import {Coins} from 'lucide-react';
 import type {view} from '../../lib/game.ts';
 import type {FloorCoinPickup,FloorCoinDiscovery} from '../../lib/floor-coins.ts';
 import {COIN_DISCOVERY_MS,COIN_COLLECT_MS,COIN_CREDIT_MS,COIN_PRESENTATION_MS} from '../../lib/pickup-presentation.ts';
@@ -9,7 +8,9 @@ type View=ReturnType<typeof view>;
 export type CoinWalletPresentation={id:string,before:number};
 type Scene={event:FloorCoinPickup|FloorCoinDiscovery,pickup:boolean,from:{x:number,y:number},to:{x:number,y:number},center:{x:number,y:number}};
 const isPickup=(event:FloorCoinPickup|FloorCoinDiscovery):event is FloorCoinPickup=>'who' in event;
-export function FloorCoinMarker({amount=0}:{amount?:number}){return amount>0?<span className="floor-coin-marker" aria-label={`획득 주화 ${amount}P`} title={`가져오면 +${amount}P`}><Coins aria-hidden="true"/><b>{amount}</b></span>:null;}
+export function CoinArtwork(){return <img className="turntale-coin-art" src="/item-battle-v1/coin-gold-v1.png" alt="" draggable={false}/>;}
+export function CoinNoticeBody({event,players}:{event:FloorCoinPickup|FloorCoinDiscovery,players:readonly {name:string}[]}){const coin=isPickup(event)?event:null;return <><CoinArtwork/><strong>주화 발견</strong>{coin?<span className="coin-reward-line"><b className="coin-reward-owner">{players[coin.who].name}</b><b className="coin-reward-value">+{coin.amount}P</b></span>:<span>이 패를 가져가면 주화를 얻어요</span>}{coin&&coin.kind!=='random'&&<small className="coin-last-note">마지막 패 보너스 포함</small>}</>;}
+export function FloorCoinMarker({amount=0}:{amount?:number}){return amount>0?<span className="floor-coin-marker" aria-label={`획득 주화 ${amount}P`} title={`가져오면 +${amount}P`}><CoinArtwork/><b>{amount}</b></span>:null;}
 export function FloorCoinEffects({game,onWalletPresentation}:{game:View,onWalletPresentation?:(value:CoinWalletPresentation|null)=>void}){
  const pickup=game.floorCoins?.events.at(-1),discovery=game.floorCoins?.lastDiscovery,event=pickup&&(!discovery||pickup.at>=discovery.at)?pickup:discovery;
  const seen=useRef(event?.id),callback=useRef(onWalletPresentation);callback.current=onWalletPresentation;
@@ -29,12 +30,11 @@ export function FloorCoinEffects({game,onWalletPresentation}:{game:View,onWallet
  const elapsed=clock-scene.event.at,collecting=scene.pickup&&elapsed>=1100,credited=scene.pickup&&elapsed>=COIN_CREDIT_MS,coin=scene.pickup?scene.event as FloorCoinPickup:null;
  const phase=credited?'credited':collecting?'collecting':'discovered';
  return createPortal(<div className="coin-presentation" data-coin-phase={phase}>
-  <span className="coin-source-halo" style={{left:scene.from.x,top:scene.from.y}} aria-hidden="true"><Coins/></span>
+  <span className="coin-source-halo" style={{left:scene.from.x,top:scene.from.y}} aria-hidden="true"><CoinArtwork/></span>
   <div className="coin-discovery-card" style={{left:scene.center.x,top:scene.center.y}} role="status" aria-live="polite" aria-atomic="true">
-   <Coins aria-hidden="true"/><strong>{collecting?`${game.players[coin!.who].name} 획득!`:'주화 발견!'}</strong>
-   <span>{collecting?<><b>+{coin!.amount}P</b>{coin!.kind!=='random'&&<small>마지막 패 보너스 포함</small>}</>:scene.pickup?'바닥패에서 주화를 찾았어요':'이 패를 가져가면 주화를 얻어요'}</span>
+   <CoinNoticeBody event={scene.event} players={game.players}/>
   </div>
-  {coin&&elapsed>=COIN_COLLECT_MS&&elapsed<COIN_CREDIT_MS&&<span className="coin-slow-flight" style={{'--coin-from-x':`${scene.center.x}px`,'--coin-from-y':`${scene.center.y}px`,'--coin-to-x':`${scene.to.x}px`,'--coin-to-y':`${scene.to.y}px`,'--coin-flight-ms':`${COIN_CREDIT_MS-COIN_COLLECT_MS}ms`} as CSSProperties} aria-hidden="true"><Coins/></span>}
+  {coin&&elapsed>=COIN_COLLECT_MS&&elapsed<COIN_CREDIT_MS&&<span className="coin-slow-flight" style={{'--coin-from-x':`${scene.center.x}px`,'--coin-from-y':`${scene.center.y}px`,'--coin-to-x':`${scene.to.x}px`,'--coin-to-y':`${scene.to.y}px`,'--coin-flight-ms':`${COIN_CREDIT_MS-COIN_COLLECT_MS}ms`} as CSSProperties} aria-hidden="true"><CoinArtwork/></span>}
   {coin&&credited&&<strong className="coin-wallet-credit" style={{left:Math.max(40,Math.min(innerWidth-40,scene.to.x)),top:Math.max(14,scene.to.y-25)}}>+{coin.amount}P</strong>}
  </div>,document.body);
 }

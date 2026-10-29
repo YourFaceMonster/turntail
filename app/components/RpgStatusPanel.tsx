@@ -1,4 +1,5 @@
 "use client";
+import {hpLimit} from '../../lib/hp-limit';
 import {useEffect,useLayoutEffect,useRef,useState,type CSSProperties} from 'react';
 import {createPortal} from 'react-dom';
 import type {view} from '../../lib/game.ts';
@@ -23,7 +24,7 @@ export function RpgStatusPanel({game,seat,close}:{game:View,seat:number,close:()
  if(!run||typeof document==='undefined')return null;
  const mine=seat===game.me,player=game.players[seat];
  return createPortal(<div className="rpg-status-popover-layer"><section ref={panelRef} className={`modal rpg-status-panel ${mine?'is-own':'is-opponent'}`} style={position||{visibility:'hidden'}} role="dialog" aria-label={`${player.name} RPG 상태`}>
-  <header className="rpg-status-heading"><h2>{player.name}</h2><span className="rpg-status-hp">HP <b>{run.hp[seat]}</b><small>/100</small></span><button className="close" aria-label="상태창 닫기" onClick={close}>×</button></header>
+  <header className="rpg-status-heading"><h2>{player.name}</h2><span className="rpg-status-hp">HP <b>{run.hp[seat]}</b><small>/{hpLimit(run)}</small></span><button className="close" aria-label="상태창 닫기" onClick={close}>×</button></header>
   <RpgProfessionStatus game={game} seat={seat} detail/>
  </section></div>,document.body);
 }

@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import React from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {createHpItemGame,readHpItemArchive,saveHpItemGame,HP_ITEM_SHOP_STORAGE_KEY} from '../lib/hp-item-mode';
+import {createRpgGame,startRpgRound} from '../lib/rpg-game';
+import {buyHpItemLoadout,hpItemEffectiveHp} from '../lib/hp-item-shop';
+import {hpLimit,NEW_ITEM_MATCH_HP} from '../lib/hp-limit';
+import {useRpgTacticalItem,rpgItemAvailability} from '../lib/rpg-items';
+import {useProfessionActive,professionActiveAvailability} from '../lib/profession-actives';
+import {resolveHpItemBattle} from '../lib/hp-item-battle';
+import {view,type Tile} from '../lib/game';
+import {DuelResultBody} from '../app/components/HpBattleReview';
+import {RpgHpBar} from '../app/components/RpgHpBar';
+const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
+function fresh(role:'swordsman'|'mage'|'cleric'='swordsman'){
+ const g=createHpItemGame('밸런스','',Date.now(),2,'toto',role);buyHpItemLoadout(g,[]);g.turn=0;g.turnReadyAt=0;g.completedBattles=1;g.roundActions=6;g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};return g;
+}
+assert.equal(NEW_ITEM_MATCH_HP,180);
+const game=fresh();assert.deepEqual(game.rpgRun!.hp,[180,180,180]);assert.equal(hpLimit(game.rpgRun),180);assert.equal(hpItemEffectiveHp(game,0),180);
+const rpg=createRpgGame('여정');assert.deepEqual(rpg.rpgRun!.hp,[100,100,100]);assert.equal(hpLimit(rpg.rpgRun),100);
+for(const maxHp of [undefined,0,NaN,Infinity,3000,180.5])assert.equal(hpLimit({maxHp}),100);
+const old=createHpItemGame('이전','',Date.now(),2,'toto','swordsman',100);delete old.rpgRun!.maxHp;
+const values=new Map<string,string>(),storage={getItem:(key:string)=>values.get(key)||null,setItem:(key:string,value:string)=>{values.set(key,value);}};
+values.set(HP_ITEM_SHOP_STORAGE_KEY,JSON.stringify({version:1,active:old,records:[]}));assert.equal(hpLimit(readHpItemArchive(storage,2).active!.rpgRun),100);assert.deepEqual(readHpItemArchive(storage,2).active!.rpgRun!.hp,[100,100,100]);
+saveHpItemGame(storage,game,true);assert.equal(hpLimit(readHpItemArchive(storage,2).active!.rpgRun),180);
+const herb=fresh();herb.rpgRun!.hp[0]=175;herb.rpgRun!.consumables=['emergency-herb'];assert.equal(rpgItemAvailability(view(herb,herb.players[0].token),'emergency-herb',true).usable,true);useRpgTacticalItem(herb,'emergency-herb',-1,[],0);assert.deepEqual(herb.rpgRun!.hp,[180,180,180]);assert.equal(herb.rpgRun!.lastItem!.amount,5);
+const full=fresh('cleric');full.rpgRun!.combat!.actives!.gauge[0]=3;assert.equal(professionActiveAvailability(full,0).usable,false);full.rpgRun!.hp[0]=177;assert.equal(professionActiveAvailability(full,0).usable,true);useProfessionActive(full,0);assert.deepEqual(full.rpgRun!.hp,[180,180,180]);
+const sword=fresh();sword.rpgRun!.combat!.actives!.gauge[0]=4;useProfessionActive(sword,0,1);assert.deepEqual(sword.rpgRun!.hp,[180,174,180],'unaffected HP must never be truncated to 100');
+const mage=fresh('mage');mage.rpgRun!.combat!.actives!.gauge[0]=5;useProfessionActive(mage,0);assert.deepEqual(mage.rpgRun!.hp,[180,174,174]);
+const fight=fresh('cleric');fight.rpgRun!.hp[0]=179;fight.trick=[tile(7),tile(7,1)];fight.lastBy=0;const event=resolveHpItemBattle(fight,Date.now())!;assert.equal(event.maxHp,180);assert.equal(event.hpAfter[0],180);assert.ok(event.hpAfter[1]>100);
+assert.ok(renderToStaticMarkup(<DuelResultBody event={event} players={view(fight,fight.players[0].token).players}/>).includes('/180'));
+const html=renderToStaticMarkup(<RpgHpBar hp={174} maxHp={180} identity={<b>검증</b>}/>);assert.ok(html.includes('aria-valuemax="180"'));assert.ok(html.includes('/180'));assert.ok(html.includes('96.666'));
+fight.phase='ended';fight.result=null;startRpgRound(fight);assert.equal(hpLimit(fight.rpgRun),180);assert.equal(fight.rpgRun!.hp[0],180);
+console.log('PASS: new item matches start at 180 HP; old saves and RPG retain 100; healing, skills, battles, display and next-round persistence use the saved maximum.');

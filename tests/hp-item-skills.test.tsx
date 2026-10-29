@@ -1,3 +1,4 @@
+// Explicit 100 HP fixtures also cover compatibility with pre-0.6.44 saved matches.
 import assert from 'node:assert/strict';
 import {createElement as h} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
@@ -10,7 +11,7 @@ import {RPG_SHOP_ITEMS,RPG_TACTICAL_ITEMS,rpgItemAvailability,useRpgTacticalItem
 import {buyHpItemLoadout} from '../lib/hp-item-shop.ts';
 import {HpSkillControl,HpSkillBadge} from '../app/components/HpCharacterSkills';
 import {view} from '../lib/game.ts';
-const g=createHpItemGame('나','',Date.now(),2,undefined,'mage');
+const g=createHpItemGame('나','',Date.now(),2,undefined,'mage',100);
 assert.equal(g.hpItemMatch!.skills,undefined);assert.ok(g.rpgRun!.combat);
 g.hpItemMatch!.skills=createHpSkills('toto',g.round);g.hpItemMatch!.skills.seats[0].armed=true;
 assert.equal(hasHpSkills(g),false);const unchanged=JSON.stringify(g);assert.throws(()=>useHpSkill(g));assert.equal(JSON.stringify(g),unchanged);

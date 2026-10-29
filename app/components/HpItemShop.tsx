@@ -14,7 +14,7 @@ const descriptions:Record<string,string>={
  'swapped-fate':'내 패 1장과 상대의 무작위 패 1장을 교환해요. 양쪽 손패가 4장 이상이어야 하며 1·2는 교환에서 제외돼요.',
  'ward-seal':'다음 공격 또는 패 교환 1회를 막아요. 도적의 패 교환도 방어하며, 막은 뒤 봉인은 사라져요.',
  'ember-bomb':'선택한 상대에게 최대 HP 8 피해를 줘요. 작열탄이 부딪히는 순간 체력과 피해가 표시돼요.',
- 'emergency-herb':'내 HP를 최대 10 회복해요. HP 100을 넘지 않으며, 실제로 회복한 양이 표시돼요.',
+ 'emergency-herb':'내 HP를 최대 10 회복해요. 최대 HP를 넘지 않으며, 실제로 회복한 양이 표시돼요.',
  'whisper-eye':'선택한 상대의 손패에서 무작위 1장을 나만 확인해요. 내 손패를 먼저 선택할 필요는 없어요.',
 };
 export function HpItemShop({game,busy,error,buy,exit}:{game:View,busy:boolean,error:string,buy:(cart:string[])=>void,exit:()=>void}){

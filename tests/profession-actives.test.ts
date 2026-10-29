@@ -1,3 +1,4 @@
+// Explicit 100 HP fixtures also cover compatibility with pre-0.6.44 saved matches.
 import assert from 'node:assert/strict';
 import {act,view,type Game} from '../lib/game.ts';
 import {createHpItemGame,saveHpItemGame,readHpItemArchive} from '../lib/hp-item-mode.ts';
@@ -8,7 +9,7 @@ import {useRpgTacticalItem} from '../lib/rpg-items.ts';
 import {PROFESSION_ACTIVES,professionActiveAvailability,useProfessionActive,chargeProfessionActives,ensureProfessionActives,tryBotProfessionActive,ACTIVE_PRESENTATION_MS} from '../lib/profession-actives.ts';
 import type {RpgProfessionId} from '../lib/rpg-professions.ts';
 function fresh(profession:RpgProfessionId='rogue'){
- const g=createHpItemGame('게이지 검증','',Date.now(),2,'toto',profession);buyHpItemLoadout(g,[]);g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.rpgRun!.combat!.professions=[profession,'swordsman','mage'];g.turn=0;g.turnReadyAt=0;g.completedBattles=1;g.floorCoins!.randomTileId=null;return g;
+ const g=createHpItemGame('게이지 검증','',Date.now(),2,'toto',profession,100);buyHpItemLoadout(g,[]);g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.rpgRun!.combat!.professions=[profession,'swordsman','mage'];g.turn=0;g.turnReadyAt=0;g.completedBattles=1;g.floorCoins!.randomTileId=null;return g;
 }
 const meter=(g:Game)=>g.rpgRun!.combat!.actives!,hp=(g:Game)=>g.rpgRun!.hp;
 for(const profession of ['swordsman','mage','cleric','rogue'] as const){const g=fresh(profession);assert.deepEqual(meter(g).gauge,[1,1,1]);assert.equal(chargeProfessionActives(g),false);assert.deepEqual(meter(g).gauge,[1,1,1]);meter(g).gauge[0]=PROFESSION_ACTIVES[profession].maxGauge;g.phase='ended';assert.equal(chargeProfessionActives(g),true);assert.equal(meter(g).gauge[0],PROFESSION_ACTIVES[profession].maxGauge);assert.equal(chargeProfessionActives(g),false);}

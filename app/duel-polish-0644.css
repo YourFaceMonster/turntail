@@ -1,0 +1,57 @@
+/* Smaller result rows sit inside the painted frame; only its background fades. */
+body .battle-review-0641{padding:31px 29px 19px!important;background:rgba(8,27,20,.50)!important;isolation:isolate}
+body .battle-review-0641::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:url('/item-battle-v1/duel-panel-v1.png') center/100% 100% no-repeat;opacity:.82;pointer-events:none}
+body .battle-review-0641 .battle-hp-row .rpg-hp-bar.has-identity{height:52px;min-height:52px;padding:5px 7px;grid-template-columns:minmax(0,1fr) auto;gap:5px}
+body .battle-review-0641 .hp-bar-identity{gap:5px;min-width:0}body .battle-review-0641 .hp-bar-identity>.portrait{width:29px!important;height:34px!important;flex:none}
+body .battle-review-0641 .hp-bar-identity strong{font-size:12px!important;line-height:1.15}body .battle-review-0641 .hp-bar-current .hp-value>b{font-size:22px!important}
+body .battle-review-0641 .hp-bar-identity>small{gap:1px!important}.battle-review-0641 .battle-hp-transition{font-size:9px}.battle-review-0641 .battle-row-effects{font-size:8px}
+body .battle-review-0641 .duel-ordinal{margin-bottom:9px}.battle-review-0641 .battle-final-formula{margin:7px 0!important;font-size:12px!important}
+body .battle-review-0641 .compact-battle-footer{display:flex;align-items:center;justify-content:center;text-align:center;margin-top:10px}
+body .battle-review-0641 .battle-review-confirm{display:block;min-width:140px;max-width:100%;margin-inline:auto;text-align:center}
+/* Pin to /100 itself, within the HP panel, rather than above the entire number row. */
+.keeps-hp-change .hp-maximum{position:relative;display:inline-block!important}
+body .keeps-hp-change .hp-maximum .hp-change-pinned{inset:auto 0 calc(100% + 1px) auto;animation:hp-delta-pin-644 .8s ease-out both}
+body .battle-review-0641 :is(.negative,.battle-damage){text-shadow:0 2px 2px #000,1px 0 #000,-1px 0 #000,0 -1px #000!important;-webkit-text-stroke:.7px #160604;paint-order:stroke fill}
+body .keeps-hp-change .hp-maximum .hp-change-pinned>em{font-size:13px!important;text-shadow:0 2px 2px #000,1px 0 #000,-1px 0 #000!important}
+@keyframes hp-delta-pin-644{0%{opacity:0;transform:translate(-3px,10px) scale(1.35)}25%,55%{opacity:1;transform:translate(-2px,7px) scale(1.35)}100%{opacity:1;transform:none}}
+/* Symmetric safe insets leave the tile group centered and the smaller rail clear. */
+.turntale.table-v211.active-table.rpg-mode .floor-stage{position:relative;padding-inline:42px!important}
+.floor-relic-dock{position:absolute;right:1px;top:0;width:39px;height:min(148px,100%);z-index:7;pointer-events:auto}
+.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-equipped-relics{position:static!important;inset:auto!important;width:39px!important;height:100%!important;max-width:none;padding:3px!important;border:1px solid #b99b615e;border-radius:7px;background:#13251ec7;box-sizing:border-box}
+.floor-relic-dock .rpg-relic-tray-heading{display:flex;justify-content:center;align-items:center;height:13px;line-height:1;margin-bottom:3px}.floor-relic-dock .rpg-relic-tray-heading strong{font-size:8px}.floor-relic-dock .rpg-relic-tray-heading small{display:none}
+.floor-relic-dock .rpg-relic-slots{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(3,minmax(0,1fr));height:calc(100% - 16px);gap:3px}
+.floor-relic-dock .rpg-relic-slot{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:0;min-height:0;min-width:0}
+.floor-relic-dock .rpg-relic-slot-frame{width:25px!important;height:25px!important;flex:none}.floor-relic-dock .rpg-relic-slot-frame img{width:23px!important;height:23px!important}
+.floor-relic-dock .rpg-relic-slot-condition,.floor-relic-dock .rpg-relic-slot-bonus{font-size:6px!important;line-height:1.1;white-space:nowrap}.floor-relic-dock .rpg-relic-slot-bonus{max-width:35px;overflow:hidden;text-overflow:ellipsis}
+/* Release clipping only during the resolved-play glow, without moving any tile. */
+.turntale.table-v211.active-table .play-column:has([data-victory-glow="true"]){overflow:visible!important}
+.turntale.table-v211.active-table .play-column>section[data-victory-glow="true"],.turntale.table-v211.active-table [data-victory-glow="true"] .trick-tiles{contain:layout!important;overflow:visible!important}
+.battle-victory-glow{isolation:isolate;position:relative}.battle-victory-glow>.landed-tile{isolation:isolate}
+.battle-victory-glow>.landed-tile::before{content:"";position:absolute;inset:-12px -10px;z-index:-1;border-radius:35%;background:radial-gradient(ellipse,#fff5bd77 10%,#ffca426b 42%,#ff9b1522 68%,transparent 80%);filter:blur(6px);animation:winning-aura-644 1.45s ease-in-out infinite;pointer-events:none}
+.turntale.table-v211.active-table .trick-area[data-victory-glow="true"] .trick-current.battle-victory-glow .tile.face{box-shadow:0 0 19px 4px #ffe58bcc,0 0 41px 9px #ffc13b66!important;animation:winning-tile-644 1.45s ease-in-out infinite!important}
+@keyframes winning-aura-644{0%,100%{transform:scale(.94) rotate(-5deg);opacity:.62}50%{transform:scale(1.18) rotate(5deg);opacity:1}}
+@keyframes winning-tile-644{50%{box-shadow:0 0 27px 7px #ffeeb4,0 0 57px 15px #ffbd366e}}
+/* Names and money appear together from the first pickup frame. */
+.turntale-coin-art{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}.coin-discovery-card>.turntale-coin-art{width:68px;height:68px;margin:0 auto 4px;filter:drop-shadow(0 0 12px #ffd87377)}
+.coin-source-halo>.turntale-coin-art{width:42px;height:42px}.coin-slow-flight>.turntale-coin-art{width:36px;height:36px}.floor-coin-marker>.turntale-coin-art{width:14px;height:14px}
+.coin-discovery-card .coin-reward-line{display:flex!important;flex-direction:row;justify-content:center;align-items:baseline;gap:9px;margin-top:7px}.coin-discovery-card .coin-reward-owner{font-size:18px!important;color:#fff1cf}.coin-reward-value{font-size:23px!important;color:#ffd669!important;text-shadow:0 1px 2px #000}.coin-last-note{display:block;margin-top:5px;font-size:10px;color:#e5d5a7}
+/* Near-hand target buttons share the exchange selector's compact presentation. */
+.profession-target-picker{position:fixed;z-index:180;transform:translate(-50%,-100%);width:278px;max-width:calc(100vw - 20px);padding:10px 12px 7px;border:1px solid #e5b578;border-radius:11px;background:#18241deb;box-shadow:0 5px 24px #0008;text-align:center}
+.profession-target-picker>strong{display:block;color:#ffb2a0;font-size:12px;margin-bottom:9px;text-shadow:0 1px 2px #000}.profession-target-picker .profession-pick-targets{display:flex;justify-content:center;gap:14px}
+.profession-target-picker .profession-pick-targets>button{min-width:92px;display:flex;align-items:center;justify-content:center;gap:3px;flex-direction:column;border:1px solid var(--target-border);border-radius:8px;background:var(--target-dark);color:#fff2d5;padding:6px 10px}
+.profession-pick-targets .portrait{width:40px;height:43px}.profession-pick-targets strong{font-size:12px}.profession-pick-targets small{font-size:10px}.profession-target-cancel{font-size:10px;margin-top:6px}
+.opponents .is-right-side .portrait,.profession-pick-targets .is-right-target .portrait{scale:-1 1}
+.profession-active-button>img{width:31px;height:31px;object-fit:contain;display:block;filter:drop-shadow(0 1px 2px #0008)}.profession-active-button:disabled>img{filter:grayscale(1);opacity:.4}
+.profession-effect-emblem{display:block;width:40px;height:40px;object-fit:contain;margin-inline:auto;filter:drop-shadow(0 0 6px #ffca6a66)}
+.mage-spell-flight{position:fixed;left:0;top:0;width:66px;height:66px;z-index:190;pointer-events:none;animation:mage-flight-644 var(--spell-flight-ms) var(--spell-delay) cubic-bezier(.35,.1,.65,.8) both}
+.mage-spell-flight img{width:100%;height:100%;object-fit:contain;rotate:var(--spell-angle);filter:drop-shadow(0 0 9px #ffb02999)}.mage-spell-flight.spell-wave{width:86px;height:86px}.mage-spell-flight.spell-wall{width:96px;height:96px}
+@keyframes mage-flight-644{0%{transform:translate(var(--spell-from-x),var(--spell-from-y)) translate(-50%,-50%) scale(.25);opacity:0}14%{opacity:1}85%{opacity:1}100%{transform:translate(var(--spell-to-x),var(--spell-to-y)) translate(-50%,-50%) scale(1);opacity:.8}}
+.seat-card:has(.mage-spell-hit),.own-status-card:has(.mage-spell-hit),.opponents:has(.mage-spell-hit){overflow:visible!important}
+.mage-spell-hit{position:absolute;inset:-14px -20px;z-index:88;overflow:visible;pointer-events:none}.mage-spell-hit>img{position:absolute;left:50%;top:50%;width:110px;height:110px;object-fit:contain;transform:translate(-50%,-50%);animation:mage-burst-644 .8s ease-out both}
+.mage-spell-hit>i{position:absolute;inset:-10px;border:3px solid #ffc260;border-radius:50%;box-shadow:0 0 15px #ff7b27;animation:mage-ring-644 .85s ease-out both}.mage-spell-hit>i:nth-child(2){animation-delay:.1s;border-color:#fff2ae}
+.mage-spell-hit.spell-wave>img{width:155px;height:130px}.mage-spell-hit.spell-wall>img{top:auto;bottom:-4px;width:210px;height:132px;transform:translateX(-50%);transform-origin:50% 100%;animation:mage-wall-644 1.25s ease-out both}
+.rpg-hit-overlay.profession-active-impact{z-index:100!important}.profession-active-impact .rpg-hit-number{text-shadow:0 2px 3px #000,1px 0 1px #000,-1px 0 1px #000!important}
+@keyframes mage-burst-644{0%{opacity:1;scale:.4}40%{opacity:.9;scale:1.1}100%{opacity:0;scale:1.5}}@keyframes mage-ring-644{0%{opacity:1;scale:.25}100%{opacity:0;scale:1.6}}
+@keyframes mage-wall-644{0%{opacity:0;scale:1 .2}22%,65%{opacity:.85;scale:1 1}100%{opacity:0;scale:1.06 1.12}}
+@media(max-height:450px) and (min-width:601px){body .battle-review-0641{padding:22px 25px 14px!important}.floor-relic-dock{height:min(116px,100%)}.floor-relic-dock .rpg-relic-slot-frame{width:21px!important;height:21px!important}.floor-relic-dock .rpg-relic-slot-frame img{width:19px!important;height:19px!important}.floor-relic-dock .rpg-relic-slot-bonus{display:none}.profession-pick-targets .portrait{width:32px;height:34px}}
+@media(prefers-reduced-motion:reduce){body .keeps-hp-change .hp-maximum .hp-change-pinned,.battle-victory-glow>.landed-tile::before,.turntale.table-v211.active-table .trick-area[data-victory-glow="true"] .trick-current.battle-victory-glow .tile.face{animation:none!important;transform:none!important}.mage-spell-flight{display:none}.mage-spell-hit>img,.mage-spell-hit>i{animation:none!important;opacity:.6;scale:1}}
