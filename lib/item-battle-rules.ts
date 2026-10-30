@@ -1,3 +1,4 @@
+import {isRpgPhaseOne,reconcileRpgEliminations,rpgAlive} from './rpg-phase-one.ts';
 import {assertTurnReady,lowestHandLead,sorted,uid,view,type Game,type Tile} from './game.ts';
 import {finishHpItemMatch} from './hp-item-mode.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
@@ -55,7 +56,7 @@ export function blockItemBattleDamage(game:Game,seat:number,damage:number,now=Da
 }
 export function triggerFloorTrap(game:Game,who:number,index:number,tile:Tile,now=Date.now(),deferFinish=false){
  const state=itemBattleState(game),run=game.rpgRun;if(!state||!run)return;
- const traps=state.traps.filter(trap=>trap.tileId===tile.id&&trap.round===game.round);state.traps=state.traps.filter(trap=>!traps.includes(trap));
+ const traps=state.traps.filter(trap=>trap.tileId===tile.id&&trap.round===game.round&&rpgAlive(game,trap.owner));state.traps=state.traps.filter(trap=>!traps.includes(trap));
  for(const key of Object.keys(state.trapIntel))state.trapIntel[Number(key)]=state.trapIntel[Number(key)].filter(intel=>intel.tileId!==tile.id);
  const hpBeforePickup=run.hp[who],triggered:TrapBurst[]=[];
  for(const trap of traps){
@@ -65,7 +66,7 @@ export function triggerFloorTrap(game:Game,who:number,index:number,tile:Tile,now
  }
  const hostile=triggered.filter(event=>!event.safe);
  if(hostile.length)state.lastTrap={...hostile[0],id:uid(),owners:hostile.map(event=>event.owner),damage:hpBeforePickup-run.hp[who],hpBefore:hpBeforePickup,hpAfter:run.hp[who]};
- if(traps.length){run.updatedAt=now;if(!deferFinish&&run.hp.some(hp=>hp<=0)){if(game.hpItemMatch)game.hpItemMatch.endReason='trap';finishHpItemMatch(game);}}
+ if(traps.length){run.updatedAt=now;if(!deferFinish&&isRpgPhaseOne(game)){reconcileRpgEliminations(game,now);return;}if(!deferFinish&&run.hp.some(hp=>hp<=0)){if(game.hpItemMatch)game.hpItemMatch.endReason='trap';finishHpItemMatch(game);}}
 }
 /** Only profession-origin scouting arms this pickup attack; lenses never arm it. */
 export function triggerScoutedPickup(game:Game,who:number,index:number,tile:Tile,now=Date.now()){

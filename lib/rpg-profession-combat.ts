@@ -1,3 +1,6 @@
+import {isRpgPhaseOne,rpgAlive,reconcileRpgEliminations,chargeRpgDuel} from './rpg-phase-one.ts';
+import {PROFESSION_ACTIVES} from './profession-actives.ts';
+import {itemBattleRelicWin} from './item-battle-relics.ts';
 import {hpLimit} from './hp-limit';
 import {combo,settle,sorted,uid,type Game,type Tile} from './game.ts';
 import type {HpBattleEvent} from './hp-item-battle.ts';
@@ -40,10 +43,10 @@ export function resolveProfessionWin(game:Game,actor:number,label:string,now:num
   if(kind==='active'&&profession!=='mage')state.activeUsed[actor]=true;
   const event:ProfessionEffect={id:uid(),round:game.round,actor,profession,kind,label,damage:trigger.damage,heal:Math.min(trigger.heal,hpLimit(game.rpgRun)-game.rpgRun!.hp[actor]),revealed:0,at:now};
   damage+=event.damage;heal[actor]+=event.heal;
-  if(trigger.reveal&&state.itemBattle&&game.hpItemMode&&profession==='rogue'){
+  if(trigger.reveal&&state.itemBattle&&(game.hpItemMode||isRpgPhaseOne(game))&&profession==='rogue'){
    event.floorScout=true;event.revealed=scoutProfessionFloor(game,actor,trigger.reveal);
   }else if(trigger.reveal){
-   const target=take(game.players.flatMap((player,seat)=>seat!==actor&&player.hand.length?[seat]:[]),1)[0];
+   const target=take(game.players.flatMap((player,seat)=>seat!==actor&&rpgAlive(game,seat)&&player.hand.length?[seat]:[]),1)[0];
    if(target!==undefined){
     event.target=target;const tiles=take(game.players[target].hand,trigger.reveal).map(tile=>({...tile}));event.revealed=tiles.length;
     state.privateReveals[actor]=[...(state.privateReveals[actor]||[]),{round:game.round,target,tiles,eventId:event.id}];
@@ -86,18 +89,24 @@ export function professionEffectText(effect:ProfessionEffect){return `${rpgProfe
 export function resolveProfessionRpgBattle(game:Game,now=Date.now(),roundEnding=false):HpBattleEvent|null{
  const run=game.rpgRun,state=run?.combat;if(!run||!state||game.hpItemMode||run.status!=='playing'||game.lastBy===null||!game.trick.length)return null;
  const id=`${game.code}:${game.round}:${game.tablePlay?.id||game.lastEvent?.id||game.completedBattles||0}`,prior=state.battles.find(event=>event.id===id);if(prior)return prior;
- const actor=game.lastBy,label=combo(game.trick)?.label;if(!label)return null;
- const playedCount=Math.max(game.trick.length,state.battleTiles[actor]||0),hpBefore=[...run.hp],profession=resolveProfessionWin(game,actor,label,now),damageTaken=game.players.map((_,seat)=>seat===actor?0:playedCount+profession.damage),relics:RpgRelicEffect[]=[],blockedDamage=game.players.map(()=>0);
+ const actor=game.lastBy,label=combo(game.trick)?.label;if(!label||!rpgAlive(game,actor))return null;
+ const playedCount=Math.max(game.trick.length,state.battleTiles[actor]||0),hpBefore=[...run.hp],profession=resolveProfessionWin(game,actor,label,now),damageTaken=game.players.map((_,seat)=>seat===actor||!rpgAlive(game,seat)?0:playedCount+profession.damage),relics:RpgRelicEffect[]=[],blockedDamage=game.players.map(()=>0);
+ const relic=isRpgPhaseOne(game)&&actor===0?itemBattleRelicWin(run.equipped,label,game.trick):{damage:0,heal:0,effects:[]};
+ for(let seat=0;seat<damageTaken.length;seat++)if(seat!==actor&&rpgAlive(game,seat))damageTaken[seat]+=relic.damage;
+ const relicHeal=Math.min(relic.heal,Math.max(0,hpLimit(run)-run.hp[actor]-profession.heal[actor]));profession.heal[actor]+=relicHeal;
+ let remainingRelicHeal=relicHeal;for(const effect of relic.effects){if(!effect.message.startsWith('HP'))relics.push(effect);else{const amount=Math.min(remainingRelicHeal,effect.relicId==='life-sigil'?2:1);remainingRelicHeal-=amount;if(amount)relics.push({...effect,message:`HP +${amount}`});}}
  if(damageTaken[0]>0){
   if(run.equipped.includes('cracked-heart')&&!run.crackedHeartUsed.includes(run.stage)){const blocked=Math.min(8,damageTaken[0]);damageTaken[0]-=blocked;blockedDamage[0]+=blocked;run.crackedHeartUsed.push(run.stage);relics.push({relicId:'cracked-heart',message:`피해 ${blocked} 방어`});}
   if(run.shield>0){const blocked=Math.min(run.shield,damageTaken[0]);damageTaken[0]-=blocked;blockedDamage[0]+=blocked;run.shield-=blocked;}
  }
  run.hp=run.hp.map((hp,seat)=>Math.min(hpLimit(run),Math.max(0,hp+profession.heal[seat]-damageTaken[seat])));run.updatedAt=now;
- const event:HpBattleEvent={id,round:game.round,actor,label,damage:playedCount,ordinal:state.battles.length+1,winningTiles:game.trick.map(tile=>({...tile})),playedCount,hpBefore,hpAfter:[...run.hp],damageTaken,blockedDamage,professions:profession.effects,roundFinal:roundEnding||run.hp.some(hp=>hp<=0),at:now};
+ const event:HpBattleEvent={...(isRpgPhaseOne(game)?{excludedSeats:game.players.flatMap((_,seat)=>hpBefore[seat]<=0?[seat]:[])}:{}),...(relics.length?{relics,relicDamage:relic.damage,relicHealing:relicHeal}:{}),id,round:game.round,actor,label,damage:playedCount,ordinal:state.battles.length+1,winningTiles:game.trick.map(tile=>({...tile})),playedCount,hpBefore,hpAfter:[...run.hp],damageTaken,blockedDamage,professions:profession.effects,roundFinal:roundEnding||(isRpgPhaseOne(game)?run.hp[0]<=0||run.hp.slice(1).every(hp=>hp<=0):run.hp.some(hp=>hp<=0)),at:now};
  state.battles.push(event);state.lastBattle=event;state.battleTiles=game.players.map(()=>0);
- if(relics.length)game.rpgRun=withRelicActivations(run,relics,now);
+ if(relics.length)Object.assign(run,withRelicActivations(run,relics,now));
+ if(isRpgPhaseOne(game))chargeRpgDuel(game,id,state.professions.map(profession=>PROFESSION_ACTIVES[profession].maxGauge));
  game.turnReadyAt=Math.max(game.turnReadyAt||0,now+HP_BATTLE_REVIEW_MS+(event.roundFinal?FINAL_SETTLEMENT_DELAY_MS:0));
  game.log=[`${game.players[actor].name} · ${label} 승리 · 제출 ${playedCount}장 · 기본 피해 ${playedCount}`,...profession.effects.map(effect=>`${game.players[actor].name} · ${professionEffectText(effect)}`),...game.log].slice(0,40);
+ if(isRpgPhaseOne(game)){reconcileRpgEliminations(game,now);return event;}
  if(run.hp.some(hp=>hp<=0)){game.phase='ended';game.turnDeadline=0;game.winner=actor;settle(game);}
  return event;
 }

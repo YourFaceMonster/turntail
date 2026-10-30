@@ -9,7 +9,7 @@ import {itemBattleRelicWin} from './item-battle-relics.ts';
 import {blockItemBattleDamage,itemBattleState} from './item-battle-rules.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
 
-export type HpBattleEvent={id:string,round:number,actor:number,label:string,damage:number,maxHp?:number,ordinal?:number,winningTiles?:Tile[],playedCount?:number,roundFinal?:boolean,damageTaken?:number[],blockedDamage?:number[],pointsEarned?:number,skills?:HpSkillUse[],professions?:ProfessionEffect[],relics?:{relicId:string,message:string}[],relicDamage?:number,relicHealing?:number,hpBefore:number[],hpAfter:number[],at:number};
+export type HpBattleEvent={excludedSeats?:number[],id:string,round:number,actor:number,label:string,damage:number,maxHp?:number,ordinal?:number,winningTiles?:Tile[],playedCount?:number,roundFinal?:boolean,damageTaken?:number[],blockedDamage?:number[],pointsEarned?:number,skills?:HpSkillUse[],professions?:ProfessionEffect[],relics?:{relicId:string,message:string}[],relicDamage?:number,relicHealing?:number,hpBefore:number[],hpAfter:number[],at:number};
 /** Impact beat before the click-to-dismiss result; the client holds turns until acknowledged. */
 export const HP_BATTLE_WIN_DELAY_MS=1250;
 export const HP_BATTLE_REVIEW_MS=2000;

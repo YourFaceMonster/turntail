@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {createElement as h} from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {createRpgPhaseOneGame} from '../lib/rpg-game.ts';
+import {reconcileRpgEliminations,chooseRpgStageReward} from '../lib/rpg-phase-one.ts';
+import {view} from '../lib/game.ts';
+import {RpgStageResult} from '../app/components/RpgStageResult.tsx';
+import {RpgProfessionPicker} from '../app/components/RpgProfessions.tsx';
+const game=createRpgPhaseOneGame('UI검증','',0,'swordsman'),noop=()=>{};
+const render=()=>renderToStaticMarkup(h(RpgStageResult,{game:view(game,game.players[0].token),busy:false,choose:noop,buy:noop,next:noop,newRun:noop,exit:noop}));
+game.rpgRun!.hp=[60,0,0];reconcileRpgEliminations(game);
+const reward=render();assert.ok(reward.includes('보상 3종 중 하나'));assert.ok(reward.includes('회복 +10'));assert.ok(reward.includes('주화 +30'));assert.ok(reward.includes('추가 HP +20'));assert.ok(!reward.includes('스테이지 2 시작'));
+game.rpgRun=chooseRpgStageReward(game.rpgRun!,'coins');const ready=render();assert.ok(ready.includes('스테이지 2 시작'));assert.ok(ready.includes('응급 약초'));assert.ok(ready.includes('작열탄'));assert.ok(!ready.includes('보상 3종 중 하나'));
+game.rpgRun.stage=3;game.rpgRun.status='complete';const complete=render();assert.ok(complete.includes('1차 개발 구간 완료'));assert.ok(!complete.includes('스테이지 4 시작'));
+game.rpgRun.status='game-over';const failed=render();assert.ok(failed.includes('여정 실패'));assert.ok(failed.includes('1스테이지부터 새 여정'));
+const rogue=renderToStaticMarkup(h(RpgProfessionPicker,{selected:'rogue',choose:noop,rpgPhase:true}));assert.ok(rogue.includes('싱글 바닥 1장 투시'));assert.ok(rogue.includes('결투 3회마다 +1'));assert.ok(!rogue.includes('싱글 상대 패 1장 확인'));
+console.log('PASS: three exclusive rewards, heal and money copy, gated advance/shop, phase-one completion/failure and RPG-specific profession/gauge descriptions. DOM rendering only, not a mobile screenshot test.');

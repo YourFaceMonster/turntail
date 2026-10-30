@@ -1,7 +1,7 @@
 import {tryRpgBotItem,scoutRpgBotDraw} from './rpg-items.ts';
 import {scoutBotDraw} from './items';
 import {isHiboringji,hiboringjiAction} from './hiboringji';
-import {act,view,chooseBotAction,type Game} from './game';
+import {act,rpgTwinBotView,chooseBotAction,type Game} from './game';
 import {tryBotProfessionActive} from './profession-actives.ts';
 import {itemTurnReadyAt} from './rpg-item-motion.ts';
 import {runItemBattleBotTurn} from './item-battle-bot.ts';
@@ -16,7 +16,7 @@ export function runLocalBot(game:Game,signal:AbortSignal):Promise<Game>{
    if(tryBotProfessionActive(game)){resolve(game);return;}const lastItem=game.rpgRun?.lastItem?.id;tryRpgBotItem(game);
    if(game.rpgRun?.lastItem&&game.rpgRun.lastItem.id!==lastItem){game.turnReadyAt=Math.max(game.turnReadyAt||0,itemTurnReadyAt(game.rpgRun.lastItem));resolve(game);return;}
    if(game.rpgRun?.status==='complete'){resolve(game);return;}
-   const p=game.players[game.turn],position=view(game,p.token);
+   const position=rpgTwinBotView(game,game.turn);
    let decision=chooseBotAction(position);
    if(game.rpgRun&&decision.type==='draw')decision={type:'draw',index:scoutRpgBotDraw(game,game.turn,decision.index)};
    if(game.itemRun&&decision.type==='draw')decision={type:'draw',index:scoutBotDraw(game,game.turn,decision.index)};

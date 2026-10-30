@@ -1,3 +1,4 @@
+import {isRpgPhaseOne,rpgAlive,nextRpgSeat,reconcileRpgEliminations,settleRpgPhaseOne} from './rpg-phase-one.ts';
 import {publicCoinEvents,nextCoinPresentationAt} from './coin-presentation';
 import {recordProfessionBattlePlay,resetProfessionCombat,resolveProfessionRpgBattle} from './rpg-profession-combat.ts';
 import {isBattleItemMode,recordHpBattlePlay,resolveHpItemBattle,settleHpBattleMoney} from './hp-item-battle.ts';
@@ -114,11 +115,12 @@ export function start(g:Game,now=Date.now()){
  if(g.challenge?.complete)throw Error("10판 도전이 끝났어요. 새 도전을 시작해 주세요.");
  if(g.matchWinner!==null&&g.matchWinner!==undefined)throw Error("목표 점수에 도달해 매치가 끝났어요. 새 매치를 시작해 주세요.");
  if(g.players.length!==capacity(g))throw Error(`${capacity(g)}명이 모이면 시작할 수 있어요.`);
+ const dealSize=isRpgPhaseOne(g)?g.players.filter((_,seat)=>rpgAlive(g,seat)).length:capacity(g);
  const deck:Tile[]=[];for(let n=1;n<=15;n++)for(let s=0;s<4;s++)deck.push({id:(n-1)*4+s,n,s});
  for(let i=deck.length-1;i>0;i--){let x=new Uint32Array(1);crypto.getRandomValues(x);const j=x[0]%(i+1);[deck[i],deck[j]]=[deck[j],deck[i]];}
- for(const p of g.players){p.hand=sorted(deck.splice(0,startingHandSize(capacity(g))));p.timeouts=0;}
+ for(const [seat,p] of g.players.entries()){p.hand=rpgAlive(g,seat)?sorted(deck.splice(0,startingHandSize(dealSize))):[];p.timeouts=0;}
  const stacks=deck.length/2;g.stacks=Array.from({length:stacks},()=>[deck.shift()!,deck.shift()!]);
- g.cols=capacity(g)===2?6:capacity(g)===4?4:5;g.rows=Math.ceil(stacks/g.cols);
+ g.cols=dealSize===2?6:dealSize===4?4:5;g.rows=Math.ceil(stacks/g.cols);
  g.opening=lowestHandLead(g.players);g.turn=g.opening.who;
  g.turnReadyAt=now+DEAL_REVIEW_MS;g.aiAssisted=!g.practice&&g.players.some(p=>p.replaced);g.rally=0;g.roundActions=0;g.completedBattles=0;g.playedTiles=[];g.publicDraws={};g.phase="playing";g.trick=[];g.tablePlay=null;g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
  g.announcedCombos=[];g.revealedHands=[];g.lastEvent={id:uid(),type:"deal",who:g.turn,at:now};scheduleTurn(g,now);
@@ -137,22 +139,23 @@ export function settle(g:Game):RoundResult{
  const voided=!g.practice&&!!g.aiAssisted;
  const counts=g.players.map(p=>p.hand.length),delta=counts.map(()=>0),transfers:RoundResult["transfers"]=[];
  for(let i=0;i<counts.length;i++)for(let j=i+1;j<counts.length;j++){
-  const diff=voided?0:counts[j]-counts[i];delta[i]+=diff;delta[j]-=diff;
+  const diff=voided||!rpgAlive(g,i)||!rpgAlive(g,j)?0:counts[j]-counts[i];delta[i]+=diff;delta[j]-=diff;
   if(diff)transfers.push({from:diff>0?j:i,to:diff>0?i:j,points:Math.abs(diff)});
  }
- const players=g.players.map((p,i)=>{if(!g.rpgRun)p.points=(p.points||0)+delta[i];if(!voided){p.games=(p.games||0)+1;if(i===g.winner)p.wins++;else p.losses=(p.losses||0)+1;}
- return {id:p.id,name:p.name,count:counts[i],place:1+counts.filter(c=>c<counts[i]).length,delta:delta[i],total:p.points||0,winner:i===g.winner};});
+ const players=g.players.map((p,i)=>{if(!g.rpgRun)p.points=(p.points||0)+delta[i];if(!voided&&rpgAlive(g,i)){p.games=(p.games||0)+1;if(i===g.winner)p.wins++;else p.losses=(p.losses||0)+1;}
+ return {id:p.id,name:p.name,count:counts[i],place:rpgAlive(g,i)?1+counts.filter((c,seat)=>rpgAlive(g,seat)&&c<counts[i]).length:0,delta:delta[i],total:p.points||0,winner:i===g.winner};});
  if(!voided&&g.matchMode==="target"){
   const reached=g.players.map((p,i)=>({i,points:p.points||0,count:p.hand.length})).filter(p=>p.points>=(g.targetScore||100)).sort((a,b)=>b.points-a.points||a.count-b.count||a.i-b.i);
   g.matchWinner=reached[0]?.i??null;
  }
- g.result={id:`${g.code}:${g.round}`,at:Date.now(),round:g.round,players,transfers,voided,voidReason:voided?"AI가 대신 진행한 참가자가 있어 전적과 점수를 반영하지 않아요.":undefined};if(g.stageRun){g.stageRun=settleStageRun(g.stageRun,g.result);g.result.stageRun=structuredClone(g.stageRun);}if(g.rpgRun){if(isBattleItemMode(g)){settleHpBattleMoney(g);}else{applyPendingHpItems(g);const beforeHp=[...g.rpgRun.hp];g.rpgRun=settleRpgRound(g.rpgRun,g.result,g.winner,!!g.rpgTest,!!g.hpItemMode);if(g.hpItemMode){finishHpItemRoundReport(g,beforeHp);finishHpItemMatch(g);}if(g.rpgTest&&g.rpgRun.rounds>=RPG_TEST_ROUNDS)g.rpgRun={...g.rpgRun,status:'complete',reward:null};}}if(g.challenge){g.challenge=advanceChallenge(g.challenge,g.result);g.result.challenge=structuredClone(g.challenge);}return g.result;
+ g.result={id:`${g.code}:${g.round}`,at:Date.now(),round:g.round,players,transfers,voided,voidReason:voided?"AI가 대신 진행한 참가자가 있어 전적과 점수를 반영하지 않아요.":undefined};if(g.stageRun){g.stageRun=settleStageRun(g.stageRun,g.result);g.result.stageRun=structuredClone(g.stageRun);}if(g.rpgRun){if(isRpgPhaseOne(g)){g.rpgRun=settleRpgPhaseOne(g.rpgRun,g.result);}else if(isBattleItemMode(g)){settleHpBattleMoney(g);}else{applyPendingHpItems(g);const beforeHp=[...g.rpgRun.hp];g.rpgRun=settleRpgRound(g.rpgRun,g.result,g.winner,!!g.rpgTest,!!g.hpItemMode);if(g.hpItemMode){finishHpItemRoundReport(g,beforeHp);finishHpItemMatch(g);}if(g.rpgTest&&g.rpgRun.rounds>=RPG_TEST_ROUNDS)g.rpgRun={...g.rpgRun,status:'complete',reward:null};}}if(g.challenge){g.challenge=advanceChallenge(g.challenge,g.result);g.result.challenge=structuredClone(g.challenge);}return g.result;
 }
 export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now=Date.now(),automatic=false){
  if(hpItemShopPending(g))throw Error("이번 판의 상점 준비를 마쳐 주세요. 구매 없이 시작할 수도 있어요.");
  if(g.stageRun&&g.stageRun.status!=="playing")throw Error("이번 도전의 판 결과를 먼저 확인해 주세요.");
  if(g.rpgRun&&g.rpgRun.status!=="playing")throw Error("RPG 여정의 판 결과를 먼저 확인해 주세요.");
  if(g.phase!=="playing"||g.turn!==who)throw Error("지금은 내 차례가 아니에요.");const p=g.players[who];
+ if(!rpgAlive(g,who))throw Error('퇴장한 참가자는 행동할 수 없어요.');
  if(p.replaced&&!automatic)throw Error("시간 초과로 AI가 대신 진행 중이에요. 새 방에서 다시 참여해 주세요.");
  if(action==="play"){
   if(!ids.length||new Set(ids).size!==ids.length)throw Error("낼 타일을 선택해 주세요.");
@@ -182,13 +185,13 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   triggerFloorTrap(g,who,index,t,now,true);
   const trap=itemBattleState(g)?.lastTrap,pickupBeat=trap&&!trap.safe&&trap.index===index&&trap.at>=now?trap.at-TRAP_IMPACT_MS+TRAP_PRESENTATION_MS:ambush?ambush.at+350:now;
   if(coin){coin.at=nextCoinPresentationAt(publicCoinEvents(g.floorCoins),coin.id,Math.max(pickupBeat,now+DRAW_TRAVEL_MS));g.turnReadyAt=Math.max(g.turnReadyAt||0,coin.at+COIN_TURN_READY_MS);}
-  if(g.rpgRun?.hp.some(hp=>hp<=0)){if(g.hpItemMatch)g.hpItemMatch.endReason=g.rpgRun.hp[who]<=0?'trap':'ambush';finishHpItemMatch(g);return;}
+  if(isRpgPhaseOne(g)){if(reconcileRpgEliminations(g,now))return;}else if(g.rpgRun?.hp.some(hp=>hp<=0)){if(g.hpItemMatch)g.hpItemMatch.endReason=g.rpgRun.hp[who]<=0?'trap':'ambush';finishHpItemMatch(g);return;}
  }else if(action==="pass"){
   if(g.stacks.some(s=>s[0]||s[1]))throw Error("바닥 패가 남아 있으면 내거나 가져와야 해요.");
   if(!g.trick.length)throw Error("새 선에서는 타일을 내야 해요.");g.roundActions=(g.roundActions??(g.playedTiles?.length||0))+1;g.turnReadyAt=0;g.lastEvent={id:uid(),type:"pass",who,at:now};note(g,`${p.name} · 패스`);
  }else throw Error("지원하지 않는 동작이에요.");
  if(!automatic)p.timeouts=0;
- g.turn=(who+1)%g.players.length;
+ g.turn=nextRpgSeat(g,who);
  if(g.lastBy===g.turn){const battleAt=Math.max(now,g.turnReadyAt||0);
   const battle=resolveHpItemBattle(g,battleAt)||resolveProfessionRpgBattle(g,battleAt);if(g.rpgRun&&g.rpgRun.status!=='playing')return;g.completedBattles=(g.completedBattles||0)+1;g.rally=0;g.trick=[];g.tablePlay=null;g.lastBy=null;if(!battle)g.turnReadyAt=Math.max(now,g.turnReadyAt||0)+LEAD_REVIEW_MS;note(g,`${g.players[g.turn].name}이 선을 잡았습니다.`);}
  scheduleTurn(g,now);
@@ -228,6 +231,7 @@ export function botMove(g:Game,now=Date.now()){
 /** Only the two RPG bosses share their current hands. The human-facing view stays unchanged. */
 export function rpgTwinBotView(g:Game,who:number){
  const position=view(g,g.players[who].token),own=twinIndex(g.players[who].avatar);
+ if(isRpgPhaseOne(g)){const alive=g.players.flatMap((_,seat)=>rpgAlive(g,seat)?[seat]:[]);position.players=alive.map(seat=>position.players[seat]);position.me=alive.indexOf(who);position.turn=alive.indexOf(g.turn);position.lastBy=g.lastBy===null?null:alive.indexOf(g.lastBy);position.capacity=alive.length;return position;}
  if(!g.rpgRun||![3,6,9,10].includes(g.rpgRun.stage)||own===null)return position;
  const partner=g.players.findIndex((p,i)=>i!==who&&twinIndex(p.avatar)!==null);
  if(partner>=0)position.players[partner].known=[...g.players[partner].hand];

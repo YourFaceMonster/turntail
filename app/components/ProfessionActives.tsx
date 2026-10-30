@@ -1,4 +1,5 @@
 'use client';
+import {RPG_PHASE_ONE} from '../../lib/rpg-phase-one.ts';
 import {useLayoutEffect,useRef,useState,type CSSProperties} from 'react';
 import {createPortal} from 'react-dom';
 import type {view} from '../../lib/game.ts';
@@ -15,7 +16,7 @@ export function SwordsmanSlash({impact=false}:{impact?:boolean}){return <span cl
 export function ProfessionGauge({game,seat=game.me}:{game:View,seat?:number}){
  const profession=game.rpgRun?.combat?.professions[seat];if(!profession||seat!==game.me)return null;
  const max=PROFESSION_ACTIVES[profession].maxGauge,value=activeGauge(game,seat);
- return <span className={`profession-gauge ${value===max?'is-full':''}`} role="meter" aria-label={`액티브 게이지 ${value}/${max}${value===max?' · 완충':''}`} aria-valuemin={0} aria-valuemax={max} aria-valuenow={value} title={`게이지 ${value}/${max} · 판 종료 시 +1 · 남은 칸 이월`}>{Array.from({length:max},(_,index)=><i key={index} className={index<value?'is-filled':''}/>)}</span>;
+ return <span className={`profession-gauge ${value===max?'is-full':''}`} role="meter" aria-label={`액티브 게이지 ${value}/${max}${value===max?' · 완충':''}`} aria-valuemin={0} aria-valuemax={max} aria-valuenow={value} title={`게이지 ${value}/${max} · ${game.rpgRun?.phaseOne?`결투 ${RPG_PHASE_ONE.duelsPerGauge}회마다 +1`:'판 종료 시 +1'} · 남은 칸 이월`}>{Array.from({length:max},(_,index)=><i key={index} className={index<value?'is-filled':''}/>)}</span>;
 }
 export function ProfessionActiveControl({game,enabled,targeting,choose}:{game:View,enabled:boolean,targeting:boolean,choose:()=>void}){
  const combat=game.rpgRun?.combat;if(!combat?.itemBattle)return null;const profession=combat.professions[game.me],config=PROFESSION_ACTIVES[profession],available=professionActiveAvailability(game,game.me,enabled),value=activeGauge(game,game.me),name=profession==='mage'?mageSpellPresentation(value).name:config.name;
