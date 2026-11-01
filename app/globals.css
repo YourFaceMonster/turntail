@@ -2033,3 +2033,5 @@ button.exchange-stage-tile:not(:disabled){pointer-events:auto;cursor:pointer}but
 
 /* Three available single-player modes share one desktop row. */
 @media(min-width:701px){.single-mode-cards:has(.mode-hp-items){grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.turntale .rpg-top-stage{position:absolute;left:50%;transform:translateX(-50%);font-size:13px;letter-spacing:.12em;color:#f4dba5;text-shadow:0 1px 3px #17120b;white-space:nowrap}.turntale.rpg-phase-one .rpg-header-stats{display:none!important}.turntale.rpg-phase-one .rpg-relic-slots{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:repeat(3,minmax(0,1fr))!important}

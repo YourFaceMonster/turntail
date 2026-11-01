@@ -7,6 +7,8 @@ import {ProloguePicture,StoryTile} from '../app/components/RpgPrologue.tsx';
 import {createRpgJourneyGame,enterJourneyNode} from '../lib/rpg-game.ts';
 import {saveRpgGame,readRpgArchive} from '../lib/rpg-storage.ts';
 import {prologueAmbience} from '../lib/rpg-prologue-audio.ts';
+import {prologueArt,prologueArtSources} from '../lib/rpg-prologue-art.ts';
+import {readFileSync} from 'node:fs';
 
 test('first run follows the ordinary wanderer story in 68 seconds; second run requires both real prerequisites',()=>{
  assert.equal(FIRST_PROLOGUE.reduce((n,c)=>n+c.duration,0),68000);
@@ -38,9 +40,19 @@ test('background and lock pause the current beat without accumulating hidden tim
  player.pause(false);player.tick(200000);assert.equal(player.elapsed,elapsed);player.tick(200100);assert.equal(player.elapsed,elapsed+100);assert.equal(enters,0);
  player.tick(999999);assert.equal(player.elapsed,elapsed+350,'a stalled frame cannot skip whole scenes');
 });
-test('all shots render images/geometry, with the same two-crown prop on tile and stone',()=>{
- for(const cut of FIRST_PROLOGUE){const html=renderToStaticMarkup(h(ProloguePicture,{cut}));assert.ok(html.includes(`scene-${cut.scene}`));}
- const stone=renderToStaticMarkup(h(ProloguePicture,{cut:FIRST_PROLOGUE[8]}));assert.equal((stone.match(/viewBox="0 0 100 70"/g)||[]).length,2);
+test('every visible story beat has finished landscape and portrait paintings, including both tile faces and the matching stone',()=>{
+ for(const cut of FIRST_PROLOGUE){
+  const html=renderToStaticMarkup(h(ProloguePicture,{cut}));assert.ok(html.includes(`scene-${cut.scene}`));
+  const art=prologueArt(cut);if(!art){assert.equal(cut.scene,'dark');continue;}
+  assert.ok(html.includes(art.landscape));assert.ok(html.includes(art.portrait));
+  for(const [orientation,src] of Object.entries(art)){
+   const png=readFileSync(new URL(`../public${src}`,import.meta.url));assert.equal(png.toString('ascii',1,4),'PNG');
+   const width=png.readUInt32BE(16),height=png.readUInt32BE(20);assert.ok(orientation==='portrait'?height>width:width>height,`${src}: incorrect orientation`);
+  }
+  assert.ok(!html.includes('prologue-hand'),'finished paintings replace temporary prop geometry');
+ }
+ assert.notDeepEqual(prologueArt(FIRST_PROLOGUE[5]),prologueArt(FIRST_PROLOGUE[6]),'front and back have distinct rendered paintings');
+ assert.equal(prologueArtSources(true).length,9);assert.equal(prologueArtSources(false).length,9);
  const tile=renderToStaticMarkup(h(StoryTile,{back:true}));assert.ok(tile.includes('is-back'));assert.ok(tile.includes('prologue-tile-scratch'));assert.ok(tile.includes('>2<'));
 });
 test('muting both buses creates no sources; music-only and effects-only stay independent and cleanup is idempotent',()=>{

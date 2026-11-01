@@ -4,7 +4,7 @@ import type {RpgRun,RpgResult} from './rpg.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
 
 /** Phase-one tuning only. Never used by normal play, item matches or legacy RPG saves. */
-export const RPG_PHASE_ONE={maxHp:100,duelsPerGauge:3,enemyHp:[[70,70],[75,75],[85,85]],clearHealRatio:.1,rewardCoins:30,rewardHeal:20,startingRelic:'cracked-heart',relicLimit:6,
+export const RPG_PHASE_ONE={maxHp:100,duelsPerGauge:3,enemyHp:[[70,70],[75,75],[85,85]],clearHealRatio:.1,rewardCoins:30,rewardHeal:20,startingRelic:'cracked-heart',relicLimit:3,
  relicPool:['cracked-heart','recovery-lantern','wind-sigil','warrior-crest','life-sigil','sun-sigil','crimson-fang','cloud-blessing'],
  enemyStartingItems:[] as readonly string[],
  shop:[{id:'emergency-herb',price:30},{id:'ember-bomb',price:45}],
@@ -49,7 +49,10 @@ export function reconcileRpgEliminations(game:Game,now=Date.now()){
 /** Called once by normal round settlement, including terminal active/item attacks. */
 export function settleRpgPhaseOne(run:RpgRun,result:RpgResult):RpgRun{
  if(run.status!=='playing'||run.roundIds.includes(result.id))return run;
- const base={...run,rounds:run.rounds+1,roundIds:[...run.roundIds,result.id],updatedAt:result.at};
+ const delta=result.players.map(player=>player.delta),shortfall=Math.max(0,-delta[0]-run.coins),coins=Math.max(0,run.coins+delta[0]);
+ const base={...run,coins,rounds:run.rounds+1,roundIds:[...run.roundIds,result.id],updatedAt:result.at};
+ run.hp[0]=Math.max(0,run.hp[0]-shortfall);
+ result.players[0].total=coins;
  if(run.hp[0]<=0)return {...base,status:'game-over',relics:[],equipped:[],consumables:[],reward:null};
  if(!run.hp.slice(1).every(hp=>hp<=0))return base;
  const state=structuredClone(run.phaseOne!);if(state.clearedStages.includes(run.stage))return base;

@@ -43,7 +43,7 @@ export class RpgPreviewSession{
    const counted=run.roundIds.includes(game.result.id);
    game.rpgRun=settleRpgPhaseOne({...run,...(run.status==='game-over'?this.gear:{}),hp:[100,0,0],status:'playing',
     roundIds:run.roundIds.filter(id=>id!==game.result!.id),rounds:Math.max(0,run.rounds-(counted?1:0)),
-    phaseOne:{...run.phaseOne!,eliminated:[1,2]}},game.result);
+    phaseOne:{...run.phaseOne!,eliminated:[1,2]}},counted?{...game.result,players:game.result.players.map(player=>({...player,delta:0}))}:game.result);
   }
   game.rpgRun=chooseRpgStageReward(game.rpgRun!,'coins');
   game.log=['TEST · 한 판 완료 · 승패와 관계없이 다음 여정으로',...game.log].slice(0,40);
