@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-01",
+  "reference": "D:/CHATGPT_CODEX/17_Turntail/.codex-remote-attachments/01a19527-9a6a-7ca2-bd87-d70e98a67434/9ede2157-28e6-4e48-a889-a804ec601c87/1-1000066925.jpg",
+  "originalAssetsOverwritten": false,
+  "apiFallbackUsed": false,
+  "items": [
+    {
+      "asset": "public/pixel-classic/room-0655.png",
+      "method": "built-in image_gen",
+      "generated": "C:/Users/SONG/.codex/generated_images/01a19527-9a6a-7ca2-bd87-d70e98a67434/exec-cffe1b56-7476-4aa1-aa2e-9e023d62b801.png",
+      "prompt": "Use case: style-transfer / stylized-concept. Asset type: production background plate for the existing TurnTale classic card game, not a UI mockup. Input 1 is STYLE REFERENCE ONLY: a user's montage of ornate warm high-detail pixel-art game UI. Input 2 is the EXISTING ROOM AND COMPOSITION REFERENCE. Create a detailed true pixel-art rendition of that exact cozy moonlit fantasy study: central triple arched window with full moon and distant illuminated castle, dark green curtains, two green armchairs on the left and right, wood bookshelves, candlelight, rich walnut plank floor. Preserve the room's arrangement, camera direction and broad clean central lower floor, so the existing independent round table and live game controls can overlay it unchanged. Style: sophisticated 32-bit era fantasy adventure pixel art, crisp hand-clustered pixels, readable material textures, restrained dithering, small bright amber lamps, deep teal and brown shadows, gold accents. Dense thoughtful pixel craft like the first reference, not low-detail icons, not blurry posterization. Wide landscape background, 1536x1024 style proportions. No text, no numbers, no logos, no cards, no UI panels, no people, no new table in the center. Flat finished bitmap background, opaque."
+    },
+    {
+      "asset": "public/pixel-classic/portraits-0655.png",
+      "method": "built-in image_gen",
+      "generated": "C:/Users/SONG/.codex/generated_images/01a19527-9a6a-7ca2-bd87-d70e98a67434/exec-71a58602-70ea-4d48-bbf6-c1efef230435.png",
+      "prompt": "Use case: style-transfer. Asset type: one production 2x2 portrait atlas for existing TurnTale characters. Image 1 is the requested pixel-art style reference. Images 2,3,4,5 are the character identity references, in that exact reading order. Make a square sprite portrait sheet divided into four exactly equal square cells with NO gutters, NO frames and NO lettering. Top left: existing relaxed blue Korean dokkaebi, one horn, long tied black hair, tusks, dark navy hanbok. Top right: existing smiling red young dokkaebi with two golden horns, curly red hair and yellow hanbok. Bottom left: existing ivory haetae guardian, turquoise curly mane, single horn and gold bell collar. Bottom right: existing smiling black-haired middle-aged Korean man, navy blazer and white shirt, preserve his identifiable friendly expression. All are head-and-shoulders closeups, same scale, centered in each cell with head safely inside its own square. Render every subject in polished detailed 32-bit fantasy pixel art matching the first reference, crisp pixel clusters and deliberate limited color shading, enough detail for 48px game avatars. Deep forest teal opaque background in all four cells. Not photoreal, no smooth painted areas, no text, no logos, no UI. Preserve the identities and clothing; change only the visual medium. Output one square 1024x1024 atlas."
+    },
+    {
+      "asset": "public/pixel-classic/walnut-0655.png",
+      "method": "built-in image_gen",
+      "generated": "C:/Users/SONG/.codex/generated_images/01a19527-9a6a-7ca2-bd87-d70e98a67434/exec-8f26ba54-ae19-45ad-b051-0e98ccb82736.png",
+      "prompt": "Use case: style-transfer. Production game material texture only. Repaint the supplied existing dark warm walnut tabletop material as finely crafted fantasy pixel art. Preserve its warm medium-dark brown palette, horizontal flowing wood grain and a few natural knots, suitable as the same existing TurnTale game table surface under live card UI. Tiny deliberate pixel clusters, crisp 1-3 pixel highlights and grain, restrained 24-color shading, rich detailed material rather than flat brown planks. Keep the contrast modest so cream game cards remain very legible. A square full-bleed wood grain texture, no border, no table silhouette, no perspective, no objects, no cards, no text, no light hotspots. Seamless-looking edges suitable for a mirrored 640px texture pattern. Do not add large board seams; the existing world already has its own structure. Opaque."
+    },
+    {
+      "asset": "artifacts/classic-pixel-20261101/models-draft-0655.png",
+      "selected": false,
+      "reason": "Draft full-body atlas had uneven cell bounds and colored background bleed. Original full-body entrance characters remain in use.",
+      "prompt": "Use case: style-transfer. Asset type: a single 2x2 transparent sprite atlas containing four existing TurnTale SEATED full-body characters, each cell is portrait 2:3 ratio. Image 1 reference: blue dokkaebi in navy hanbok with a single horn and wooden club, seated on a stool. Image 2: cheerful red two-horn young dokkaebi in yellow hanbok on a stool. Image 3: ivory and turquoise haetae guardian seated on a carved low pedestal, gold bells. Image 4: smiling middle-aged Korean man in navy suit and white shirt seated on a wood stool, preserve face identity. Same ordered cells reading top-left to bottom-right. Re-render these exact characters as beautifully detailed classic fantasy pixel-art sprites with crisp pixel clusters, discrete highlights, deep teal/brown shadows, warm candle-lit gold rim lighting, like a polished 32-bit game. Preserve their original poses, attire, expressions, horn count, chairs, and whole body proportions. Every entire character including head and footwear must fit safely inside its own equal rectangular cell, centered, 4% margin, no overlaps across cells. NO panels, NO frames, NO text, NO new props. All empty space truly transparent, no colored sheet background, no cast ground outside the cell. Make the entire atlas portrait 1024x1536 (2 columns, 2 rows; individual cells 512x768)."
+    },
+    {
+      "asset": "artifacts/classic-pixel-20261101/models-cutout-draft-0655.png",
+      "selected": false,
+      "reason": "Background extraction draft retained to preserve generation history; not referenced by the game.",
+      "prompt": "Use case: background-extraction. Edit target: this exact 2x2 pixel-art seated character atlas. Keep all four character sprites, their chairs/pedestal, faces, clothing, pixel details, their exact positions and sizes, and the canvas dimensions absolutely unchanged. Remove ALL of the brown/black/golden cloudy gradient background and halo between and around all four silhouettes. Every empty area outside the characters and chairs must have alpha=0, truly transparent. No opaque dark or colored rectangles in any cell. Do not add a checkerboard or a white background. Preserve each figure's actual outlines and the matching 2x2 cell layout. Deliver the same atlas as a clean transparent RGBA sprite sheet. Change only background transparency."
+    },
+    {
+      "assets": "public/pixel-classic/{tiles,back}[-stage-1..10]-0655.png",
+      "method": "Rasterise existing repo-native SVG art via React static render and sharp; no generative redesign of numbers or suit emblems.",
+      "faces": 660,
+      "mutedFaces": 660,
+      "backs": 11,
+      "script": "artifacts/classic-pixel-20261101/render-tile-atlas.mjs"
+    },
+    {
+      "asset": "public/pixel-classic/frame-0655.svg",
+      "method": "New code-native SVG frame decoration; paint only, no layout-size changes."
+    }
+  ]
+}

@@ -12,8 +12,8 @@ function json<T>(storage:StoragePort,key:string):T|null{const raw=storage.getIte
 /** A session pointer never decides which local saves exist. Each slot is discovered independently. */
 export function readSaveSlots(storage:StoragePort){
  const slots:SaveSlot[]=[],errors:string[]=[];
- try{const g=json<Game>(storage,SINGLE_GAME_KEY);if(g&&g.capacity!==2&&!g.challenge&&!g.stageRun&&!g.itemRun){if(!g.practice||g.rpgRun||!g.players?.[0]?.token)throw Error('저장 형식을 확인해 주세요.');slots.push({mode:'single',title:'일반모드 · AI 대전',detail:`${g.players[0].name} · ${g.capacity}인전 · ${g.round}번째 판 · ${g.players[0].points||0}점`,game:g,session:{code:g.code,token:g.players[0].token,local:true}});}}catch{errors.push('일반모드 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
- try{const g=readRpgArchive(storage).active;if(g)slots.push({mode:'rpg',title:'RPG 모드 · 여정',detail:`${g.players[0].name} · STAGE ${g.rpgRun!.stage}/${g.rpgRun!.phaseOne?3:10} · HP ${g.rpgRun!.hp[0]}${g.rpgRun!.phaseOne?'':` · 운명 ${g.rpgRun!.fate}`}`,game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push('RPG 여정 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
+ try{const g=json<Game>(storage,SINGLE_GAME_KEY);if(g&&g.capacity!==2&&!g.challenge&&!g.stageRun&&!g.itemRun){if(!g.practice||g.rpgRun||g.rpgMini||!g.players?.[0]?.token)throw Error('저장 형식을 확인해 주세요.');slots.push({mode:'single',title:'일반모드 · AI 대전',detail:`${g.players[0].name} · ${g.capacity}인전 · ${g.round}번째 판 · ${g.players[0].points||0}점`,game:g,session:{code:g.code,token:g.players[0].token,local:true}});}}catch{errors.push('일반모드 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
+ try{const g=readRpgArchive(storage).active;if(g)slots.push({mode:'rpg',title:'RPG 모드 · 여정',detail:`${g.players[0].name} · STAGE ${g.rpgRun!.stage}/${g.rpgRun!.phaseOne?3:10} · HP ${g.rpgRun!.hp[0]}${g.rpgRun!.phaseOne?'':` · 운명 ${g.rpgRun!.fate}`}${g.rpgRun!.journey?.location==='mini-game'?` · 주점 승부 ${g.rpgRun!.journey.mini?.game.rpgMini?.roundIndex}/3`:g.rpgRun!.journey?.location==='tavern'?' · 주점':g.rpgRun!.journey?.location==='map'?' · 지도':''}`,game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push('RPG 여정 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
  try{const g=readRpgTestGame(storage);if(g&&['playing','allocation','relic','ready'].includes(g.rpgRun!.status))slots.push({mode:'rpg-test',title:'이전 RPG 장비 테스트',detail:`${g.players[0].name} · STAGE ${g.rpgRun!.stage}/3 · 유물 ${g.rpgRun!.relics.length}개 · 아이템 ${g.rpgRun!.consumables.length}개`,game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push('RPG 테스트 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
  // Retired item-mode-1 archives remain untouched and never produce a resume slot.
  try{const g=readHpItemArchive(storage,2).active;if(g)slots.push({mode:'hp-item-2',title:`아이템전 · ${g.hpItemRules===4?'포인트 상점·전투·스킬':'이전 규칙'}`,detail:`${g.players[0].name} · 라운드 ${g.round} · HP ${g.rpgRun!.hp[0]}/${hpLimit(g.rpgRun)}`,game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push('HP 아이템전 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
@@ -22,7 +22,7 @@ export function readSaveSlots(storage:StoragePort){
 }
 /** No silent storage failures: publish the new live state only after persistence succeeds. */
 export function saveSingleGame(storage:StoragePort,game:Game){
- if(!game.practice||game.stageRun||game.rpgRun)throw Error('일반모드 저장 대상이 아니에요.');
+ if(!game.practice||game.stageRun||game.rpgRun||game.rpgMini)throw Error('일반모드 저장 대상이 아니에요.');
  try{storage.setItem(game.itemRun?ITEM_GAME_KEY:SINGLE_GAME_KEY,JSON.stringify(game));}catch{throw Error('일반모드를 저장하지 못해 이번 동작을 적용하지 않았어요. 브라우저 저장 공간을 확인해 주세요.');}
 }
 

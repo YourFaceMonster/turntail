@@ -1,3 +1,4 @@
+"use client";
 import {useId} from 'react';
 import {nativeTableMaterial,radialTableMaterial,TABLE_GRAIN_PITCH} from '../../lib/table-material';
 /** Mirrored native-size grain shares its world origin in the moving and final table. */

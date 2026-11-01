@@ -1,3 +1,4 @@
+import {journeyAfterReward} from './rpg-journey.ts';
 import {settle,type Game} from './game.ts';
 import type {RpgRun,RpgResult} from './rpg.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
@@ -15,7 +16,7 @@ export type RpgPhaseOneState={version:1,eliminated:number[],chargedBattles:strin
 export function isRpgPhaseOne(game:{hpItemMode?:boolean,rpgTest?:boolean,rpgRun?:{phaseOne?:RpgPhaseOneState}|null}){return !!game.rpgRun?.phaseOne&&!game.hpItemMode&&!game.rpgTest;}
 export function rpgAlive(game:Pick<Game,'rpgRun'|'hpItemMode'|'rpgTest'|'players'>,seat:number){return !isRpgPhaseOne(game)||!!game.players[seat]&&game.rpgRun!.hp[seat]>0;}
 export function nextRpgSeat(game:Pick<Game,'rpgRun'|'hpItemMode'|'rpgTest'|'players'>,seat:number){for(let step=1;step<=game.players.length;step++){const next=(seat+step)%game.players.length;if(rpgAlive(game,next))return next;}return 0;}
-export function rpgSynergies(run:Pick<RpgRun,'relics'|'phaseOne'>){return run.phaseOne&&RPG_PHASE_ONE.synergy.requires.every(id=>run.relics.includes(id))?[RPG_PHASE_ONE.synergy]:[];}
+export function rpgSynergies(run:Pick<RpgRun,'relics'|'phaseOne'|'journey'|'equipped'>){return run.phaseOne&&RPG_PHASE_ONE.synergy.requires.every(id=>(run.journey?run.equipped:run.relics).includes(id))?[RPG_PHASE_ONE.synergy]:[];}
 export function initRpgPhaseOne(run:RpgRun){
  run.phaseOne={version:1,eliminated:[],chargedBattles:[],clearedStages:[],rewardHistory:[]};run.maxHp=RPG_PHASE_ONE.maxHp;
  run.hp=[RPG_PHASE_ONE.maxHp,...RPG_PHASE_ONE.enemyHp[0]];run.fate=0;
@@ -54,7 +55,7 @@ export function settleRpgPhaseOne(run:RpgRun,result:RpgResult):RpgRun{
  const state=structuredClone(run.phaseOne!);if(state.clearedStages.includes(run.stage))return base;
  state.clearedStages.push(run.stage);
  const hpBefore=run.hp[0],baseHeal=Math.min(RPG_PHASE_ONE.maxHp-hpBefore,Math.round(RPG_PHASE_ONE.maxHp*RPG_PHASE_ONE.clearHealRatio));
- const relicHeal=run.relics.includes('recovery-lantern')?Math.min(5,RPG_PHASE_ONE.maxHp-hpBefore-baseHeal):0;
+ const relicHeal=(run.journey?run.equipped:run.relics).includes('recovery-lantern')?Math.min(5,RPG_PHASE_ONE.maxHp-hpBefore-baseHeal):0;
  const synergyHeal=Math.min(rpgSynergies(run).reduce((sum,effect)=>sum+effect.clearHeal,0),RPG_PHASE_ONE.maxHp-hpBefore-baseHeal-relicHeal);
  const relicId=RPG_PHASE_ONE.relicPool.find(id=>!run.relics.includes(id))||'';
  state.clear={stage:run.stage,hpBefore,baseHeal,relicHeal,synergyHeal,relicId};
@@ -74,7 +75,8 @@ export function chooseRpgStageReward(run:RpgRun,choice:RpgStageReward,replace?:s
  }else if(choice==='coins')coins+=RPG_PHASE_ONE.rewardCoins;
  else if(choice==='heal')hp[0]=Math.min(RPG_PHASE_ONE.maxHp,hp[0]+RPG_PHASE_ONE.rewardHeal);
  const nextState={...state,rewardHistory:[...(state.rewardHistory||[]),{stage:run.stage,choice,...(choice==='relic'&&!decline?{relicId:clear.relicId}:{}),...(replace?{replaced:replace}:{}),...(decline?{declined:true}:{})}],clear:{...clear,chosen:choice,...(replace?{replaced:replace}:{}),...(decline?{declined:true}:{})}};
- return {...run,phaseOne:nextState,relics,equipped:[...relics],coins,hp,discovered:[...new Set([...run.discovered,...relics])],status:run.stage===3?'complete':'ready',updatedAt:Date.now()};
+ let equipped=run.journey?run.equipped.filter(id=>relics.includes(id)):[...relics];if(run.journey&&choice==='relic'&&!decline&&equipped.length<3&&!equipped.includes(clear.relicId))equipped.push(clear.relicId);
+ return journeyAfterReward({...run,phaseOne:nextState,relics,equipped,coins,hp,discovered:[...new Set([...run.discovered,...relics])],status:run.stage===3?'complete':'ready',updatedAt:Date.now()});
 }
 export function advanceRpgPhaseOne(run:RpgRun):RpgRun{
  if(!run.phaseOne||run.status!=='ready'||!run.phaseOne.clear?.chosen||run.stage>=3)throw Error('보상 선택을 마친 뒤 다음 스테이지로 진행해 주세요.');

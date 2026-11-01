@@ -1,3 +1,4 @@
+"use client";
 import {monsterCharacter} from '../../lib/korean-opponents';
 export default function MonsterPortrait({index}:{index:number}){
  const p=monsterCharacter(index),c=p.crop;

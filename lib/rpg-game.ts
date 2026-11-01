@@ -1,3 +1,4 @@
+import {initRpgJourney,visitJourneyNode,type JourneyNode} from './rpg-journey.ts';
 import {initRpgPhaseOne,advanceRpgPhaseOne,isRpgPhaseOne,RPG_PHASE_ONE} from './rpg-phase-one.ts';
 import {newItemBattleState} from './item-battle-rules.ts';
 import {newProfessionCombat} from './rpg-profession-combat.ts';
@@ -30,6 +31,7 @@ export function createRpgTestGame(name:string,avatar='',now=Date.now()):Game{
 }
 export function startRpgRound(game:Game,now=Date.now()){
  const run=game.rpgRun;if(!run||!game.practice||game.phase!=='ended')throw Error('RPG 여정의 판 결과를 먼저 확인해 주세요.');
+ if(run.journey&&run.journey.location!=='battle')throw Error('지도에서 다음 승부를 선택해 주세요.');
  if(game.hpItemMode&&run.status!=='playing')throw Error('아이템전이 종료됐어요. 새 대전을 시작해 주세요.');
  if(run.status==='ready'){
   game.rpgRun=isRpgPhaseOne(game)?advanceRpgPhaseOne(run):advanceRpgStage(run);game.rpgRun.itemGuards={0:!!run.itemGuards?.[0]};
@@ -43,3 +45,6 @@ export function abandonRpgGame(game:Game,now=Date.now()){
 }
 
 export function createRpgPhaseOneGame(name:string,avatar='',now=Date.now(),profession:RpgProfessionId='swordsman'){return createRpgGame(name,avatar,now,profession,true);}
+
+export function createRpgJourneyGame(name:string,avatar='',now=Date.now(),profession:RpgProfessionId='swordsman'){const game=createRpgPhaseOneGame(name,avatar,now,profession);initRpgJourney(game);return game;}
+export function enterJourneyNode(game:Game,id:JourneyNode,now=Date.now()){const stage=visitJourneyNode(game,id);if(stage===undefined)return;if(stage===1){game.phase='playing';game.turnReadyAt=now+3000;game.lastEvent={...game.lastEvent!,at:now};}else startRpgRound(game,now);}
