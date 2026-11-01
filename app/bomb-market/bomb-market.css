@@ -11,3 +11,5 @@
 .turntale.table-v211.active-table.landscape-table.bomb-classic-mode .table-heading>.suit-legend{display:none!important}
 .bomb-classic-result .settlement{font-size:12px}.bomb-classic-result .text-btn{margin-top:12px}.bomb-record-row{border-top:1px solid #b6956255;padding:12px 0}.bomb-record-row p{display:flex;justify-content:space-between}
 @media(max-width:420px){.bomb-classic-mode .bomb-classic-hud{gap:3px;font-size:8px}.bomb-classic-mode .bomb-reaction-clock{padding:2px}.turntale.bomb-classic-mode .action-buttons>.primary{font-size:12px!important}}
+
+.bm-autostart{position:fixed;inset:0;z-index:300;display:grid;align-content:center;justify-items:center;gap:12px;padding:24px;background:linear-gradient(145deg,#182721,#0d1719);color:#f1e3c2;text-align:center}.bm-autostart strong{font:600 clamp(18px,4vw,26px) Georgia,serif}.bm-autostart p{max-width:520px;color:#e9c99e;font-size:14px}.bm-autostart a{color:#d7bf89;text-underline-offset:4px}

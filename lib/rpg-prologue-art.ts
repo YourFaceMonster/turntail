@@ -13,6 +13,7 @@ export const PROLOGUE_ART={
  gate:frame('moon-gate-v1','moon-gate-portrait-v1'),
 };
 export function prologueArt(cut:PrologueCut){
+ if(cut.art)return cut.art;
  if(cut.scene==='dark')return null;
  return PROLOGUE_ART[cut.scene==='card'?(cut.back?'cardBack':'cardFront'):cut.scene];
 }

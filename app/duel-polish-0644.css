@@ -28,6 +28,8 @@ body .keeps-hp-change .hp-maximum .hp-change-pinned>em{font-size:13px!important;
 .turntale.table-v211.active-table .play-column>section[data-victory-glow="true"],.turntale.table-v211.active-table [data-victory-glow="true"] .trick-tiles{contain:layout!important;overflow:visible!important}
 .battle-victory-glow{isolation:isolate;position:relative}.battle-victory-glow>.landed-tile{isolation:isolate}
 .battle-victory-glow>.landed-tile::before{content:"";position:absolute;inset:-12px -10px;z-index:-1;border-radius:35%;background:radial-gradient(ellipse,#fff5bd77 10%,#ffca426b 42%,#ff9b1522 68%,transparent 80%);filter:blur(6px);animation:winning-aura-644 1.45s ease-in-out infinite;pointer-events:none}
+.turntale.table-v211.active-table.rpg-mode .trick-area[data-victory-glow="true"] .trick-label{position:relative;z-index:3}
+.turntale.table-v211.active-table.rpg-mode .trick-area[data-victory-glow="true"] .trick-current{position:relative;z-index:1}
 .turntale.table-v211.active-table .trick-area[data-victory-glow="true"] .trick-current.battle-victory-glow .tile.face{box-shadow:0 0 19px 4px #ffe58bcc,0 0 41px 9px #ffc13b66!important;animation:winning-tile-644 1.45s ease-in-out infinite!important}
 @keyframes winning-aura-644{0%,100%{transform:scale(.94) rotate(-5deg);opacity:.62}50%{transform:scale(1.18) rotate(5deg);opacity:1}}
 @keyframes winning-tile-644{50%{box-shadow:0 0 27px 7px #ffeeb4,0 0 57px 15px #ffbd366e}}

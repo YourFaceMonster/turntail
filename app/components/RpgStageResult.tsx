@@ -5,12 +5,14 @@ import {gameRelic,relicImage} from '../../lib/item-battle-relics.ts';
 import {RPG_PHASE_ONE,rpgSynergies,type RpgStageReward} from '../../lib/rpg-phase-one.ts';
 import {currentRpgShop,RPG_CONSUMABLES} from '../../lib/rpg.ts';
 import {itemImage} from '../../lib/rpg-items.ts';
+import RpgPrologue from './RpgPrologue';
+import {RPG_CONNECTION_SCENES} from '../../lib/rpg-connection-scenes.ts';
 
-export function RpgStageResult({game,busy,choose,buy,next,newRun,exit}:{game:ReturnType<typeof view>,busy:boolean,choose:(choice:RpgStageReward,replace?:string,decline?:boolean)=>void,buy:(id:string)=>void,next:()=>void,newRun:()=>void,exit:()=>void}){
+export function RpgStageResult({game,busy,choose,buy,next,newRun,exit,markSeen}:{game:ReturnType<typeof view>,busy:boolean,choose:(choice:RpgStageReward,replace?:string,decline?:boolean)=>void,buy:(id:string)=>void,next:()=>void,newRun:()=>void,exit:()=>void,markSeen?:(id:string)=>void}){
  const run=game.rpgRun!,clear=run.phaseOne!.clear;
- const [replacement,setReplacement]=useState(''),[selectingRelic,setSelectingRelic]=useState(false);
+ const [replacement,setReplacement]=useState(''),[selectingRelic,setSelectingRelic]=useState(false),[storyDone,setStoryDone]=useState(false),[replaying,setReplaying]=useState(false);
  const failed=run.status==='game-over',complete=run.status==='complete',relic=gameRelic(clear?.relicId||''),full=run.relics.length>=RPG_PHASE_ONE.relicLimit;
- return <div className="modal-shade result-shade"><section className="modal rpg-result rpg-stage-result" role="dialog" aria-modal="true" aria-label="RPG 스테이지 결과">
+ return <><div className="modal-shade result-shade"><section className="modal rpg-result rpg-stage-result" role="dialog" aria-modal="true" aria-label="RPG 스테이지 결과">
   <span className="eyebrow">RPG · STAGE {run.stage}/3</span><h2>{failed?'여정 실패':complete?'1차 개발 구간 완료!':run.status==='playing'?'다음 카드 판을 준비하세요':`스테이지 ${run.stage} 클리어!`}</h2>
   <div className="rpg-stats"><span>HP <b>{run.hp[0]}/100</b></span><span>주화 <b>{run.coins}</b></span><span>유물 <b>{run.relics.length}/6</b></span></div>
   {failed?<p>HP가 0이 되어 여정이 끝났어요. 이번 여정의 유물은 사라지고, 발견 기록은 유지됩니다.</p>:run.status==='playing'?<p>손패가 소진되어 카드 판이 끝났어요. 적의 남은 HP와 퇴장 상태를 유지하고 새 패로 이어갑니다.</p>:<><p>적 두 명을 모두 쓰러뜨렸어요.</p>{clear&&<p className="rpg-clear-heal">클리어 HP {clear.hpBefore} → {clear.hpBefore+clear.baseHeal+clear.relicHeal+clear.synergyHeal} · 기본 회복 +{clear.baseHeal}{clear.relicHeal?` · 등불 +${clear.relicHeal}`:''}{clear.synergyHeal?` · 조합 +${clear.synergyHeal}`:''}</p>}</>}
@@ -24,6 +26,7 @@ export function RpgStageResult({game,busy,choose,buy,next,newRun,exit}:{game:Ret
   {run.status==='ready'&&<><h3>다음 스테이지 준비</h3><div className="rpg-shop-items">{currentRpgShop(run)?.stock.map(entry=>{const item=RPG_CONSUMABLES.find(item=>item.id===entry.id);return <div key={entry.id}><img src={itemImage(entry.id)} alt=""/><span><strong>{item?.name}</strong><small>{item?.effect.replace(' · 최소 HP 1',' · HP 0이면 퇴장')}</small></span><button className="secondary" disabled={busy||entry.quantity<1||run.coins<entry.price||run.consumables.length>=3} onClick={()=>buy(entry.id)}>{entry.quantity<1?'품절':`${entry.price}주화`}</button></div>;})}</div><p>보유 아이템 {run.consumables.length}/3 · 주화와 장비는 다음 스테이지로 이어져요.</p><button className="primary full" disabled={busy} onClick={next}>스테이지 {run.stage+1} 시작 →</button></>}
   {run.status==='playing'&&<button className="primary full" disabled={busy} onClick={next}>다음 카드 판 시작 →</button>}
   {(failed||complete)&&<><p>{complete?'1~3스테이지 여정을 마쳤어요. 다음 구간은 아직 열리지 않았습니다.':''}</p><button className="primary full" disabled={busy} onClick={newRun}>1스테이지부터 새 여정 →</button></>}
+  {clear&&!failed&&<button className="text-btn full" disabled={busy} onClick={()=>setReplaying(true)}>승리 이야기 다시 보기</button>}
   <button className="text-btn full" disabled={busy} onClick={exit}>{failed||complete?'메인으로':'저장하고 나가기'}</button>
- </section></div>;
+ </section></div>{(replaying||run.status==='allocation'&&!storyDone&&!run.journey?.seenScenes?.includes(`ST${run.stage}_POST`))&&<RpgPrologue key={`post-${run.stage}`} cuts={RPG_CONNECTION_SCENES[String(run.stage)]?.after||[]} label="스테이지 승리 후 장면" enter={()=>{if(replaying){setReplaying(false);return;}setStoryDone(true);markSeen?.(`ST${run.stage}_POST`);}}/>}</>;
 }

@@ -3,17 +3,17 @@ import type {RpgRun} from './rpg.ts';
 
 export type JourneyNode='battle-1'|'tavern'|'battle-2'|'ruins'|'forest'|'battle-3';
 export type JourneyMini={game:Game,roundIds:string[],lastReward:number};
-export type RpgJourneyState={version:1,location:'map'|'tavern'|'battle'|'mini-game',currentNode:JourneyNode,startedStages:number[],completedNodes:JourneyNode[],path?:'ruins'|'forest'|'skip',branchOutcome?:{path:'ruins'|'forest',hpBefore:number,hpAfter:number,coins:number},rumors:string[],tavernRewardPaid:boolean,miniSummary?:{roundIndex:number,finished:boolean},mini?:JourneyMini};
+export type RpgJourneyState={version:1,seenScenes?:string[],location:'map'|'tavern'|'battle'|'mini-game',currentNode:JourneyNode,startedStages:number[],completedNodes:JourneyNode[],path?:'ruins'|'forest'|'skip',branchOutcome?:{path:'ruins'|'forest',hpBefore:number,hpAfter:number,coins:number},rumors:string[],tavernRewardPaid:boolean,miniSummary?:{roundIndex:number,finished:boolean},mini?:JourneyMini};
 /** Trial values for this three-stage prototype; never used by normal or HP item play. */
 export const JOURNEY_TRIAL={ruinsDamage:8,ruinsCoins:15,forestHeal:8,miniRounds:3,miniRewards:[12,8,4]} as const;
 export const JOURNEY_RUMOR={id:'sheltered-light',title:'모르의 등불 이야기',text:'금이 간 심장 곁에 회복의 등불을 장착해 보게. 둘을 함께 지니고 싸우면, 승부를 마친 뒤 등불이 조금 더 힘을 내지.'};
 export const JOURNEY_NODES:{id:JourneyNode,name:string,x:number,y:number,kind:'battle'|'place'|'choice'}[]=[
- {id:'battle-1',name:'ST1 · 별빛 관문',x:16,y:79,kind:'battle'},
- {id:'tavern',name:'눈길의 주막',x:16,y:22,kind:'place'},
- {id:'battle-2',name:'ST2 · 등불 야영지',x:48,y:50,kind:'battle'},
- {id:'ruins',name:'위험한 유적',x:81,y:19,kind:'choice'},
- {id:'forest',name:'고요한 숲길',x:81,y:81,kind:'choice'},
- {id:'battle-3',name:'ST3 · 쌍둥이 수호자',x:81,y:50,kind:'battle'},
+ {id:'battle-1',name:'ST1 · 마을 관문',x:16,y:43,kind:'battle'},
+ {id:'tavern',name:'눈길의 주막',x:43,y:65,kind:'place'},
+ {id:'battle-2',name:'ST2 · 마을 광장',x:59,y:64,kind:'battle'},
+ {id:'ruins',name:'위험한 유적',x:70,y:30,kind:'choice'},
+ {id:'forest',name:'고요한 숲길',x:84,y:70,kind:'choice'},
+ {id:'battle-3',name:'ST3 · 북쪽 성채',x:87,y:26,kind:'battle'},
 ];
 export function initRpgJourney(game:Game){
  const run=game.rpgRun;if(!run?.phaseOne||game.hpItemMode||game.rpgTest)throw Error('새 RPG 여정에서 시작해 주세요.');
@@ -95,6 +95,7 @@ export function journeyDisplayGame(game:Game){return activeJourneyMini(game)||ga
 export function validateJourneySave(game:Game){
  const run=game.rpgRun,j=run?.journey;if(!j)return;
  const nodes=new Set(JOURNEY_NODES.map(node=>node.id)),unique=(items:unknown)=>Array.isArray(items)&&new Set(items).size===items.length;
+ if(j.seenScenes!==undefined&&(!Array.isArray(j.seenScenes)||!j.seenScenes.every(id=>typeof id==='string'&&/^ST[123]_POST$/.test(id))))throw Error('이야기 감상 기록의 형식이 올바르지 않아요.');
  const invalid=()=>{throw Error('탐험 여정의 저장 형식이 올바르지 않거나 지원하지 않는 버전이에요. 기존 데이터는 보존했어요.');};
  if(!run.phaseOne||j.version!==1||!['map','tavern','battle','mini-game'].includes(j.location)||!nodes.has(j.currentNode)||!unique(j.startedStages)||!j.startedStages.every(stage=>Number.isInteger(stage)&&stage>=1&&stage<=3)||!unique(j.completedNodes)||!j.completedNodes.every(node=>nodes.has(node))||!Array.isArray(j.rumors)||!j.rumors.every(id=>typeof id==='string')||typeof j.tavernRewardPaid!=='boolean'||j.path&&!['ruins','forest','skip'].includes(j.path))invalid();
  if(j.location==='mini-game'&&!j.mini)invalid();

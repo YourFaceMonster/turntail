@@ -13,9 +13,10 @@ import {saveRpgGame} from '../lib/rpg-storage.ts';
 
 function finishHand(game:Game,winner=1){game.phase='ended';game.winner=winner;game.players[winner].hand=[];settle(game);}
 
-test('RPG hub offers two distinct test entries and names their no-save scope',()=>{
+test('RPG hub keeps screen preview visible and retains the hidden one-round adapter',()=>{
  const noop=()=>{},html=renderToStaticMarkup(h(RpgHub,{active:null,records:[],start:noop,resume:noop,testActive:null,testStart:noop,testResume:noop,previewStart:noop,close:noop,error:''}));
- for(const label of ['프롤로그·화면 테스트','한 판 통과 테스트','테스트 진행은 저장하지 않아요','ST1~3'])assert.ok(html.includes(label));
+ for(const label of ['프롤로그·화면 테스트','테스트 진행은 저장하지 않아요','ST1~3'])assert.ok(html.includes(label));
+ assert.ok(!html.includes('한 판 통과 테스트'));
  const tools=renderToStaticMarkup(h(RpgPreviewLabel,{mode:'one-round',exit:noop}));assert.ok(tools.includes('테스트 종료'));assert.ok(tools.includes('한 판 후 자동 통과'));
 });
 test('screen preview uses unchanged RPG rules, while a foreign game and the existing equipment test are never adapted',()=>{
