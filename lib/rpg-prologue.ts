@@ -1,6 +1,6 @@
 import {stageTheme} from './stage-theme.ts';
 
-export type PrologueCut={id:string,scene:'dark'|'snow'|'inn'|'room'|'table'|'card'|'road'|'stone'|'gate',duration:number,line:string,speaker?:string,back?:boolean,audio:'wind'|'hearth'|'tile'|'quiet',art?:{landscape:string,portrait:string},focus?:string};
+export type PrologueCut={id:string,scene:'dark'|'snow'|'inn'|'room'|'table'|'card'|'road'|'stone'|'gate',duration:number,line:string,speaker?:string,back?:boolean,audio:'wind'|'hearth'|'tile'|'quiet',art?:{landscape:string,portrait:string},focus?:string,location?:string};
 export const FIRST_PROLOGUE:readonly PrologueCut[]=[
  {id:'P01',scene:'dark',duration:4000,line:'모든 길에는, 시작이 있다.',audio:'wind'},
  {id:'P02',scene:'snow',duration:10000,line:'북쪽 고갯길을 지나던\n한 승부사가 있었다.',audio:'wind'},

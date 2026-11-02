@@ -1,0 +1,19 @@
+/* One rail for RPG and item matches: large art, two readable effect lines. */
+main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock{width:64px!important;height:min(236px,calc(100% + 48px))!important;container-type:size}
+main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-equipped-relics{--relic-icon-size:clamp(34px,calc((100cqh - 88px)/3),44px);width:100%!important;height:100%!important;padding:2px!important;display:grid!important;grid-template-rows:14px minmax(0,1fr);gap:3px;border:1px solid #d3bb7c55;border-radius:6px;background:#0b19183d;box-shadow:none;box-sizing:border-box}
+main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-relic-tray-heading{height:14px;margin:0;justify-content:center}
+main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-relic-tray-heading strong{font-size:9px;letter-spacing:0}
+main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-relic-slots{height:100%!important;min-height:0;display:grid;grid-template-columns:1fr;grid-template-rows:repeat(3,minmax(0,1fr));gap:3px}
+main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-relic-slot{display:flex!important;flex-direction:column;justify-content:center;align-items:center;gap:1px;padding:0;min-height:0}
+main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-relic-slot-frame{grid-row:auto;width:var(--relic-icon-size)!important;height:var(--relic-icon-size)!important;box-sizing:border-box;border-width:1px;border-radius:6px;background:#09191424;box-shadow:none;flex:none}
+main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-relic-slot-frame::before,main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-relic-slot-frame::after{display:none}
+main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-relic-slot-frame img{width:calc(var(--relic-icon-size) - 2px)!important;height:calc(var(--relic-icon-size) - 2px)!important;max-width:100%;max-height:100%;filter:none}
+main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-relic-slot-condition,main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-relic-slot-bonus{display:block!important;font-size:8px!important;line-height:1.2!important;max-width:100%;margin:0;white-space:normal;overflow:visible;text-overflow:clip;text-align:center;overflow-wrap:anywhere}
+main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-synergy{font-size:8px;line-height:1.2;margin:0;text-align:center}
+main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-equipped-relics:has(>.rpg-synergy){grid-template-rows:14px minmax(0,1fr) auto;--relic-icon-size:clamp(30px,calc((100cqh - 112px)/3),40px)}
+@media(max-height:450px) and (orientation:landscape){
+ main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock{width:82px!important;height:100%!important}
+ main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-equipped-relics{--relic-icon-size:32px}
+ main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-relic-slot{display:grid!important;grid-template-columns:32px minmax(0,1fr);grid-template-rows:repeat(2,auto);gap:0 3px;align-content:center}
+ main.turntale.table-v211.active-table.rpg-mode .floor-relic-dock .rpg-relic-slot-frame{grid-row:1/3}
+}
