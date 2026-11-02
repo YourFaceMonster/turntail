@@ -8,6 +8,13 @@ export const PROFESSION_PORTRAITS={
  mage:{src:'/item-battle-v1/professions/mage-cartoon-v4.webp',width:1024,height:1536,faceWidth:330,eyeX:516,eyeY:550},
 } as const;
 
+export const RPG_PROFESSION_PORTRAITS={
+ swordsman:{src:'/item-battle-v1/professions/swordsman-front-r61.png'},
+ mage:{src:'/item-battle-v1/professions/mage-front-r61.png'},
+ cleric:{src:'/item-battle-v1/professions/cleric-front-r61.png'},
+ rogue:{src:'/item-battle-v1/professions/rogue-front-r61.png'},
+} as const;
+
 /** Scale each visible face equally and line up the eyes, independently of hats. */
 export function professionPortraitStyle(id:RpgProfessionId){
  const art=PROFESSION_PORTRAITS[id];

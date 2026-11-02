@@ -314,14 +314,21 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
  }
 };
 
-// Foregrounds alternate with establishing views; the original prologue remains unchanged.
-for(const [stage,scenes] of Object.entries(RPG_CONNECTION_SCENES)){for(const [phase,cuts] of Object.entries(scenes)){for(const cut of cuts){const talking=!!cut.speaker;const subject=stage==='1'?'gate':stage==='2'?'square':'twins';if(talking){const version=subject==='square'?'v2':'v3';cut.art={landscape:`/prologue/connection-${subject}-${version}.png`,portrait:`/prologue/connection-${subject}-${version}.png`};cut.focus='50% 40%';}if(stage==='3'&&phase==='after'&&!talking){cut.art={landscape:'/prologue/dawn-road-v1.png',portrait:'/prologue/dawn-road-portrait-v1.png'};cut.focus='50% 50%';}}}}
-
-RPG_CONNECTION_SCENES[2].after.forEach((cut,index)=>{cut.art={landscape:'/prologue/moon-region-map-v1.png',portrait:'/prologue/moon-region-map-v1.png'};cut.focus=index===0?'50% 62%':'88% 30%';});
-
-// The final encounter begins inside the fortress, not at its gate.
-RPG_CONNECTION_SCENES[3].before[0].art={landscape:'/prologue/connection-twins-v3.png',portrait:'/prologue/connection-twins-v3.png'};
-RPG_CONNECTION_SCENES[3].before[0].focus='50% 40%';
+// Reviewed distinct before/after paintings and dedicated portrait art.
+const sceneFrame=(wide:string,tall:string)=>({landscape:'/prologue/'+wide+'.png',portrait:'/prologue/'+tall+'.png'});
+for(const [stage,sequence] of Object.entries(RPG_CONNECTION_SCENES)){
+ for(const [phase,cuts] of Object.entries(sequence)){
+  const art=stage==='1'?sceneFrame('gate-'+phase+'-r61','gate-'+phase+'-portrait-r61'):
+   stage==='2'?sceneFrame('square-continuity-'+phase+'-r61','square-continuity-'+phase+'-portrait-r61'):
+   sceneFrame(phase==='before'?'connection-twins-v3':'twins-after-r61',phase==='before'?'twins-before-portrait-r61':'twins-after-portrait-r61');
+  for(const cut of cuts){cut.art=art;cut.focus='50% 40%';}
+ }
+}
+RPG_CONNECTION_SCENES[3].after[3].art=sceneFrame('moon-region-map-v1','map-portrait-r61');
+RPG_CONNECTION_SCENES[2].before[0].line='낮의 광장에 들어서자, 두 도전자가 승부 자리로 불렀다.';
+RPG_CONNECTION_SCENES[2].before[2].speaker='광장 동행인';
+RPG_CONNECTION_SCENES[2].before[3].line='우리 둘과 한 판 겨뤄 줘.';
+RPG_CONNECTION_SCENES[2].after[1].speaker='광장 동행인';
 
 /** Viewing only: no combat, save, settlement or reward callbacks are part of this reel. */
 export const RPG_STORY_REEL:readonly PrologueCut[]=[...FIRST_PROLOGUE,...[1,2,3].flatMap(stage=>[...RPG_CONNECTION_SCENES[stage].before,...RPG_CONNECTION_SCENES[stage].after])];
