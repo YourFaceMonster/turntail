@@ -115,7 +115,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "scene": "road",
     "duration": 5000,
     "line": "네가 로웬을 이겼다는 그 사람이야?",
-    "speaker": "광장 도전자",
+    "speaker": "포코",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -128,7 +128,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "scene": "road",
     "duration": 5000,
     "line": "그 소문이 사실인지, 직접 확인하고 싶어.",
-    "speaker": "광장 도전자",
+    "speaker": "포코",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -141,7 +141,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "scene": "road",
     "duration": 5000,
     "line": "나와도 한 판 겨뤄 줘.",
-    "speaker": "광장 도전자",
+    "speaker": "포코",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -156,7 +156,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "scene": "road",
     "duration": 5000,
     "line": "소문이 괜히 난 건 아니었네.",
-    "speaker": "광장 도전자",
+    "speaker": "포코",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -169,7 +169,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "scene": "road",
     "duration": 5000,
     "line": "다음 길은 북쪽 성채로 이어져. 그곳에 다음 관문이 있어.",
-    "speaker": "광장 도전자",
+    "speaker": "포코",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -182,7 +182,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "scene": "road",
     "duration": 5000,
     "line": "쌍둥이 수호자를 만나게 될 거야. 준비하고 가.",
-    "speaker": "광장 도전자",
+    "speaker": "포코",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -319,7 +319,7 @@ const sceneFrame=(wide:string,tall:string)=>({landscape:'/prologue/'+wide+'.png'
 for(const [stage,sequence] of Object.entries(RPG_CONNECTION_SCENES)){
  for(const [phase,cuts] of Object.entries(sequence)){
   const art=stage==='1'?sceneFrame('gate-'+phase+'-r61','gate-'+phase+'-portrait-r61'):
-   stage==='2'?sceneFrame('square-continuity-'+phase+'-r61','square-continuity-'+phase+'-portrait-r61'):
+   stage==='2'?sceneFrame('square-cast-wide-v2','square-cast-portrait-v2'):
    sceneFrame(phase==='before'?'connection-twins-v3':'twins-after-r61',phase==='before'?'twins-before-portrait-r61':'twins-after-portrait-r61');
   for(const cut of cuts){cut.art=art;cut.focus='50% 40%';cut.location=`STAGE ${stage} · ${['','마을 관문','마을 광장','북쪽 성채'][Number(stage)]}`;}
  }
@@ -327,9 +327,11 @@ for(const [stage,sequence] of Object.entries(RPG_CONNECTION_SCENES)){
 RPG_CONNECTION_SCENES[3].after[3].art=sceneFrame('moon-castle-map-v3','moon-castle-map-portrait-v5');
 RPG_CONNECTION_SCENES[3].after[3].focus='57% 18%';
 RPG_CONNECTION_SCENES[2].before[0].line='낮의 광장에 들어서자, 두 도전자가 승부 자리로 불렀다.';
-RPG_CONNECTION_SCENES[2].before[2].speaker='광장 동행인';
+RPG_CONNECTION_SCENES[2].before[2].speaker='밀라';
 RPG_CONNECTION_SCENES[2].before[3].line='우리 둘과 한 판 겨뤄 줘.';
-RPG_CONNECTION_SCENES[2].after[1].speaker='광장 동행인';
+RPG_CONNECTION_SCENES[2].after[0].speaker='밀라';
+RPG_CONNECTION_SCENES[2].after[1].speaker='포코';
+RPG_CONNECTION_SCENES[2].after[2].speaker='밀라';
 
 /** Viewing only: no combat, save, settlement or reward callbacks are part of this reel. */
 export const RPG_STORY_REEL:readonly PrologueCut[]=[...FIRST_PROLOGUE,...[1,2,3].flatMap(stage=>[...RPG_CONNECTION_SCENES[stage].before,...RPG_CONNECTION_SCENES[stage].after])];

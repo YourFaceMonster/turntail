@@ -1,0 +1,82 @@
+/* Interaction labels stay; the painted characters have no selection outlines. */
+.tavern-character-hit path,.tavern-character-hit:is(:hover,.is-selected) path{stroke:none!important;opacity:1!important}
+.tavern-character-label small{display:none}
+.tavern-character-label{gap:0;padding:4px 9px;background:#18271dd4;border-color:#c4a97570;box-shadow:0 2px 8px #0004}
+.tavern-character-label:hover,.tavern-character-label:focus-visible{background:#715b39d9;color:#fff5db}
+.scene-motion-defs{position:absolute;pointer-events:none;overflow:hidden}
+.journey-tavern-content{background:none!important;isolation:isolate}
+.tavern-living-art{position:absolute;inset:0;z-index:-1;background:var(--tavern-art) center/100% 100% no-repeat;filter:url('#tavern-motion-wide');pointer-events:none}
+.tavern-warm-rays{position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(ellipse at 8% 65%,#ffa73335,transparent 48%),linear-gradient(110deg,#ffb74b0c,transparent 50%);animation:warm-room-light 4.3s ease-in-out infinite alternate}
+.journey-tavern-content .tavern-cast-shadow{animation:room-shadow-drift 6.8s ease-in-out infinite alternate;opacity:.6}
+.journey-tavern-content .journey-hearth-glow{left:-5%;top:43%;height:45%;width:28%;animation:warm-hearth 2.7s ease-in-out infinite alternate}
+.journey-tavern-content .tavern-flame{left:-2%;top:48%;height:35%;width:17%}
+@keyframes warm-room-light{from{opacity:.45;transform:translateX(-1%)}to{opacity:.9;transform:translateX(1%)}}
+@keyframes room-shadow-drift{from{transform:translateX(-1.5%) skewX(-1deg);opacity:.4}to{transform:translateX(1%) skewX(1deg);opacity:.7}}
+@keyframes warm-hearth{0%,100%{opacity:.25;transform:scale(.95)}40%{opacity:.6;transform:scale(1.03)}70%{opacity:.38}}
+@media(max-aspect-ratio:1/1){.tavern-living-art{filter:url('#tavern-motion-portrait')}.journey-tavern-content .journey-hearth-glow{top:57%;width:42%;height:34%;left:-10%}.journey-tavern-content .tavern-flame{top:62%;left:-4%;width:29%;height:25%}.tavern-warm-rays{background:radial-gradient(ellipse at 0% 72%,#ffac3f40,transparent 55%)}}
+
+/* Transparent warm glass with a clear hierarchy between speaker, speech and rules. */
+body>.journey-popup-shade{background:#050b101c;backdrop-filter:blur(2px)}
+body>.journey-popup-shade>.journey-popup{padding:28px 24px 22px;border:1px solid #e1c18a70;border-radius:16px;background:linear-gradient(135deg,#19302d80,#101d258c)!important;box-shadow:0 12px 38px #0005;backdrop-filter:blur(9px);color:#f1e9da;text-shadow:0 1px 3px #000}
+body>.journey-popup-shade>.journey-popup>.close{position:absolute;right:10px;top:10px;display:grid;place-items:center;width:32px;height:32px;min-width:32px;min-height:32px;padding:0;margin:0;border:1px solid #e8ce9677;border-radius:50%;background:#14251f66;line-height:1;transform:none}
+.journey-popup>.close svg{display:block;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+body>.journey-popup-shade>.journey-popup h3{font-size:25px;line-height:1.3;margin:0 36px 18px 0;color:#f6d697;font-weight:800}
+.journey-popup h3 small{display:block;font-size:11px;font-weight:400;color:#c9bca5;letter-spacing:.08em;margin-top:6px}
+body>.journey-popup-shade>.journey-popup .journey-speech{font-size:18px;line-height:1.85;font-weight:500;color:#fff8e6;margin:0 0 18px;padding:0;border:0;background:none;word-break:keep-all}
+body>.journey-popup-shade>.journey-popup>p{font-size:12px;line-height:1.8;color:#c7d2cf;margin:8px 0}
+body>.journey-popup-shade>.journey-popup>small{font-size:10px;color:#b3c2bb;display:block;margin-top:14px}
+.journey-popup .primary,.journey-popup .secondary{min-height:42px;border-radius:7px;font-size:12px}
+
+/* A living map; interaction points stay fixed while mist, snow and window light move. */
+.rpg-map-paint{animation:map-breath 14s ease-in-out infinite alternate;transform-origin:50% 55%}
+.map-atmosphere{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.map-atmosphere i{position:absolute;inset:-10%;pointer-events:none}
+.map-mist{background:linear-gradient(115deg,transparent 25%,#bfd7e91a 42%,transparent 60%);animation:map-mist-drift 20s ease-in-out infinite alternate}
+.map-lanterns{background:radial-gradient(ellipse at 52% 66%,#ffc75a2b,transparent 12%),radial-gradient(ellipse at 54% 44%,#ffd47420,transparent 17%);mix-blend-mode:screen;animation:warm-room-light 4.6s ease-in-out infinite alternate}
+.map-snow-drift{background-image:radial-gradient(circle,#e8f4ffb0 0 1px,transparent 1.5px),radial-gradient(circle,#d4e6f855 0 .8px,transparent 1.2px);background-size:113px 163px,173px 197px;background-position:20px 0,80px 50px;opacity:.35;animation:map-snow-fall 26s linear infinite}
+@keyframes map-breath{from{filter:brightness(.98);transform:scale(1)}to{filter:brightness(1.045);transform:scale(1.008)}}
+@keyframes map-mist-drift{from{transform:translateX(-8%);opacity:.4}to{transform:translateX(8%);opacity:.8}}
+@keyframes map-snow-fall{to{background-position:70px 163px,110px 247px}}
+.prologue-picture[data-speaking=true] .prologue-camera picture{filter:url('#story-motion-wide')}
+@media(max-aspect-ratio:1/1){.prologue-picture[data-speaking=true] .prologue-camera picture{filter:url('#story-motion-portrait')}}
+
+/* Three familiar matches in one row; the journey has its own full-width entry. */
+.single-mode-menu .single-mode-cards:has(.mode-hp-items){display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px}
+.single-mode-menu .single-mode-cards>.mode-rpg{grid-column:1/-1}
+.single-mode-menu .single-mode-cards>:is(button,a){min-width:0;min-height:150px;padding:12px!important;gap:5px;align-items:flex-start;overflow:hidden}
+.single-mode-menu .single-mode-cards>:is(button,a) strong{font-size:18px!important;white-space:nowrap;letter-spacing:-.6px}
+.single-mode-menu .single-mode-cards>:is(button,a)>small{font-size:8px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.single-mode-menu .single-mode-cards>:is(button,a) p{font-size:10px;line-height:1.5}.single-mode-menu .single-mode-cards>:is(button,a)>b{font-size:10px}
+.single-mode-menu .single-mode-cards>.mode-rpg{min-height:90px!important;display:grid;grid-template-columns:58px 1fr auto;column-gap:12px;align-items:center}
+.single-mode-menu .single-mode-cards>.mode-rpg>.menu-mode-scene{grid-row:1/5;width:58px;height:58px}.single-mode-menu .single-mode-cards>.mode-rpg>small{grid-column:2}.single-mode-menu .single-mode-cards>.mode-rpg>strong{grid-column:2}.single-mode-menu .single-mode-cards>.mode-rpg>p{display:none}.single-mode-menu .single-mode-cards>.mode-rpg>b{grid-column:3;grid-row:1/4}
+@media(max-width:600px){.single-mode-menu{padding:22px 14px!important}.single-mode-menu .single-mode-cards:has(.mode-hp-items){gap:6px}.single-mode-menu .single-mode-cards>:is(button,a){min-height:135px;padding:9px 7px!important}.single-mode-menu .single-mode-cards>:is(button,a) strong{font-size:15px!important}.single-mode-menu .single-mode-cards>:is(button,a) p{display:none}.single-mode-menu .single-mode-cards>:is(button,a)>.menu-mode-scene{height:58px!important;min-height:58px}.single-mode-menu .single-mode-cards>:is(button,a)>small{font-size:7px}.single-mode-menu .single-mode-cards>:is(button,a)>b{font-size:8px;line-height:1.5}}
+
+/* One fixed description height across all four professions, including the rogue. */
+.profession-picker .profession-selected-detail{height:164px;min-height:164px;max-height:164px;box-sizing:border-box;overflow:auto;display:flex;flex-direction:column;gap:5px;padding:12px 14px;border:1px solid #c9b28155;border-radius:9px;background:#0a1c2280}
+.profession-picker .profession-selected-detail>strong{min-height:24px;flex:none}.profession-picker .profession-selected-detail>span{font-size:11px;line-height:1.5;flex:none;min-height:17px}
+.profession-picker .profession-role{font-size:11px}.profession-picker .profession-signature{display:none}
+section.profession-picker.has-art>.profession-choice-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px}
+section.profession-picker.has-art .profession-choice.profession-cartoon{height:154px!important;min-height:0;padding:0 4px 9px;--portrait-face-size:48px;--portrait-eye-line:30%}
+section.profession-picker.has-art .profession-choice>strong{font-size:12px!important}.profession-picker .profession-role{font-size:9px}
+.journey-entry .profession-picker.has-art .profession-choice[data-profession] .profession-art{height:100%!important}
+.journey-entry .profession-picker.has-art .profession-choice[data-profession] .profession-art img{position:absolute;width:calc(var(--portrait-face-size) * var(--portrait-width-factor));height:auto;max-width:none;left:calc(50% - var(--portrait-face-size) * var(--portrait-eye-x));top:calc(var(--portrait-eye-line) - var(--portrait-face-size) * var(--portrait-eye-y));object-fit:initial;object-position:initial}
+@media(max-width:600px){section.profession-picker.has-art .profession-choice.profession-cartoon{height:137px!important;--portrait-face-size:43px}.profession-picker .profession-role{font-size:8px}.profession-picker .profession-choice>strong svg{width:12px;height:12px}}
+
+/* The entry uses the approved map as a real filled background instead of blank margins. */
+.modal.rpg-hub.journey-entry{isolation:isolate;background:linear-gradient(145deg,#0c1d28c9,#0d2027e8),url('/prologue/moon-castle-map-v3.png') center/cover!important;border:1px solid #c7b27c88;box-shadow:0 18px 70px #0007;padding:25px 20px 18px}
+.journey-entry>.close,.single-mode-menu>.close{display:grid;place-items:center;width:32px;height:32px;min-height:32px;min-width:32px;padding:0;border-radius:50%;line-height:1;font-family:Arial,sans-serif;font-size:22px}
+.journey-entry>.profession-picker{margin-top:8px}.journey-entry .profession-picker>h3{margin-top:0}
+.journey-entry>p.muted{display:none}
+.journey-entry .rpg-hub-main{display:grid;grid-template-columns:1fr;gap:0;margin:14px 0;border:1px solid #c6ac7860;border-radius:10px;overflow:hidden;background:#12232180}
+.journey-entry .rpg-hub-main>picture{display:block;width:100%;height:200px;min-width:0;overflow:hidden}
+.journey-entry .rpg-hub-main>picture img{display:block;width:100%;height:100%!important;max-height:none!important;aspect-ratio:auto!important;object-fit:cover!important;object-position:50% 78%;border:0;border-radius:0}
+.journey-entry .rpg-hub-main>div{padding:12px 14px}.journey-entry .rpg-hub-main>div>p{font-size:11px;margin:5px 0;color:#c3d2c9}.journey-entry .rpg-hub-main strong{font-size:16px}
+.journey-entry .rpg-preview-menu{padding:12px;margin-top:14px;background:#091c1d55;border:1px solid #b4b3893d;border-radius:8px}.journey-entry .rpg-preview-menu p{font-size:10px}
+
+/* Village products reuse the item shop's artwork, cards and coin presentation. */
+body>.journey-popup-shade>.journey-popup:has(.village-market){width:min(860px,100%);padding:22px;background:linear-gradient(145deg,#1b342bb8,#16282dbd)!important}
+.village-market-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-right:34px;margin-bottom:18px}.village-market-heading small{color:#cbb48b;font-size:10px}.village-market-heading h3{margin:5px 0 0!important}.village-market-heading .market-wallet{font-size:12px;white-space:nowrap;color:#e8ca83}.village-market-heading .market-wallet b{font-size:25px;margin-left:5px}
+.village-market-layout{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:16px}.village-market-shelf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.village-product{display:flex;flex-direction:column;align-items:center;gap:8px;border:1px solid #c9ad785e;border-radius:10px;padding:16px 12px;background:linear-gradient(#3845359e,#14261d99);text-align:center;min-width:0}.village-product-art{display:grid;place-items:center;width:88px;height:88px;border-radius:50%;background:radial-gradient(ellipse,#e8c67733,transparent 70%)}.village-product-art img,.village-product-art .rpg-item-icon{width:76px;height:76px;max-width:76px;max-height:76px;object-fit:contain}.village-product-kind{font-size:9px;color:#bfa77e}.village-product h4{margin:0;font-size:16px;color:#f3deb5}.village-product p{font-size:11px;line-height:1.65;color:#c8d2c7;margin:0;flex:1}.village-product>button{width:100%;min-height:40px!important;margin-top:6px}.village-product>button:disabled{opacity:.4;cursor:default}
+.village-market-bag{border-left:1px solid #d0b47744;padding-left:14px;color:#c7d4c9}.village-market-bag h4{font-size:13px;color:#e7c88d;margin:0 0 14px}.village-market-bag p{font-size:11px;display:flex;justify-content:space-between}.village-market-bag>small{font-size:10px;line-height:1.6}.village-owned-items{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}.village-owned-items>span{display:flex;align-items:center;gap:2px}.village-owned-items .rpg-item-icon{width:30px;height:30px}.village-owned-items small{font-size:10px}
+@media(max-width:600px){body>.journey-popup-shade>.journey-popup:has(.village-market){padding:22px 14px 16px}.village-market-layout{grid-template-columns:1fr;gap:12px}.village-market-bag{border:0;border-top:1px solid #d0b47744;padding:12px 0 0;display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px}.village-market-bag h4{margin:0}.village-market-bag p{gap:8px;margin:0}.village-market-bag>small{flex-basis:100%}.village-owned-items{margin:0}.village-product{padding:12px 8px}.village-product h4{font-size:14px}.village-product-art{width:76px;height:76px}.village-product-art img,.village-product-art .rpg-item-icon{width:66px;height:66px}.village-market-heading{align-items:flex-start;gap:8px}.village-market-heading .market-wallet b{font-size:20px}}
+@media(prefers-reduced-motion:reduce){.tavern-living-art,.prologue-picture[data-speaking=true] .prologue-camera picture{filter:none!important}.rpg-map-paint,.map-atmosphere i,.tavern-warm-rays,.journey-tavern-content .tavern-cast-shadow,.journey-tavern-content .journey-hearth-glow{animation:none!important;transform:none!important}}

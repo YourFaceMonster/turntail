@@ -5,10 +5,10 @@ export const PROLOGUE_ART={
  snow:frame('snow-traveler-v1','snow-traveler-portrait-v1'),
  inn:frame('snow-inn-v3','snow-inn-portrait-v1'),
  room:frame('tavern-interior-v2','tavern-interior-portrait-v1'),
- table:frame('tavern-wager-v1','tavern-wager-portrait-v1'),
+ table:frame('tavern-wager-wide-v2','tavern-wager-portrait-v2'),
  cardFront:frame('tile-front-landscape-v1','tile-front-portrait-v1'),
  cardBack:frame('tile-back-landscape-v1','tile-back-portrait-v1'),
- road:frame('dawn-road-v1','dawn-road-portrait-v1'),
+ road:frame('dawn-castle-road-v2','dawn-castle-road-portrait-v2'),
  stone:frame('stone-revelation-landscape-v1','stone-revelation-portrait-v1'),
  gate:frame('moon-gate-v1','moon-gate-portrait-v1'),
 };
