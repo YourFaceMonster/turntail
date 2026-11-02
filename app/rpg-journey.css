@@ -70,7 +70,7 @@
 @keyframes tavern-breathe{from{opacity:.3;transform:scale(.99)}to{opacity:.75;transform:scale(1.025)}}
 .rpg-hub-main>picture{min-width:0;display:block}.rpg-hub-main>picture img{width:100%;height:100%;object-fit:cover;border:1px solid #ad946c;border-radius:10px}
 @media(max-aspect-ratio:1/1){
- .journey-tavern-scene .journey-tavern-room{aspect-ratio:9/16;background-image:url('/prologue/tavern-portrait-v5.png')}
+ .journey-tavern-scene .journey-tavern-room{aspect-ratio:9/16;background-image:url('/prologue/tavern-portrait-v7.png')}
  .journey-tavern-room .tavern-serin{left:22%;top:46%;width:38%;height:34%}
  .journey-tavern-room .tavern-mor{left:53%;top:27%;width:37%;height:26%}
  .journey-tavern-room .tavern-pio{left:79%;top:52%;width:37%;height:36%}
@@ -110,7 +110,7 @@
 @keyframes tavern-flame-dance{0%,100%{opacity:.38;transform:scale(.85,1.02)}32%{opacity:.75;transform:scale(1.08,.92)}65%{opacity:.52;transform:scale(.94,1.12)}}
 @keyframes tavern-shadow-sway{from{opacity:.38;transform:translateX(-1px)}to{opacity:.73;transform:translateX(2px)}}
 @media(max-aspect-ratio:1/1){
- .journey-tavern-room{--tavern-art:url('/prologue/tavern-portrait-v5.png')}
+ .journey-tavern-room{--tavern-art:url('/prologue/tavern-portrait-v7.png')}
  .journey-tavern-room .tavern-fire{left:9%;top:73%;width:17%;height:19%}
  .journey-tavern-room .journey-hearth-glow{left:-10%;top:56%;width:46%;height:35%}
  .moving-serin{clip-path:polygon(0 45%,2% 36%,13% 29%,23% 28%,30% 32%,34% 43%,41% 47%);transform-origin:22% 47%}
@@ -120,3 +120,93 @@
  .candle-1{left:28%;top:6%;width:4%;height:6%}.candle-2{left:69%;top:12%;width:4%;height:6%}.candle-3{left:42%;top:40%;width:4%;height:6%}
 }
 @media(prefers-reduced-motion:reduce){.journey-tavern-room .tavern-person,.tavern-moving-person,.tavern-cast-shadow,.tavern-flame,.tavern-candle{animation:none!important;transform:none!important}}
+
+/* Fit the entire tavern into the available viewport, with art and hit areas sharing one size. */
+.journey-tavern-scene{height:calc(100dvh - 24px);max-height:none;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;gap:6px;overflow:hidden;padding:12px}
+.journey-tavern-scene .journey-scene-header{min-height:40px;gap:8px}.journey-tavern-scene .journey-scene-header h2{font-size:20px;line-height:1.2;margin:0}.journey-tavern-scene .journey-scene-header :is(.eyebrow,p){display:none}
+.journey-tavern-scene .journey-scene-header>button{min-height:36px;padding:6px 10px;font-size:11px}.journey-tavern-scene .journey-resources{margin:0;min-height:27px;padding:4px 8px;gap:6px 14px;font-size:11px}
+.journey-tavern-stage{min-width:0;min-height:0;container-type:size;display:grid;place-items:center;overflow:hidden}
+.journey-tavern-scene .journey-tavern-stage .journey-tavern-room{width:min(100cqw,calc(100cqh * 16 / 9));height:min(100cqh,calc(100cqw * 9 / 16));min-height:0;aspect-ratio:16/9}
+.journey-tavern-scene .journey-tavern-footer{display:flex;align-items:center;justify-content:space-between;min-height:28px;margin:0;padding:0;border:0}.journey-tavern-scene .journey-tavern-footer>small{display:none}.journey-tavern-footer .text-btn{min-height:28px;padding:3px 6px}
+.journey-tavern-scene>.journey-error{position:absolute;left:20px;right:20px;bottom:46px;background:#22170fed;border:1px solid #dc9c73;z-index:10}
+.rpg-map-node[data-node]{left:var(--map-x);top:var(--map-y)}.map-route-portrait{display:none}
+@media(max-width:600px){.journey-tavern-scene{height:calc(100dvh - 12px);padding:8px;gap:4px}.journey-tavern-scene .journey-scene-header h2{font-size:18px}.journey-tavern-scene .journey-resources{font-size:10px;gap:4px 8px}}
+@media(max-height:450px){.journey-tavern-scene{gap:3px;padding:6px;height:calc(100dvh - 12px)}.journey-tavern-scene .journey-scene-header{min-height:30px}.journey-tavern-scene .journey-scene-header h2{font-size:16px}.journey-tavern-scene .journey-scene-header>button{min-height:28px;font-size:10px;padding:3px 8px}.journey-tavern-scene .journey-resources{min-height:23px;font-size:10px}.journey-tavern-scene .journey-tavern-footer{min-height:23px}.journey-tavern-footer .text-btn{min-height:23px}}
+@media(max-aspect-ratio:1/1){
+ .journey-tavern-scene .journey-tavern-stage .journey-tavern-room{width:min(100cqw,calc(100cqh * 9 / 16));height:min(100cqh,calc(100cqw * 16 / 9));aspect-ratio:9/16}
+ .journey-map-scroll{overflow-x:hidden}.journey-map-scroll .rpg-node-map{width:100%;min-width:0;aspect-ratio:9/16}
+ .journey-map-scene[data-stage] .rpg-map-paint{background-image:linear-gradient(#101c2622,#13242122),url('/prologue/moon-castle-map-portrait-v5.png')}
+ .map-route-landscape{display:none}.map-route-portrait{display:block}
+ .rpg-map-node[data-node='battle-1']{left:50%;top:58%}.rpg-map-node[data-node='tavern']{left:72%;top:40%}.rpg-map-node[data-node='battle-2']{left:52%;top:44%}
+ .rpg-map-node[data-node='ruins']{left:28%;top:28%}.rpg-map-node[data-node='forest']{left:81%;top:29%}.rpg-map-node[data-node='battle-3']{left:56%;top:20%}
+ .map-village-shop{left:31%;top:44%}.rpg-hub-main>picture img{aspect-ratio:auto;height:auto;max-height:32dvh;object-fit:contain}
+}
+
+/* Scene-first exploration: chrome floats over the illustration instead of shrinking it. */
+.journey-scene-shade{padding:4px;overflow:hidden}
+.rpg-exploration:is(.journey-tavern-scene,.journey-map-scene){position:fixed;inset:4px;width:auto;height:auto;max-height:none;padding:0;overflow:hidden;border:1px solid #b49b6188;border-radius:10px;background:#111e20;display:block}
+.rpg-exploration:is(.journey-tavern-scene,.journey-map-scene)>.journey-scene-header{position:absolute;z-index:8;inset:6px 8px auto;min-height:30px;pointer-events:none}
+.rpg-exploration:is(.journey-tavern-scene,.journey-map-scene)>.journey-scene-header>div{background:#0c191dd9;border:1px solid #b49b6144;border-radius:6px;padding:5px 8px}
+.rpg-exploration:is(.journey-tavern-scene,.journey-map-scene) .journey-scene-header :is(.eyebrow,p){display:none}
+.rpg-exploration:is(.journey-tavern-scene,.journey-map-scene) .journey-scene-header h2{font-size:15px;margin:0;line-height:1.2}
+.rpg-exploration:is(.journey-tavern-scene,.journey-map-scene) .journey-scene-header>button{pointer-events:auto;min-height:30px;padding:4px 8px;font-size:10px;background:#14241de8}
+.rpg-exploration:is(.journey-tavern-scene,.journey-map-scene)>.journey-resources{position:absolute;z-index:8;left:8px;top:44px;min-height:22px;margin:0;padding:3px 6px;gap:8px;font-size:10px;line-height:1.2;border:1px solid #b49b6144;border-radius:5px;background:#0c191ddd;pointer-events:none}
+.journey-tavern-stage{position:absolute;inset:0;container-type:size}
+.journey-tavern-scene .journey-tavern-stage .journey-tavern-room{position:relative;width:max(100cqw,calc(100cqh * 16 / 7.92));height:max(100cqh,calc(100cqw * 7.92 / 16));aspect-ratio:200/99;background:none;border:0;border-radius:0;overflow:hidden}
+.journey-tavern-content{position:absolute;left:0;top:0;width:100%;height:113.636364%;background:var(--tavern-art) center/100% 100% no-repeat}
+.journey-tavern-scene .journey-tavern-footer{position:absolute;z-index:8;left:10px;bottom:6px;min-height:0}
+.journey-tavern-footer .text-btn{background:#0c191ddd;border:1px solid #b49b6166;border-radius:5px;padding:4px 8px;min-height:26px;font-size:10px}
+.journey-tavern-room .tavern-person{border:0!important;outline:0!important;box-shadow:none!important;background:none!important;animation:none;isolation:isolate}
+.journey-tavern-room .tavern-person::before{content:'';position:absolute;inset:0;z-index:-1;clip-path:var(--person-shape);background:#7de0bf38;transition:background .2s;pointer-events:none}
+.journey-tavern-room .tavern-person::after{display:none}
+.journey-tavern-room .tavern-person:is(:hover,:focus-visible)::before{background:#b0f6d866}
+.journey-tavern-room .tavern-person strong{background:#102921ed;border:1px solid #b2f4d5;box-shadow:0 2px 7px #0009;color:#edfff6;padding:4px 8px;font-size:11px}
+.journey-tavern-room .tavern-person strong::after{content:' · 대화';font-size:9px;color:#a9ebca}.journey-tavern-room .tavern-person small{display:none}
+.journey-tavern-room .tavern-serin{--person-shape:polygon(0% 82%,4% 58%,14% 40%,23% 31%,27% 14%,42% 6%,57% 8%,68% 18%,70% 37%,77% 44%,91% 71%,97% 87%,65% 91%,45% 87%,23% 91%)}
+.journey-tavern-room .tavern-mor{--person-shape:polygon(9% 88%,13% 60%,29% 44%,31% 24%,46% 7%,58% 9%,70% 24%,86% 37%,71% 41%,73% 56%,88% 67%,96% 92%,66% 96%,39% 94%)}
+.journey-tavern-room .tavern-pio{--person-shape:polygon(1% 88%,5% 61%,16% 40%,18% 5%,38% 16%,65% 0%,71% 29%,84% 43%,97% 74%,99% 93%,70% 97%,41% 95%)}
+.journey-map-scene .journey-exploration-layout{position:absolute;inset:0;display:block}
+.journey-map-scroll{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;container-type:size}
+.journey-map-scroll .rpg-node-map{position:relative;width:max(100cqw,calc(100cqh * 200 / 99));height:max(100cqh,calc(100cqw * 99 / 200));min-width:0;aspect-ratio:200/99;border:0;border-radius:0}
+.rpg-map-content{position:absolute;left:0;top:0;width:100%;height:113.636364%}
+.journey-map-scene .journey-story-review{position:absolute;z-index:9;right:8px;bottom:6px;margin:0;font-size:0;gap:0}
+.journey-story-review select{max-width:148px;min-height:26px;font-size:10px;padding:4px;background:#14241ded}
+.journey-map-error{position:absolute;z-index:12;left:10px;right:10px;bottom:40px;border:1px solid #b98263;border-radius:6px;background:#28180fee;padding:8px;font-size:11px}
+.journey-map-scene .rpg-map-paths path{stroke-width:.45;stroke:#ffe0a178;stroke-dasharray:1 1}
+.rpg-preview-tools{inset:auto 6px 6px auto!important;display:block!important;max-width:none!important;padding:0!important;border:0;background:none;box-shadow:none;font-size:10px}
+.rpg-preview-tools>summary{display:block;list-style:none;cursor:pointer;padding:4px 7px;border:1px solid #ceb67e77;border-radius:5px;background:#12232aeb;color:#f8df9c;font:700 9px system-ui;letter-spacing:.04em;min-height:22px}
+.rpg-preview-tools>summary::-webkit-details-marker{display:none}
+.rpg-preview-popover{position:absolute;right:0;bottom:30px;width:190px;display:grid;gap:7px;padding:10px;border:1px solid #ceb67e88;border-radius:7px;background:#11242af5;box-shadow:0 5px 25px #0009}
+.rpg-preview-popover span{display:block}.rpg-preview-tools .rpg-preview-popover small{display:block;font-size:9px}
+.rpg-preview-tools .rpg-preview-popover button{min-height:28px;font-size:10px}.rpg-preview-tools .rpg-preview-popover select{min-height:30px;margin:0;font-size:11px}
+@media(max-aspect-ratio:1/1){
+ .journey-tavern-scene .journey-tavern-stage .journey-tavern-room{width:max(100cqw,calc(100cqh * 225 / 344));height:max(100cqh,calc(100cqw * 344 / 225));aspect-ratio:225/344}
+ .journey-tavern-content{top:-4.651163%;height:116.27907%}
+ .journey-tavern-room .tavern-pio{left:79%;top:44%;width:42%;height:36%}
+ .journey-tavern-room .tavern-mor{--person-shape:polygon(0% 77%,9% 55%,20% 45%,24% 31%,38% 18%,50% 18%,61% 28%,66% 40%,82% 48%,96% 77%,72% 83%,39% 82%)}
+ .journey-tavern-room .tavern-serin{--person-shape:polygon(0% 55%,0% 31%,20% 21%,26% 7%,43% 0%,62% 2%,74% 14%,75% 27%,83% 34%,92% 49%,100% 54%,77% 58%,55% 56%,31% 59%,9% 59%)}
+ .journey-map-scroll .rpg-node-map{width:max(100cqw,calc(100cqh * 225 / 296));height:max(100cqh,calc(100cqw * 296 / 225));min-width:0;aspect-ratio:225/296}
+ .rpg-map-content{top:-13.513514%;height:135.135135%}
+ .journey-map-scene .rpg-map-node{width:82px;min-height:44px}.journey-map-scene .rpg-map-node small{font-size:8px;white-space:normal}
+}
+.journey-tavern-scene .journey-tavern-stage .journey-tavern-room,.journey-map-scroll .rpg-node-map{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+.journey-tavern-room .tavern-door{display:none}.journey-tavern-scene .journey-tavern-footer{gap:6px}
+@media(max-aspect-ratio:1/1){.rpg-map-node[data-node='forest']{left:76%}.journey-map-scene .rpg-map-node.node-choice{width:76px}}
+.journey-tavern-room .tavern-person strong{position:absolute;left:50%;top:78%;transform:translate(-50%,-50%);white-space:nowrap}
+@media(max-aspect-ratio:1/1){.journey-tavern-room .tavern-fire{left:18%;width:17%}.journey-tavern-room .tavern-serin strong{top:48%}.journey-tavern-room .tavern-mor strong{top:74%}.journey-tavern-room .tavern-pio strong{top:57%}}
+@media(max-aspect-ratio:1/1){
+ .journey-map-scroll .rpg-node-map{width:max(100cqw,calc(100cqh * 225 / 376));height:max(100cqh,calc(100cqw * 376 / 225));aspect-ratio:225/376}
+ .rpg-map-content{top:0;height:106.382979%}
+ .rpg-map-node[data-node='battle-1']{left:50%;top:80%}.rpg-map-node[data-node='tavern']{left:77%;top:52%}.rpg-map-node[data-node='battle-2']{left:50%;top:53%}
+ .rpg-map-node[data-node='ruins']{left:28%;top:28%}.rpg-map-node[data-node='forest']{left:76%;top:32%}.rpg-map-node[data-node='battle-3']{left:55%;top:17%}.map-village-shop{left:27%;top:53%}
+}
+.journey-tavern-room .tavern-object strong{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap}
+/* Portrait companion to the approved landscape room. */
+@media(max-aspect-ratio:1/1){
+ .journey-tavern-room .tavern-mor{left:51%;top:29%;width:38%;height:25%}
+ .journey-tavern-room .tavern-pio{left:81%;top:49%;width:42%;height:38%}
+ .moving-mor{clip-path:polygon(32% 34%,35% 28%,43% 22%,50% 21%,57% 25%,61% 32%,59% 35%);transform-origin:49% 35%}
+ .moving-pio{clip-path:polygon(60% 54%,65% 43%,69% 32%,77% 35%,91% 30%,100% 43%,100% 55%,79% 59%);transform-origin:80% 58%}
+ .breath-mor{left:34%;top:20%}.breath-pio{left:61%;top:38%}
+ .candle-1{left:28%;top:8%}.candle-2{left:70%;top:14%}.candle-3{left:44%;top:42%}
+}

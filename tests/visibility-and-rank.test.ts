@@ -34,7 +34,7 @@ const original=make(3);original.turn=0;original.players[0].bot=true;
 original.players[0].hand=[tile(3),tile(4)];original.trick=[tile(2,3)];original.lastBy=2;
 const swapped=structuredClone(original);
 [swapped.stacks[0][0],swapped.stacks[1][0]]=[swapped.stacks[1][0],swapped.stacks[0][0]];
-botMove(original);botMove(swapped);
+botMove(original,original.turnReadyAt);botMove(swapped,swapped.turnReadyAt);
 assert.equal(original.lastEvent?.type,'draw');
 assert.equal(original.lastEvent?.index,swapped.lastEvent?.index);
 

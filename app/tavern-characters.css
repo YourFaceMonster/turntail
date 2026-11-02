@@ -1,0 +1,27 @@
+/* Source-aligned, unfilled character contours; artwork is never tinted or repainted. */
+.tavern-character-layer{position:absolute;inset:0;z-index:3;pointer-events:none}
+.tavern-character-contours{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;filter:drop-shadow(0 0 2px #f6c47570)}
+.tavern-character-hit path{fill:transparent;stroke:#edc27d;stroke-width:1.1px;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke;pointer-events:visiblePainted;cursor:pointer;opacity:.8;transition:stroke .18s,stroke-width .18s,opacity .18s}
+.tavern-character-hit:is(:hover,.is-selected) path{stroke:#fff1c7;stroke-width:1.8px;opacity:1}
+.tavern-character-layer:has(.label-serin:is(:hover,:focus-visible)) .hit-serin path,.tavern-character-layer:has(.label-mor:is(:hover,:focus-visible)) .hit-mor path,.tavern-character-layer:has(.label-pio:is(:hover,:focus-visible)) .hit-pio path{stroke:#fff1c7;stroke-width:1.8px;opacity:1}
+.character-portrait{display:none}
+.tavern-character-label{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;display:flex;align-items:center;gap:4px;min-height:26px;border:1px solid #e4c48bb0;border-radius:5px;padding:3px 7px;background:#132020e8;color:#fff0ce;box-shadow:0 2px 6px #0006;font-size:11px;line-height:1.2;white-space:nowrap;cursor:pointer}
+.tavern-character-label small{font-size:9px;color:#ddc591}.tavern-character-label:focus-visible{outline:2px solid #ffe6a9;outline-offset:3px}
+.label-serin{left:28%;top:53%}.label-mor{left:47%;top:41%}.label-pio{left:80%;top:61%}
+@media(max-aspect-ratio:1/1){.character-wide{display:none}.character-portrait{display:inline}.label-serin{left:22%;top:47%}.label-mor{left:50%;top:35%}.label-pio{left:81%;top:55%}}
+@media(prefers-reduced-motion:reduce){.tavern-character-hit path{transition:none}}
+.tavern-hearth-hit path,.tavern-bag-hit path{fill:transparent;stroke:#edc27d;stroke-width:1.1px;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke;pointer-events:visiblePainted;cursor:pointer;opacity:.8;transition:stroke .18s,stroke-width .18s,opacity .18s}
+.tavern-hearth-hit:is(:hover,.is-selected) path,.journey-tavern-content:has(.tavern-fire:is(:hover,:focus-visible)) .tavern-hearth-hit path{stroke:#fff1c7;stroke-width:1.8px;opacity:1}
+.journey-tavern-room .tavern-fire{left:7%;top:59%;width:auto;height:auto;min-width:0;min-height:26px;padding:0;border:0;border-radius:0;outline:none;box-shadow:none;background:none}
+.journey-tavern-room .tavern-fire strong{position:static;transform:none;border:1px solid #e4c48bb0;border-radius:5px;padding:4px 7px;background:#132020e8;font-size:11px}
+.journey-tavern-room .tavern-fire small{display:none}
+.journey-tavern-room .tavern-fire:focus-visible strong{outline:2px solid #ffe6a9;outline-offset:3px}
+@media(max-aspect-ratio:1/1){.journey-tavern-room .tavern-fire{left:17%;top:72%;width:auto}}
+@media(prefers-reduced-motion:reduce){.tavern-hearth-hit path{transition:none}}
+.tavern-bag-hit:is(:hover,.is-selected) path,.journey-tavern-content:has(.tavern-bag:is(:hover,:focus-visible)) .tavern-bag-hit path{stroke:#fff1c7;stroke-width:1.8px;opacity:1}
+.journey-tavern-room .tavern-bag{left:89%;top:79%;width:auto;height:auto;min-width:0;min-height:26px;padding:0;border:0;border-radius:0;outline:none;box-shadow:none;background:none}
+.journey-tavern-room .tavern-bag strong{position:static;transform:none;border:1px solid #e4c48bb0;border-radius:5px;padding:4px 7px;background:#132020e8;font-size:11px}
+.journey-tavern-room .tavern-bag small{display:none}
+.journey-tavern-room .tavern-bag:focus-visible strong{outline:2px solid #ffe6a9;outline-offset:3px}
+@media(max-aspect-ratio:1/1){.journey-tavern-room .tavern-bag{left:82%;top:79%}}
+@media(prefers-reduced-motion:reduce){.tavern-bag-hit path{transition:none}}

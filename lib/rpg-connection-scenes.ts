@@ -324,7 +324,7 @@ for(const [stage,sequence] of Object.entries(RPG_CONNECTION_SCENES)){
   for(const cut of cuts){cut.art=art;cut.focus='50% 40%';}
  }
 }
-RPG_CONNECTION_SCENES[3].after[3].art=sceneFrame('moon-castle-map-v3','moon-castle-map-v3');
+RPG_CONNECTION_SCENES[3].after[3].art=sceneFrame('moon-castle-map-v3','moon-castle-map-portrait-v5');
 RPG_CONNECTION_SCENES[2].before[0].line='낮의 광장에 들어서자, 두 도전자가 승부 자리로 불렀다.';
 RPG_CONNECTION_SCENES[2].before[2].speaker='광장 동행인';
 RPG_CONNECTION_SCENES[2].before[3].line='우리 둘과 한 판 겨뤄 줘.';

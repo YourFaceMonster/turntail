@@ -44,8 +44,7 @@ export function combo(ts:Tile[]):{label:string,key:number[]}|null {
  const groups=new Map<number,Tile[]>();for(const t of ts)groups.set(t.n,[...(groups.get(t.n)||[]),t]);
  if(ts.length<5)return groups.size===1?{label:ts.length===2?"페어":"트리플",key:[0,rank(max),suitRank(max.s)]}:null;
  const nums=[...groups.keys()].sort((a,b)=>a-b),flush=ts.every(t=>t.s===ts[0].s);
- let straight=nums.length===5&&nums.every((n,i)=>i===0||n===nums[i-1]+1);
- if(nums.join(",")==="1,12,13,14,15")straight=true;
+ const straight=nums.length===5&&nums.every((n,i)=>i===0||n===nums[i-1]+1);
  const straightKey=[nums.join(",")==="1,2,3,4,5"?17:rank(max),suitRank(max.s)];
  if(straight&&flush)return {label:"스트레이트 플러시",key:[5,...straightKey]};
  const four=[...groups.values()].find(g=>g.length===4),three=[...groups.values()].find(g=>g.length===3);
@@ -249,8 +248,8 @@ export function legalOptions(hand:Tile[],trick:Tile[]):LegalOption[]{
  for(const n of [2,3])if(!wanted||wanted===n)for(const xs of byNum.values())choose(xs,n,add);
  if(!wanted||wanted===5){
   for(const xs of bySuit.values())choose(xs,5,add);
-  for(let first=1;first<=12;first++){
-   const ns=first===12?[12,13,14,15,1]:Array.from({length:5},(_,i)=>first+i);
+  for(let first=1;first<=11;first++){
+   const ns=Array.from({length:5},(_,i)=>first+i);
    if(!ns.every(n=>byNum.has(n)))continue;
    function product(at:number,ts:Tile[]){if(at===5){add(ts);return;}for(const t of byNum.get(ns[at])!)product(at+1,[...ts,t]);}product(0,[]);
   }

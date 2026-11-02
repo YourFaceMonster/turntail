@@ -6,6 +6,7 @@ import {createRpgJourneyGame,enterJourneyNode} from '../lib/rpg-game.ts';
 import {reconcileRpgEliminations,chooseRpgStageReward} from '../lib/rpg-phase-one.ts';
 import {buyRpgItem,currentRpgShop} from '../lib/rpg.ts';
 import {saveRpgGame,readRpgArchive} from '../lib/rpg-storage.ts';
+import {assertJourneyShop,assertJourneyTavern} from '../lib/rpg-journey.ts';
 import {JourneyMapView,JourneyTavernView,JourneyShopContent} from '../app/components/RpgJourneyScene.tsx';
 const noop=()=>{};
 test('map shop uses the existing inventory and survives save/reload without entering the tavern',()=>{
@@ -15,6 +16,8 @@ test('map shop uses the existing inventory and survives save/reload without ente
  assert.match(locked,/disabled="" aria-label="마을 잡화점 · 상점"/);
  enterJourneyNode(game,'battle-1');game.rpgRun!.hp=[60,0,0];reconcileRpgEliminations(game);
  game.rpgRun=chooseRpgStageReward(game.rpgRun!,'coins');game.rpgRun.coins=100;
+ assert.doesNotThrow(()=>assertJourneyShop(game.rpgRun!));
+ assert.throws(()=>assertJourneyTavern(game.rpgRun!));
  const run=game.rpgRun,stock=currentRpgShop(run)!.stock.find(entry=>entry.kind==='consumable'&&entry.quantity>0)!;
  const markup=renderToStaticMarkup(h(JourneyMapView,{...props,run}));
  assert.ok(markup.includes('마을 잡화점 · 상점'));
@@ -26,6 +29,7 @@ test('map shop uses the existing inventory and survives save/reload without ente
  saveRpgGame(storage,game);const restored=readRpgArchive(storage).active!.rpgRun!;
  assert.equal(currentRpgShop(restored)!.stock.find(e=>e.id===stock.id)!.quantity,stock.quantity-1);
  assert.ok(restored.consumables.includes(stock.id));
+ restored.journey!.location='battle';assert.throws(()=>assertJourneyShop(restored));
  assert.ok(renderToStaticMarkup(h(JourneyShopContent,{...props,run:restored})).includes('마을 잡화점'));
 });
 test('Pio stays a conversation character, with no tavern shop entry',()=>{

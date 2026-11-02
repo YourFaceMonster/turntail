@@ -56,6 +56,7 @@ export function journeyAfterReward(run:RpgRun):RpgRun{
  return {...run,journey:{...run.journey,location:run.status==='complete'?'battle':'map',currentNode:node,completedNodes:[...new Set([...run.journey.completedNodes,node])]}};
 }
 export function assertJourneyTavern(run:RpgRun){if(!run.journey||run.journey.location!=='tavern'||run.status!=='ready')throw Error('주점에서 준비할 수 있어요.');}
+export function assertJourneyShop(run:RpgRun){if(!run.journey||run.journey.location!=='map'||run.status!=='ready')throw Error('마을 지도의 잡화점에서 구매할 수 있어요.');}
 export function hearJourneyRumor(run:RpgRun):RpgRun{assertJourneyTavern(run);return {...run,journey:{...run.journey!,rumors:[...new Set([...run.journey!.rumors,JOURNEY_RUMOR.id])]},updatedAt:Date.now()};}
 export function equipJourneyRelic(run:RpgRun,id:string,replace?:string):RpgRun{
  assertJourneyTavern(run);if(!run.relics.includes(id))throw Error('보유한 유물을 선택해 주세요.');
