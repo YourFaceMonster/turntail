@@ -21,7 +21,7 @@ test('ST2 story and RPG portraits use the same fox merchant and woman cook paint
  for(const index of [0,1,3,4]){const entry=RPG_CAST_ART[index],[x,y,size]=entry.face;assert.ok(x>=0&&y>=0&&x+size<=entry.width&&y+size<=entry.height);assert.ok(existsSync('public'+entry.src));const markup=renderToStaticMarkup(h(RpgCastPortrait,{index}));assert.ok(markup.includes(entry.src));}
 });
 test('handover tile and departure castle images exist in both orientations',()=>{
- for(const id of ['P05','P07']){const art=prologueArt(FIRST_PROLOGUE.find(c=>c.id===id)!);assert.ok(art);assert.ok(existsSync('public'+art!.landscape));assert.ok(existsSync('public'+art!.portrait));assert.match(art!.landscape,id==='P05'?/wager-wide-v2/:/castle-road-v2/);}
+ for(const id of ['P05','P07']){const art=prologueArt(FIRST_PROLOGUE.find(c=>c.id===id)!);assert.ok(art);assert.ok(existsSync('public'+art!.landscape));assert.ok(existsSync('public'+art!.portrait));assert.match(art!.landscape,id==='P05'?/wager-speaking-wide-v3/:/castle-road-v2/);}
 });
 test('tavern retains accessible character actions without the repeated conversation label',()=>{
  const game=createRpgJourneyGame('검증','',0,'cleric'),markup=renderToStaticMarkup(h(JourneyTavernView,{run:game.rpgRun!,busy:false,error:'',action:noop,exit:noop}));

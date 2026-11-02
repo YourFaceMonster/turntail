@@ -8,6 +8,7 @@ import {RpgStageResult} from '../app/components/RpgStageResult.tsx';
 import {RpgProfessionPicker} from '../app/components/RpgProfessions.tsx';
 const game=createRpgPhaseOneGame('UI검증','',0,'swordsman'),noop=()=>{};
 const render=()=>renderToStaticMarkup(h(RpgStageResult,{game:view(game,game.players[0].token),busy:false,choose:noop,buy:noop,next:noop,newRun:noop,exit:noop}));
+const roundResult=render();assert.ok(roundResult.includes('compact-item-result'));assert.ok(roundResult.includes('이번 판 정산'));assert.ok(roundResult.includes('hp-settlement'));assert.ok(roundResult.includes('보유 주화'));assert.ok(!roundResult.includes('다음 카드 판을 준비하세요'));
 game.rpgRun!.hp=[60,0,0];reconcileRpgEliminations(game);
 const reward=render();assert.ok(reward.includes('보상 3종 중 하나'));assert.ok(reward.includes('회복 +10'));assert.ok(reward.includes('주화 +30'));assert.ok(reward.includes('추가 HP +20'));assert.ok(!reward.includes('스테이지 2 시작'));
 game.rpgRun=chooseRpgStageReward(game.rpgRun!,'coins');const ready=render();assert.ok(ready.includes('스테이지 2 시작'));assert.ok(ready.includes('응급 약초'));assert.ok(ready.includes('작열탄'));assert.ok(!ready.includes('보상 3종 중 하나'));

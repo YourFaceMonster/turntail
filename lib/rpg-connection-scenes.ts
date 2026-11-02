@@ -319,7 +319,7 @@ const sceneFrame=(wide:string,tall:string)=>({landscape:'/prologue/'+wide+'.png'
 for(const [stage,sequence] of Object.entries(RPG_CONNECTION_SCENES)){
  for(const [phase,cuts] of Object.entries(sequence)){
   const art=stage==='1'?sceneFrame('gate-'+phase+'-r61','gate-'+phase+'-portrait-r61'):
-   stage==='2'?sceneFrame('square-cast-wide-v2','square-cast-portrait-v2'):
+   stage==='2'?sceneFrame('square-poko-wide-v3','square-poko-portrait-v3'):
    sceneFrame(phase==='before'?'connection-twins-v3':'twins-after-r61',phase==='before'?'twins-before-portrait-r61':'twins-after-portrait-r61');
   for(const cut of cuts){cut.art=art;cut.focus='50% 40%';cut.location=`STAGE ${stage} · ${['','마을 관문','마을 광장','북쪽 성채'][Number(stage)]}`;}
  }
@@ -332,6 +332,17 @@ RPG_CONNECTION_SCENES[2].before[3].line='우리 둘과 한 판 겨뤄 줘.';
 RPG_CONNECTION_SCENES[2].after[0].speaker='밀라';
 RPG_CONNECTION_SCENES[2].after[1].speaker='포코';
 RPG_CONNECTION_SCENES[2].after[2].speaker='밀라';
+
+// Pose changes retain the same mounted camera and background group.
+RPG_CONNECTION_SCENES[1].before[2].poseArt=sceneFrame('gate-reply-wide-v1','gate-reply-portrait-v1');
+RPG_CONNECTION_SCENES[1].after[1].poseArt=sceneFrame('gate-after-reply-wide-v1','gate-after-reply-portrait-v1');
+for(const phase of ['before','after'] as const){
+ for(const cut of RPG_CONNECTION_SCENES[2][phase]){
+  if(cut.speaker==='밀라')cut.poseArt=sceneFrame('square-mila-wide-v3','square-mila-portrait-v3');
+ }
+}
+RPG_CONNECTION_SCENES[3].before[2].poseArt=sceneFrame('twins-reply-wide-v1','twins-reply-portrait-v1');
+RPG_CONNECTION_SCENES[3].after[1].poseArt=sceneFrame('twins-after-reply-wide-v1','twins-after-reply-portrait-v1');
 
 /** Viewing only: no combat, save, settlement or reward callbacks are part of this reel. */
 export const RPG_STORY_REEL:readonly PrologueCut[]=[...FIRST_PROLOGUE,...[1,2,3].flatMap(stage=>[...RPG_CONNECTION_SCENES[stage].before,...RPG_CONNECTION_SCENES[stage].after])];

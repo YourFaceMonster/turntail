@@ -26,7 +26,15 @@ test('scene groups partition the full reel without altering the existing 193-sec
  assert.equal(index,33);assert.equal(duration,193000);
 });
 test('short connections preload only their own paintings in the requested orientation',()=>{
- assert.deepEqual(prologueSceneSources(RPG_CONNECTION_SCENES[3].before,true),['/prologue/twins-before-portrait-r61.png']);
- assert.deepEqual(prologueSceneSources(RPG_CONNECTION_SCENES[3].after,false),['/prologue/twins-after-r61.png','/prologue/moon-castle-map-v3.png']);
+ assert.deepEqual(prologueSceneSources(RPG_CONNECTION_SCENES[3].before,true),['/prologue/twins-before-portrait-r61.png','/prologue/twins-reply-portrait-v1.png']);
+ assert.deepEqual(prologueSceneSources(RPG_CONNECTION_SCENES[3].after,false),['/prologue/twins-after-r61.png','/prologue/twins-after-reply-wide-v1.png','/prologue/moon-castle-map-v3.png']);
  assert.deepEqual(prologueSceneSources([FIRST_PROLOGUE[0]],true),[]);
+});
+test('dialogue pose drawings change while the camera group stays mounted and both drawings preload',()=>{
+ const cuts=RPG_CONNECTION_SCENES[2].before;
+ assert.notEqual(cuts[1].art?.portrait,cuts[2].poseArt?.portrait);
+ assert.equal(prologueSceneGroup(cuts,1).key,prologueSceneGroup(cuts,2).key);
+ assert.ok(prologueSceneSources(cuts,true).includes(cuts[2].poseArt!.portrait));
+ const rest=FIRST_PROLOGUE.findIndex(c=>c.id==='P04');
+ assert.equal(prologueSceneGroup(FIRST_PROLOGUE,rest).key,prologueSceneGroup(FIRST_PROLOGUE,rest+1).key);
 });

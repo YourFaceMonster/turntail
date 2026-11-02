@@ -37,8 +37,8 @@ body>.journey-popup-shade>.journey-popup>small{font-size:10px;color:#b3c2bb;disp
 @keyframes map-breath{from{filter:brightness(.98);transform:scale(1)}to{filter:brightness(1.045);transform:scale(1.008)}}
 @keyframes map-mist-drift{from{transform:translateX(-8%);opacity:.4}to{transform:translateX(8%);opacity:.8}}
 @keyframes map-snow-fall{to{background-position:70px 163px,110px 247px}}
-.prologue-picture[data-speaking=true] .prologue-camera picture{filter:url('#story-motion-wide')}
-@media(max-aspect-ratio:1/1){.prologue-picture[data-speaking=true] .prologue-camera picture{filter:url('#story-motion-portrait')}}
+
+
 
 /* Three familiar matches in one row; the journey has its own full-width entry. */
 .single-mode-menu .single-mode-cards:has(.mode-hp-items){display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px}
