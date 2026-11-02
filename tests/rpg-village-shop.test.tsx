@@ -1,0 +1,37 @@
+import assert from 'node:assert/strict';
+import {test} from 'node:test';
+import {createElement as h} from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {createRpgJourneyGame,enterJourneyNode} from '../lib/rpg-game.ts';
+import {reconcileRpgEliminations,chooseRpgStageReward} from '../lib/rpg-phase-one.ts';
+import {buyRpgItem,currentRpgShop} from '../lib/rpg.ts';
+import {saveRpgGame,readRpgArchive} from '../lib/rpg-storage.ts';
+import {JourneyMapView,JourneyTavernView,JourneyShopContent} from '../app/components/RpgJourneyScene.tsx';
+const noop=()=>{};
+test('map shop uses the existing inventory and survives save/reload without entering the tavern',()=>{
+ const game=createRpgJourneyGame('상점 확인','',0,'cleric');
+ const props={busy:false,error:'',action:noop,exit:noop};
+ const locked=renderToStaticMarkup(h(JourneyMapView,{...props,run:game.rpgRun!}));
+ assert.match(locked,/disabled="" aria-label="마을 잡화점 · 상점"/);
+ enterJourneyNode(game,'battle-1');game.rpgRun!.hp=[60,0,0];reconcileRpgEliminations(game);
+ game.rpgRun=chooseRpgStageReward(game.rpgRun!,'coins');game.rpgRun.coins=100;
+ const run=game.rpgRun,stock=currentRpgShop(run)!.stock.find(entry=>entry.kind==='consumable'&&entry.quantity>0)!;
+ const markup=renderToStaticMarkup(h(JourneyMapView,{...props,run}));
+ assert.ok(markup.includes('마을 잡화점 · 상점'));
+ assert.ok(!markup.includes('disabled="" aria-label="마을 잡화점 · 상점"'));
+ game.rpgRun=buyRpgItem(run,stock.id);
+ assert.equal(game.rpgRun.journey!.location,'map');
+ assert.equal(game.rpgRun.coins,100-stock.price);
+ const memory=new Map<string,string>();const storage={getItem:(key:string)=>memory.get(key)??null,setItem:(key:string,value:string)=>{memory.set(key,value);}};
+ saveRpgGame(storage,game);const restored=readRpgArchive(storage).active!.rpgRun!;
+ assert.equal(currentRpgShop(restored)!.stock.find(e=>e.id===stock.id)!.quantity,stock.quantity-1);
+ assert.ok(restored.consumables.includes(stock.id));
+ assert.ok(renderToStaticMarkup(h(JourneyShopContent,{...props,run:restored})).includes('마을 잡화점'));
+});
+test('Pio stays a conversation character, with no tavern shop entry',()=>{
+ const game=createRpgJourneyGame('피오 확인','',0,'cleric');
+ const markup=renderToStaticMarkup(h(JourneyTavernView,{run:game.rpgRun!,busy:false,error:'',action:noop,exit:noop}));
+ assert.ok(markup.includes('피오 · 여우 여행자 · 이야기'));
+ assert.ok(!markup.includes('피오의 상점'));
+ assert.equal((markup.match(/aria-haspopup="dialog"/g)||[]).length,3);
+});
