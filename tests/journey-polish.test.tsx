@@ -25,7 +25,7 @@ test('handover tile and departure castle images exist in both orientations',()=>
 });
 test('tavern retains accessible character actions without the repeated conversation label',()=>{
  const game=createRpgJourneyGame('검증','',0,'cleric'),markup=renderToStaticMarkup(h(JourneyTavernView,{run:game.rpgRun!,busy:false,error:'',action:noop,exit:noop}));
- assert.ok(!markup.includes('<small>대화</small>'));assert.ok(markup.includes('피오 · 여우 여행자 · 이야기'));assert.equal((markup.match(/aria-haspopup="dialog"/g)||[]).length,3);assert.ok(markup.includes('tavern-motion-wide'));assert.ok(markup.includes('tavern-living-art'));
+ assert.ok(!markup.includes('<small>대화</small>'));assert.ok(markup.includes('피오 · 여우 여행자 · 이야기'));assert.equal((markup.match(/aria-haspopup="dialog"/g)||[]).length,3);assert.ok(markup.includes('tavern-living-art'));
 });
 test('single menu exposes three match choices and a separate RPG entry',()=>{
  const markup=renderToStaticMarkup(h(SinglePlayerMenu,{normal:noop,items:noop,rpg:noop,close:noop}));

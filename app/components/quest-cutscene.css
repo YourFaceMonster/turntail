@@ -33,10 +33,35 @@ body>.journey-popup-shade>.journey-popup:has(.village-market){width:min(780px,ca
 .quest-cutscene .quest-scene-choices>button:hover:not(:disabled),.quest-cutscene .quest-scene-choices>button:focus-visible{background:#ffffff18!important;outline:1px solid #d6b57966}
 @media(max-width:520px){.quest-cutscene .quest-dialogue{padding:12px}.journey-popup .village-product.compact-product{grid-template-columns:minmax(0,1fr) 55px 46px}.journey-popup .shop-product-summary{gap:6px}}
 
-/* Dense single-row products with a readable effect between name and price. */
+/* Four columns stay on one row at every supported screen width. */
 .journey-popup .village-market-grid{gap:3px}
-.journey-popup .village-product.compact-product{min-height:42px}
-.journey-popup .shop-product-summary{min-height:40px;padding:3px 7px;gap:8px}
-.journey-popup .shop-product-summary>span:nth-child(2){flex:0 0 100px;min-width:0}
-.journey-popup .shop-product-effect{flex:1;min-width:0;color:#e0d4b9;font-size:11px;line-height:1.35;white-space:normal}
-@media(max-width:520px){.journey-popup .shop-product-summary{flex-wrap:wrap;gap:2px 7px}.journey-popup .shop-product-summary>span:nth-child(2){flex:1}.journey-popup .shop-product-effect{flex:0 0 calc(100% - 41px);margin-left:41px;font-size:10px}.journey-popup .shop-product-summary strong{font-size:11px}}
+.journey-popup .village-product.compact-product{grid-template-columns:minmax(100px,1fr) minmax(0,2fr) 58px 44px;height:38px;min-height:38px;align-items:stretch;grid-template-rows:36px;padding:0!important;gap:0;overflow:hidden}
+.journey-popup .shop-product-summary{display:flex;flex-flow:row nowrap;align-items:center;min-width:0;min-height:36px;padding:3px 6px;gap:6px;overflow:hidden}
+.journey-popup .shop-product-summary>span:nth-child(2){flex:1;min-width:0;width:auto}
+.journey-popup .shop-product-name strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;line-height:1.3}
+.journey-popup .compact-product .village-product-art{width:26px;height:26px;flex:0 0 26px}
+.journey-popup .compact-product .village-product-art .rpg-item-icon{width:26px!important;height:26px!important}
+.journey-popup .shop-product-effect{display:block;min-width:0;margin:0;padding:0 7px;border:0;border-left:1px solid #b99a6033;border-radius:0;background:transparent;color:#e0d4b9;font:11px/36px Arial,'Noto Sans KR',sans-serif;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:none;cursor:pointer}
+.journey-popup .shop-product-status{color:#c1b18e}
+.journey-popup .shop-product-price{flex-direction:row;white-space:nowrap;font-size:11px}
+.journey-popup .shop-product-buy{min-width:0;padding:0 5px;font-size:11px;white-space:nowrap}
+.journey-popup .product-unavailable .shop-product-effect{filter:grayscale(1);opacity:.55}
+@media(max-width:520px){.journey-popup .village-product.compact-product{grid-template-columns:100px minmax(0,1fr) 49px 39px}.journey-popup .shop-product-summary{gap:4px;padding:3px 4px}.journey-popup .shop-product-effect{padding:0 5px;font-size:10px}.journey-popup .shop-product-name strong{font-size:10px}.journey-popup .shop-product-price,.journey-popup .shop-product-buy{font-size:10px}}
+
+.journey-popup .village-product.compact-product>button{height:36px!important;min-height:0!important;margin:0!important}
+
+/* All story dialogue follows the same type scale and semantic line layout. */
+.quest-cutscene{--story-dialogue-size:18px}
+.quest-cutscene .quest-dialogue{max-height:48dvh;bottom:max(26px,env(safe-area-inset-bottom));width:min(760px,calc(100% - 28px));padding:12px 18px;gap:6px}
+.quest-cutscene .quest-dialogue-text p,.quest-cutscene[data-painting] .quest-dialogue-text p{font:500 var(--story-dialogue-size)/1.6 'Noto Sans KR',Arial,sans-serif;margin:0;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+.quest-cutscene .quest-dialogue-text p .dialogue-sentence{display:block;font:inherit;line-height:inherit;margin:0;color:inherit;text-align:center;text-wrap:balance}
+.quest-cutscene .quest-dialogue-text small{font:600 12px/1.35 'Noto Sans KR',Arial,sans-serif;margin:0 0 5px}
+.quest-cutscene .quest-scene-choices{gap:4px;margin-top:6px}.quest-cutscene .quest-scene-choices>button{font:500 14px/1.4 'Noto Sans KR',Arial,sans-serif;min-height:34px;padding:5px 10px}
+.quest-cutscene.is-tavern-conversation{background:#0003}.is-tavern-conversation .quest-scene-title{display:none}.npc-dialogue-details{font:12px/1.45 'Noto Sans KR',Arial,sans-serif;color:#d9c8a1;text-shadow:none}.npc-dialogue-details p{margin:3px 0}
+.quest-cutscene[data-painting^=traveler] .prologue-camera{transform:translateY(7%) scale(1.4);transform-origin:50% 30%}
+.quest-cutscene[data-painting=watchtower-arrival] .quest-dialogue{left:50%;right:auto;transform:translateX(-50%);width:min(760px,calc(100% - 28px));padding:12px 18px}
+.quest-reward-overlay{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:#04090f55;padding:14px}
+.quest-reward-popup{position:relative;width:min(370px,calc(100vw - 28px));max-height:calc(100dvh - 28px);overflow:auto;display:flex;flex-direction:column;align-items:center;padding:22px 20px 16px;border:1px solid #c9ae6c99;border-radius:12px;background:#13211eed;box-shadow:0 15px 70px #0008;text-align:center;outline:none;font-family:'Noto Sans KR',Arial,sans-serif}
+.quest-reward-popup>small{font-size:11px;color:#cdb77e}.quest-reward-popup>img{width:84px;height:84px;object-fit:contain;margin:10px auto}.quest-reward-popup h3{font-size:20px;margin:0 0 8px}.quest-reward-popup p{font-size:14px;line-height:1.5;margin:5px 0}.quest-reward-popup .quest-reward-status{font-size:12px;color:#d1c29c}.quest-reward-popup>div{display:grid;gap:6px;width:100%;margin-top:12px}.quest-reward-popup>div>button{min-height:34px;font-size:13px;white-space:normal}.quest-reward-popup .close{position:absolute;right:8px;top:8px;width:30px;height:30px;min-height:0;padding:0;background:none;border:0;color:#d9cca9}
+@media(max-width:520px){.quest-cutscene{--story-dialogue-size:16px}.quest-cutscene .quest-dialogue{padding:10px 12px}.quest-cutscene .quest-scene-choices>button{font-size:13px}}
+@media(max-height:500px) and (orientation:landscape){.quest-cutscene{--story-dialogue-size:17px}.quest-cutscene .quest-dialogue{bottom:12px;max-height:62dvh;gap:4px;padding:9px 14px}.quest-cutscene .quest-scene-choices>button{font-size:13px;min-height:30px;padding:4px 8px}.quest-reward-popup{width:min(480px,calc(100vw - 28px));padding:15px 20px}.quest-reward-popup>img{width:54px;height:54px;margin:4px}.quest-reward-popup>div{margin-top:7px;grid-template-columns:repeat(2,minmax(0,1fr))}.quest-reward-popup h3{font-size:18px}}

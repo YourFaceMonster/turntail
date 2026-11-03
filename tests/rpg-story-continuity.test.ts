@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {prologueSceneGroup,prologueSceneSources} from '../lib/rpg-prologue-art.ts';
+import {prologueSceneGroup,prologueSceneSources,storyPictureTransition} from '../lib/rpg-prologue-art.ts';
 import {FIRST_PROLOGUE,SECOND_PROLOGUE,type PrologueCut} from '../lib/rpg-prologue.ts';
 import {RPG_CONNECTION_SCENES,RPG_STORY_REEL} from '../lib/rpg-connection-scenes.ts';
 
@@ -37,4 +37,15 @@ test('dialogue pose drawings change while the camera group stays mounted and bot
  assert.ok(prologueSceneSources(cuts,true).includes(cuts[1].poseArt!.portrait));
  const rest=FIRST_PROLOGUE.findIndex(c=>c.id==='P04');
  assert.equal(prologueSceneGroup(FIRST_PROLOGUE,rest).key,prologueSceneGroup(FIRST_PROLOGUE,rest+1).key);
+});
+
+test('picture transitions distinguish dialogue, pose, quest progress and actual location changes',()=>{
+ const gate=RPG_CONNECTION_SCENES[1].before[0];
+ assert.equal(storyPictureTransition(gate,{...gate,id:'next-line',line:'다음 대사'}),'none');
+ assert.equal(storyPictureTransition(gate,RPG_CONNECTION_SCENES[1].before[2]),'overlap');
+ assert.equal(storyPictureTransition(gate,RPG_CONNECTION_SCENES[2].before[0]),'fade');
+ assert.equal(storyPictureTransition(FIRST_PROLOGUE[3],FIRST_PROLOGUE[4]),'overlap');
+ assert.equal(storyPictureTransition(FIRST_PROLOGUE[6],FIRST_PROLOGUE[7]),'fade');
+ const tower={...gate,id:'quest-파수탑',scene:'stone' as const,location:undefined};
+ assert.equal(storyPictureTransition(tower,{...tower,art:{landscape:'/discovered.png',portrait:'/discovered-tall.png'}}),'overlap');
 });

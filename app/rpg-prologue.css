@@ -18,7 +18,7 @@
 
 /* A painting stays mounted across its captions. Only a real picture change fades the scene. */
 .rpg-prologue .prologue-cut{animation:none;opacity:1}
-.rpg-prologue .prologue-picture{animation:story-picture-in .45s ease-out both}
+.rpg-prologue .prologue-picture{animation:none;opacity:1}
 .rpg-prologue .prologue-cut .prologue-caption{position:absolute;left:50%;right:auto;bottom:max(52px,calc(env(safe-area-inset-bottom) + 40px));width:calc(100% - 32px);max-width:720px;min-height:0;box-sizing:border-box;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:0;border-radius:0;background:none;box-shadow:none;transform:translateX(-50%);text-align:center;text-shadow:0 2px 4px #000,0 0 10px #000,1px 0 2px #000,-1px 0 2px #000;pointer-events:none;animation:story-caption-in .22s ease-out both,story-caption-out .22s linear calc(var(--cut-duration) - .22s) forwards;font-family:'Noto Sans KR',Arial,sans-serif}
 .rpg-prologue .prologue-cut .prologue-caption p{font-family:'Noto Sans KR',Arial,sans-serif;font-size:18px;font-weight:500;font-style:normal;line-height:1.6;letter-spacing:0;margin:0;max-width:100%;color:#f5eedf;white-space:pre-line;word-break:keep-all;overflow-wrap:anywhere}
 .rpg-prologue .prologue-cut .prologue-caption small{font-family:'Noto Sans KR',Arial,sans-serif;font-size:12px;font-weight:600;line-height:1.3;letter-spacing:.02em;color:#e4c58d;margin:0}
@@ -33,11 +33,19 @@
 .prologue-location{position:absolute;z-index:4;left:20px;top:max(22px,env(safe-area-inset-top));max-width:calc(100% - 150px);color:#fff2d5;text-shadow:0 2px 5px #000,0 0 10px #000;pointer-events:none}
 .prologue-location small,.prologue-location strong{display:block;font-family:Arial,"Noto Sans KR",sans-serif}.prologue-location small{font-size:11px;margin-bottom:5px;color:#e9c98e}.prologue-location strong{font-size:16px;line-height:1.4}
 
-/* True picture overlap, with no fade to black between captions. */
+/* One transition owner: picture children never run their own opacity animation. */
 .prologue-cut{animation:none}
 .story-painting-stack,.story-painting-in,.story-painting-current,.story-painting-out{position:absolute;inset:0}
+.story-painting-stack{background:#060b12}
+.story-painting-stack .prologue-picture{animation:none!important;opacity:1}
 .story-painting-out{z-index:0;pointer-events:none}
 .story-painting-in,.story-painting-current{z-index:1}
-.story-painting-in{animation:story-painting-overlap .48s ease-in-out both}
+.story-painting-stack[data-transition=overlap]>.story-painting-in{animation:story-painting-overlap .48s ease-in-out both}
+.story-painting-stack[data-transition=fade]>.story-painting-out{animation:story-place-out .24s ease-in forwards}
+.story-painting-stack[data-transition=fade]>.story-painting-in{animation:story-place-in .24s .24s ease-out both}
 @keyframes story-painting-overlap{from{opacity:0}to{opacity:1}}
-@media(prefers-reduced-motion:reduce){.story-painting-in{animation:none}.story-painting-out{display:none}}
+@keyframes story-place-out{from{opacity:1}to{opacity:0}}
+@keyframes story-place-in{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.story-painting-stack>.story-painting-in{animation:none!important}.story-painting-out{display:none}}
+
+.rpg-prologue .prologue-cut .prologue-caption p .dialogue-sentence{display:block;text-wrap:balance;word-break:keep-all;overflow-wrap:break-word}

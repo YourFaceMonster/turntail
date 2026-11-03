@@ -10,7 +10,7 @@ export const QUEST_DIALOGUE={
  travelerHelped:['정말 고마워. 이 다리로는 마을까지 돌아갈 자신도 없었거든.','참, 성벽 안쪽 파수탑에서 이상한 푸른 빛을 봤어. 혹시 도움이 될까?'],
 };
 export const PIO_DIALOGUE=['어서 와! 새 얼굴이네? 앉아, 앉아. 추운 날엔 따뜻한 게 최고지.','모르? 말수는 적어도 믿을 만한 사람이야. 과거 얘기는 좀 싫어하지만.','세린이랑 승부할 거면 조심해. 저 사람, 지면 웃는 얼굴이 더 무섭거든.','광장 옆 잡화점에 들러 봐. 난 오늘 장사 생각은 접었어.'];
-export const SERIN_INVITATION='한 판 할래? 세 판이면 네 실력 정도는 알 수 있겠지.';
+export const SERIN_INVITATION='한 판 할래?\n세 판이면 네 실력 정도는 알 수 있겠지.';
 export const THIEF_RESULTS={win:'쳇, 가져가. 약속은 약속이니까. …다음엔 안 져.',second:'아깝네. 한 번 더 해볼 텐가?',third:'꼴찌로군. 기회는 끝이야. 이 편지는 내가 갖겠어.'};
 export const SERIN_RESULTS={win:'제법인데? 오랜만에 손이 좀 풀렸어.',loss:'후후. 아직 배울 게 많겠네. 다음엔 더 재밌게 해 봐.'};
 /** A tied first place does not recover the letter; it receives the second-place reaction. */

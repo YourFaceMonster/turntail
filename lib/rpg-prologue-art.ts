@@ -10,7 +10,7 @@ export const PROLOGUE_ART={
  cardBack:frame('tile-back-landscape-v1','tile-back-portrait-v1'),
  road:frame('dawn-castle-road-v2','dawn-castle-road-portrait-v2'),
  stone:frame('stone-revelation-landscape-v1','stone-revelation-portrait-v1'),
- gate:frame('moon-gate-v1','moon-gate-portrait-v1'),
+ gate:frame('moon-village-distant-wide-v1','moon-village-distant-portrait-v1'),
 };
 export function prologueArt(cut:PrologueCut){
  if(cut.poseArt)return cut.poseArt;
@@ -33,4 +33,16 @@ export function prologueSceneGroup(cuts:readonly PrologueCut[],index:number){
  while(start>0&&identity(cuts[start-1])===visual)start--;
  while(end+1<cuts.length&&identity(cuts[end+1])===visual)end++;
  return {key:`${start}:${visual}`,start,end,duration:cuts.slice(start,end+1).reduce((sum,cut)=>sum+cut.duration,0)};
+}
+
+export function storyPictureKey(cut:PrologueCut){const art=prologueArt(cut);return JSON.stringify([cut.scene,art?.landscape,art?.portrait,cut.focus||'']);}
+function storyPlace(cut:PrologueCut){
+ if(cut.location)return cut.location;
+ if(cut.id.startsWith('quest-'))return cut.id;
+ return ['room','table','card'].includes(cut.scene)?'prologue-tavern':cut.scene;
+}
+/** Dialogue has no picture transition; pose changes overlap; a new place fades through dark. */
+export function storyPictureTransition(before:PrologueCut,after:PrologueCut):'none'|'overlap'|'fade'{
+ if(storyPictureKey(before)===storyPictureKey(after))return 'none';
+ return storyPlace(before)===storyPlace(after)?'overlap':'fade';
 }

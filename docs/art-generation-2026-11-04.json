@@ -1,0 +1,67 @@
+{
+  "date": "2026-11-04",
+  "mode": "built-in image_gen",
+  "style_skill": "turntale-cartoon-fantasy",
+  "originals_preserved": true,
+  "generated_source_directory": "C:/Users/SONG/.codex/generated_images/01a1a377-2a19-7652-99b5-fbeb8ee143fd",
+  "assets": [
+    {
+      "asset": "public/prologue/moon-village-distant-wide-v1.png",
+      "source": "exec-7bde152f-6f69-49da-97e3-858c396e272b.png",
+      "refs": [
+        "public/prologue/moon-castle-map-v3.png",
+        "C:/Users/SONG/.codex/skills/turntale-cartoon-fantasy/references/prologue-approved.png"
+      ],
+      "prompt": "Use case: illustration-story. Create a LANDSCAPE 16:9 game establishing shot for TURNTALE's title 'Moon Village', NO TEXT. Reference 1 is the existing village map: preserve its round stone curtain wall, front twin-tower arched gateway, dense timber snow-roof village houses, and stepped northern keep with square central tower. Depict THE SAME SETTLEMENT FROM FAR AWAY on the snowy approach road, a distant complete recognizable village nestled in mountains, not a close-up of gates and not a bird's-eye map. Village occupies central middle 45% width, foreground snow path gently leads into it, distant keep on the hill behind houses, black pines frame edges, crescent moon, faint peach twilight horizon and warm amber windows. Reference 2 is style and brightness only: expressive thick imperfect ink contours, simplified 2D cartoon fantasy, two-three cel-shaded values, readable indigo and slate snowy scenery. No characters, no UI, no floating symbols, no lettering, no 3D or photorealism. Leave bottom quarter clear of focal structures for subtitles.",
+      "bytes": 2719767,
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "asset": "public/prologue/moon-village-distant-portrait-v1.png",
+      "source": "exec-4c663c18-b4ba-4118-b16a-b7f3b6d6fbca.png",
+      "refs": [
+        "public/prologue/moon-village-distant-wide-v1.png"
+      ],
+      "prompt": "Create a PORTRAIT 9:16 adaptation of reference 1 for the same TURNTALE Moon Village establishing shot. Preserve exact recognizable village design: circular stone walls and front arched twin-tower gate, snow-covered timber houses, stepped northern keep with square central tower, central snowy approach path, distant mountains, twilight crescent and warm windows. Village must be complete, centered in the middle third vertically, viewed from far away along the road, NOT a closeup and NOT cropped off. Snow path occupies lower quarter for dialogue. Frame with black pine silhouettes. Same hand-drawn 2D cartoon fantasy, bold irregular ink outlines, restrained two-three shade values and readable blue-violet snow, no photorealism. No characters or text or UI. Compose natively vertical, not a landscape picture with bars.",
+      "bytes": 2668706,
+      "width": 941,
+      "height": 1672
+    },
+    {
+      "asset": "public/quests/watchtower-arrival-wide-v4.png",
+      "source": "exec-365c2cbe-c42f-4ce6-94c5-a59fb1ce554f.png",
+      "refs": [
+        "public/quests/watchtower-arrival-wide-v2.png",
+        "C:/Users/SONG/.codex/skills/turntale-cartoon-fantasy/references/prologue-approved.png"
+      ],
+      "prompt": "Use case precise-object-edit. LANDSCAPE 16:9 TURNTALE quest background. Adapt existing watchtower courtyard (reference 1): preserve the moonlit snow, familiar stone curtain walls and timber storehouse, but make the named place unmistakably BLACK PINE WATCHTOWER. Add a large living BLACK PINE right beside the tower, full dark pine boughs and dark trunk clearly visible, never a leafless deciduous tree. The stone watchtower should have a recognizable substantial standing upper structure with a weathered wooden lookout, only some broken lower steps/loose stones suggest age: not a pile of rubble or destroyed shell. A small partly hidden gap near the lower stone steps has a subtle cyan glint from an old lantern, at about 44% across and 68% down. Tower and black pine form central balanced silhouette. Keep bottom 25% uncluttered snowy ground for subtitles. Match reference 2 approved style: thick expressive hand ink, simplified cel shading, rough 2D fantasy, readable indigo twilight, small warm highlights, no realistic render or ornate detail. No people, no text, no UI, no conspicuous giant magical portal.",
+      "bytes": 2958141,
+      "width": 1672,
+      "height": 941
+    },
+    {
+      "asset": "public/quests/watchtower-arrival-portrait-v4.png",
+      "source": "exec-19fd75c3-d399-41b9-93a0-43cad00d0901.png",
+      "refs": [
+        "public/quests/watchtower-arrival-wide-v4.png"
+      ],
+      "prompt": "Create a native PORTRAIT 9:16 companion background for this exact TURNTALE Black Pine Watchtower courtyard. Preserve tower design and timber lookout, storehouse, moonlit snow and large dark living PINE directly beside tower. Recompose vertically so the COMPLETE recognizable watchtower and the spreading pine are clear in upper/middle 65%, not cropped to rubble. Pine with dark trunk and black-green needle boughs must be obvious. Old stone steps and tiny hidden old lantern with subtle cyan glint at their foot around center 55% across, 65% down. Lower quarter is uncluttered snow for captions. Bold irregular ink outlines, simplified hand-drawn 2D cartoon fantasy, readable indigo twilight, 2-3 shaded values, not photoreal. No people, writing or UI.",
+      "bytes": 2506058,
+      "width": 941,
+      "height": 1672
+    },
+    {
+      "asset": "public/item-battle-v1/skills/swordsman-sword-cutout-v1.png",
+      "source": "exec-b07f10c2-199f-4dab-97dd-f9c63f2907d2.png",
+      "refs": [
+        "public/item-battle-v1/skills/swordsman-strike-v1.png"
+      ],
+      "transparent_background": true,
+      "prompt": "Use case: background-extraction. Edit the supplied TURNTALE strong-strike skill image: isolate and cleanly redraw ONLY THE EXISTING SWORD, retain the same long silver double-edged blade, central dark fuller, ornate GOLD guard with its central diamond, brown leather wrapped grip and gold pommel. Keep its recognizable design and diagonal orientation from bottom-left pommel to upper-right tip. Remove EVERY red/orange flame arc, spark, aura and background. Only one complete sword centered with 8% transparent margin, sharp clean silhouette suitable for a small animated game sprite, simplified hand-drawn 2D fantasy rendering with bold ink contours and clear steel light/dark faces. Truly transparent RGBA background, no shadow plane, no glow, no text, no border. The asset is the sword itself, not the skill icon.",
+      "bytes": 628735,
+      "width": 1254,
+      "height": 1254
+    }
+  ]
+}
