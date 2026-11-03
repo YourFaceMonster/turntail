@@ -1,3 +1,4 @@
+import {BLUE_GLASS_ID} from './blue-glass.ts';
 import type {RpgJourneyState} from './rpg-journey.ts';
 import {withRelicActivations,type RpgRelicActivation,type RpgRelicEffect} from './rpg-relic-feedback.ts';
 import type {RpgExchangeEvent,RpgItemEvent,RpgTacticalState} from './rpg-items.ts';
@@ -14,6 +15,7 @@ export const RPG_BOSSES=[3,6,9,10];
 export const RPG_TEST_ROUNDS=5;
 export const RPG_RELIC_REWARD_STAGES=[1,2,4,5,7,8];
 export const RPG_RELICS=[
+ {id:BLUE_GLASS_ID,name:'파수꾼의 푸른 유리',grade:'common',effect:'장착 중 응급 약초 회복량 +5 (10 → 15)'},
  {id:'recovery-lantern',name:'회복의 등불',grade:'common',effect:'기본 완료 회복 +5'},
  {id:'cracked-heart',name:'금이 간 심장',grade:'common',effect:'스테이지 첫 HP 피해 8 감소'},
  {id:'final-knot',name:'마지막 매듭',grade:'rare',effect:'운명 구제 HP 50 → 60'},
@@ -46,7 +48,7 @@ export function rpgArea(stage:number){return stage===10?10:stage>=7?7:stage>=4?4
 function catalogShopStock(run:RpgRun,shop:RpgShop):RpgShop{
  const old=new Map(shop.stock.map(entry=>[entry.id,entry]));
  const consumables=RPG_CONSUMABLES.map(item=>old.get(item.id)||{id:item.id,kind:'consumable' as const,price:item.price,quantity:1});
- const relics=RPG_MARKET_RELICS.map(item=>old.get(item.id)||{id:item.id,kind:'relic' as const,price:item.grade==='legendary'?230:item.grade==='rare'?150:90,quantity:run.relics.includes(item.id)||item.id==='second-heart'&&!run.unlocked?.includes('second-heart')||shop.area<4&&['mor-quill','twin-needle-compass','split-mirror'].includes(item.id)?0:1});
+ const relics=RPG_MARKET_RELICS.map(item=>old.get(item.id)||{id:item.id,kind:'relic' as const,price:item.grade==='legendary'?230:item.grade==='rare'?150:90,quantity:item.id===BLUE_GLASS_ID&&!run.unlocked?.includes(BLUE_GLASS_ID)||run.relics.includes(item.id)||item.id==='second-heart'&&!run.unlocked?.includes('second-heart')||shop.area<4&&['mor-quill','twin-needle-compass','split-mirror'].includes(item.id)?0:1});
  return {...shop,stock:[...consumables,...relics]};
 }
 export function currentRpgShop(run:RpgRun){const shop=(run.shops||[]).find(item=>item.area===rpgArea(run.reward?.nextStage||run.stage));return shop?catalogShopStock(run,shop):undefined;}
@@ -56,7 +58,7 @@ function makeShop(run:RpgRun,area:number,seed:string):RpgShop{
  return catalogShopStock(run,shop);
 }
 export function rpgRanks(hp:number[],counts:number[]){return hp.map((value,i)=>1+hp.filter((other,j)=>other>value||other===value&&counts[j]<counts[i]).length);}
-function offers(run:RpgRun,seed:string,count:number,grade?:string){let hash=2166136261;for(const c of seed)hash=Math.imul(hash^c.charCodeAt(0),16777619)>>>0;const pool=RPG_RELICS.filter(r=>(r.id!=='second-heart'||run.unlocked?.includes('second-heart'))&&(run.stage>3||!['mor-quill','twin-needle-compass','split-mirror'].includes(r.id))&&!run.relics.includes(r.id)&&(!grade||r.grade===grade));const chosen:string[]=[];while(pool.length&&chosen.length<count){const index=hash%pool.length;chosen.push(pool.splice(index,1)[0].id);hash=Math.imul(hash^chosen.length,16777619)>>>0;}return chosen;}
+function offers(run:RpgRun,seed:string,count:number,grade?:string){let hash=2166136261;for(const c of seed)hash=Math.imul(hash^c.charCodeAt(0),16777619)>>>0;const pool=RPG_RELICS.filter(r=>(r.id!==BLUE_GLASS_ID||run.unlocked?.includes(BLUE_GLASS_ID))&&(r.id!=='second-heart'||run.unlocked?.includes('second-heart'))&&(run.stage>3||!['mor-quill','twin-needle-compass','split-mirror'].includes(r.id))&&!run.relics.includes(r.id)&&(!grade||r.grade===grade));const chosen:string[]=[];while(pool.length&&chosen.length<count){const index=hash%pool.length;chosen.push(pool.splice(index,1)[0].id);hash=Math.imul(hash^chosen.length,16777619)>>>0;}return chosen;}
 export function settleRpgRound(run:RpgRun,result:RpgResult,winner:number,testMode=false,hpItemMode=false):RpgRun{
  if(run.status!=='playing'||run.roundIds.includes(result.id))return run;
  if(result.players.length!==3)throw Error('RPG 여정은 나와 AI 2명의 3인전이에요.');

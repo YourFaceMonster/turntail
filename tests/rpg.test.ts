@@ -9,7 +9,7 @@ import {useRpgTacticalItem,rpgItemAvailability,rpgItemSlots} from '../lib/rpg-it
 import {exchangeStageLayout} from '../lib/rpg-exchange-motion.ts';
 import {itemScenePoints,RPG_ITEM_IMPACT_MS,RPG_ITEM_SCENE_MS} from '../lib/rpg-item-motion.ts';
 
-function createRpgGame(...args:Parameters<typeof baseRpgGame>){const game=baseRpgGame(...args);game.roundActions=game.players.length;return game;}
+function createRpgGame(...args:Parameters<typeof baseRpgGame>){const game=baseRpgGame(...args);game.roundActions=game.players.length;game.turnReadyAt=0;return game;}
 
 assert.deepEqual(rpgRanks([10,5,5],[0,4,4]),[1,2,2],'joint second place must survive');
 const railGame=createRpgGame('아이템 정렬');railGame.turn=0;railGame.players[0].hand=railGame.players[0].hand.slice(0,4);

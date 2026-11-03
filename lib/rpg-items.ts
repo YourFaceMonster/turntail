@@ -1,3 +1,4 @@
+import {BLUE_GLASS_ID,emergencyHerbHealing} from './blue-glass.ts';
 import {isRpgPhaseOne,reconcileRpgEliminations} from './rpg-phase-one.ts';
 import {hpLimit} from './hp-limit';
 import {retireLegacyLoadout} from './retired-loadout.ts';
@@ -49,7 +50,7 @@ export function rpgTacticalView(run:RpgRun,me:number,round:number,game?:Game):Rp
  const visibleItem=run.lastItem?.kind==='seal'&&run.lastItem.actor!==me?undefined:run.lastItem;
  const peeks=(own.peeks||[own.peek].filter(Boolean) as NonNullable<RpgTacticalState['peeks']>).filter(peek=>peek.round===round&&(!game||game.stacks[peek.index]?.[1]?.id===peek.tile.id));
  const handPeek=own.handPeek?.round===round&&(!game||game.players[own.handPeek.target]?.hand.some(tile=>tile.id===own.handPeek!.tile.id))?own.handPeek:undefined;
- return {...run,journey:run.journey?{...run.journey,rumors:me===0?run.journey.rumors:[],mini:undefined,miniSummary:me===0&&run.journey.mini?{roundIndex:run.journey.mini.game.rpgMini!.roundIndex,finished:run.journey.mini.roundIds.length===3}:undefined}:undefined,combat:professionCombatView(run.combat,me,game),enemyConsumables:{[me]:rpgInventory(run,me)},consumables:rpgInventory(run,me),itemGuards:{[me]:!!run.itemGuards?.[me]},tactics:{[me]:{...own,peek:peeks.at(-1),peeks,handPeek,sealed:undefined}},protectedCounts:undefined,lastItem:visibleItem?{...visibleItem,target:visibleItem.kind==='scout'&&visibleItem.actor!==me?-1:visibleItem.target,tiles:visibleItem.actor===me?visibleItem.tiles:undefined}:undefined,lastExchange:visibleExchange,tacticalPeek:peeks.at(-1),tacticalPeeks:peeks,tacticalRound:own.round,tacticalUsed:own.used,tacticalTurn:own.turn};
+ return {...run,journey:run.journey?{...run.journey,rumors:me===0?run.journey.rumors:[],mini:undefined,letterMini:undefined,miniSummary:me===0&&run.journey.mini?{roundIndex:run.journey.mini.game.rpgMini!.roundIndex,finished:run.journey.mini.roundIds.length===3}:undefined}:undefined,combat:professionCombatView(run.combat,me,game),enemyConsumables:{[me]:rpgInventory(run,me)},consumables:rpgInventory(run,me),itemGuards:{[me]:!!run.itemGuards?.[me]},tactics:{[me]:{...own,peek:peeks.at(-1),peeks,handPeek,sealed:undefined}},protectedCounts:undefined,lastItem:visibleItem?{...visibleItem,target:visibleItem.kind==='scout'&&visibleItem.actor!==me?-1:visibleItem.target,tiles:visibleItem.actor===me?visibleItem.tiles:undefined}:undefined,lastExchange:visibleExchange,tacticalPeek:peeks.at(-1),tacticalPeeks:peeks,tacticalRound:own.round,tacticalUsed:own.used,tacticalTurn:own.turn};
 }
 export function exchangeTargetAvailable(game:ReturnType<typeof view>,id:string,target:number){
  const minimum=exchangeMinimum(id),count=id==='fates-scales'?2:1,person=game.players[target];
@@ -71,7 +72,7 @@ export function rpgItemAvailability(game:ReturnType<typeof view>,id:string,enabl
  if(state.used>=rpgItemLimit(game))return {usable:false,reason:`이번 판 사용 한도 ${rpgItemLimit(game)}개`};
  if(state.turn===game.roundActions)return {usable:false,reason:'이번 차례 사용 완료'};
  if(id==='scout-lens')return itemBattleState(game)?{usable:game.stacks.some(stack=>stack.upper||stack.lowerPresent),reason:'바닥패 한 장의 내용과 함정 유무 확인'}:game.stacks.some(stack=>stack.upper)?{usable:true,reason:'원하는 2층 패 1장 투시'}:{usable:false,reason:'남은 2층 패 없음'};
- if(id==='emergency-herb')return {usable:hpItemEffectiveHp(game,game.me)<hpLimit(game.rpgRun),reason:hpItemEffectiveHp(game,game.me)<hpLimit(game.rpgRun)?'자신의 HP 10 회복':'HP가 이미 가득 찼어요'};
+ if(id==='emergency-herb')return {usable:hpItemEffectiveHp(game,game.me)<hpLimit(game.rpgRun),reason:hpItemEffectiveHp(game,game.me)<hpLimit(game.rpgRun)?`자신의 HP ${game.me===0?emergencyHerbHealing(game.rpgRun!.equipped):10} 회복`:'HP가 이미 가득 찼어요'};
  if(id==='ward-seal')return {usable:!run.itemGuards?.[game.me],reason:run.itemGuards?.[game.me]?'비밀 방패가 이미 준비됐어요':'다음 공격·패 교환 아이템 1회 방어'};
  if(id==='whisper-eye')return {usable:game.players.some((player,index)=>index!==game.me&&player.count>0),reason:'선택한 상대의 손패 무작위 1장 확인 · 나에게만 공개'};
  if(isAttackItem(id)){
@@ -105,7 +106,7 @@ export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:numbe
  }else if(id==='ward-seal'){
   run.itemGuards={...run.itemGuards,[who]:true};target=who;
  }else if(id==='emergency-herb'){
-  const amount=Math.min(10,hpLimit(run)-hpItemEffectiveHp(g,who));if(g.hpItemMode&&!isBattleItemMode(g)&&g.hpItemMatch){g.hpItemMatch.pendingItemDelta??=g.players.map(()=>0);g.hpItemMatch.pendingItemDelta[who]+=amount;}else run.hp[who]+=amount;record(g,who,id,who,'heal',amount);
+  const amount=Math.min(who===0?emergencyHerbHealing(run.equipped):10,hpLimit(run)-hpItemEffectiveHp(g,who));if(who===0&&amount>10)Object.assign(run,withRelicActivations(run,[{relicId:BLUE_GLASS_ID,message:`약초 추가 회복 +${amount-10} HP`}]));if(g.hpItemMode&&!isBattleItemMode(g)&&g.hpItemMatch){g.hpItemMatch.pendingItemDelta??=g.players.map(()=>0);g.hpItemMatch.pendingItemDelta[who]+=amount;}else run.hp[who]+=amount;record(g,who,id,who,'heal',amount);
  }else if(isAttackItem(id)){
   if(!Number.isInteger(target)||!g.players[target]||target===who||hpItemEffectiveHp(g,target)<=(g.hpItemMode||isRpgPhaseOne(g)?0:1))throw Error('공격할 수 있는 상대를 선택해 주세요.');
   applyRpgEmberDamage(g,who,target,Date.now(),id);
@@ -131,7 +132,7 @@ export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:numbe
  run.tactics={...run.tactics,[who]:state};
  if(who===0){run.tacticalRound=g.round;run.tacticalUsed=state.used;run.tacticalTurn=state.turn;run.tacticalPeek=state.peek;}
  if(!blocked&&id!=='emergency-herb'&&!isAttackItem(id)&&id!=='whisper-eye')record(g,who,id,target,id==='ward-seal'?'seal':id==='scout-lens'?'scout':'exchange');
- run.updatedAt=Date.now();if(isRpgPhaseOne(g))reconcileRpgEliminations(g);if(isBattleItemMode(g))finishHpItemMatch(g);if(id!=='ward-seal'&&!blocked)g.log=[`${g.players[who].name} · ${RPG_ITEM_HINTS[id].label}${id==='emergency-herb'?' HP +10':''}`,...g.log].slice(0,40);
+ run.updatedAt=Date.now();if(isRpgPhaseOne(g))reconcileRpgEliminations(g);if(isBattleItemMode(g))finishHpItemMatch(g);if(id!=='ward-seal'&&!blocked)g.log=[`${g.players[who].name} · ${RPG_ITEM_HINTS[id].label}${id==='emergency-herb'?` HP +${run.lastItem?.amount||0}`:''}`,...g.log].slice(0,40);
 }
 /** Reimburse the former preparation state when loading an older local save. */
 export function refundLegacyEmbers(g:Game){

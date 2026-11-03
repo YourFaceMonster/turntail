@@ -1,0 +1,29 @@
+{
+  "method": "built-in image_gen edit",
+  "scope": "portrait only",
+  "discoveryContinuationPrompt": "Create a hidden discovery close-up CONTINUATION of IMAGE1. IMAGE1 is MASTER for exact location: the tiny cyan glint is inside the dark rubble crevice at RIGHT base of collapsed stairs, behind the large diagonally leaning stone. IMAGE2 is only reference for brown glove, small fallen cylindrical iron lantern and tiny blue shard; do NOT copy its lantern openly displayed on pavement. Camera crouches right beside the stairs and looks diagonally DOWN THROUGH a narrow gap between overlapping masonry blocks. Foreground rough stones and ivy occlude/frame at least40% of view; the ground-level cavity is narrow, dark, overlooked. Inside cavity a small25cm fallen lantern lies on its side, MOSTLY concealed behind rock: only part of open rim/door and dim blue glass show. A normal brown gloved hand extends cautiously through the gap from lower right, pinching a3cm blue glass fragment beside the lantern just above cavity floor. Both lantern and shard stay INSIDE the sheltered recess behind rocks, not out on the public walkway. Convincing stone/hand/lantern relative sizes, contact shadows, no floating object, no giant lamp. Same muted NIGHT indigo exposure and 2D bold irregular ink/cel shading as image1, cyan only a faint small reflection on fingertips/inner stone. No sky/horizon, no new person/text/UI. Portrait9:16, lower quiet stone shadow for caption.",
+  "edits": [
+    [
+      "alley-thief",
+      "Precise object edit to IMAGE1, portrait9:16. Keep EVERYTHING else: same gray thief identity, sealed envelope, pose/full legs planted on paving, crate, castle inner alley, lighting, outlines, camera. Replace ONLY the three paper-thin large flat cards on crate mat with THREE SMALL THICK solid ivory game TILES matching IMAGE2's existing TURNTALE game pieces. Image2 is TILE DESIGN reference only, do not import people/background. Rounded rectangular ivory blocks, height-to-width about1.32, visible side thickness around7mm, overall roughly3x4cm each, much smaller than thief hand (tile about half a palm). Clearly small chunky physical tiles resting flat on mat with short contact shadows and cream edge side faces. Top faces use a simple large numeral with single colored suit symbol (red moon, green star, black cloud) like reference. No decorative cardback starburst, no playing cards, no oversized tiles. Preserve approved irregular ink/cel style. No new text outside tile numerals; no UI.",
+      [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/alley-thief-portrait-v2.png",
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-portrait-v3.png"
+      ]
+    ],
+    [
+      "traveler-aided",
+      "Anatomy-only edit of this portrait. Keep EXACT same seated grateful traveler face, curly hair, teal cloak/ochre tunic, bandaged leg, coin-offering hand in foreground, herb pouch, cart/pine/castle walls, camera and dark nighttime color/exposure. Correct the man's LEFT ARM (the raised arm pointing behind him in upper right): remove this strained overhead backwards pointing pose completely. His left upper arm should hang relaxed next to his torso, left elbow naturally slightly bent, left forearm angled down, left hand resting gently on his raised knee beside herb pouch, five normal fingers. No pointing hand near sky, no reversed elbow, no twisted shoulder, no extra arm/hand. Both shoulder joints natural. Keep the OTHER hand offering coins unchanged. Same hand drawn2D ink/cel style, portrait9:16. No text/UI.",
+      [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/traveler-aided-portrait-v2.png"
+      ]
+    ],
+    [
+      "watchtower-arrival",
+      "Hidden-place composition correction of portrait. Keep SAME ruined defensive watchtower, castle courtyard walls, collapsed stairs, storehouse, camera, dim indigo moonlit night and ink/cel art. REMOVE the openly exposed cyan lantern and blue shard from middle of open courtyard pavement. Leave that public walkway completely empty. Instead, the same SMALL fallen hand lantern is concealed DEEP in a narrow dark masonry crevice where tower wall meets collapsed staircase, behind overlapping fallen stones/ivy on LEFT side of stair base. It is almost entirely OCCLUDED: only a TINY thin cyan glint escaping through a small gap plus a barely glimpsed iron rim is visible, NOT a full recognizable lantern. Subtle tiny glow on inside edge of gap, no broad cyan pool/light beacon. Viewer needs to investigate the dark recess; must feel undiscovered and overlooked, not staged on walkway. Crevice is physically ground-level, reachable by crouching/reaching between stones. Preserve scale/buildings and empty snow-dusted cobbles foreground. Do not add huge arrow, doorway leading whole new room, people/text/UI. Portrait9:16 only.",
+      [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/watchtower-arrival-portrait-v2.png"
+      ]
+    ]
+  ]
+}

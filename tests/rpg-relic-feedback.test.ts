@@ -54,5 +54,5 @@ assert.equal(game.rpgRun!.points,2);assert.equal(game.rpgRun!.relicActivations?.
 let history=newRpgRun('history');for(let i=0;i<30;i++)history=withRelicActivations(history,[{relicId:'gamblers-gloves',message:'포인트 +2'}],i);
 assert.equal(history.relicActivations?.length,24);assert.equal(history.relicActivations?.[0].seq,7);assert.equal(history.relicActivations?.at(-1)?.seq,30,'bounded history retains a monotonically increasing cursor');
 assert.deepEqual(JSON.parse(JSON.stringify(history)).relicActivations,history.relicActivations,'activation metadata survives a save round trip');
-assert.equal(Object.keys(RPG_RELIC_HINTS).length,12);
+assert.equal(Object.keys(RPG_RELIC_HINTS).length,13);
 console.log('PASS: confirmed relic bonuses, capped healing, repeat guards, shop discounts, allocation and bounded feedback history');

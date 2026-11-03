@@ -1,0 +1,38 @@
+[
+  {
+    "key": "alley-thief",
+    "src": "C:\\Users\\SONG\\.codex\\generated_images\\01a19ef7-d628-7b11-b433-bf71036b2f7f\\exec-c53867c9-7bb3-4f3b-b447-945883376f38.png",
+    "dest": "public/quests/alley-thief-wide-v2.png",
+    "prompt": "Create ONE true 16:9 LANDSCAPE game cutscene adapted from this approved portrait reference. Preserve same character identity, story props, natural anatomy, thick irregular hand-ink contours and simple2D cel shading, dark indigo NIGHT exposure, small amber accents, and castle-INTERNAL setting. Recompose wider by extending environment, never stretch image. Keep key action in center/upper65% with quiet bottom25% for dialogue. No writing, UI, montage or new characters. Same gray thief with rust scarf and sealed envelope standing on cobblestones beside waist-height crate. Preserve THREE SMALL THICK ivory numbered game tiles with red moon/green star/black cloud on crate, smaller than palm, NOT paper cards. Enclosing castle wall/inner gate behind. Both boots visibly grounded."
+  },
+  {
+    "key": "traveler-injured",
+    "src": "C:\\Users\\SONG\\.codex\\generated_images\\01a19ef7-d628-7b11-b433-bf71036b2f7f\\exec-609a6b9d-1734-4225-8ed7-4aae4b0f97c6.png",
+    "dest": "public/quests/traveler-injured-wide-v2.png",
+    "prompt": "Create ONE true 16:9 LANDSCAPE game cutscene adapted from this approved portrait reference. Preserve same character identity, story props, natural anatomy, thick irregular hand-ink contours and simple2D cel shading, dark indigo NIGHT exposure, small amber accents, and castle-INTERNAL setting. Recompose wider by extending environment, never stretch image. Keep key action in center/upper65% with quiet bottom25% for dialogue. No writing, UI, montage or new characters. Same injured curly dark-haired bearded traveler in teal cloak holding bandaged shin by same wooden cart/pine inside castle courtyard. Preserve sympathy and dark blue snow/cobblestones, enclosed walls and tiny warm lantern. No rural valley or open mountain landscape."
+  },
+  {
+    "key": "traveler-aided",
+    "src": "C:\\Users\\SONG\\.codex\\generated_images\\01a19ef7-d628-7b11-b433-bf71036b2f7f\\exec-408b9ba8-738a-4e45-acdf-d2442b6ffa87.png",
+    "dest": "public/quests/traveler-aided-wide-v2.png",
+    "prompt": "Create ONE true 16:9 LANDSCAPE game cutscene adapted from this approved portrait reference. Preserve same character identity, story props, natural anatomy, thick irregular hand-ink contours and simple2D cel shading, dark indigo NIGHT exposure, small amber accents, and castle-INTERNAL setting. Recompose wider by extending environment, never stretch image. Keep key action in center/upper65% with quiet bottom25% for dialogue. No writing, UI, montage or new characters. Same relieved traveler offering coins to viewer; OTHER LEFT HAND RESTS NATURALLY ON KNEE beside herb packet, no twisted raised arm or pointing. Same cart/pine/castle courtyard as before-aid scene and exactly same NIGHT color/exposure, not brighter daylight."
+  },
+  {
+    "key": "watchtower-arrival",
+    "src": "C:\\Users\\SONG\\.codex\\generated_images\\01a19ef7-d628-7b11-b433-bf71036b2f7f\\exec-aa2d865d-b6fb-4d9a-8467-2c5e9c5c6165.png",
+    "dest": "public/quests/watchtower-arrival-wide-v2.png",
+    "prompt": "Create ONE true 16:9 LANDSCAPE game cutscene adapted from this approved portrait reference. Preserve same character identity, story props, natural anatomy, thick irregular hand-ink contours and simple2D cel shading, dark indigo NIGHT exposure, small amber accents, and castle-INTERNAL setting. Recompose wider by extending environment, never stretch image. Keep key action in center/upper65% with quiet bottom25% for dialogue. No writing, UI, montage or new characters. Same ruined inner defensive tower/staircase/storehouse and walls. PUBLIC COBBLE WALKWAY EMPTY. Preserve secret clue at rubble crevice RIGHT of stair base: lantern almost entirely HIDDEN behind leaning masonry/ivy, only TINY faint cyan glint within gap; no openly visible lantern on path, no broad glow. Place crevice around x43%,y65% image so gameplay glow overlay can align. Building and small concealed lamp scale believable."
+  },
+  {
+    "key": "blue-glass-discovery",
+    "src": "C:\\Users\\SONG\\.codex\\generated_images\\01a19ef7-d628-7b11-b433-bf71036b2f7f\\exec-55010465-a084-475e-b9ca-9494e1af5d36.png",
+    "dest": "public/quests/blue-glass-discovery-wide-v2.png",
+    "prompt": "Create ONE true 16:9 LANDSCAPE game cutscene adapted from this approved portrait reference. Preserve same character identity, story props, natural anatomy, thick irregular hand-ink contours and simple2D cel shading, dark indigo NIGHT exposure, small amber accents, and castle-INTERNAL setting. Recompose wider by extending environment, never stretch image. Keep key action in center/upper65% with quiet bottom25% for dialogue. No writing, UI, montage or new characters. Close crouched camera looking DOWN into SAME narrow ground-level masonry recess at staircase. Foreground stones/ivy occlude edges. Small fallen25cm iron lantern MOSTLY HIDDEN behind block; gloved normal hand reaches into gap to pinch tiny3cm blue shard. Keep objects inside sheltered cavity, no sky or giant lantern. Wider framing extends dark stones, not open walkway."
+  },
+  {
+    "key": "blue-glass-icon",
+    "src": "C:\\Users\\SONG\\.codex\\generated_images\\01a19ef7-d628-7b11-b433-bf71036b2f7f\\exec-c85641d5-6d2e-4500-adae-3bf1eeb058d2.png",
+    "dest": "public/rpg-items-v1/relics/watchkeepers-blue-glass-v1.png",
+    "prompt": "Use case: illustration-story. Create ONE square transparent-background inventory relic icon for TURNTALE: the SAME small irregular angular BLUE GLASS SHARD being picked up in reference, isolated alone at center, 75% canvas, slight diagonal tilt. Hand drawn 2D cartoon fantasy with bold imperfect dark ink outline, 2-3 cel shaded blue/cyan facets, lightly worn edge, restrained inner cyan shimmer, clearly readable silhouette at48px. Genuine transparent alpha, no hand/lantern/rocks/scene, no border/card, no text/runes/symbol, no additional gem or jewelry mount, no glossy3D photoreal rendering. This is 파수꾼의 푸른 유리, a found glass relic amplifying healing herbs."
+  }
+]

@@ -21,6 +21,7 @@ export const ITEM_BATTLE_RELIC_HINTS:Record<string,{label:string,bonus:string,co
  'pioneers-eye':{label:'첫 분배',bonus:'구름 3 · 첫 선',condition:'새 아이템전의 첫 분배에만 적용해요. 기존 패와 교체해 손패 수를 유지하며 다음 라운드는 일반 분배예요.'},
 };
 export const RPG_RELIC_HINTS:Record<string,{label:string,bonus:string,condition:string}>={
+ 'watchkeepers-blue-glass':{label:'응급 약초',bonus:'회복 +5',condition:'장착 중 자신이 사용하는 응급 약초의 회복량이 10에서 15로 늘어나요. 최대 HP를 넘지 않으며, 여행자에게 건네는 약초에는 적용되지 않아요.'},
  'recovery-lantern':{label:'완료 회복',bonus:'HP +5',condition:'스테이지를 1·2등으로 마치면 기본 회복이 늘어나요. HP가 가득 찼거나 영역이 바뀔 때는 추가 회복이 없어요.'},
  'cracked-heart':{label:'첫 피해',bonus:'피해 −8',condition:'스테이지마다 처음 HP 피해를 받을 때 최대 8을 막아요.'},
  'final-knot':{label:'운명 구제',bonus:'HP 60',condition:'3등으로 마치고 운명을 소모해 살아나면 구제 HP가 50에서 60으로 늘어나요.'},

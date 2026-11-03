@@ -1,3 +1,4 @@
+import {BLUE_GLASS_ID} from './blue-glass.ts';
 import {RPG_RELICS} from './rpg.ts';
 import {ITEM_BATTLE_RELICS} from './item-battle-relic-catalog.ts';
 import type {Tile} from './game.ts';
@@ -7,7 +8,7 @@ export {ITEM_BATTLE_RELICS};
 export const ITEM_BATTLE_RELIC_POOL=[RPG_RELICS.find(relic=>relic.id==='cracked-heart')!,...ITEM_BATTLE_RELICS];
 export const ALL_GAME_RELICS=[...RPG_RELICS,...ITEM_BATTLE_RELICS];
 export function gameRelic(id:string){return RPG_RELICS.find(relic=>relic.id===id)||ITEM_BATTLE_RELICS.find(relic=>relic.id===id);}
-export function relicImage(id:string){return ITEM_BATTLE_RELICS.some(relic=>relic.id===id)?`/item-battle-v1/relics/${id}.webp`:`/rpg-items-v1/relics/${id}.webp`;}
+export function relicImage(id:string){if(id===BLUE_GLASS_ID)return '/rpg-items-v1/relics/watchkeepers-blue-glass-v1.png';return ITEM_BATTLE_RELICS.some(relic=>relic.id===id)?`/item-battle-v1/relics/${id}.webp`:`/rpg-items-v1/relics/${id}.webp`;}
 export function itemBattleRelicWin(equipped:readonly string[],label:string,tiles:readonly Tile[]){
  const effects:{relicId:string,message:string}[]=[];let damage=0,heal=0;
  const add=(id:string,amount:number,healing=false)=>{if(!equipped.includes(id))return;if(healing)heal+=amount;else damage+=amount;effects.push({relicId:id,message:healing?`HP +${amount}`:`추가 피해 +${amount}`});};
