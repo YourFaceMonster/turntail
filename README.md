@@ -1,10 +1,10 @@
 # TURNTALE
 
-## 최신 업데이트 · 0.6.67
+## 최신 업데이트 · 0.6.67 (2026-11-03 배포 완료)
 
 봉인 편지·도둑의 3판 승부·여행자 약초 이벤트와 실제 장착 유물 **파수꾼의 푸른 유리**를 추가했습니다. 장착 중 응급 약초는 **HP 10 → 15**를 회복합니다. 퀘스트별 세로·가로 전용 컷씬, 숨겨진 돌틈의 푸른 맥동, 간략 잡화점, 주점 대사·배경 개선과 게시판 삭제를 함께 반영했습니다.
 
-[전체 업데이트와 검증 기록](docs/release-0.6.67.md) · [GitHub Releases](https://github.com/YourFaceMonster/turntail/releases) · [게임 실행](https://turntail.yousexybaby.workers.dev/)
+[전체 업데이트와 검증 기록](docs/release-0.6.67.md) · [GitHub Releases](https://github.com/YourFaceMonster/turntail/releases/tag/v0.6.67) · [게임 실행](https://turntail.yousexybaby.workers.dev/)
 
 이하 날짜별 기록은 당시 상태입니다. 현재 버전·동작은 위 최신 릴리스와 실제 코드를 기준으로 합니다.
 
