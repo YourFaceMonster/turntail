@@ -80,3 +80,32 @@ body>.journey-popup-shade>.journey-popup:has(.village-market){width:min(860px,10
 .village-market-bag{border-left:1px solid #d0b47744;padding-left:14px;color:#c7d4c9}.village-market-bag h4{font-size:13px;color:#e7c88d;margin:0 0 14px}.village-market-bag p{font-size:11px;display:flex;justify-content:space-between}.village-market-bag>small{font-size:10px;line-height:1.6}.village-owned-items{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}.village-owned-items>span{display:flex;align-items:center;gap:2px}.village-owned-items .rpg-item-icon{width:30px;height:30px}.village-owned-items small{font-size:10px}
 @media(max-width:600px){body>.journey-popup-shade>.journey-popup:has(.village-market){padding:22px 14px 16px}.village-market-layout{grid-template-columns:1fr;gap:12px}.village-market-bag{border:0;border-top:1px solid #d0b47744;padding:12px 0 0;display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px}.village-market-bag h4{margin:0}.village-market-bag p{gap:8px;margin:0}.village-market-bag>small{flex-basis:100%}.village-owned-items{margin:0}.village-product{padding:12px 8px}.village-product h4{font-size:14px}.village-product-art{width:76px;height:76px}.village-product-art img,.village-product-art .rpg-item-icon{width:66px;height:66px}.village-market-heading{align-items:flex-start;gap:8px}.village-market-heading .market-wallet b{font-size:20px}}
 @media(prefers-reduced-motion:reduce){.tavern-living-art,.prologue-picture[data-speaking=true] .prologue-camera picture{filter:none!important}.rpg-map-paint,.map-atmosphere i,.tavern-warm-rays,.journey-tavern-content .tavern-cast-shadow,.journey-tavern-content .journey-hearth-glow{animation:none!important;transform:none!important}}
+
+/* Full town market catalog, matching the established item battle shop surface. */
+body>.journey-popup-shade>.journey-popup:has(.village-market){background:radial-gradient(ellipse at 50% 0,#40544344,transparent 60%),linear-gradient(150deg,#1d3128,#10221d)!important;border:1px solid #bc9d62;border-radius:19px;box-shadow:0 22px 75px #000c,inset 0 0 0 4px #e3c58c09;color:#f2e2bd}
+.village-market-shelf{grid-template-columns:minmax(0,1fr)!important;gap:18px!important}
+.village-market-group>h4{display:flex;align-items:center;gap:8px;color:#f0d59d;font-size:14px;margin:0 0 9px;padding-bottom:7px;border-bottom:1px solid #d7b86b55}
+.village-market-group>h4 small{font-size:10px;color:#cbb48b}
+.village-market-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.village-product{padding:10px 8px!important;background:linear-gradient(#223126d9,#101b17e8)!important}
+.village-product-art{width:66px;height:66px}
+.village-product-art img,.village-product-art .rpg-item-icon{width:56px;height:56px;max-width:56px;max-height:56px}
+.village-product h4{font-size:13px;line-height:1.3}
+.village-product p{font-size:10px;line-height:1.45}
+.village-product.relic-product{border-color:#d8bf8266}
+.journey-tavern-scene .journey-tavern-footer{left:10px;right:10px;width:auto;display:block}
+.journey-tavern-footer .tavern-notes-link,.journey-tavern-footer .tavern-map-link{position:absolute;bottom:0;display:flex;align-items:center;gap:5px;padding:4px 8px;min-height:28px;background:#0c191ddd;border:1px solid #b49b6166;border-radius:5px;font-size:10px;white-space:nowrap}
+.journey-tavern-footer .tavern-notes-link{left:0}
+.journey-tavern-footer .tavern-map-link{left:50%;transform:translateX(-50%)}
+.journey-tavern-footer .tavern-notes-link img,.journey-tavern-footer .tavern-map-link img{display:block;width:21px;height:21px;object-fit:contain}
+.journey-tavern-room .tavern-board{left:26%;top:19%;width:12%;height:16%;min-width:50px;min-height:34px;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;animation:none!important}
+.journey-tavern-room .tavern-board>span{display:none}
+.journey-tavern-room .tavern-board strong{font-size:11px!important;letter-spacing:.04em}
+.journey-tavern-room .tavern-board small{display:none}
+.journey-popup .village-request-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:16px}
+.journey-popup .village-request-choices>button{min-height:56px;padding:8px 7px;line-height:1.5;white-space:normal}
+.journey-popup .village-request-hp-note{display:block;margin-top:8px;color:#e8c98e;text-align:center}
+.journey-popup .village-request-choices~p[role="alert"]{color:#ffd3a7}
+@media(max-aspect-ratio:1/1){.journey-tavern-room .tavern-board{left:21%;top:20%;width:20%;height:12%;min-width:0;min-height:28px}}
+@media(max-width:480px){.journey-popup .village-request-choices{grid-template-columns:1fr}.journey-popup .village-request-choices>button{min-height:46px}}
+@media(max-width:700px){.village-market-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.village-market-layout{grid-template-columns:1fr}.village-market-bag{border:0;border-top:1px solid #d0b47744;padding:12px 0 0}}

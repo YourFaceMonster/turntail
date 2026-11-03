@@ -2,7 +2,7 @@
 .bomb-classic-mode .bomb-classic-hud{display:flex;align-items:center;gap:5px;font-size:9px;line-height:1.2;white-space:nowrap;color:#e2d4b1}
 .bomb-classic-hud b{font-weight:700;color:#f2d28b}.bomb-reaction-clock{color:#ffdf92;background:#392622c9;border:1px solid #c3a06477;border-radius:4px;padding:2px 4px;font-variant-numeric:tabular-nums}
 .bomb-classic-hud .bomb-ready-indicator{color:#ffdf92;border:1px solid #d4ad7266;border-radius:4px;padding:1px 3px}
-.turntale.bomb-classic-mode .action-buttons{grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr)!important;gap:5px}
+.turntale.bomb-classic-mode .action-buttons{grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr) minmax(0,1fr)!important;gap:5px}
 .turntale.bomb-classic-mode .action-buttons>.bomb-pass-action{padding-inline:3px!important;font-size:11px!important;min-width:0}
 .turntale.bomb-classic-mode .action-buttons>.secondary:first-child{font-size:12px!important;padding-inline:5px!important}
 .turntale.table-v211.active-table.bomb-classic-mode .trick-current.bomb-long-play{display:grid!important;grid-template-columns:repeat(5,var(--shown-w))!important;grid-auto-rows:var(--shown-h);gap:2px!important;justify-content:center;align-content:center;height:calc(var(--shown-h)*var(--bomb-play-rows) + 2px*(var(--bomb-play-rows) - 1))!important}

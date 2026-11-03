@@ -1,7 +1,7 @@
 /** Bomb Market v0.1. No runtime dependency on the classic/RPG engine. */
 import type {Tile} from './game';
 export type {Tile};
-export const BOMB_REACTION_MS=3000, MARKET_COST=3, BOMB_ROUNDS=5;
+export const BOMB_REACTION_MS=3000, MARKET_COST=3, BOMB_ROUNDS=5, BOMB_HAND_SIZE=11, BOMB_MARKET_SIZE=16;
 // Existing art: black cloud=0, green star=1, orange moon=2, red sun=3.
 export const BOMB_SUIT_NAMES=['검정 구름','초록 별','주황 달','빨강 해'];
 export const bombSuitRank=(s:number)=>[0,2,1,3][s];
@@ -46,16 +46,16 @@ export function bombOptions(hand:Tile[],target:Tile[]=[],bombsOnly=false):Tile[]
 export type BombPlayer={name:string;hand:Tile[];score:number;place:number|null;out:boolean};
 export type BombTransfer={from:number;to:number;points:number;reason:'cards'|'market'};
 export type BombRoundResult={round:number;places:number[];deltas:number[];scores:number[];counts:number[];transfers:BombTransfer[]};
-export type BombState={schema:1;mode:'bomb-market';id:string;revision:number;round:number;phase:'playing'|'round-end'|'complete';players:BombPlayer[];market:Tile[];pot:number;discard:Tile[];turn:number;trickId:number;trick:Tile[];lastBy:number|null;passed:number[];reaction:null|{id:number;startedAt:number;deadline:number};roundStart:number[];transfers:BombTransfer[];results:BombRoundResult[];log:string[]};
+export type BombState={schema:1;mode:'bomb-market';id:string;revision:number;round:number;phase:'playing'|'round-end'|'complete';players:BombPlayer[];market:(Tile|null)[];pot:number;discard:Tile[];turn:number;trickId:number;trick:Tile[];lastBy:number|null;passed:number[];reaction:null|{id:number;startedAt:number;deadline:number};roundStart:number[];transfers:BombTransfer[];results:BombRoundResult[];log:string[]};
 export type BombAction={type:'play';ids:number[]}|{type:'buy';id:number}|{type:'pass'}|{type:'tick'}|{type:'next'};
 export function createBombGame(name='플레이어',random=()=>crypto.getRandomValues(new Uint32Array(1))[0]/4294967296):BombState{
- const state:BombState={schema:1,mode:'bomb-market',id:crypto.randomUUID(),revision:0,round:0,phase:'playing',players:[name.trim().slice(0,12)||'플레이어','청돌','불찬'].map(name=>({name,hand:[],score:50,place:null,out:false})),market:[],pot:0,discard:[],turn:0,trickId:0,trick:[],lastBy:null,passed:[],reaction:null,roundStart:[50,50,50],transfers:[],results:[],log:[]};
+ const state:BombState={schema:1,mode:'bomb-market',id:crypto.randomUUID(),revision:0,round:0,phase:'playing',players:[name.trim().slice(0,12)||'플레이어','청돌','불찬','별이'].map(name=>({name,hand:[],score:50,place:null,out:false})),market:[],pot:0,discard:[],turn:0,trickId:0,trick:[],lastBy:null,passed:[],reaction:null,roundStart:[50,50,50,50],transfers:[],results:[],log:[]};
  deal(state,random);return state;
 }
 function deal(g:BombState,random:()=>number){
  const deck:Tile[]=Array.from({length:60},(_,id)=>({id,n:Math.floor(id/4)+1,s:id%4}));
  for(let i=59;i>0;i--){const j=Math.max(0,Math.min(i,Math.floor(random()*(i+1))));[deck[i],deck[j]]=[deck[j],deck[i]];}
- g.players.forEach(p=>{p.hand=bombSorted(deck.splice(0,15));p.place=null;p.out=false;});g.market=bombSorted(deck);g.pot=0;g.discard=[];g.trick=[];g.lastBy=null;g.passed=[];g.reaction=null;g.round++;g.phase='playing';g.trickId++;g.transfers=[];g.roundStart=g.players.map(p=>p.score);
+ const handSize=g.players.length===4?BOMB_HAND_SIZE:15;g.players.forEach(p=>{p.hand=bombSorted(deck.splice(0,handSize));p.place=null;p.out=false;});g.market=bombSorted(deck);g.pot=0;g.discard=[];g.trick=[];g.lastBy=null;g.passed=[];g.reaction=null;g.round++;g.phase='playing';g.trickId++;g.transfers=[];g.roundStart=g.players.map(p=>p.score);
  g.turn=g.players.reduce((best,p,i)=>bombBeats([p.hand.at(-1)!],[g.players[best].hand.at(-1)!])?i:best,0);
  g.log=[`${g.round}/5판 · ${g.players[g.turn].name}의 선`];
 }
@@ -63,20 +63,20 @@ const eligible=(g:BombState,i:number)=>g.players[i].place===null&&!g.players[i].
 function log(g:BombState,message:string){g.log=[message,...g.log].slice(0,24);}
 function closeTrick(g:BombState){
  const last=g.lastBy!;g.discard.push(...g.trick);g.trick=[];g.lastBy=null;g.passed=[];g.reaction=null;g.trickId++;g.players.forEach(p=>p.out=false);
- g.turn=last;if(!eligible(g,last))for(let step=1;step<=3;step++){const i=(last+step)%3;if(eligible(g,i)){g.turn=i;break;}}
+ g.turn=last;if(!eligible(g,last))for(let step=1;step<=g.players.length;step++){const i=(last+step)%g.players.length;if(eligible(g,i)){g.turn=i;break;}}
  log(g,`트릭 종료 · ${g.players[g.turn].name}의 선`);
 }
 function advance(g:BombState,after:number){
  const opponents=g.players.map((_,i)=>i).filter(i=>eligible(g,i)&&i!==g.lastBy);
  if(!opponents.length||opponents.every(i=>g.passed.includes(i))){closeTrick(g);return;}
- for(let step=1;step<=3;step++){const i=(after+step)%3;if(eligible(g,i)&&i!==g.lastBy){g.turn=i;return;}}
+ for(let step=1;step<=g.players.length;step++){const i=(after+step)%g.players.length;if(eligible(g,i)&&i!==g.lastBy){g.turn=i;return;}}
 }
 function finishPlayer(g:BombState,who:number){
  const p=g.players[who];p.place=1+g.players.filter(p=>p.place!==null).length;
  for(const [i,other] of g.players.entries())if(i!==who&&other.place===null){const points=other.hand.length;other.score-=points;p.score+=points;g.transfers.push({from:i,to:who,points,reason:'cards'});}
  if(p.place===1){p.score+=g.pot;if(g.pot)g.transfers.push({from:-1,to:who,points:g.pot,reason:'market'});g.pot=0;}
  log(g,`${p.name} ${p.place}등 · 즉시 정산`);
- const remaining=g.players.filter(p=>p.place===null);if(remaining.length===1){remaining[0].place=3;if(g.pot){const first=g.players.findIndex(p=>p.place===1);g.players[first].score+=g.pot;g.transfers.push({from:-1,to:first,points:g.pot,reason:'market'});g.pot=0;}g.phase=g.round===BOMB_ROUNDS?'complete':'round-end';g.reaction=null;g.results.push({round:g.round,places:g.players.map(p=>p.place!),deltas:g.players.map((p,i)=>p.score-g.roundStart[i]),scores:g.players.map(p=>p.score),counts:g.players.map(p=>p.hand.length),transfers:structuredClone(g.transfers)});}
+ const remaining=g.players.filter(p=>p.place===null);if(remaining.length===1){remaining[0].place=g.players.length;if(g.pot){const first=g.players.findIndex(p=>p.place===1);g.players[first].score+=g.pot;g.transfers.push({from:-1,to:first,points:g.pot,reason:'market'});g.pot=0;}g.phase=g.round===BOMB_ROUNDS?'complete':'round-end';g.reaction=null;g.results.push({round:g.round,places:g.players.map(p=>p.place!),deltas:g.players.map((p,i)=>p.score-g.roundStart[i]),scores:g.players.map(p=>p.score),counts:g.players.map(p=>p.hand.length),transfers:structuredClone(g.transfers)});}
 }
 /** Immutable, compare-and-swap transition. A captured revision may be accepted once only. */
 export function transitionBomb(state:BombState,who:number,action:BombAction,revision:number,now=Date.now(),random?:()=>number):BombState{
@@ -86,22 +86,22 @@ export function transitionBomb(state:BombState,who:number,action:BombAction,revi
  if(state.phase!=='playing')throw Error('종료된 판이에요.');
  if(action.type==='tick'){if(!state.reaction||now<state.reaction.deadline)return state;const g=structuredClone(state);g.reaction=null;advance(g,g.lastBy!);g.revision++;return g;}
  const p=state.players[who];if(!p||!eligible(state,who))throw Error('아웃 또는 순위 확정 상태에서는 참여할 수 없어요.');
- if(state.reaction&&now>=state.reaction.deadline)throw Error('폭탄 반응 시간이 끝났어요.');
  if(action.type==='play'){
   if(!action.ids.length||new Set(action.ids).size!==action.ids.length)throw Error('제출할 패를 선택해 주세요.');
   const tiles=action.ids.map(id=>p.hand.find(t=>t.id===id));if(tiles.some(t=>!t))throw Error('보유하지 않은 패예요.');
   const selected=tiles as Tile[],combo=bombCombo(selected);if(!combo||!bombBeats(selected,state.trick))throw Error('현재 족보를 이기는 조합을 선택해 주세요.');
-  if(state.reaction){if(!combo.bomb)throw Error('반응 중에는 폭탄만 제출할 수 있어요.');}
-  else if(who!==state.turn)throw Error('지금은 내 차례가 아니에요.');
-  const g=structuredClone(state);g.discard.push(...g.trick);g.trick=bombSorted(selected);g.lastBy=who;g.passed=[];g.players[who].hand=g.players[who].hand.filter(t=>!action.ids.includes(t.id));g.revision++;
+  const interrupt=who!==state.turn;
+  if(state.reaction&&!combo.bomb)throw Error('폭탄 반응 중에는 폭탄만 제출할 수 있어요.');
+  if(interrupt&&!combo.bomb)throw Error('차례 밖에는 폭탄만 제출할 수 있어요.');
+  const g=structuredClone(state);g.discard.push(...g.trick);g.trick=bombSorted(selected);g.lastBy=who;g.passed=[];g.players[who].hand=g.players[who].hand.filter(t=>!action.ids.includes(t.id));if(interrupt)g.turn=who;g.revision++;
   g.reaction={id:g.revision,startedAt:now,deadline:now+BOMB_REACTION_MS};log(g,`${p.name} · ${combo.label} ${selected.length}장`);
   if(!g.players[who].hand.length)finishPlayer(g,who);return g;
  }
  if(state.reaction)throw Error('폭탄 반응 중이에요.');if(who!==state.turn)throw Error('지금은 내 차례가 아니에요.');if(!state.trick.length)throw Error('선은 반드시 패를 제출해야 해요.');
  const g=structuredClone(state);
  if(action.type==='buy'){
-  if(p.score<MARKET_COST)throw Error('구매할 점수가 부족해요.');const index=g.market.findIndex(t=>t.id===action.id);if(index<0)throw Error('시장에 없는 패예요.');
-  g.players[who].hand=bombSorted([...g.players[who].hand,g.market.splice(index,1)[0]]);g.players[who].score-=MARKET_COST;g.pot+=MARKET_COST;g.players[who].out=true;log(g,`${p.name} · 시장 구매 −3점 / 이번 트릭 아웃`);
+  if(p.score<MARKET_COST)throw Error('구매할 점수가 부족해요.');const index=g.market.findIndex(t=>t?.id===action.id);if(index<0)throw Error('시장에 없는 패예요.');
+  const bought=g.market[index]!;g.market[index]=null;g.players[who].hand=bombSorted([...g.players[who].hand,bought]);g.players[who].score-=MARKET_COST;g.pot+=MARKET_COST;g.players[who].out=true;log(g,`${p.name} · 시장 구매 −3점 / 이번 트릭 아웃`);
  }else {if(!g.passed.includes(who))g.passed.push(who);log(g,`${p.name} · 패스`);}
  advance(g,who);g.revision++;return g;
 }

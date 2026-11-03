@@ -8,18 +8,18 @@ function structure(hand:Tile[]){
 }
 export function chooseBombAction(v:BombView,now=Date.now()):BombAction|null{
  const me=v.players[v.seat];if(v.phase!=='playing'||me.out||me.place!==null)return null;
- if(v.reaction&&(now>=v.reaction.deadline||v.lastBy===v.seat))return null;
- if(!v.reaction&&v.turn!==v.seat)return null;
- const options=bombOptions(v.hand,v.trick,!!v.reaction),danger=v.players.some((p,i)=>i!==v.seat&&p.place===null&&p.count<=3);
+ if(v.reaction&&now>=v.reaction.deadline)return null;
+ const offTurn=!v.reaction&&v.turn!==v.seat;
+ const options=bombOptions(v.hand,v.trick,!!v.reaction||offTurn),danger=v.players.some((p,i)=>i!==v.seat&&p.place===null&&p.count<=3);
  const finish=options.find(o=>o.length===v.hand.length);if(finish)return {type:'play',ids:finish.map(t=>t.id)};
  const ranked=options.map(tiles=>{const c=bombCombo(tiles)!;return {tiles,value:tiles.length*5-c.high*.24-(c.bomb?(danger?3:23):0)+structure(v.hand.filter(t=>!tiles.some(x=>x.id===t.id)))*.25};}).sort((a,b)=>b.value-a.value);
- if(v.reaction){const best=ranked[0];return best&&(danger||v.hand.length<=best.tiles.length+2)&&best.value>0?{type:'play',ids:best.tiles.map(t=>t.id)}:null;}
+ if(v.reaction||offTurn){const best=ranked[0];return best&&(danger||v.hand.length<=best.tiles.length+2)&&best.value>0?{type:'play',ids:best.tiles.map(t=>t.id)}:null;}
  const normal=ranked.find(o=>!bombCombo(o.tiles)!.bomb);
  if(normal)return {type:'play',ids:normal.tiles.map(t=>t.id)};
  const best=ranked[0];if(best&&(!v.trick.length||danger||v.hand.length<=best.tiles.length+3))return {type:'play',ids:best.tiles.map(t=>t.id)};
- if(v.trick.length&&me.score>=MARKET_COST&&v.market.length){
+ if(v.trick.length&&me.score>=MARKET_COST&&v.market.some(Boolean)){
   const base=structure(v.hand),remaining=6-v.round;
-  const buys=v.market.map(t=>({t,gain:structure([...v.hand,t])-base-2.7+(bombRank(t.n)-3)*.015})).sort((a,b)=>b.gain-a.gain||a.t.id-b.t.id);
+  const buys=v.market.flatMap(t=>t?[{t,gain:structure([...v.hand,t])-base-2.7+(bombRank(t.n)-3)*.015}]:[]).sort((a,b)=>b.gain-a.gain||a.t.id-b.t.id);
   // Spending near the final scores / bankruptcy needs a stronger completed structure.
   const threshold=(me.score<9?5:2)+(remaining===1?2:0);
   if(buys[0].gain>threshold)return {type:'buy',id:buys[0].t.id};

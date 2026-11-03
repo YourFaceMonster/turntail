@@ -1,5 +1,3 @@
-import {stageTheme} from './stage-theme.ts';
-
 export type PrologueCut={id:string,scene:'dark'|'snow'|'inn'|'room'|'table'|'card'|'road'|'stone'|'gate',duration:number,line:string,speaker?:string,back?:boolean,audio:'wind'|'hearth'|'tile'|'quiet',art?:{landscape:string,portrait:string},poseArt?:{landscape:string,portrait:string},focus?:string,location?:string};
 export const FIRST_PROLOGUE:readonly PrologueCut[]=[
  {id:'P01',scene:'dark',duration:4000,line:'모든 길에는, 시작이 있다.',audio:'wind'},
@@ -11,7 +9,7 @@ export const FIRST_PROLOGUE:readonly PrologueCut[]=[
  {id:'P06b',scene:'card',duration:6000,line:'오래된 패라더군.\n마음에 들면 가져가시오.',speaker:'상대',back:true,audio:'hearth'},
  {id:'P07',scene:'road',duration:7000,line:'다음 날, 방랑자는\n다시 길 위에 올랐다.',audio:'wind'},
  {id:'P08',scene:'stone',duration:8000,line:'…어디선가 본 문양이다.',back:true,audio:'quiet'},
- {id:'P09',scene:'gate',duration:4000,line:`달의 영역 · STAGE 1\n${stageTheme(1).name}`,audio:'quiet'},
+ {id:'P09',scene:'gate',duration:4000,line:'달의 마을',audio:'quiet'},
 ];
 // Reserved for the real normal-ending flag and matching handoff art. The current
 // stage-three trial completion is NOT a normal ending and must never select this.

@@ -1,18 +1,17 @@
 import {player,room,start,uid,type Game} from './game.ts';
 import type {RpgRun} from './rpg.ts';
 
-export type JourneyNode='battle-1'|'tavern'|'battle-2'|'ruins'|'forest'|'battle-3';
+export type JourneyNode='battle-1'|'tavern'|'battle-2'|'town-event'|'ruins'|'forest'|'battle-3';
 export type JourneyMini={game:Game,roundIds:string[],lastReward:number};
-export type RpgJourneyState={version:1,seenScenes?:string[],location:'map'|'tavern'|'battle'|'mini-game',currentNode:JourneyNode,startedStages:number[],completedNodes:JourneyNode[],path?:'ruins'|'forest'|'skip',branchOutcome?:{path:'ruins'|'forest',hpBefore:number,hpAfter:number,coins:number},rumors:string[],tavernRewardPaid:boolean,miniSummary?:{roundIndex:number,finished:boolean},mini?:JourneyMini};
+export type VillageRequestReward='coins'|'heal';
+export type RpgJourneyState={version:1,seenScenes?:string[],location:'map'|'tavern'|'battle'|'mini-game',currentNode:JourneyNode,startedStages:number[],completedNodes:JourneyNode[],path?:'ruins'|'forest'|'skip',branchOutcome?:{path:'ruins'|'forest',hpBefore:number,hpAfter:number,coins:number},townEvent?:{reward:'heal'|'coins',hpBefore:number,hpAfter:number,coins:number},villageRequestReward?:VillageRequestReward,rumors:string[],tavernRewardPaid:boolean,miniSummary?:{roundIndex:number,finished:boolean},mini?:JourneyMini};
 /** Trial values for this three-stage prototype; never used by normal or HP item play. */
-export const JOURNEY_TRIAL={ruinsDamage:8,ruinsCoins:15,forestHeal:8,miniRounds:3,miniRewards:[12,8,4]} as const;
+export const JOURNEY_TRIAL={ruinsDamage:8,ruinsCoins:15,forestHeal:8,villageRequestHeal:5,villageRequestCoins:5,miniRounds:3,miniRewards:[12,8,4]} as const;
 export const JOURNEY_RUMOR={id:'sheltered-light',title:'모르의 등불 이야기',text:'금이 간 심장 곁에 회복의 등불을 장착해 보게. 둘을 함께 지니고 싸우면, 승부를 마친 뒤 등불이 조금 더 힘을 내지.'};
-export const JOURNEY_NODES:{id:JourneyNode,name:string,x:number,y:number,kind:'battle'|'place'|'choice'}[]=[
+export const JOURNEY_NODES:{id:JourneyNode,name:string,x:number,y:number,kind:'battle'|'place'|'event'|'choice'}[]=[
  {id:'battle-1',name:'ST1 · 마을 관문',x:52,y:66,kind:'battle'},
  {id:'tavern',name:'눈길의 주막',x:67,y:40,kind:'place'},
  {id:'battle-2',name:'ST2 · 마을 광장',x:54,y:45,kind:'battle'},
- {id:'ruins',name:'위험한 유적',x:29,y:29,kind:'choice'},
- {id:'forest',name:'고요한 숲길',x:76,y:28,kind:'choice'},
  {id:'battle-3',name:'ST3 · 북쪽 성채',x:57,y:17,kind:'battle'},
 ];
 export function initRpgJourney(game:Game){
@@ -22,6 +21,7 @@ export function initRpgJourney(game:Game){
 }
 export function journeyNodeState(run:RpgRun,id:JourneyNode):'available'|'completed'|'locked'|'closed'{
  const j=run.journey;if(!j)return 'locked';
+ if(id==='town-event')return 'completed';
  if(id==='ruins'||id==='forest'){
   if(j.path)return j.path===id?'completed':'closed';
   return run.stage===2&&run.status==='ready'?'available':'locked';
@@ -37,12 +37,12 @@ export function visitJourneyNode(game:Game,id:JourneyNode):number|undefined{
  const {run,j}=journeyGame(game);
  if(j.location!=='map'||journeyNodeState(run,id)!=='available')throw Error('지금 갈 수 있는 장소를 선택해 주세요.');
  if(id.startsWith('battle-')){
-  const stage=Number(id.slice(7));if(stage===3&&!j.path)j.path='skip';
+  const stage=Number(id.slice(7));
   j.location='battle';j.currentNode=id;j.startedStages.push(stage);run.updatedAt=Date.now();return stage;
  }
  j.currentNode=id;
  if(id==='tavern'){j.location='tavern';if(!j.completedNodes.includes(id))j.completedNodes.push(id);}
- else{
+ else if(id==='ruins'||id==='forest'){
   const before=run.hp[0],coins=id==='ruins'?JOURNEY_TRIAL.ruinsCoins:0;
   run.hp[0]=id==='ruins'?Math.max(1,before-JOURNEY_TRIAL.ruinsDamage):Math.min(100,before+JOURNEY_TRIAL.forestHeal);run.coins+=coins;
   j.path=id as 'ruins'|'forest';j.branchOutcome={path:j.path,hpBefore:before,hpAfter:run.hp[0],coins};j.completedNodes.push(id);
@@ -56,6 +56,17 @@ export function journeyAfterReward(run:RpgRun):RpgRun{
  return {...run,journey:{...run.journey,location:run.status==='complete'?'battle':'map',currentNode:node,completedNodes:[...new Set([...run.journey.completedNodes,node])]}};
 }
 export function assertJourneyTavern(run:RpgRun){if(!run.journey||run.journey.location!=='tavern'||run.status!=='ready')throw Error('주점에서 준비할 수 있어요.');}
+export function chooseVillageRequestReward(run:RpgRun,reward:unknown):RpgRun{
+ assertJourneyTavern(run);
+ if(reward!=='coins'&&reward!=='heal')throw Error('받을 보상을 선택해 주세요.');
+ const j=run.journey!;
+ if(j.villageRequestReward)throw Error('이미 주점의 부탁을 도왔어요.');
+ if(reward==='heal'&&run.hp[0]>=100)throw Error('HP가 가득 찼어요.');
+ const hp=[...run.hp];let coins=run.coins;
+ if(reward==='coins')coins+=JOURNEY_TRIAL.villageRequestCoins;
+ else hp[0]=Math.min(100,hp[0]+JOURNEY_TRIAL.villageRequestHeal);
+ return {...run,hp,coins,journey:{...j,villageRequestReward:reward},updatedAt:Date.now()};
+}
 export function assertJourneyShop(run:RpgRun){if(!run.journey||run.journey.location!=='map'||run.status!=='ready')throw Error('마을 지도의 잡화점에서 구매할 수 있어요.');}
 export function hearJourneyRumor(run:RpgRun):RpgRun{assertJourneyTavern(run);return {...run,journey:{...run.journey!,rumors:[...new Set([...run.journey!.rumors,JOURNEY_RUMOR.id])]},updatedAt:Date.now()};}
 export function equipJourneyRelic(run:RpgRun,id:string,replace?:string):RpgRun{
@@ -95,11 +106,13 @@ export function journeyDisplayGame(game:Game){return activeJourneyMini(game)||ga
 /** Reject unsupported/corrupt new journey data without rewriting the original storage. */
 export function validateJourneySave(game:Game){
  const run=game.rpgRun,j=run?.journey;if(!j)return;
- const nodes=new Set(JOURNEY_NODES.map(node=>node.id)),unique=(items:unknown)=>Array.isArray(items)&&new Set(items).size===items.length;
+ const nodes=new Set<JourneyNode>([...JOURNEY_NODES.map(node=>node.id),'ruins','forest','town-event']),unique=(items:unknown)=>Array.isArray(items)&&new Set(items).size===items.length;
  if(j.seenScenes!==undefined&&(!Array.isArray(j.seenScenes)||!j.seenScenes.every(id=>typeof id==='string'&&/^ST[123]_POST$/.test(id))))throw Error('이야기 감상 기록의 형식이 올바르지 않아요.');
  const invalid=()=>{throw Error('탐험 여정의 저장 형식이 올바르지 않거나 지원하지 않는 버전이에요. 기존 데이터는 보존했어요.');};
  if(!run.phaseOne||j.version!==1||!['map','tavern','battle','mini-game'].includes(j.location)||!nodes.has(j.currentNode)||!unique(j.startedStages)||!j.startedStages.every(stage=>Number.isInteger(stage)&&stage>=1&&stage<=3)||!unique(j.completedNodes)||!j.completedNodes.every(node=>nodes.has(node))||!Array.isArray(j.rumors)||!j.rumors.every(id=>typeof id==='string')||typeof j.tavernRewardPaid!=='boolean'||j.path&&!['ruins','forest','skip'].includes(j.path))invalid();
  if(j.location==='mini-game'&&!j.mini)invalid();
+ if(j.townEvent&&(!['heal','coins'].includes(j.townEvent.reward)||!Number.isFinite(j.townEvent.hpBefore)||!Number.isFinite(j.townEvent.hpAfter)||!Number.isFinite(j.townEvent.coins)))invalid();
+ if(j.villageRequestReward!==undefined&&j.villageRequestReward!=='coins'&&j.villageRequestReward!=='heal')invalid();
  if(j.mini){const mini=j.mini,child=mini.game,meta=child?.rpgMini;
   if(!child||!child.practice||child.rpgRun||child.hpItemMode||child.stageRun||child.itemRun||!Array.isArray(child.players)||child.players.length!==3||!child.players.every(p=>Array.isArray(p.hand)&&typeof p.id==='string'&&typeof p.token==='string')||!Array.isArray(child.stacks)||!['playing','ended'].includes(child.phase)||!unique(mini.roundIds)||mini.roundIds.length>3||!mini.roundIds.every(id=>typeof id==='string')||!meta||meta.journeyId!==run.id||meta.totalRounds!==3||!Number.isInteger(meta.roundIndex)||meta.roundIndex<1||meta.roundIndex>3||!Number.isFinite(meta.reward)||meta.reward<0||!Number.isFinite(mini.lastReward)||mini.lastReward<0)invalid();
  }
