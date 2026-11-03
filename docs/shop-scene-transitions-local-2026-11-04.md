@@ -19,3 +19,7 @@ TypeScript --noEmit·관련24개 검사 통과. 로컬 브라우저에서844×39
 수정 파일: app/components/RpgJourneyScene.tsx, app/components/RpgPrologue.tsx, app/components/quest-cutscene.css, app/rpg-prologue.css, lib/rpg-prologue-art.ts, tests/rpg-story-continuity.test.ts. 게임 규칙·보상·유물 효과는 변경하지 않았다.
 
 빌드·커밋·push·배포는 실행하지 않았다. 현재 공개 사이트에는 이 후속 수정이 아직 반영되지 않았다.
+
+## 후속 게시 완료
+
+사용자의 이후 수정·업데이트 요청으로 본 변경을 새 지도 HUD·대화·원화 개선과 함께 GitHub·Cloudflare에 게시했다. 2026-11-04, source9b119ee, Worker92f55242-c85d-4d43-bcba-e00af62619b6. 후속 검증은 release-0.6.69-hud-2026-11-04.md 참조.
