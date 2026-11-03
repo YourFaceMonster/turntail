@@ -11,7 +11,7 @@ export function ProloguePicture({cut,duration=cut.duration,hiddenLight=false}:{c
  const artImage=useRef<HTMLImageElement>(null),[light,setLight]=useState<CSSProperties>();
  useEffect(()=>{
   const image=artImage.current,box=image?.parentElement?.parentElement;if(!hiddenLight||!image||!box)return;
-  const align=()=>{if(!image.naturalWidth)return;const portrait=image.currentSrc.includes('portrait'),w=box.clientWidth,h=box.clientHeight,scale=Math.max(w/image.naturalWidth,h/image.naturalHeight),rw=image.naturalWidth*scale,rh=image.naturalHeight*scale;setLight({left:(w-rw)*.5+rw*(portrait?.418:.443),top:(h-rh)*(portrait?1:.5)+rh*(portrait?.67:.724),width:rw*.032,height:rw*.014});};
+  const align=()=>{if(!image.naturalWidth)return;const portrait=image.currentSrc.includes('portrait'),discovery=cut.art?.portrait.includes('blue-glass-discovery'),w=box.clientWidth,h=box.clientHeight,scale=Math.max(w/image.naturalWidth,h/image.naturalHeight),rw=image.naturalWidth*scale,rh=image.naturalHeight*scale,x=discovery?(portrait?.455:.5):(portrait?.418:.443),y=discovery?(portrait?.66:.68):(portrait?.67:.724),size=discovery ? .055 : .032;setLight({left:(w-rw)*.5+rw*x,top:(h-rh)*(portrait?1:.5)+rh*y,width:rw*size,height:rw*size*.45});};
   const observer=new ResizeObserver(align);observer.observe(box);image.addEventListener('load',align);align();return()=>{observer.disconnect();image.removeEventListener('load',align);};
  },[hiddenLight,cut.art?.landscape,cut.art?.portrait]);
  const indoor=['room','table','card'].includes(cut.scene),art=prologueArt(cut);
