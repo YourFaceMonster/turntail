@@ -1,3 +1,4 @@
+import {recordRpgRoundHealth} from './rpg-round-health';
 import {journeyAfterReward} from './rpg-journey.ts';
 import {settle,type Game} from './game.ts';
 import type {RpgRun,RpgResult} from './rpg.ts';
@@ -51,7 +52,7 @@ export function settleRpgPhaseOne(run:RpgRun,result:RpgResult):RpgRun{
  if(run.status!=='playing'||run.roundIds.includes(result.id))return run;
  const delta=result.players.map(player=>player.delta),shortfall=Math.max(0,-delta[0]-run.coins),coins=Math.max(0,run.coins+delta[0]);
  const base={...run,coins,rounds:run.rounds+1,roundIds:[...run.roundIds,result.id],updatedAt:result.at};
- run.hp[0]=Math.max(0,run.hp[0]-shortfall);
+ const hpBeforeMoney=[...run.hp];run.hp[0]=Math.max(0,run.hp[0]-shortfall);recordRpgRoundHealth(run,hpBeforeMoney,true);if(run.roundHealth)run.roundHealth.coinsDelta=coins-run.roundHealth.coinsBefore;base.roundHealth=run.roundHealth;
  result.players[0].total=coins;
  if(run.hp[0]<=0)return {...base,status:'game-over',relics:[],equipped:[],consumables:[],reward:null};
  if(!run.hp.slice(1).every(hp=>hp<=0))return base;

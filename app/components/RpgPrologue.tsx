@@ -11,7 +11,7 @@ export function ProloguePicture({cut,duration=cut.duration,hiddenLight=false}:{c
  const artImage=useRef<HTMLImageElement>(null),[light,setLight]=useState<CSSProperties>();
  useEffect(()=>{
   const image=artImage.current,box=image?.parentElement?.parentElement;if(!hiddenLight||!image||!box)return;
-  const align=()=>{if(!image.naturalWidth)return;const portrait=image.currentSrc.includes('portrait'),discovery=cut.art?.portrait.includes('blue-glass-discovery'),w=box.clientWidth,h=box.clientHeight,scale=Math.max(w/image.naturalWidth,h/image.naturalHeight),rw=image.naturalWidth*scale,rh=image.naturalHeight*scale,x=discovery?(portrait?.455:.5):(portrait?.418:.443),y=discovery?(portrait?.66:.68):(portrait?.67:.724),size=discovery ? .055 : .032;setLight({left:(w-rw)*.5+rw*x,top:(h-rh)*(portrait?1:.5)+rh*y,width:rw*size,height:rw*size*.45});};
+  const align=()=>{if(!image.naturalWidth)return;const portrait=image.currentSrc.includes('portrait'),discovery=cut.art?.portrait.includes('blue-glass-discovery'),w=box.clientWidth,h=box.clientHeight,scale=Math.max(w/image.naturalWidth,h/image.naturalHeight),rw=image.naturalWidth*scale,rh=image.naturalHeight*scale,x=discovery?(portrait?.44:.414):(portrait?.418:.443),y=discovery?(portrait?.569:.532):(portrait?.67:.724),size=discovery ? .045 : .032,position=getComputedStyle(image).objectPosition.split(' '),px=parseFloat(position[0])/100,py=parseFloat(position[1]||position[0])/100;setLight({left:(w-rw)*(Number.isFinite(px)?px:.5)+rw*x,top:(h-rh)*(Number.isFinite(py)?py:.5)+rh*y,width:rw*size,height:rw*size*.45});};
   const observer=new ResizeObserver(align);observer.observe(box);image.addEventListener('load',align);align();return()=>{observer.disconnect();image.removeEventListener('load',align);};
  },[hiddenLight,cut.art?.landscape,cut.art?.portrait]);
  const indoor=['room','table','card'].includes(cut.scene),art=prologueArt(cut);
@@ -24,6 +24,15 @@ export function ProloguePicture({cut,duration=cut.duration,hiddenLight=false}:{c
   <div className="prologue-shade"/>
  </div>;
 }
+/** Retain the outgoing painting until the incoming painting has overlapped it. */
+export function CrossfadePicture({cut,duration=cut.duration,hiddenLight=false}:{cut:PrologueCut,duration?:number,hiddenLight?:boolean}){
+ const art=prologueArt(cut),key=[cut.scene,art?.landscape,art?.portrait,cut.focus].join('|');
+ const [frame,setFrame]=useState({key,cut,duration,hiddenLight,previous:null as null|{cut:PrologueCut,duration:number,hiddenLight:boolean},serial:0});
+ if(frame.key!==key)setFrame({key,cut,duration,hiddenLight,previous:{cut:frame.cut,duration:frame.duration,hiddenLight:frame.hiddenLight},serial:frame.serial+1});
+ useEffect(()=>{if(!frame.previous)return;const timer=setTimeout(()=>setFrame(value=>({...value,previous:null})),520);return()=>clearTimeout(timer);},[frame.serial]);
+ return <div className="story-painting-stack">{frame.previous&&<div key={frame.serial+'-out'} className="story-painting-out"><ProloguePicture {...frame.previous}/></div>}<div key={frame.key} className={frame.previous?'story-painting-in':'story-painting-current'}><ProloguePicture cut={cut} duration={duration} hiddenLight={hiddenLight}/></div></div>;
+}
+
 type Props={enter:()=>void,context?:AudioContext|null,music?:boolean,sound?:boolean,musicVolume?:number,cuts?:readonly PrologueCut[],label?:string,skipLabel?:string};
 export default function RpgPrologue({enter,context,music=true,sound=true,musicVolume=40,cuts=FIRST_PROLOGUE,label='턴테일 프롤로그',skipLabel='건너뛰기'}:Props){
  const finish=useRef(enter);
@@ -48,7 +57,7 @@ export default function RpgPrologue({enter,context,music=true,sound=true,musicVo
  function advance(){if(!artReady)return;const now=performance.now();if(now-lastTap.current<350)return;lastTap.current=now;clock.current!.next();setIndex(clock.current!.index);}
  if(typeof document==='undefined')return null;
  return createPortal(<section ref={root} tabIndex={-1} className="rpg-prologue" role="dialog" aria-modal="true" aria-label={label} data-cut={cut.id} data-paused={!visible} onKeyDown={event=>{event.stopPropagation();if(event.key==='Escape'){event.preventDefault();clock.current!.complete();}if(event.target===event.currentTarget&&(event.key===' '||event.key==='Enter')){event.preventDefault();advance();}if(event.key==='Tab'){event.preventDefault();root.current?.querySelector<HTMLButtonElement>('.prologue-skip')?.focus();}}}>
-  {artReady?<div className="prologue-tap-surface" onClick={advance}><div className="prologue-cut" data-scene={cut.scene} style={{'--cut-duration':`${cut.duration}ms`} as CSSProperties}><ProloguePicture key={sceneGroup.key} cut={{...cuts[sceneGroup.start],poseArt:cut.poseArt}} duration={sceneGroup.duration}/><div key={cut.id} className="prologue-caption" aria-live="polite">{cut.speaker&&<small>{cut.speaker}</small>}<p>{cut.line}</p>{cuts===FIRST_PROLOGUE&&cut.scene==='gate'&&<small>시작 유물 · 금이 간 심장</small>}</div></div></div>:<p className="prologue-loading" role="status">이야기를 펼치는 중…</p>}
+  {artReady?<div className="prologue-tap-surface" onClick={advance}><div className="prologue-cut" data-scene={cut.scene} style={{'--cut-duration':`${cut.duration}ms`} as CSSProperties}><CrossfadePicture cut={{...cuts[sceneGroup.start],poseArt:cut.poseArt}} duration={sceneGroup.duration}/><div key={cut.id} className="prologue-caption" aria-live="polite">{cut.speaker&&<small>{cut.speaker}</small>}<p>{cut.line}</p>{cuts===FIRST_PROLOGUE&&cut.scene==='gate'&&<small>시작 유물 · 금이 간 심장</small>}</div></div></div>:<p className="prologue-loading" role="status">이야기를 펼치는 중…</p>}
   <button className="prologue-skip" onClick={()=>clock.current!.complete()}>{skipLabel} <span aria-hidden="true">↗</span></button><span className="prologue-touch-hint">화면을 누르면 다음 장면</span>
   {artReady&&cut.location&&<div className="prologue-location"><small>현재 위치</small><strong>{cut.location}</strong></div>}
  </section>,document.body);

@@ -12,7 +12,7 @@ export class RpgPreviewSession{
  private initial:Game;
  constructor(game:Game,readonly mode:RpgPreviewMode){
   if(!game.rpgRun?.journey||!game.rpgRun.phaseOne||game.rpgTest||game.hpItemMode)throw Error('화면 테스트용 새 RPG가 필요해요.');
-  this.runId=game.rpgRun.id;this.gear=this.equipment(game);this.initial=structuredClone(game);
+  game.rpgRun.coins=1000;this.runId=game.rpgRun.id;this.gear=this.equipment(game);this.initial=structuredClone(game);
  }
  owns(game:Game){return game.rpgRun?.id===this.runId&&!game.hpItemMode&&!game.rpgTest;}
  private equipment(game:Game){const run=game.rpgRun!;return {relics:[...run.relics],equipped:[...run.equipped],consumables:[...run.consumables]};}
@@ -29,6 +29,7 @@ export class RpgPreviewSession{
   }
   if(target==='tavern')enterJourneyNode(next,'tavern');
   else if(target.startsWith('battle-'))enterJourneyNode(next,target as 'battle-1'|'battle-2'|'battle-3');
+  next.rpgRun!.coins=1000;
   return next;
  }
  update(game:Game){

@@ -7,19 +7,20 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST1_PRE_1",
     "scene": "gate",
     "duration": 5000,
-    "line": "마을로 향하는 관문 앞, 문지기가 길을 막아섰다.",
+    "line": "멈춰라. 낯선 얼굴이군.",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
      "portrait": "/prologue/moon-castle-map-v3.png"
     },
-    "focus": "18% 55%"
+    "focus": "18% 55%",
+    "speaker": "로웬"
    },
    {
     "id": "ST1_PRE_2",
     "scene": "gate",
     "duration": 5000,
-    "line": "이 관문을 지나려면, 먼저 나와 승부해야 한다.",
+    "line": "이 관문을 지나려면 나와 승부해야 한다.",
     "speaker": "로웬",
     "audio": "quiet",
     "art": {
@@ -32,7 +33,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST1_PRE_3",
     "scene": "gate",
     "duration": 5000,
-    "line": "네가 고른 패로 네 실력을 보여 봐.",
+    "line": "여기선 이름도, 신분도 소용없어. 패로 증명해라.",
     "speaker": "로웬",
     "audio": "quiet",
     "art": {
@@ -45,7 +46,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST1_PRE_4",
     "scene": "gate",
     "duration": 5000,
-    "line": "준비됐다면, 시작하지.",
+    "line": "준비됐다면 시작하지.",
     "speaker": "로웬",
     "audio": "quiet",
     "art": {
@@ -60,7 +61,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST1_POST_1",
     "scene": "gate",
     "duration": 5000,
-    "line": "좋아. 네 실력은 인정하겠다.",
+    "line": "흠. 말보다 패가 확실하군.",
     "speaker": "로웬",
     "audio": "quiet",
     "art": {
@@ -73,7 +74,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST1_POST_2",
     "scene": "gate",
     "duration": 5000,
-    "line": "관문 너머가 마을이다. 길을 안내해 주지.",
+    "line": "좋아. 통과를 허락하지. 마을까지 안내해 주겠다.",
     "speaker": "로웬",
     "audio": "quiet",
     "art": {
@@ -86,7 +87,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST1_POST_3",
     "scene": "gate",
     "duration": 5000,
-    "line": "열린 관문 너머로 마을의 풍경이 드러났다.",
+    "line": "굳게 닫혔던 관문이 천천히 열렸다.",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -102,20 +103,21 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST2_PRE_1",
     "scene": "road",
     "duration": 5000,
-    "line": "마을 광장에 들어서자, 누군가 앞으로 나섰다.",
+    "line": "야, 밀라! 저 사람 아니야? 로웬을 이겼다는 사람!",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
      "portrait": "/prologue/moon-castle-map-v3.png"
     },
-    "focus": "50% 62%"
+    "focus": "50% 62%",
+    "speaker": "포코"
    },
    {
     "id": "ST2_PRE_2",
     "scene": "road",
     "duration": 5000,
-    "line": "네가 로웬을 이겼다는 그 사람이야?",
-    "speaker": "포코",
+    "line": "목소리 좀 낮춰. 아직 실력을 본 것도 아니잖아.",
+    "speaker": "밀라",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -127,7 +129,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST2_PRE_3",
     "scene": "road",
     "duration": 5000,
-    "line": "그 소문이 사실인지, 직접 확인하고 싶어.",
+    "line": "그러니까 직접 확인해 보자는 거지!",
     "speaker": "포코",
     "audio": "quiet",
     "art": {
@@ -140,8 +142,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST2_PRE_4",
     "scene": "road",
     "duration": 5000,
-    "line": "나와도 한 판 겨뤄 줘.",
-    "speaker": "포코",
+    "line": "좋아. 소문이 진짜인지 보여 줘.",
+    "speaker": "밀라",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -155,7 +157,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST2_POST_1",
     "scene": "road",
     "duration": 5000,
-    "line": "소문이 괜히 난 건 아니었네.",
+    "line": "와, 진짜였네! 로웬 아저씨가 질 만했어!",
     "speaker": "포코",
     "audio": "quiet",
     "art": {
@@ -168,8 +170,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST2_POST_2",
     "scene": "road",
     "duration": 5000,
-    "line": "다음 길은 북쪽 성채로 이어져. 그곳에 다음 관문이 있어.",
-    "speaker": "포코",
+    "line": "운이 좋았던 것만은 아니네. 인정할게.",
+    "speaker": "밀라",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -181,8 +183,21 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST2_POST_3",
     "scene": "road",
     "duration": 5000,
-    "line": "쌍둥이 수호자를 만나게 될 거야. 준비하고 가.",
+    "line": "다음은 북쪽 성채야. 거기 쌍둥이가 좀 이상하긴 한데…",
     "speaker": "포코",
+    "audio": "quiet",
+    "art": {
+     "landscape": "/prologue/moon-castle-map-v3.png",
+     "portrait": "/prologue/moon-castle-map-v3.png"
+    },
+    "focus": "50% 62%"
+   },
+   {
+    "id": "ST2_POST_4",
+    "scene": "road",
+    "duration": 5000,
+    "line": "포코. 쓸데없는 소리 하지 마. 직접 만나 보면 알겠지.",
+    "speaker": "밀라",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -198,20 +213,21 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST3_PRE_1",
     "scene": "stone",
     "duration": 6000,
-    "line": "북쪽 성채 깊숙한 곳, 쌍둥이가 기다리는 홀에 도착했다.",
+    "line": "형, 또 왔어. 이번엔 꽤 멀리 온 사람인데?",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
      "portrait": "/prologue/moon-castle-map-v3.png"
     },
-    "focus": "88% 30%"
+    "focus": "88% 30%",
+    "speaker": "둘째"
    },
    {
     "id": "ST3_PRE_2",
     "scene": "stone",
     "duration": 6000,
-    "line": "여기까지 어떤 패를 골라 왔지?",
-    "speaker": "둘째",
+    "line": "보인다. 그런데… 그 패는 어디서 났지?",
+    "speaker": "첫째",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -223,8 +239,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST3_PRE_3",
     "scene": "stone",
     "duration": 6000,
-    "line": "하나를 택한다는 건, 다른 하나를 놓는 일이기도 하지.",
-    "speaker": "첫째",
+    "line": "왜? 설마 기억 안 나?",
+    "speaker": "둘째",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -236,8 +252,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST3_PRE_4",
     "scene": "stone",
     "duration": 6000,
-    "line": "그 선택의 끝에서, 너는 무엇을 내어놓게 될까.",
-    "speaker": "둘째",
+    "line": "……쓸데없는 소리 마라.",
+    "speaker": "첫째",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -249,8 +265,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST3_PRE_5",
     "scene": "stone",
     "duration": 6000,
-    "line": "네 다음 선택을 보겠다.",
-    "speaker": "첫째",
+    "line": "하하! 좋아. 어디 한번 보여 줘. 네가 어디까지 갈 수 있는지.",
+    "speaker": "둘째",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -264,8 +280,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST3_POST_1",
     "scene": "stone",
     "duration": 6250,
-    "line": "이번 선택은 여기까지 너를 데려왔군.",
-    "speaker": "첫째",
+    "line": "하하! 형, 봤어? 이번엔 진짜라니까!",
+    "speaker": "둘째",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -277,8 +293,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST3_POST_2",
     "scene": "stone",
     "duration": 6250,
-    "line": "하지만 길은 아직 끝나지 않았다.",
-    "speaker": "둘째",
+    "line": "…아직은 모른다.",
+    "speaker": "첫째",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -290,6 +306,45 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST3_POST_3",
     "scene": "stone",
     "duration": 6250,
+    "line": "늘 그렇게 말하더라. 이번에도.",
+    "audio": "quiet",
+    "art": {
+     "landscape": "/prologue/moon-castle-map-v3.png",
+     "portrait": "/prologue/moon-castle-map-v3.png"
+    },
+    "focus": "88% 30%",
+    "speaker": "둘째"
+   },
+   {
+    "id": "ST3_POST_4",
+    "scene": "stone",
+    "duration": 6250,
+    "line": "길은 열어 주겠다. 하지만 명심해라.",
+    "audio": "quiet",
+    "art": {
+     "landscape": "/prologue/moon-castle-map-v3.png",
+     "portrait": "/prologue/moon-castle-map-v3.png"
+    },
+    "focus": "88% 30%",
+    "speaker": "첫째"
+   },
+   {
+    "id": "ST3_POST_5",
+    "scene": "stone",
+    "duration": 6250,
+    "line": "모든 승부가 이기는 것으로 끝나지는 않는다.",
+    "audio": "quiet",
+    "art": {
+     "landscape": "/prologue/moon-castle-map-v3.png",
+     "portrait": "/prologue/moon-castle-map-v3.png"
+    },
+    "focus": "88% 30%",
+    "speaker": "첫째"
+   },
+   {
+    "id": "ST3_POST_6",
+    "scene": "stone",
+    "duration": 6250,
     "line": "달의 영역 너머, 구름에 둘러싸인 다음 길이 모습을 드러냈다.",
     "audio": "quiet",
     "art": {
@@ -299,7 +354,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "focus": "88% 30%"
    },
    {
-    "id": "ST3_POST_4",
+    "id": "ST3_POST_7",
     "scene": "stone",
     "duration": 6250,
     "line": "새로운 영역을 향해, 다시 한 걸음을 내디뎠다.",
@@ -324,14 +379,8 @@ for(const [stage,sequence] of Object.entries(RPG_CONNECTION_SCENES)){
   for(const cut of cuts){cut.art=art;cut.focus='50% 40%';cut.location=`STAGE ${stage} · ${['','마을 관문','마을 광장','북쪽 성채'][Number(stage)]}`;}
  }
 }
-RPG_CONNECTION_SCENES[3].after[3].art=sceneFrame('moon-castle-map-v3','moon-castle-map-portrait-v5');
-RPG_CONNECTION_SCENES[3].after[3].focus='57% 18%';
-RPG_CONNECTION_SCENES[2].before[0].line='낮의 광장에 들어서자, 두 도전자가 승부 자리로 불렀다.';
-RPG_CONNECTION_SCENES[2].before[2].speaker='밀라';
-RPG_CONNECTION_SCENES[2].before[3].line='우리 둘과 한 판 겨뤄 줘.';
-RPG_CONNECTION_SCENES[2].after[0].speaker='밀라';
-RPG_CONNECTION_SCENES[2].after[1].speaker='포코';
-RPG_CONNECTION_SCENES[2].after[2].speaker='밀라';
+RPG_CONNECTION_SCENES[3].after.at(-1)!.art=sceneFrame('moon-castle-map-v3','moon-castle-map-portrait-v5');
+RPG_CONNECTION_SCENES[3].after.at(-1)!.focus='57% 18%';
 
 // Pose changes retain the same mounted camera and background group.
 RPG_CONNECTION_SCENES[1].before[2].poseArt=sceneFrame('gate-reply-wide-v1','gate-reply-portrait-v1');

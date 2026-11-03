@@ -1,3 +1,5 @@
+import {recordRpgRoundHealth} from './rpg-round-health';
+import {letterQuestView} from './rpg-journey.ts';
 import {BLUE_GLASS_ID,emergencyHerbHealing} from './blue-glass.ts';
 import {isRpgPhaseOne,reconcileRpgEliminations} from './rpg-phase-one.ts';
 import {hpLimit} from './hp-limit';
@@ -50,7 +52,7 @@ export function rpgTacticalView(run:RpgRun,me:number,round:number,game?:Game):Rp
  const visibleItem=run.lastItem?.kind==='seal'&&run.lastItem.actor!==me?undefined:run.lastItem;
  const peeks=(own.peeks||[own.peek].filter(Boolean) as NonNullable<RpgTacticalState['peeks']>).filter(peek=>peek.round===round&&(!game||game.stacks[peek.index]?.[1]?.id===peek.tile.id));
  const handPeek=own.handPeek?.round===round&&(!game||game.players[own.handPeek.target]?.hand.some(tile=>tile.id===own.handPeek!.tile.id))?own.handPeek:undefined;
- return {...run,journey:run.journey?{...run.journey,rumors:me===0?run.journey.rumors:[],mini:undefined,letterMini:undefined,miniSummary:me===0&&run.journey.mini?{roundIndex:run.journey.mini.game.rpgMini!.roundIndex,finished:run.journey.mini.roundIds.length===3}:undefined}:undefined,combat:professionCombatView(run.combat,me,game),enemyConsumables:{[me]:rpgInventory(run,me)},consumables:rpgInventory(run,me),itemGuards:{[me]:!!run.itemGuards?.[me]},tactics:{[me]:{...own,peek:peeks.at(-1),peeks,handPeek,sealed:undefined}},protectedCounts:undefined,lastItem:visibleItem?{...visibleItem,target:visibleItem.kind==='scout'&&visibleItem.actor!==me?-1:visibleItem.target,tiles:visibleItem.actor===me?visibleItem.tiles:undefined}:undefined,lastExchange:visibleExchange,tacticalPeek:peeks.at(-1),tacticalPeeks:peeks,tacticalRound:own.round,tacticalUsed:own.used,tacticalTurn:own.turn};
+ return {...run,journey:run.journey?{...run.journey,letterQuest:letterQuestView(run.journey),rumors:me===0?run.journey.rumors:[],mini:undefined,letterMini:undefined,miniSummary:me===0&&run.journey.mini?{roundIndex:run.journey.mini.game.rpgMini!.roundIndex,finished:run.journey.mini.roundIds.length===3}:undefined}:undefined,combat:professionCombatView(run.combat,me,game),enemyConsumables:{[me]:rpgInventory(run,me)},consumables:rpgInventory(run,me),itemGuards:{[me]:!!run.itemGuards?.[me]},tactics:{[me]:{...own,peek:peeks.at(-1),peeks,handPeek,sealed:undefined}},protectedCounts:undefined,lastItem:visibleItem?{...visibleItem,target:visibleItem.kind==='scout'&&visibleItem.actor!==me?-1:visibleItem.target,tiles:visibleItem.actor===me?visibleItem.tiles:undefined}:undefined,lastExchange:visibleExchange,tacticalPeek:peeks.at(-1),tacticalPeeks:peeks,tacticalRound:own.round,tacticalUsed:own.used,tacticalTurn:own.turn};
 }
 export function exchangeTargetAvailable(game:ReturnType<typeof view>,id:string,target:number){
  const minimum=exchangeMinimum(id),count=id==='fates-scales'?2:1,person=game.players[target];
@@ -86,7 +88,7 @@ export function rpgItemAvailability(game:ReturnType<typeof view>,id:string,enabl
 }
 function randomIndex(length:number){const value=new Uint32Array(1);crypto.getRandomValues(value);return value[0]%length;}
 function takeRandom(hand:Tile[],count:number){const pool=[...hand],picked:Tile[]=[];for(let i=0;i<count;i++)picked.push(pool.splice(randomIndex(pool.length),1)[0]);return picked;}
-function record(g:Game,who:number,id:RpgTacticalItem,target:number,kind:RpgItemEvent['kind'],amount?:number){g.rpgRun!.lastItem={id:uid(),actor:who,target,itemId:id,kind,amount,at:Date.now()};if((kind==='damage'||kind==='heal')&&(!g.hpItemMode||isBattleItemMode(g))){const after=g.rpgRun!.hp[target];g.rpgRun!.lastItem.hpAfter=after;g.rpgRun!.lastItem.hpBefore=after+(kind==='damage'?1:-1)*(amount||0);}if(g.hpItemMatch)g.hpItemMatch.roundItems.push({actor:who,target,id,kind,amount});}
+function record(g:Game,who:number,id:RpgTacticalItem,target:number,kind:RpgItemEvent['kind'],amount?:number){g.rpgRun!.lastItem={id:uid(),actor:who,target,itemId:id,kind,amount,at:Date.now()};if((kind==='damage'||kind==='heal')&&(!g.hpItemMode||isBattleItemMode(g))){const after=g.rpgRun!.hp[target];g.rpgRun!.lastItem.hpAfter=after;g.rpgRun!.lastItem.hpBefore=after+(kind==='damage'?1:-1)*(amount||0);if(!g.hpItemMode){const before=[...g.rpgRun!.hp];before[target]=g.rpgRun!.lastItem.hpBefore;recordRpgRoundHealth(g.rpgRun!,before);}}if(g.hpItemMatch)g.hpItemMatch.roundItems.push({actor:who,target,id,kind,amount});}
 export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:number[]=[],who=0){
  const run=g.rpgRun;
  if(!g.practice||!run||run.status!=='playing'||g.phase!=='playing'||g.turn!==who||!g.players[who])throw Error('RPG 전술 아이템은 진행 중인 내 차례에만 사용할 수 있어요.');

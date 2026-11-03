@@ -83,3 +83,9 @@ html body .turntale .title-play>.menu-single .menu-button-copy>small{display:non
 @media(max-width:370px){html body .turntale .modal.tutorial-modal{padding:58px 18px 20px!important}.turntale .tutorial-modal .tutorial-heading h2{font-size:18px!important}.hp-item-result .rpg-hp-bar.has-identity{padding:8px!important}.round-hp-totals{gap:4px;font-size:9px}}
 @media(prefers-reduced-motion:reduce){.profession-gauge.is-full>i,.steel-strike .steel-blade,.steel-strike .steel-sweep,.steel-strike.is-impact .steel-blade,.steel-contact>i,.mage-impact-anchor .mage-spell-hit.spell-wall>img,.firewall-core,.firewall-shockwave,.firewall-embers>i{animation:none!important}.steel-strike .steel-sweep{opacity:.7}.steel-strike .steel-blade{opacity:1;transform:none}.firewall-embers{display:none}.mage-impact-anchor .mage-spell-hit.spell-wall>img{opacity:.9;scale:1}}
 @media(prefers-reduced-motion:reduce){.tutorial-flying-tile,.tutorial-table[data-tutorial-landing=true] .tutorial-tiles{animation:none!important}}
+
+.steel-strike .blade-shadow{fill:#abc2ce;stroke:#1c2938;stroke-width:2.5;stroke-linejoin:round}
+.steel-strike .blade-face{fill:#f3faf7;stroke:none}.steel-strike .blade-ridge{fill:#8da7b9;stroke:none}
+.steel-strike .blade-fuller{fill:none;stroke:#d4e4ec;stroke-width:1.5;stroke-linecap:round}
+.steel-strike .blade-guard,.steel-strike .blade-pommel{fill:#c7a259;stroke:#463824;stroke-width:2;stroke-linejoin:round}
+.steel-strike .blade-grip{fill:#684934;stroke:#27232b;stroke-width:2}.steel-strike .blade-wrap{fill:none;stroke:#bf9369;stroke-width:1.8}

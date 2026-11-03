@@ -13,3 +13,32 @@
 @media(max-width:600px){.rpg-stage-rewards{grid-template-columns:1fr}.rpg-stage-rewards>button{min-height:66px}.rpg-stage-rewards img{width:40px;height:40px}}
 @media(max-height:500px) and (orientation:landscape){.rpg-stage-result{padding:16px 22px}.rpg-stage-result h2{font-size:22px}.rpg-stage-rewards>button{min-height:80px;padding:8px}.rpg-stage-rewards img{width:34px;height:34px}}
 @media(prefers-reduced-motion:reduce){.rpg-phase-one .rpg-eliminated .seat-card{transition:none}}
+
+/* Victory painting behind a focused result and reward choice. */
+.stage-clear-shade{isolation:isolate;background:#080c12;overflow:auto}
+.stage-clear-background{position:fixed;inset:0;z-index:-2;pointer-events:none}
+.stage-clear-background img{width:100%;height:100%;object-fit:cover;filter:brightness(.48) saturate(.8)}
+.stage-clear-shade:before{content:'';position:fixed;inset:0;z-index:-1;background:linear-gradient(#09101955,#091019c9);pointer-events:none}
+.stage-clear-shade .rpg-stage-result{width:min(730px,calc(100vw - 24px));border:1px solid #d2b16c88;background:#101820ed;box-shadow:0 20px 80px #0009;padding:24px}
+.stage-clear-header{text-align:center}.stage-clear-header h2{margin:6px 0 8px;color:#f5dca0}.stage-clear-header>p{font-size:13px;color:#d0c4ac;margin:0 0 16px}
+.stage-clear-shade .rpg-stats{display:flex;justify-content:center;gap:20px;padding:10px;border-top:1px solid #e1c58a33;border-bottom:1px solid #e1c58a33}
+.stage-clear-recovery{font-size:12px;margin:12px 0;color:#b9d6be}.stage-clear-recovery summary{cursor:pointer}.stage-clear-choice h3{font-size:18px;margin:18px 0 10px}.stage-clear-choice h3 small{display:block;font-size:10px;letter-spacing:.1em;color:#ccb27b;margin-bottom:5px}
+.stage-clear-shade .rpg-stage-rewards{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stage-clear-shade .rpg-stage-rewards>button{padding:14px 10px;min-height:190px;justify-content:flex-start;border:1px solid #cfb67466;background:linear-gradient(#d3ae5820,#15202bbf);color:#fff1cd}
+.stage-clear-shade .rpg-stage-rewards>button:hover:not(:disabled){border-color:#f5d595;background:#d5b36d26;transform:translateY(-2px)}
+.stage-clear-shade .rpg-stage-rewards strong{font-size:15px}.stage-clear-shade .rpg-stage-rewards small{font-size:12px;color:#c6c5ba}.stage-clear-shade .rpg-stage-rewards img,.stage-reward-number{height:58px;width:58px;margin:0 auto 6px}.stage-reward-number{display:grid;place-items:center;font:bold 30px Georgia,serif;color:#f3cc70}.stage-reward-number.is-heal{color:#a2d4b0}
+@media(max-width:520px){.stage-clear-shade .rpg-stage-result{padding:18px 14px}.stage-clear-shade .rpg-stage-rewards{grid-template-columns:1fr;gap:7px}.stage-clear-shade .rpg-stage-rewards>button{display:grid;grid-template-columns:44px 1fr;min-height:80px;gap:3px 12px;text-align:left;align-items:center}.stage-clear-shade .rpg-stage-rewards img,.stage-reward-number{grid-row:1/3;width:42px;height:42px;margin:0}.stage-clear-shade .rpg-stage-rewards small{grid-column:2}.stage-clear-header h2{font-size:24px}}
+@media(max-height:500px) and (orientation:landscape){.stage-clear-shade .rpg-stage-result{padding:14px 20px}.stage-clear-header h2{font-size:23px}.stage-clear-header>p{margin-bottom:8px}.stage-clear-shade .rpg-stage-rewards>button{min-height:135px;padding:10px}.stage-clear-shade .rpg-stage-rewards img,.stage-reward-number{height:38px;width:38px}.stage-clear-choice h3{margin-top:12px}.stage-clear-shade .rpg-stats{padding:7px}}
+
+@media(max-height:500px) and (orientation:landscape){
+ .stage-clear-shade .rpg-stage-result .stage-clear-header h2{font-size:22px;line-height:1.2;margin:3px 0 6px}
+ .stage-clear-shade .stage-clear-header>p{display:none}
+ .stage-clear-shade .rpg-stage-result .rpg-stats{margin:5px 0;padding:4px;gap:16px;min-height:0}
+ .stage-clear-shade .rpg-stage-result .rpg-stats>span{min-height:0;min-width:0;padding:3px 6px;border:0;background:none;font-size:11px}
+ .stage-clear-shade .rpg-stage-result .rpg-stats b{display:inline;font-size:14px;margin-left:4px}
+ .stage-clear-shade .stage-clear-recovery{margin:5px 0;font-size:11px}
+ .stage-clear-shade .stage-clear-choice h3{font-size:15px;margin:8px 0 5px}.stage-clear-shade .stage-clear-choice h3 small{display:none}
+ .stage-clear-shade .rpg-stage-rewards{margin:6px 0}.stage-clear-shade .rpg-stage-rewards>button{min-height:105px;padding:8px;gap:5px}
+ .stage-clear-shade .rpg-stage-rewards strong{font-size:13px}.stage-clear-shade .rpg-stage-rewards small{font-size:10px}
+ .stage-clear-shade .rpg-stage-result>.text-btn{min-height:26px;padding:4px 8px;font-size:11px;margin-top:0}
+}

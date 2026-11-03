@@ -15,3 +15,28 @@
 @media(prefers-reduced-motion:reduce){.quest-hidden-light{animation:none;opacity:.75}}
 
 @media(max-aspect-ratio:1/1){.quest-cutscene[data-painting=watchtower-arrival] .prologue-scene-art{object-position:50% 100%}.quest-cutscene[data-painting=watchtower-arrival] .quest-dialogue{padding:14px}.quest-cutscene[data-painting=watchtower-arrival] .quest-dialogue-text p{font-size:15px;line-height:1.45}.quest-cutscene[data-painting=watchtower-arrival] .quest-dialogue-text small{margin-bottom:6px}.quest-cutscene[data-painting=watchtower-arrival] .quest-scene-choices{grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.quest-cutscene[data-painting=watchtower-arrival] .quest-scene-choices>button{font-size:13px;padding:10px;min-height:44px}}
+
+/* Compact shop rows share the existing item-match market painting. */
+body>.journey-popup-shade>.journey-popup{background:linear-gradient(135deg,#17171be8,#29221de8)!important;border-color:#b99a6088;backdrop-filter:blur(5px)}
+body>.journey-popup-shade>.journey-popup:has(.village-market){width:min(780px,calc(100vw - 20px));background:linear-gradient(#181719a6,#181719ed 45%),url('/ui/market-interior-v1.png') center top/cover!important}
+.journey-popup .village-market-layout{grid-template-columns:1fr}.journey-popup .village-market-bag{display:none}
+.journey-popup .village-market-grid{grid-template-columns:minmax(0,1fr)!important;gap:5px}
+.journey-popup .village-product.compact-product{display:grid;grid-template-columns:minmax(0,1fr) 68px 56px;align-items:stretch;min-height:48px;border:1px solid #c5ab7155;border-radius:5px;background:#29251ee6}
+.journey-popup .shop-product-summary{display:flex;flex-direction:row;justify-content:flex-start;min-height:46px;gap:9px;padding:5px 8px;text-align:left;background:transparent}.journey-popup .shop-product-summary>span:nth-child(2){width:auto;flex:1}.journey-popup .shop-product-summary strong{font-size:12px}.journey-popup .shop-product-summary small{font-size:10px}
+.journey-popup .compact-product .village-product-art{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;overflow:hidden;padding:0;background:none}.journey-popup .village-product-art .rpg-item-icon{display:block!important;width:34px!important;height:34px!important;position:relative!important;inset:auto!important}.journey-popup .village-product-art img{display:block;position:static!important;width:100%!important;height:100%!important;object-fit:contain!important}
+.shop-product-price{display:flex;flex-direction:column;justify-content:center;align-items:center;border-left:1px solid #b99a6044;font-size:13px;color:#efcf84}.shop-product-price small{font-size:9px}.shop-product-buy{border:0;border-left:1px solid #b99a6044;background:#9e763e44;color:#ffe5a8;font-size:11px}.shop-product-buy:hover:not(:disabled){background:#b48b4a77}.shop-product-buy:disabled{background:#48484b66;color:#a6a6a6}.journey-popup .product-unavailable{background:#303034dd;border-color:#70707455}.product-unavailable .shop-product-summary,.product-unavailable .shop-product-price{filter:grayscale(1);opacity:.5}
+.shop-detail-art{width:80px;height:80px;margin:10px auto}.shop-detail-art img,.shop-detail-art .rpg-item-icon{width:100%;height:100%;object-fit:contain}
+/* Captions and choices occupy distinct areas without green panels. */
+.quest-cutscene .quest-dialogue{background:#0009;border:1px solid #000b;border-radius:8px;padding:14px 18px;gap:10px}
+.quest-cutscene .quest-scene-choices{align-self:flex-start;display:flex;flex-direction:column;align-items:flex-start;gap:7px;margin-top:8px;width:100%;text-align:left}
+.quest-cutscene .quest-scene-choices>button{min-height:38px;padding:6px 10px;border:0;border-left:2px solid #d6b57999;border-radius:0;background:none!important;box-shadow:none;color:#f4dfb8;text-align:left;font-size:14px;text-shadow:0 2px 3px #000}
+.quest-cutscene .quest-scene-choices>button:hover:not(:disabled),.quest-cutscene .quest-scene-choices>button:focus-visible{background:#ffffff18!important;outline:1px solid #d6b57966}
+@media(max-width:520px){.quest-cutscene .quest-dialogue{padding:12px}.journey-popup .village-product.compact-product{grid-template-columns:minmax(0,1fr) 55px 46px}.journey-popup .shop-product-summary{gap:6px}}
+
+/* Dense single-row products with a readable effect between name and price. */
+.journey-popup .village-market-grid{gap:3px}
+.journey-popup .village-product.compact-product{min-height:42px}
+.journey-popup .shop-product-summary{min-height:40px;padding:3px 7px;gap:8px}
+.journey-popup .shop-product-summary>span:nth-child(2){flex:0 0 100px;min-width:0}
+.journey-popup .shop-product-effect{flex:1;min-width:0;color:#e0d4b9;font-size:11px;line-height:1.35;white-space:normal}
+@media(max-width:520px){.journey-popup .shop-product-summary{flex-wrap:wrap;gap:2px 7px}.journey-popup .shop-product-summary>span:nth-child(2){flex:1}.journey-popup .shop-product-effect{flex:0 0 calc(100% - 41px);margin-left:41px;font-size:10px}.journey-popup .shop-product-summary strong{font-size:11px}}

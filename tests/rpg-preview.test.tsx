@@ -48,7 +48,7 @@ test('HP zero still advances a disposable run, preserving its gear and leaving t
 });
 test('natural clears do not duplicate settlement or rewards; tavern mini-games retain their own three-round rules',()=>{
  const game=createRpgJourneyGame('정상 클리어'),session=new RpgPreviewSession(game,'one-round');enterJourneyNode(game,'battle-1');session.update(game);game.rpgRun!.hp=[60,0,0];reconcileRpgEliminations(game);
- assert.equal(game.rpgRun!.status,'allocation');session.update(game);assert.equal(game.rpgRun!.rounds,1);assert.equal(game.rpgRun!.coins,30);
+ assert.equal(game.rpgRun!.status,'allocation');session.update(game);assert.equal(game.rpgRun!.rounds,1);assert.equal(game.rpgRun!.coins,1030);
  enterJourneyNode(game,'tavern');startJourneyMini(game);const mini=activeJourneyMini(game)!;finishHand(mini);const before=JSON.stringify(game);assert.equal(session.update(game),false);assert.equal(JSON.stringify(game),before);
 });
 test('screen preview opens the tavern and every stage directly without playing a hand, and can go back freely',()=>{
@@ -68,4 +68,12 @@ test('the screen-only toolbar offers a no-combat tavern shortcut and prologue re
  const tools=renderToStaticMarkup(h(RpgPreviewLabel,{mode:'screens',exit:()=>{},screen:()=>{}}));
  for(const label of ['테스트 화면 바로가기','주점 바로 보기','지도 보기','프롤로그 다시 보기','ST1 전투 화면','ST2 전투 화면','ST3 전투 화면'])assert.ok(tools.includes(label));
  const oneRound=renderToStaticMarkup(h(RpgPreviewLabel,{mode:'one-round',exit:()=>{},screen:()=>{}}));assert.ok(!oneRound.includes('<select'));
+});
+
+test('disposable preview starts each selected screen with 1000 coins without funding normal journeys',()=>{
+ const normal=createRpgJourneyGame('일반'),before=normal.rpgRun!.coins;
+ const game=createRpgJourneyGame('화면'),session=new RpgPreviewSession(game,'screens');
+ assert.equal(game.rpgRun!.coins,1000);
+ for(const screen of ['map','tavern','battle-1','battle-2','battle-3'] as const)assert.equal(session.screen(game,screen).rpgRun!.coins,1000);
+ assert.equal(normal.rpgRun!.coins,before);
 });

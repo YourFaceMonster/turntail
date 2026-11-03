@@ -1,3 +1,4 @@
+import {recordRpgRoundHealth} from './rpg-round-health';
 import {isRpgPhaseOne,reconcileRpgEliminations,RPG_PHASE_ONE} from './rpg-phase-one.ts';
 import {hpLimit} from './hp-limit';
 import {uid,view,type Game} from './game.ts';
@@ -56,6 +57,7 @@ export function useProfessionActive(game:Game,who:number,target=-1,now=Date.now(
  if(profession==='mage'&&!run.hp.some((hp,seat)=>seat!==who&&hp>0))throw Error('공격할 상대가 없어요.');
  const value=PROFESSION_ACTIVES[profession].values[activeGauge(game,who)],hpBefore=[...run.hp],damage=game.players.map((_,seat)=>seat!==who&&run.hp[seat]>0&&(profession==='mage'||profession==='swordsman'&&seat===target)?Math.min(run.hp[seat],blockItemBattleDamage(game,seat,value,now)):0),healing=game.players.map((_,seat)=>profession==='cleric'&&seat===who?Math.min(value,hpLimit(run)-run.hp[seat]):0);
  const {state,before,spent,after}=consumeProfessionGauge(game,who,now);run.hp=run.hp.map((hp,seat)=>Math.max(0,Math.min(hpLimit(run),hp-damage[seat]+healing[seat])));
+ if(!game.hpItemMode)recordRpgRoundHealth(run,hpBefore);
  const event:ProfessionActiveEvent={id:uid(),round:game.round,actor:who,profession,spent,gaugeBefore:before,gaugeAfter:after,...(profession==='swordsman'?{target}:{}),damage,healing,hpBefore,hpAfter:[...run.hp],at:now+ACTIVE_IMPACT_MS};state.lastEvent=event;state.events.push(event);
  game.turnReadyAt=Math.max(game.turnReadyAt||0,now+ACTIVE_PRESENTATION_MS);game.log=[`${game.players[who].name} · ${PROFESSION_ACTIVES[profession].name} · ${spent}칸 소비 · ${profession==='cleric'?`HP +${healing[who]}`:game.players.flatMap((player,seat)=>seat!==who&&(profession==='mage'||seat===target)?[`${player.name} HP −${damage[seat]}`]:[]).join(' · ')}`,...game.log].slice(0,40);
  if(isRpgPhaseOne(game)){reconcileRpgEliminations(game,now);return event;}

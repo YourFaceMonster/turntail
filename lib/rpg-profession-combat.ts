@@ -1,3 +1,4 @@
+import {beginRpgRoundHealth,recordRpgRoundHealth} from './rpg-round-health';
 import {isRpgPhaseOne,rpgAlive,reconcileRpgEliminations,chargeRpgDuel} from './rpg-phase-one.ts';
 import {PROFESSION_ACTIVES} from './profession-actives.ts';
 import {itemBattleRelicWin} from './item-battle-relics.ts';
@@ -29,7 +30,7 @@ export function resetProfessionCombat(game:Game){
  const avatars=game.players.map(player=>player.avatar||'');
  if(avatars.slice(1).join('|')!==state.avatars.slice(1).join('|'))state.professions=avatars.map((avatar,index)=>index===0?state.professions[0]:npcProfession(avatar,index));
  Object.assign(state,{round:game.round,activeUsed:game.players.map(()=>false),battleTiles:game.players.map(()=>0),battles:[],lastBattle:undefined,effects:[],privateReveals:{},avatars});
- resetItemBattle(game);resetProfessionActiveEvents(game);
+ resetItemBattle(game);resetProfessionActiveEvents(game);if(!game.hpItemMode)beginRpgRoundHealth(game.rpgRun!,game.round);
 }
 export function recordProfessionBattlePlay(game:Game,who:number,count:number){if(game.rpgRun?.combat&&!game.hpItemMode)game.rpgRun.combat.battleTiles[who]+=count;}
 function take<T>(pool:readonly T[],count:number):T[]{const choices=[...pool],picked:T[]=[];while(choices.length&&picked.length<count){const random=new Uint32Array(1);crypto.getRandomValues(random);picked.push(choices.splice(random[0]%choices.length,1)[0]);}return picked;}
@@ -99,7 +100,7 @@ export function resolveProfessionRpgBattle(game:Game,now=Date.now(),roundEnding=
   if(run.equipped.includes('cracked-heart')&&!run.crackedHeartUsed.includes(run.stage)){const blocked=Math.min(8,damageTaken[0]);damageTaken[0]-=blocked;blockedDamage[0]+=blocked;run.crackedHeartUsed.push(run.stage);relics.push({relicId:'cracked-heart',message:`피해 ${blocked} 방어`});}
   if(run.shield>0){const blocked=Math.min(run.shield,damageTaken[0]);damageTaken[0]-=blocked;blockedDamage[0]+=blocked;run.shield-=blocked;}
  }
- run.hp=run.hp.map((hp,seat)=>Math.min(hpLimit(run),Math.max(0,hp+profession.heal[seat]-damageTaken[seat])));run.updatedAt=now;
+ run.hp=run.hp.map((hp,seat)=>Math.min(hpLimit(run),Math.max(0,hp+profession.heal[seat]-damageTaken[seat])));run.updatedAt=now;recordRpgRoundHealth(run,hpBefore);
  const event:HpBattleEvent={...(isRpgPhaseOne(game)?{excludedSeats:game.players.flatMap((_,seat)=>hpBefore[seat]<=0?[seat]:[])}:{}),...(relics.length?{relics,relicDamage:relic.damage,relicHealing:relicHeal}:{}),id,round:game.round,actor,label,damage:playedCount,ordinal:state.battles.length+1,winningTiles:game.trick.map(tile=>({...tile})),playedCount,hpBefore,hpAfter:[...run.hp],damageTaken,blockedDamage,professions:profession.effects,roundFinal:roundEnding||(isRpgPhaseOne(game)?run.hp[0]<=0||run.hp.slice(1).every(hp=>hp<=0):run.hp.some(hp=>hp<=0)),at:now};
  state.battles.push(event);state.lastBattle=event;state.battleTiles=game.players.map(()=>0);
  if(relics.length)Object.assign(run,withRelicActivations(run,relics,now));
