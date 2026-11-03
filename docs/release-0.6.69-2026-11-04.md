@@ -24,3 +24,11 @@
 ## 배포
 
 사용자 요청에 따라 GitHub 소스 반영 및 Cloudflare 직접 배포. Sites 저장소·동기화·게시 도구는 사용하지 않는다. 버전은 요청대로 0.6.69 유지. 운영 빌드 5단계 통과. 큰 클라이언트 청크 및 라우트 정적 분류 안내가 있었으며 빌드는 성공했다. Cloudflare 배포 결과는 완료 후 아래에 기록한다.
+
+## 게시 완료 · 2026-11-04
+
+GitHub main 소스 커밋: 7d6c5cd0c46a9545a1d618c5649f8b3a7d824e1d. Cloudflare Worker 버전: d103db4f-cf6c-4fbb-8dd1-5eeea626b6fa. 운영 빌드 5단계·배포 성공.
+
+공개 홈페이지 HTTP 200 및 0.6.69 확인. 새 page CSS·index CSS·page JS·스토리 JS 네 파일 모두 HTTP 200과 로컬 빌드 SHA-256 일치를 확인했다. 공개 홈페이지가 새 CSS와 스토리 파일을 참조한다. 공개 브라우저에서 메인 화면도 확인했다. 공개 전체 퀘스트·대전 재생은 미수행이다.
+
+게임: https://turntail.yousexybaby.workers.dev/ . 워크스페이스 artifacts/deployment-0.6.69-2026-11-04.json에 응답·해시 근거 기록. 이번 배포 이후 별도 지시 없는 수정은 다시 로컬 저장만 한다.
