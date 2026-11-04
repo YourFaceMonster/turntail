@@ -1,0 +1,58 @@
+{
+  "checkedAt": "2026-11-04T12:07:44.674Z",
+  "site": "https://turntail.yousexybaby.workers.dev",
+  "sourceCommit": "286069f",
+  "workerVersion": "d4de37f0-d73d-46c7-b8f1-d16d88285dcf",
+  "homepageStatus": 200,
+  "homepageCssMatchesBuild": true,
+  "checks": [
+    {
+      "url": "/_next/static/chunks/page-CWXa6dpK.js",
+      "status": 200,
+      "sha256": "42e69b52e34b93e2810ce9ebf26135869e9974e3c1158add690362bc8916005e",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/index.CTptZD_d.css",
+      "status": 200,
+      "sha256": "46df306509202ef59cff62f6bc5ef45a10795bc042dc677f5a7f4e389ed8acff",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/page.JfydBzQn.css",
+      "status": 200,
+      "sha256": "ca1097ed9455907dd4fb48eb468097cae0efd8449e55b6125f19dcfd86054ac4",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/page.SmT-LMGj.css",
+      "status": 200,
+      "sha256": "b215bb0f19115fd9a9fb201ef9c2e9f709bd109ce18ad68c87df06f6c4415e1b",
+      "match": true
+    },
+    {
+      "url": "/item-battle-v1/professions/swordsman-turntale-v5.png",
+      "status": 200,
+      "sha256": "aecc27cd521fdd3732b908c7238ee3f8f929cb972d5bd3db4dbd06f9beb63590",
+      "match": true
+    },
+    {
+      "url": "/item-battle-v1/professions/rogue-turntale-v5.png",
+      "status": 200,
+      "sha256": "0f08ed791f12d7b443686427ff8084d3f6ba67ebce0670768009e1f2c7eace2f",
+      "match": true
+    },
+    {
+      "url": "/item-battle-v1/professions/cleric-turntale-v5.png",
+      "status": 200,
+      "sha256": "91356caad274d8476e841c30d3fd54931f27e807f4990b29c7ccba5a5b4b4a3e",
+      "match": true
+    },
+    {
+      "url": "/item-battle-v1/professions/mage-turntale-v5.png",
+      "status": 200,
+      "sha256": "8f0f1e73000a224d17017eb828a708faabdd0123585bfb91f34c4ba7994a88e8",
+      "match": true
+    }
+  ]
+}
