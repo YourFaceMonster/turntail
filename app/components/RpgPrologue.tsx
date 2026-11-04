@@ -1,4 +1,5 @@
 'use client';
+import {questLightAnchor,coverImagePoint} from '../../lib/quest-light-position';
 import {SuitEmblem} from './TileFace';
 import {useEffect,useRef,useState,type CSSProperties} from 'react';
 import {createPortal} from 'react-dom';
@@ -13,8 +14,9 @@ export function ProloguePicture({cut,duration=cut.duration,hiddenLight=false}:{c
  const artImage=useRef<HTMLImageElement>(null),[light,setLight]=useState<CSSProperties>();
  useEffect(()=>{
   const image=artImage.current,box=image?.parentElement?.parentElement;if(!hiddenLight||!image||!box)return;
-  const align=()=>{if(!image.naturalWidth)return;const portrait=image.currentSrc.includes('portrait'),newTower=cut.art?.landscape.includes('arrival-wide-v4'),discovery=cut.art?.portrait.includes('blue-glass-discovery'),w=box.clientWidth,h=box.clientHeight,scale=Math.max(w/image.naturalWidth,h/image.naturalHeight),rw=image.naturalWidth*scale,rh=image.naturalHeight*scale,x=discovery?(portrait?.44:.414):(newTower?(portrait?.55:.493):(portrait?.418:.443)),y=discovery?(portrait?.569:.532):(newTower?(portrait?.651:.744):(portrait?.67:.724)),size=discovery ? .045 : .032,position=getComputedStyle(image).objectPosition.split(' '),px=parseFloat(position[0])/100,py=parseFloat(position[1]||position[0])/100;setLight({left:(w-rw)*(Number.isFinite(px)?px:.5)+rw*x,top:(h-rh)*(Number.isFinite(py)?py:.5)+rh*y,width:rw*size,height:rw*size*.45});};
-  const observer=new ResizeObserver(align);observer.observe(box);image.addEventListener('load',align);align();return()=>{observer.disconnect();image.removeEventListener('load',align);};
+  const align=()=>{if(!image.naturalWidth||!image.clientWidth)return;const anchor=questLightAnchor(image.currentSrc),style=getComputedStyle(image),position=style.objectPosition.split(' '),axis=(v:string|undefined)=>v==='left'||v==='top'?0:v==='right'||v==='bottom'?1:v==='center'||!v?.endsWith('%')? .5:parseFloat(v)/100;
+  const point=coverImagePoint(image.clientWidth,image.clientHeight,image.naturalWidth,image.naturalHeight,axis(position[0]),axis(position[1]),anchor.x,anchor.y);setLight({left:image.offsetLeft+point.left,top:image.offsetTop+point.top,width:point.width*anchor.size,height:point.width*anchor.size*.45});};
+ const observer=new ResizeObserver(align);observer.observe(box);image.addEventListener('load',align);align();return()=>{observer.disconnect();image.removeEventListener('load',align);};
  },[hiddenLight,cut.art?.landscape,cut.art?.portrait]);
  const indoor=['room','table','card'].includes(cut.scene),art=prologueArt(cut);
  return <div className={`prologue-picture scene-${cut.scene}`} data-location={cut.location||undefined} style={{'--scene-duration':`${duration}ms`} as CSSProperties} aria-hidden="true">

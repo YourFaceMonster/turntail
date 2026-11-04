@@ -26,7 +26,7 @@ export default function QuestCutscene({title,speaker,speakers,lines,scene,choice
   {last&&<div className="quest-scene-choices">{reward?<><button className="secondary" disabled={busy} onClick={()=>setRewardOpen(true)}>푸른 유리 · 유물 확인</button><button className="secondary" disabled={busy} onClick={close}>지도로 돌아간다</button></>:choices.map(choice=><button key={choice.label} className="secondary" disabled={busy||choice.disabled} onClick={choice.choose}>{choice.label}</button>)}</div>}{error&&<p role="alert">{error}</p>}</div>
   {last&&reward&&rewardOpen&&<QuestRewardPopup reward={reward} choices={choices} busy={busy} close={()=>setRewardOpen(false)}/>}
 
-  <button className="prologue-skip" disabled={busy} onClick={close}>돌아가기 ↗</button>
+
  </section>;
 }
 

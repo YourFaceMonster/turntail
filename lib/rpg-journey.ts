@@ -105,14 +105,13 @@ export function discoverWayfarerRelic(run:RpgRun):RpgRun{
  const j=run.journey;if(!j||j.location!=='watchtower'||!j.wayfarerHerbGiven||run.status!=='ready')throw Error('여행자의 단서를 따라 파수탑에 도착해야 해요.');
  if(j.watchtowerRelicFound)throw Error('파수탑의 유물을 이미 찾았어요.');
  const found={...run,journey:{...j,watchtowerRelicFound:true,completedNodes:[...new Set<JourneyNode>([...j.completedNodes,'watchtower'])],rumors:[...new Set([...j.rumors,JOURNEY_BLUE_GLASS_RUMOR.id])]},updatedAt:Date.now()};
- return run.relics.length<6||run.relics.includes(BLUE_GLASS_ID)?claimWatchtowerRelic(found):found;
+ return claimWatchtowerRelic(found);
 }
-/** A full bag keeps the reward here until an explicit replacement is chosen. */
+/** Unique relics have no storage cap; equipment stays limited to three. */
 export function claimWatchtowerRelic(run:RpgRun,replace?:string):RpgRun{
  const j=run.journey;if(!j||j.location!=='watchtower'||run.status!=='ready'||!j.watchtowerRelicFound||j.watchtowerRelicClaimed)throw Error('파수탑에서 아직 받지 않은 푸른 유리를 확인해 주세요.');
  let relics=[...run.relics];
  if(!relics.includes(BLUE_GLASS_ID)){
-  if(relics.length>=6){if(!replace||!relics.includes(replace)||run.equipped.includes(replace))throw Error('가방에서 내려놓을 미장착 유물을 선택해 주세요.');relics=relics.filter(id=>id!==replace);}
   relics.push(BLUE_GLASS_ID);
  }
  const equipped=run.equipped.includes(BLUE_GLASS_ID)||run.equipped.length>=3?run.equipped:[...run.equipped,BLUE_GLASS_ID];
@@ -121,7 +120,7 @@ export function claimWatchtowerRelic(run:RpgRun,replace?:string):RpgRun{
 export function equipJourneyRelic(run:RpgRun,id:string,replace?:string):RpgRun{
  assertJourneyTavern(run);if(!run.relics.includes(id))throw Error('보유한 유물을 선택해 주세요.');
  let equipped=run.equipped.filter(relic=>run.relics.includes(relic));
- if(equipped.includes(id)){if(run.relics.length-equipped.length>=3)throw Error('가방이 가득 찼어요. 보관 유물을 장착하면서 교체해 주세요.');equipped=equipped.filter(relic=>relic!==id);}
+ if(equipped.includes(id)){equipped=equipped.filter(relic=>relic!==id);}
  else{if(equipped.length>=3){if(!replace||!equipped.includes(replace))throw Error('교체할 장착 유물을 선택해 주세요.');equipped=equipped.filter(relic=>relic!==replace);}equipped.push(id);}
  return {...run,equipped,updatedAt:Date.now()};
 }
@@ -179,6 +178,7 @@ export function validateJourneySave(game:Game){
  const nodes=new Set<JourneyNode>([...JOURNEY_NODES.map(node=>node.id),'ruins','forest','town-event']),unique=(items:unknown)=>Array.isArray(items)&&new Set(items).size===items.length;
  if(j.seenScenes!==undefined&&(!Array.isArray(j.seenScenes)||!j.seenScenes.every(id=>typeof id==='string'&&/^ST[123]_POST$/.test(id))))throw Error('이야기 감상 기록의 형식이 올바르지 않아요.');
  const invalid=()=>{throw Error('탐험 여정의 저장 형식이 올바르지 않거나 지원하지 않는 버전이에요. 기존 데이터는 보존했어요.');};
+ if(!unique(run.relics)||!unique(run.equipped)||run.equipped.length>3||run.equipped.some(id=>!run.relics.includes(id))||!Array.isArray(run.consumables))invalid();
  if(!run.phaseOne||j.version!==1||!['map','tavern','market-alley','wayfarer-stop','watchtower','battle','mini-game'].includes(j.location)||!nodes.has(j.currentNode)||!unique(j.startedStages)||!j.startedStages.every(stage=>Number.isInteger(stage)&&stage>=1&&stage<=3)||!unique(j.completedNodes)||!j.completedNodes.every(node=>nodes.has(node))||!Array.isArray(j.rumors)||!j.rumors.every(id=>typeof id==='string')||typeof j.tavernRewardPaid!=='boolean'||j.wayfarerHerbGiven!==undefined&&typeof j.wayfarerHerbGiven!=='boolean'||j.watchtowerRelicFound!==undefined&&typeof j.watchtowerRelicFound!=='boolean'||j.watchtowerRelicClaimed!==undefined&&typeof j.watchtowerRelicClaimed!=='boolean'||j.watchtowerRelicClaimed&&!j.watchtowerRelicFound||j.path&&!['ruins','forest','skip'].includes(j.path))invalid();
  if(j.location==='mini-game'&&(j.miniKind!==undefined&&!['tavern','letter'].includes(j.miniKind)||j.miniKind==='letter'&&!j.letterMini||j.miniKind!=='letter'&&!j.mini))invalid();
  if(j.letterQuest!==undefined&&(!['alley','recovered','complete','failed'].includes(j.letterQuest.step)||j.letterQuest.defeated!==undefined&&typeof j.letterQuest.defeated!=='boolean'))invalid();

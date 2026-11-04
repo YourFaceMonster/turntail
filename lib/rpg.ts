@@ -48,7 +48,7 @@ export function newRpgRun(id:string,now=Date.now()):RpgRun{return {version:1,id,
 export function rpgArea(stage:number){return stage===10?10:stage>=7?7:stage>=4?4:1;}
 function catalogShopStock(run:RpgRun,shop:RpgShop):RpgShop{
  const old=new Map(shop.stock.map(entry=>[entry.id,entry]));
- const consumables=RPG_CONSUMABLES.map(item=>old.get(item.id)||{id:item.id,kind:'consumable' as const,price:item.price,quantity:1});
+ const consumables=RPG_CONSUMABLES.map(item=>({...old.get(item.id),id:item.id,kind:'consumable' as const,price:old.get(item.id)?.price??item.price,quantity:1}));
  const relics=RPG_MARKET_RELICS.map(item=>old.get(item.id)||{id:item.id,kind:'relic' as const,price:item.grade==='legendary'?230:item.grade==='rare'?150:90,quantity:item.id===BLUE_GLASS_ID&&!run.unlocked?.includes(BLUE_GLASS_ID)||run.relics.includes(item.id)||item.id==='second-heart'&&!run.unlocked?.includes('second-heart')||shop.area<4&&['mor-quill','twin-needle-compass','split-mirror'].includes(item.id)?0:1});
  return {...shop,stock:[...consumables,...relics]};
 }
@@ -112,11 +112,11 @@ export function allocateRpgPoints(run:RpgRun,heal:number):RpgRun{
  return withRelicActivations({...run,hp:[Math.min(100,run.hp[0]+heal+extra),run.hp[1],run.hp[2]],coins:run.coins+coins+coinBonus,points:0,status:run.reward.offers.length?'relic':run.reward.reason==='end'?'complete':'ready',updatedAt:Date.now()},effects);
 }
 export function chooseRpgRelic(run:RpgRun,id:string|null,replace:string|null=null):RpgRun{
+ if(run.journey)replace=null;
  if(run.status!=='relic'||!run.reward)throw Error('선택할 유물 보상이 없어요.');
  if(id!==null&&!run.reward.offers.includes(id))throw Error('제시된 유물 중에서 선택해 주세요.');
  if(id===null)return {...run,coins:run.coins+20,status:run.reward.reason==='end'?'complete':'ready',updatedAt:Date.now()};
  if(run.relics.includes(id))throw Error('같은 유물은 중복으로 보유할 수 없어요.');
- if(run.relics.length>=6&&(!replace||!run.relics.includes(replace)))throw Error('소지품이 가득 찼어요. 교체할 유물을 고르세요.');
  const relics=replace?run.relics.filter(item=>item!==replace):[...run.relics],equipped=run.equipped.filter(item=>item!==replace);
  relics.push(id);if(equipped.length<3)equipped.push(id);
  return {...run,relics,equipped,discovered:[...new Set([...run.discovered,id])],status:run.reward.reason==='end'?'complete':'ready',updatedAt:Date.now()};
@@ -138,12 +138,11 @@ export function buyRpgItem(run:RpgRun,id:string):RpgRun{
  if(run.status!=='ready')throw Error('전투 준비 중에만 구매할 수 있어요.');
  const shop=currentRpgShop(run),entry=shop?.stock.find(item=>item.id===id);
  if(!shop||!entry||entry.quantity<1)throw Error('상점에서 구매할 수 없는 물품이에요.');
- if(entry.kind==='relic'&&(run.relics.length>=6||run.relics.includes(id)))throw Error('유물 가방이 가득 찼거나 이미 보유 중이에요.');
- if(entry.kind==='consumable'&&run.consumables.length>=3)throw Error('소모품은 최대 3개까지 소지할 수 있어요.');
+ if(entry.kind==='relic'&&run.relics.includes(id))throw Error('같은 유물은 1개만 보유할 수 있어요.');
  const discounted=run.equipped.includes('merchants-scales')&&!(run.scaleUsed||[]).includes(shop.area);
  const price=Math.max(0,entry.price-(discounted?20:0));
  if(run.coins<price)throw Error(`주화 ${price}개가 필요해요.`);
- return withRelicActivations({...run,coins:run.coins-price,relics:entry.kind==='relic'?[...run.relics,id]:run.relics,consumables:entry.kind==='consumable'?[...run.consumables,id]:run.consumables,discovered:entry.kind==='relic'?[...new Set([...run.discovered,id])]:run.discovered,scaleUsed:discounted?[...(run.scaleUsed||[]),shop.area]:run.scaleUsed||[],shops:(run.shops||[]).map(item=>item.area===shop.area?{...shop,stock:shop.stock.map(product=>product.id===id?{...product,quantity:product.quantity-1}:product)}:item),updatedAt:Date.now()},discounted&&entry.price>price?[{relicId:'merchants-scales',message:`주화 ${entry.price-price} 절약`}]:[]);
+ return withRelicActivations({...run,coins:run.coins-price,relics:entry.kind==='relic'?[...run.relics,id]:run.relics,consumables:entry.kind==='consumable'?[...run.consumables,id]:run.consumables,discovered:entry.kind==='relic'?[...new Set([...run.discovered,id])]:run.discovered,scaleUsed:discounted?[...(run.scaleUsed||[]),shop.area]:run.scaleUsed||[],shops:(run.shops||[]).map(item=>item.area===shop.area?{...shop,stock:shop.stock.map(product=>product.id===id?{...product,quantity:product.kind==='consumable'?product.quantity:product.quantity-1}:product)}:item),updatedAt:Date.now()},discounted&&entry.price>price?[{relicId:'merchants-scales',message:`주화 ${entry.price-price} 절약`}]:[]);
 }
 export function sellRpgRelic(run:RpgRun,id:string):RpgRun{
  if(run.status!=='ready'||!currentRpgShop(run))throw Error('상점이 열린 전투 준비 중에만 판매할 수 있어요.');

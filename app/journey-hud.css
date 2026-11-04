@@ -84,3 +84,18 @@ body>.journey-popup-shade>.journey-popup{background:#0b0b0be8!important;border-c
 .journey-map-scene .rpg-map-node.is-current>span{outline-color:#d4bd83}
 
 .journey-game-hud .top-actions button{background:#101010b3;border-color:#b3a17b66}.journey-game-dock .journey-dock-bag small{background:#111e}
+
+/* Inventory/scene follow-up: the notebook is a real dock slot. */
+.journey-game-brand{padding:0!important;margin:0;border:0!important;background:none!important;min-height:0!important;pointer-events:auto!important;cursor:pointer}
+.journey-game-status .rpg-hp-bar{width:164px;height:36px;min-height:36px}.journey-hp-block>.journey-hp-avatar{width:32px!important;height:32px!important;min-width:32px;min-height:32px;left:2px;padding:1px!important;overflow:hidden}
+.journey-hp-avatar>.avatar,.journey-hp-avatar>span,.journey-hp-avatar>svg{display:grid!important;place-items:center;width:28px!important;height:28px!important;min-width:0!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;line-height:1!important;font-size:21px!important;background:none!important;transform:none!important;overflow:hidden}
+.journey-hp-avatar img{width:100%!important;height:100%!important;object-fit:contain!important}.journey-hp-avatar svg{max-width:28px;max-height:28px}.journey-hp-block>.rpg-hp-bar>strong{padding-left:37px}
+.journey-identity{display:grid;gap:2px;min-width:0;max-width:90px;line-height:1.2}.journey-identity b{font-size:11px;overflow-wrap:anywhere}.journey-identity small{font-size:9px;color:#d8cfbc}.journey-game-status{gap:8px}
+.journey-game-dock.has-notes{grid-template-columns:44px 44px 44px auto!important;justify-content:center;gap:10px!important}.journey-dock-notes{display:grid;place-items:center;align-content:start;gap:0;width:44px;height:44px;padding:0!important;min-height:0!important;margin:0!important;background:none!important;border:0!important;font-size:9px;color:#e4d3a9}.journey-dock-notes img{width:36px;height:36px}.journey-dock-notes span{white-space:nowrap;line-height:1}
+.journey-map-scene .rpg-map-node{min-height:66px}.journey-map-scene .rpg-map-node strong{max-width:none}
+.journey-popup .shop-product-name strong{display:block!important;max-height:none!important;overflow:visible!important;text-overflow:clip!important;-webkit-line-clamp:unset;white-space:normal}.shop-name-word{display:block;white-space:nowrap;word-break:keep-all}
+.journey-scene-shade>section{animation:none!important;opacity:1!important}.journey-scene-shade[data-moving=true]{pointer-events:none}
+.journey-event-scene{background:#070707!important}.journey-event-scene>.journey-game-hud,.journey-event-scene>.journey-game-dock{z-index:1600}
+body:has(.journey-scene-shade) .quest-cutscene{top:96px!important;bottom:68px!important;left:0!important;right:0!important;inset-block:96px 68px!important}
+@media(max-width:360px){.journey-game-status .rpg-hp-bar{width:145px}.journey-identity{max-width:75px}.journey-identity b{font-size:10px}}
+@media(max-height:500px) and (orientation:landscape){body:has(.journey-scene-shade) .quest-cutscene{top:70px!important;bottom:60px!important;inset-block:70px 60px!important}.journey-game-status .rpg-hp-bar{height:32px;min-height:32px}.journey-hud-top{min-height:29px}}

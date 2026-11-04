@@ -70,10 +70,11 @@ export function chooseRpgStageReward(run:RpgRun,choice:RpgStageReward,replace?:s
  const state=run.phaseOne,clear=state?.clear;
  if(!state||!clear||run.status!=='allocation'||clear.chosen)throw Error('선택할 스테이지 보상이 없어요.');
  if(!['relic','coins','heal'].includes(choice))throw Error('보상 3종 중 하나를 선택해 주세요.');
+ if(run.journey)replace=undefined;
  let relics=[...run.relics],coins=run.coins,hp=[...run.hp];
  if(choice==='relic'&&!decline){
   if(!clear.relicId||relics.includes(clear.relicId))throw Error('획득할 수 있는 새 유물이 없어요.');
-  if(relics.length>=RPG_PHASE_ONE.relicLimit){if(!replace||!relics.includes(replace))throw Error('교체할 기존 유물을 선택하거나 획득을 포기해 주세요.');relics=relics.filter(id=>id!==replace);}
+  if(!run.journey&&relics.length>=RPG_PHASE_ONE.relicLimit){if(!replace||!relics.includes(replace))throw Error('교체할 기존 유물을 선택하거나 획득을 포기해 주세요.');relics=relics.filter(id=>id!==replace);}
   else if(replace)throw Error('빈 유물 자리가 있어 교체가 필요하지 않아요.');
   relics.push(clear.relicId);
  }else if(choice==='coins')coins+=RPG_PHASE_ONE.rewardCoins;
