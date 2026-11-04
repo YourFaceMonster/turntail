@@ -1,0 +1,131 @@
+{
+  "at": "2026-11-04T03:14:44.427Z",
+  "sourceCommit": "ebf8839b20cb006375dbadb00920495ebf2ccc89",
+  "workerVersion": "85e29fea-1993-444b-aa53-8f1b85c9a547",
+  "version": "0.6.69",
+  "origin": "https://turntail.yousexybaby.workers.dev",
+  "homepage": {
+    "status": 200,
+    "mentionsVersion": true,
+    "cssReferences": [
+      "/_next/static/css/index.s3moZQrH.css",
+      "/_next/static/css/page.BhQj2J8S.css"
+    ]
+  },
+  "assets": [
+    {
+      "path": "/prologue/moon-castle-map-shops-portrait-v1.png",
+      "status": 200,
+      "sha256": "b64e6089b574937b2b2454ff15c0487bed4abe70ecc42eca48387b8f7bcb9027",
+      "match": true
+    },
+    {
+      "path": "/prologue/moon-castle-map-shops-wide-v1.png",
+      "status": 200,
+      "sha256": "865070faaabc89d5dee17d115e1b0011da8ac46b7004e1a8ab34cdb39549d43c",
+      "match": true
+    },
+    {
+      "path": "/prologue/moon-castle-map-watchtower-portrait-v1.png",
+      "status": 200,
+      "sha256": "3040fdcfde1364b67b539a1d4d5123f20c2d367436e3bd29971d295d6041ec51",
+      "match": true
+    },
+    {
+      "path": "/prologue/moon-castle-map-watchtower-wide-v1.png",
+      "status": 200,
+      "sha256": "25d2b91b6249e09377a36f69f308677c3001715756232b6af321578b5b22778a",
+      "match": true
+    },
+    {
+      "path": "/prologue/tile-front-landscape-crown-v1.png",
+      "status": 200,
+      "sha256": "119853d8e7f4c4f3444b7752ffa770fe8d1a331b182d0645e8cb526424a19249",
+      "match": true
+    },
+    {
+      "path": "/prologue/tile-front-portrait-crown-v1.png",
+      "status": 200,
+      "sha256": "a2dff81c2f41c351295302377e81e7b12e4a968dc980d21cb38df652a8b89304",
+      "match": true
+    },
+    {
+      "path": "/prologue/wager-rest-portrait-symbols-v1.png",
+      "status": 200,
+      "sha256": "d335538444ff52f989b03c8d88d6403aca0a394023ed5e78d35585a2b15771d3",
+      "match": true
+    },
+    {
+      "path": "/prologue/wager-rest-wide-symbols-v1.png",
+      "status": 200,
+      "sha256": "4a10522784909998a983a80fcdf85c13603f0661a165111f5cd5a4c04c96dfc9",
+      "match": true
+    },
+    {
+      "path": "/prologue/wager-speaking-portrait-symbols-v1.png",
+      "status": 200,
+      "sha256": "ae0fab3a04de60f3a4a823268157f4ea8bb5e9f3d5449e4ed49cfdabcc3ca356",
+      "match": true
+    },
+    {
+      "path": "/prologue/wager-speaking-wide-symbols-v1.png",
+      "status": 200,
+      "sha256": "b1e5f17420accad60294bfaa30bc8dda07f2a1c96bce3aa82f74b30a898b7b70",
+      "match": true
+    },
+    {
+      "path": "/turntale-room-symbols-portrait-v1.png",
+      "status": 200,
+      "sha256": "123f03f8a66986dc0a9685c4639e80561fb5010bbe44fbf7179615cedae6dcae",
+      "match": true
+    },
+    {
+      "path": "/turntale-room-symbols-wide-v1.png",
+      "status": 200,
+      "sha256": "257af934643f636e463338c493f25995279bdcf8a1118065f91a6202e9e69cf6",
+      "match": true
+    },
+    {
+      "path": "/ui/shop-map-icon-v1.png",
+      "status": 200,
+      "sha256": "a167274b426d51f4f280f6e9b4b81f5ee75d2ba6cef1becdcf9b4f91cdb96bae",
+      "match": true
+    },
+    {
+      "path": "/ui/tavern-map-icon-v1.png",
+      "status": 200,
+      "sha256": "012062e963d9e94854514bbf0b9438ccf6457c43a87783ce409f0e2e2e32dbf2",
+      "match": true
+    },
+    {
+      "path": "/_next/static/css/index.s3moZQrH.css",
+      "status": 200,
+      "sha256": "8900da6d8db0d0f785b788bf41fb7fe0bda355701db50a3dfc3ba4d4970d6f3f",
+      "match": true
+    },
+    {
+      "path": "/_next/static/css/page.BhQj2J8S.css",
+      "status": 200,
+      "sha256": "631846d3cce6415da93e4abd8d22df57a5466377fca8b14bfa4e010b03f8da2c",
+      "match": true
+    },
+    {
+      "path": "/_next/static/css/page.SmT-LMGj.css",
+      "status": 200,
+      "sha256": "b215bb0f19115fd9a9fb201ef9c2e9f709bd109ce18ad68c87df06f6c4415e1b",
+      "match": true
+    },
+    {
+      "path": "/_next/static/chunks/page-Cn3sbc5A.js",
+      "status": 200,
+      "sha256": "e5b2e8b1a818ca605694091c3c9740dd078ac335635c9cfcb75a6069cb34349f",
+      "match": true
+    },
+    {
+      "path": "/_next/static/chunks/rpg-connection-scenes-Vh2_ONCK.js",
+      "status": 200,
+      "sha256": "638d69e00ee5635cc7e8002289daba6618f0e78a07571deef02c9254756e2017",
+      "match": true
+    }
+  ]
+}
