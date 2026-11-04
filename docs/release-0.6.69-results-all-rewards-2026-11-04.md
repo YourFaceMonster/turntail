@@ -11,7 +11,7 @@
 - 13개 테스트 파일, 총 37개 검사 통과. 신규 3스테이지 일괄 지급/저장 재개 중복 차단/회복 상한/유물 후보 소진 검증 포함.
 - 타입 검사 및 diff 공백 검사 통과.
 - 테스트 원문: ../../artifacts/stage-all-rewards-tests.log.
-- 운영 빌드/배포와 공개 브라우저 확인 결과는 아래 게시 기록에 추가.
+- 운영 빌드 통과. 기존 큰 청크/라우트 분류 안내 유지.
 
 ## 게시 기록
-진행 중. GitHub main 및 Cloudflare만 사용.
+소스 8099ba6을 GitHub main에 push. Cloudflare Worker 99357da5-fc1c-44a3-b30b-708a4933ce73 배포 성공. 공개 홈페이지 HTTP200, CSS2개·결과 UI JS1개·사용 배경 PNG3개 총6개 파일의 SHA-256이 이번 빌드와 일치. 공개 390×760 화면에서 밤 배경/세로 보상/초록색 20 확인, 보상 모두 받기로 유물 회복의 등불 획득·주화1000→1030·HP80→100 동시 적용과 지도 복귀 확인. 확인은 저장하지 않는 테스트 모드에서 수행. 스크린샷 ../../artifacts/deployed-stage-all-rewards.png. 상세 deployment-results-all-rewards-2026-11-04.json. 실제 기기 햅틱은 별도 확인 필요.

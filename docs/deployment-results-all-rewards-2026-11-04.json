@@ -1,0 +1,60 @@
+{
+  "checkedAt": "2026-11-04T14:04:09.313Z",
+  "site": "https://turntail.yousexybaby.workers.dev",
+  "sourceCommit": "8099ba6",
+  "workerVersion": "99357da5-fc1c-44a3-b30b-708a4933ce73",
+  "homepageStatus": 200,
+  "homepageCssMatchesBuild": true,
+  "checks": [
+    {
+      "url": "/_next/static/css/index.CA99Nfk2.css",
+      "status": 200,
+      "sha256": "d11fb7b90ebc2134bad3ccc5d87bb7513979badc1c84be72a9acee56bf68302b",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/page.JfydBzQn.css",
+      "status": 200,
+      "sha256": "ca1097ed9455907dd4fb48eb468097cae0efd8449e55b6125f19dcfd86054ac4",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/page-C13Jdfq_.js",
+      "status": 200,
+      "sha256": "a39d6d2b06389c424b72bc4fdf0a05bf0154e40ab476aaac7e9ef6c2fed8a978",
+      "match": true
+    },
+    {
+      "url": "/ui/results/journey-rewards-v3.png",
+      "status": 200,
+      "sha256": "58fc6578d0c7f059c0ed7decb71d9a21a72a32ad4d6e5dc5365817c89348bbfb",
+      "match": true
+    },
+    {
+      "url": "/ui/results/journey-failure-v1.png",
+      "status": 200,
+      "sha256": "820a418f88e2ac902b108bec85ded66ce7e1d52108ffe913bc5b6045340e6c90",
+      "match": true
+    },
+    {
+      "url": "/ui/results/tavern-results-v1.png",
+      "status": 200,
+      "sha256": "12fe9afcc2ec06fe327ced17bae86c4e06291a4e25cc9f0902d34e115c193cb0",
+      "match": true
+    }
+  ],
+  "browser": {
+    "viewport": "390x760",
+    "rewardLayout": "three vertical rows",
+    "healNumber": "20",
+    "healColor": "rgb(140, 229, 166)",
+    "claim": {
+      "coinsBefore": 1000,
+      "coinsAfter": 1030,
+      "hpBefore": 80,
+      "hpAfter": 100,
+      "relic": "recovery-lantern"
+    },
+    "screenshot": "../../artifacts/deployed-stage-all-rewards.png"
+  }
+}
