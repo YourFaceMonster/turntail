@@ -99,3 +99,20 @@ body>.journey-popup-shade>.journey-popup{background:#0b0b0be8!important;border-c
 body:has(.journey-scene-shade) .quest-cutscene{top:96px!important;bottom:68px!important;left:0!important;right:0!important;inset-block:96px 68px!important}
 @media(max-width:360px){.journey-game-status .rpg-hp-bar{width:145px}.journey-identity{max-width:75px}.journey-identity b{font-size:10px}}
 @media(max-height:500px) and (orientation:landscape){body:has(.journey-scene-shade) .quest-cutscene{top:70px!important;bottom:60px!important;inset-block:70px 60px!important}.journey-game-status .rpg-hp-bar{height:32px;min-height:32px}.journey-hud-top{min-height:29px}}
+
+/* Persistent exploration chrome: identical slots and geometry in every location. */
+.journey-scene-shade>:is(.journey-map-scene,.journey-tavern-scene)>.journey-game-hud{z-index:1600;padding:9px 10px 10px!important;background:linear-gradient(#0006,#0000)!important}
+.journey-scene-shade>:is(.journey-map-scene,.journey-tavern-scene)>.journey-game-dock{z-index:1600;grid-template-columns:44px 44px 44px auto!important;justify-content:center;gap:10px!important;padding:6px 8px max(6px,env(safe-area-inset-bottom))!important;background:linear-gradient(#0000,#0005)!important}
+.journey-game-status .journey-hp-block>.rpg-hp-bar{width:min(248px,calc(100vw - 116px));height:36px;min-height:36px;padding:0 6px 0 37px!important;gap:4px}
+.journey-hp-block .rpg-hp-bar .hp-bar-identity{width:auto;min-width:0;flex:1;justify-content:flex-start}.journey-hp-block .journey-identity{max-width:100%;gap:1px;text-align:left}.journey-hp-block .journey-identity b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}.journey-hp-block .rpg-hp-bar .hp-bar-current{flex:none;gap:2px;padding-left:0!important;font-size:11px}.journey-hp-block .rpg-hp-bar .hp-value b{font-size:12px}
+body:has(.journey-scene-shade) .quest-cutscene{inset:0!important;inset-block:0!important}.journey-event-scene{background:transparent!important}
+body:has(.journey-scene-shade) .quest-cutscene .quest-scene-title{top:104px!important}
+body:has(.journey-scene-shade) .quest-cutscene .quest-dialogue{bottom:max(76px,calc(68px + env(safe-area-inset-bottom)))!important}
+.journey-map-scene .rpg-map-node>span,.journey-map-scene .rpg-map-node.node-available>span,.journey-map-scene .rpg-map-node.node-completed>span{background:#0003!important}
+.journey-tavern-room .tavern-fire{top:45%!important;left:8%!important}.journey-tavern-room .tavern-fire strong{transform:none!important;background:#10101099}
+.journey-popup .shop-product-effect{color:#f2ecdf;font-size:11px!important}.shop-product-effect strong{font-weight:800;text-shadow:0 1px 2px #000}.shop-effect-gain{color:#76ed98}.shop-effect-value{color:#ffd185}
+.journey-location-fade{position:fixed;inset:0;z-index:1500;pointer-events:none;background:#000;opacity:0;transition:opacity 180ms ease}.journey-location-fade.leaving{opacity:1}.journey-location-fade.entering{opacity:0}
+@media(max-aspect-ratio:1/1){.journey-tavern-room .tavern-fire{top:56%!important;left:9%!important}}
+@media(max-height:500px) and (orientation:landscape){.journey-scene-shade>:is(.journey-map-scene,.journey-tavern-scene)>.journey-game-hud{padding:3px 10px 8px!important}.journey-hud-top{min-height:29px}.journey-game-status{margin-top:2px}.journey-game-status .journey-hp-block>.rpg-hp-bar{height:32px;min-height:32px}body:has(.journey-scene-shade) .quest-cutscene .quest-scene-title{top:76px!important}body:has(.journey-scene-shade) .quest-cutscene .quest-dialogue{bottom:62px!important}}
+.journey-scene-shade>:is(.journey-map-scene,.journey-tavern-scene).rpg-exploration{position:absolute!important;inset:0!important;transform:none!important;width:100%!important;height:100%!important}
+.journey-scene-shade>:is(.journey-map-scene,.journey-tavern-scene).rpg-exploration{isolation:auto!important;z-index:auto}
