@@ -1,0 +1,39 @@
+{
+  "checkedAt": "2026-11-04T06:51:24.002Z",
+  "site": "https://turntail.yousexybaby.workers.dev",
+  "sourceCommit": "c36a085",
+  "workerVersion": "78c46c92-d1ad-4cf9-8090-b2f8cf4bf2e4",
+  "homepageStatus": 200,
+  "checks": [
+    {
+      "url": "/_next/static/chunks/page-By5xNMYy.js",
+      "status": 200,
+      "match": true,
+      "sha256": "1db132cede5a1836cf09876b56bf8da7d33ef8a1d1e5afa867a2e1bf48e76a8c"
+    },
+    {
+      "url": "/_next/static/css/index.CHw0vldK.css",
+      "status": 200,
+      "match": true,
+      "sha256": "2bd9b792b8078da5c33bc5ed7d7db5960d6abd9eed5efb556914e94a3be2ad44"
+    },
+    {
+      "url": "/_next/static/css/page.JfydBzQn.css",
+      "status": 200,
+      "match": true,
+      "sha256": "ca1097ed9455907dd4fb48eb468097cae0efd8449e55b6125f19dcfd86054ac4"
+    },
+    {
+      "url": "/_next/static/css/page.SmT-LMGj.css",
+      "status": 200,
+      "match": true,
+      "sha256": "b215bb0f19115fd9a9fb201ef9c2e9f709bd109ce18ad68c87df06f6c4415e1b"
+    }
+  ],
+  "homepageCssReferences": [
+    "/_next/static/css/index.CHw0vldK.css",
+    "/_next/static/css/index.CHw0vldK.css",
+    "/_next/static/css/page.JfydBzQn.css"
+  ],
+  "homepageCssMatchesBuild": true
+}
