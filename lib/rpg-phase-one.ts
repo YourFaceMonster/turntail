@@ -54,6 +54,7 @@ export function settleRpgPhaseOne(run:RpgRun,result:RpgResult):RpgRun{
  const base={...run,coins,rounds:run.rounds+1,roundIds:[...run.roundIds,result.id],updatedAt:result.at};
  const hpBeforeMoney=[...run.hp];run.hp[0]=Math.max(0,run.hp[0]-shortfall);recordRpgRoundHealth(run,hpBeforeMoney,true);if(run.roundHealth)run.roundHealth.coinsDelta=coins-run.roundHealth.coinsBefore;base.roundHealth=run.roundHealth;
  result.players[0].total=coins;
+ if(run.hp[0]<=0&&run.journey){const fate=Math.max(0,run.fate-1),journey={...run.journey,retryStage:fate?run.stage:undefined,location:fate?'map' as const:'battle' as const,currentNode:`battle-${run.stage}` as import('./rpg-journey').JourneyNode,startedStages:run.journey.startedStages.filter(stage=>stage!==run.stage)};return {...base,coins:run.coins,fate,hp:fate?[100,...RPG_PHASE_ONE.enemyHp[run.stage-1]]:[...run.hp],status:fate?'playing':'game-over',phaseOne:{...run.phaseOne!,eliminated:[],clear:undefined},journey,reward:null};}
  if(run.hp[0]<=0)return {...base,status:'game-over',relics:[],equipped:[],consumables:[],reward:null};
  if(!run.hp.slice(1).every(hp=>hp<=0))return base;
  const state=structuredClone(run.phaseOne!);if(state.clearedStages.includes(run.stage))return base;

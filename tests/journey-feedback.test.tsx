@@ -13,6 +13,6 @@ test('multiple logo instances use independent clip paths even when another heade
 });
 test('avatar exposes profile action, while shop items expose only purchase actions',()=>{
  const g=createRpgJourneyGame('검토','',0,'cleric'),run=g.rpgRun!;run.status='ready';run.shops=[{area:1,stock:[]}];run.coins=1000;
- const map=render(h(JourneyMapView,{run,busy:false,error:'',action:noop,exit:noop}));assert.ok(map.includes('aria-label="내 캐릭터 정보"'));assert.ok(map.indexOf('성직자')<map.indexOf('journey-coins'));
+ const map=render(h(JourneyMapView,{run,busy:false,error:'',action:noop,exit:noop}));assert.ok(map.includes('aria-label="내 캐릭터 정보"'));assert.ok(map.indexOf('성직자')<map.indexOf('journey-quest-status'));
  const shop=render(h(JourneyShopContent,{run,busy:false,error:'',action:noop}));assert.ok(shop.includes('shop-product-effect'));assert.ok(!shop.includes('aria-haspopup="dialog"'));assert.ok(!shop.includes('shop-detail-art'));
 });

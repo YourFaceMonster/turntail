@@ -47,4 +47,4 @@ export function abandonRpgGame(game:Game,now=Date.now()){
 export function createRpgPhaseOneGame(name:string,avatar='',now=Date.now(),profession:RpgProfessionId='swordsman'){return createRpgGame(name,avatar,now,profession,true);}
 
 export function createRpgJourneyGame(name:string,avatar='',now=Date.now(),profession:RpgProfessionId='swordsman'){const game=createRpgPhaseOneGame(name,avatar,now,profession);initRpgJourney(game);return game;}
-export function enterJourneyNode(game:Game,id:JourneyNode,now=Date.now()){const stage=visitJourneyNode(game,id);if(stage===undefined)return;if(stage===1){game.phase='playing';game.turnReadyAt=now+3000;game.lastEvent={...game.lastEvent!,at:now};}else startRpgRound(game,now);}
+export function enterJourneyNode(game:Game,id:JourneyNode,now=Date.now()){const retry=!!game.rpgRun?.journey?.retryStage;const stage=visitJourneyNode(game,id);if(stage===undefined)return;if(stage===1&&!retry){game.phase='playing';game.turnReadyAt=now+3000;game.lastEvent={...game.lastEvent!,at:now};}else startRpgRound(game,now);}

@@ -16,7 +16,7 @@ export function SuitEmblem({s}:{s:number}){return <svg className={`suit-emblem e
 function SpecialMotif({s}:{s:number,n:number}){return <><Motif s={s}/><path d="M-36 31L-32 37H-21M21 37H32L36 31" fill="none" stroke="currentColor" strokeWidth="2"/></>;}
 /** The exact same art and body render in hand, flight and table. */
 export default function TileFace({tile:t,small=false,muted=false}:{tile:Tile,small?:boolean,muted?:boolean}){
- const special=t.n===2,ink=muted?'#737770':colors[t.s],suitInk=colors[t.s],stage=useStageVisual(),artId=useId().replace(/:/g,'');
+ const special=t.n===2,ink=muted?'#737770':colors[t.s],suitInk=colors[t.s],stage=useStageVisual(),artId=useId().replace(/[^a-zA-Z0-9_-]/g,'');
  if(stage){
   const dark=[2,5,6,9,10].includes(stage),numberProps=tileNumberGeometry(t.n);
   return <span data-tile-id={t.id} data-number={t.n} data-suit={t.s} data-tile-material={TILE_MATERIAL_NAMES[stage-1]} title={`${TILE_MATERIAL_NAMES[stage-1]} 패`} className={`tile face stage-material-tile suit${t.s} ${small?'small':''}`} style={{color:ink}}><svg className="tile-art" data-number-layout="classic" style={{color:ink}} viewBox="0 0 100 132" aria-hidden="true" focusable="false"><defs><clipPath id={`${artId}-cartoon`}><path d={CARTOON_TILE_PATH}/></clipPath></defs><g clipPath={`url(#${artId}-cartoon)`}><g className="tile-main-art"><StageMaterial stage={stage} id={`material-${artId}`} seed={t.id}/>{[2,5,10].includes(stage)&&<path d={CARTOON_TILE_PATH} fill="#fff1d0" opacity={stage===10?.24:.10} data-wood-lightening="true"/>}<TileMaterialFinish stage={stage} id={artId}/><g opacity={dark?.17:.12}><StageTileEngraving stage={stage} s={t.s} special={special}/></g><ClassicTileOrnament s={t.s} special={special}/>

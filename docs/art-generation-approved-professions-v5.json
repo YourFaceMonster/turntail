@@ -1,0 +1,31 @@
+{
+  "tool": "built-in image_gen",
+  "approvedReference": "artifacts/design-review-2026-11-04/professions-style-v1.png",
+  "approvedKey": "artifacts/design-review-2026-11-04/key-options-v1.png option A (SVG implementation)",
+  "assets": [
+    {
+      "profession": "swordsman",
+      "file": "public/item-battle-v1/professions/swordsman-turntale-v5.png",
+      "source": "exec-d0ed5dfd-1888-4658-bc25-d34efd6ecf0c.png",
+      "prompt": "Production TURNTALE character asset, redraw only the male SWORDSMAN from the UPPER LEFT of reference1 approved four-character board. Preserve his exact adult face, tousled brown hair, red scarf/cape, gold-trimmed steel armor, broad upright sword and confident expression. Isolated single character centered, head to upper thighs with both hands and full sword tip included, generous margins, tall portrait. Match approved board's angular hand-drawn 2D cartoon fantasy with bold irregular ink contours and 2-3 simple shaded values, restrained rough paint, no glossy gacha/3D rendering. Do not include other professions, labels, text, panel borders or background objects. Transparent background."
+    },
+    {
+      "profession": "rogue",
+      "file": "public/item-battle-v1/professions/rogue-turntale-v5.png",
+      "source": "exec-869ea439-e731-4707-800a-e0278ebf557b.png",
+      "prompt": "Production TURNTALE character asset. Redraw ONLY the adult female ROGUE from UPPER RIGHT of reference approved contact sheet. Preserve recognizable confident adult face, short dark teal tousled hair, brass green goggles on head, green cloak, leather vest and fingerless gloves, holding spyglass and small brass gadget. Single centered character, tall portrait head to upper thighs, both hands entirely visible, generous margin, no text or labels, no other characters. Match approved sheet exactly: angular hand-drawn 2D cartoon fantasy, bold irregular black ink outlines, broad 2-3 cel-shaded values, restrained rough paper texture, muted green/brown and small amber highlights. No glossy or 3D shading, no baby face. Truly transparent background, no painted scenery or opaque backdrop."
+    },
+    {
+      "profession": "cleric",
+      "file": "public/item-battle-v1/professions/cleric-turntale-v5.png",
+      "source": "exec-50df8675-9845-42c8-b020-041ce43f249c.png",
+      "prompt": "Production TURNTALE character asset. Redraw ONLY adult male CLERIC from LOWER LEFT of reference approved board. Preserve friendly mature face, wavy white hair, short beard, ivory and forest-green robes, restrained gold/leaf trim, green crystal leaf staff, open palm with small green healing glow. Single centered head-to-upper-thigh tall portrait, both hands and staff top fully included, no labels/text/other characters. EXACT approved hand-drawn 2D cartoon fantasy: expressive angular adult face, bold imperfect black ink outlines, 2-3 broad cel-shading values and restrained rough brush texture. No glossy gacha/3D, no baby face. Truly transparent background, no opaque backdrop or scene."
+    },
+    {
+      "profession": "mage",
+      "file": "public/item-battle-v1/professions/mage-turntale-v5.png",
+      "source": "exec-3fbd01b6-79e1-4041-a417-be3c7496e51f.png",
+      "prompt": "Production TURNTALE character asset. Redraw ONLY adult female MAGE from LOWER RIGHT of approved contact sheet reference. Preserve her angular confident adult face, wavy purple hair, broad pointed purple hat with gold crescent/star, indigo-purple robes and restrained gold trim, amber crystal staff, small fire spell over other palm. Single centered tall head-to-upper-thigh portrait with both hands and staff tip fully visible, generous margins, no text/labels/other professions. EXACT approved hand-drawn 2D cartoon fantasy with bold imperfect ink outlines, broad 2-3 cel-shaded values, restrained rough brush texture. No glossy gacha/3D, no infantile proportions. Truly transparent background, no scene or opaque background."
+    }
+  ]
+}

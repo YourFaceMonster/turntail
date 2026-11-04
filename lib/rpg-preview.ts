@@ -1,9 +1,10 @@
-import type {Game} from './game.ts';
+import {settle,type Game} from './game.ts';
+import {startJourneyMini,activeJourneyMini,settleJourneyMini,nextJourneyMiniRound} from './rpg-journey';
 import {enterJourneyNode} from './rpg-game.ts';
 import {settleRpgPhaseOne,chooseRpgStageReward,reconcileRpgEliminations} from './rpg-phase-one.ts';
 
 export type RpgPreviewMode='screens'|'one-round';
-export type RpgPreviewScreen='prologue'|'map'|'tavern'|'battle-1'|'battle-2'|'battle-3';
+export type RpgPreviewScreen='prologue'|'map'|'tavern'|'battle-1'|'battle-2'|'battle-3'|'reward-1'|'reward-2'|'reward-3'|'failed'|'mini-round'|'mini-final';
 /** Runtime-only owner. Never attach preview rules to a Game or serialize them. */
 export class RpgPreviewSession{
  readonly runId:string;
@@ -18,8 +19,8 @@ export class RpgPreviewSession{
  private equipment(game:Game){const run=game.rpgRun!;return {relics:[...run.relics],equipped:[...run.equipped],consumables:[...run.consumables]};}
  screen(game:Game,target:RpgPreviewScreen):Game{
   if(this.mode!=='screens'||!this.owns(game))throw Error('프롤로그·화면 테스트에서만 바로 이동할 수 있어요.');
-  if(!['prologue','map','tavern','battle-1','battle-2','battle-3'].includes(target))throw Error('확인할 화면을 선택해 주세요.');
-  const next=structuredClone(this.initial),stage=target.startsWith('battle-')?Number(target.slice(7)):2;
+  if(!['prologue','map','tavern','battle-1','battle-2','battle-3','reward-1','reward-2','reward-3','failed','mini-round','mini-final'].includes(target))throw Error('확인할 화면을 선택해 주세요.');
+  const next=structuredClone(this.initial),stage=target.startsWith('battle-')?Number(target.slice(7)):target.startsWith('reward-')?Number(target.slice(7)):target==='failed'?1:2;
   // Disposable scene fixtures use the existing stage gates. No hand is played,
   // and no fabricated clear is written to the user's RPG archive.
   for(let prior=1;prior<stage;prior++){
@@ -27,7 +28,10 @@ export class RpgPreviewSession{
    next.rpgRun!.hp=[100,0,0];reconcileRpgEliminations(next);
    next.rpgRun=chooseRpgStageReward(next.rpgRun!,'coins');
   }
-  if(target==='tavern')enterJourneyNode(next,'tavern');
+  if(target==='failed'){enterJourneyNode(next,'battle-1');next.rpgRun!.fate=1;next.rpgRun!.hp[0]=0;reconcileRpgEliminations(next);}
+  else if(target.startsWith('reward-')){enterJourneyNode(next,`battle-${stage}` as 'battle-1');next.rpgRun!.hp=[70,0,0];reconcileRpgEliminations(next);next.rpgRun!.journey!.seenScenes=[`ST${stage}_POST`];}
+  else if(target==='mini-round'||target==='mini-final'){enterJourneyNode(next,'tavern');startJourneyMini(next);const rounds=target==='mini-final'?3:1;for(let n=0;n<rounds;n++){const child=activeJourneyMini(next)!;child.players[0].hand=[];child.players[1].hand=child.players[1].hand.slice(0,3);child.players[2].hand=child.players[2].hand.slice(0,5);child.winner=0;child.phase='ended';settle(child);settleJourneyMini(next);if(n<rounds-1)nextJourneyMiniRound(next);}}
+  else if(target==='tavern')enterJourneyNode(next,'tavern');
   else if(target.startsWith('battle-'))enterJourneyNode(next,target as 'battle-1'|'battle-2'|'battle-3');
   next.rpgRun!.coins=1000;
   return next;
@@ -36,12 +40,12 @@ export class RpgPreviewSession{
   if(!this.owns(game))return false;
   const run=game.rpgRun!;
   if(game.phase==='playing'){this.gear=this.equipment(game);return false;}
-  if(this.mode!=='one-round'||run.journey?.location!=='battle'||!game.result||this.handled.has(game.result.id)||run.status==='complete')return false;
+  if(this.mode!=='one-round'||run.journey?.location!=='battle'&&!run.journey?.retryStage||!game.result||this.handled.has(game.result.id)||run.status==='complete')return false;
   this.handled.add(game.result.id);
   if(run.status!=='allocation'){
    // Settlement may already have recorded a losing round and removed its gear.
    // Reuse the real clear/reward routines exactly once in this disposable run.
-   const counted=run.roundIds.includes(game.result.id);
+   const counted=run.roundIds.includes(game.result.id);if(run.journey?.retryStage){run.journey={...run.journey,retryStage:undefined,location:'battle',startedStages:[...new Set([...run.journey.startedStages,run.stage])]};}
    game.rpgRun=settleRpgPhaseOne({...run,...(run.status==='game-over'?this.gear:{}),hp:[100,0,0],status:'playing',
     roundIds:run.roundIds.filter(id=>id!==game.result!.id),rounds:Math.max(0,run.rounds-(counted?1:0)),
     phaseOne:{...run.phaseOne!,eliminated:[1,2]}},counted?{...game.result,players:game.result.players.map(player=>({...player,delta:0}))}:game.result);

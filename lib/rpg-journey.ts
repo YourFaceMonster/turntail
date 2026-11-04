@@ -7,7 +7,7 @@ export type JourneyNode='battle-1'|'tavern'|'letter-alley'|'wayfarer-stop'|'watc
 export type JourneyMini={game:Game,roundIds:string[],lastReward:number};
 export type LetterQuest={step:'alley'|'recovered'|'complete'|'failed',defeated?:boolean};
 export type VillageRequestReward='coins'|'heal';
-export type RpgJourneyState={version:1,seenScenes?:string[],location:'map'|'tavern'|'market-alley'|'wayfarer-stop'|'watchtower'|'battle'|'mini-game',currentNode:JourneyNode,startedStages:number[],completedNodes:JourneyNode[],path?:'ruins'|'forest'|'skip',branchOutcome?:{path:'ruins'|'forest',hpBefore:number,hpAfter:number,coins:number},townEvent?:{reward:'heal'|'coins',hpBefore:number,hpAfter:number,coins:number},villageRequestReward?:VillageRequestReward,letterQuest?:LetterQuest,wayfarerHerbGiven?:boolean,watchtowerRelicFound?:boolean,watchtowerRelicClaimed?:boolean,rumors:string[],tavernRewardPaid:boolean,miniSummary?:{roundIndex:number,finished:boolean},mini?:JourneyMini,letterMini?:JourneyMini,miniKind?:'tavern'|'letter'};
+export type RpgJourneyState={version:1,livesVersion?:1,retryStage?:number,seenScenes?:string[],location:'map'|'tavern'|'market-alley'|'wayfarer-stop'|'watchtower'|'battle'|'mini-game',currentNode:JourneyNode,startedStages:number[],completedNodes:JourneyNode[],path?:'ruins'|'forest'|'skip',branchOutcome?:{path:'ruins'|'forest',hpBefore:number,hpAfter:number,coins:number},townEvent?:{reward:'heal'|'coins',hpBefore:number,hpAfter:number,coins:number},villageRequestReward?:VillageRequestReward,letterQuest?:LetterQuest,wayfarerHerbGiven?:boolean,watchtowerRelicFound?:boolean,watchtowerRelicClaimed?:boolean,rumors:string[],tavernRewardPaid:boolean,miniSummary?:{roundIndex:number,finished:boolean},mini?:JourneyMini,letterMini?:JourneyMini,miniKind?:'tavern'|'letter'};
 /** Trial values for this three-stage prototype; never used by normal or HP item play. */
 export const JOURNEY_TRIAL={ruinsDamage:8,ruinsCoins:15,forestHeal:8,villageRequestHeal:5,villageRequestCoins:5,miniRounds:3,miniRewards:[12,8,4]} as const;
 export const JOURNEY_RUMOR={id:'sheltered-light',title:'모르의 등불 이야기',text:'금이 간 심장 곁에 회복의 등불을 장착해 보게. 둘을 함께 지니고 싸우면, 승부를 마친 뒤 등불이 조금 더 힘을 내지.'};
@@ -25,7 +25,7 @@ export const JOURNEY_NODES:{id:JourneyNode,name:string,x:number,y:number,kind:'b
 ];
 export function initRpgJourney(game:Game){
  const run=game.rpgRun;if(!run?.phaseOne||game.hpItemMode||game.rpgTest)throw Error('새 RPG 여정에서 시작해 주세요.');
- run.journey={version:1,location:'map',currentNode:'battle-1',startedStages:[],completedNodes:[],rumors:[],tavernRewardPaid:false};
+ run.fate=3;run.journey={version:1,livesVersion:1,location:'map',currentNode:'battle-1',startedStages:[],completedNodes:[],rumors:[],tavernRewardPaid:false};
  game.phase='ended';game.turnDeadline=0;
 }
 export function journeyNodeState(run:RpgRun,id:JourneyNode):'available'|'completed'|'locked'|'closed'{
@@ -40,7 +40,7 @@ export function journeyNodeState(run:RpgRun,id:JourneyNode):'available'|'complet
  if(id==='wayfarer-stop')return j.wayfarerHerbGiven?'completed':run.status==='ready'?'available':'locked';
  if(id==='watchtower')return j.watchtowerRelicClaimed?'completed':j.wayfarerHerbGiven&&run.status==='ready'?'available':'locked';
  if(j.completedNodes.includes(id))return 'completed';
- const next=j.startedStages.length===0&&run.stage===1&&run.status==='playing'?1:run.status==='ready'?run.stage+1:0;
+ const next=j.retryStage|| (j.startedStages.length===0&&run.stage===1&&run.status==='playing'?1:run.status==='ready'?run.stage+1:0);
  return id===`battle-${next}`?'available':'locked';
 }
 function journeyGame(game:Game){const run=game.rpgRun;if(!run?.journey||!run.phaseOne||game.hpItemMode||game.rpgTest)throw Error('탐험형 RPG 여정이 아니에요.');return {run,j:run.journey};}
@@ -50,7 +50,7 @@ export function visitJourneyNode(game:Game,id:JourneyNode):number|undefined{
  if(j.location!=='map'||journeyNodeState(run,id)!=='available')throw Error('지금 갈 수 있는 장소를 선택해 주세요.');
  if(id.startsWith('battle-')){
   const stage=Number(id.slice(7));if(stage===3&&!j.path)j.path='skip';
-  j.location='battle';j.currentNode=id;j.startedStages.push(stage);run.updatedAt=Date.now();return stage;
+  j.location='battle';j.currentNode=id;j.retryStage=undefined;if(!j.startedStages.includes(stage))j.startedStages.push(stage);run.updatedAt=Date.now();return stage;
  }
  j.currentNode=id;
  if(id==='tavern'){j.location='tavern';if(!j.completedNodes.includes(id))j.completedNodes.push(id);}
@@ -129,7 +129,7 @@ function createJourneyMini(game:Game,now:number,purpose:'tavern'|'letter'){
  const existing=purpose==='letter'?j.letterMini:j.mini;
  if(!existing||existing.roundIds.length===JOURNEY_TRIAL.miniRounds){
   const human=player(game.players[0].name);human.avatar=game.players[0].avatar;
-  const child=room('TAVERN-'+uid(),human,true,3),serin=player(purpose==='letter'?'편지 도둑':'세린',true),guest=player(purpose==='letter'?'골목 구경꾼':'여행자',true);serin.avatar='stage-portrait:16';guest.avatar='stage-portrait:5';
+  const child=room('TAVERN-'+uid(),human,true,3),serin=player(purpose==='letter'?'편지 도둑':'세린',true),guest=player(purpose==='letter'?'골목 구경꾼':'여행자',true);serin.avatar=purpose==='letter'?'stage-portrait:16':'tavern-serin';guest.avatar='stage-portrait:5';
   child.players.push(serin,guest);child.rpgMini={journeyId:run.id,roundIndex:1,totalRounds:3,reward:0,purpose};start(child,now);
   if(purpose==='letter')j.letterMini={game:child,roundIds:[],lastReward:0};else j.mini={game:child,roundIds:[],lastReward:0};
  }
@@ -179,6 +179,7 @@ export function validateJourneySave(game:Game){
  if(j.seenScenes!==undefined&&(!Array.isArray(j.seenScenes)||!j.seenScenes.every(id=>typeof id==='string'&&/^ST[123]_POST$/.test(id))))throw Error('이야기 감상 기록의 형식이 올바르지 않아요.');
  const invalid=()=>{throw Error('탐험 여정의 저장 형식이 올바르지 않거나 지원하지 않는 버전이에요. 기존 데이터는 보존했어요.');};
  if(!unique(run.relics)||!unique(run.equipped)||run.equipped.length>3||run.equipped.some(id=>!run.relics.includes(id))||!Array.isArray(run.consumables))invalid();
+ if(j.livesVersion===undefined){if(run.fate===0&&!['game-over','complete','abandoned'].includes(run.status))run.fate=3;j.livesVersion=1;}if(j.livesVersion!==1||!Number.isInteger(run.fate)||run.fate<0||run.fate>3||j.retryStage!==undefined&&(!Number.isInteger(j.retryStage)||j.retryStage!==run.stage||j.location!=='map'||run.status!=='playing'))invalid();
  if(!run.phaseOne||j.version!==1||!['map','tavern','market-alley','wayfarer-stop','watchtower','battle','mini-game'].includes(j.location)||!nodes.has(j.currentNode)||!unique(j.startedStages)||!j.startedStages.every(stage=>Number.isInteger(stage)&&stage>=1&&stage<=3)||!unique(j.completedNodes)||!j.completedNodes.every(node=>nodes.has(node))||!Array.isArray(j.rumors)||!j.rumors.every(id=>typeof id==='string')||typeof j.tavernRewardPaid!=='boolean'||j.wayfarerHerbGiven!==undefined&&typeof j.wayfarerHerbGiven!=='boolean'||j.watchtowerRelicFound!==undefined&&typeof j.watchtowerRelicFound!=='boolean'||j.watchtowerRelicClaimed!==undefined&&typeof j.watchtowerRelicClaimed!=='boolean'||j.watchtowerRelicClaimed&&!j.watchtowerRelicFound||j.path&&!['ruins','forest','skip'].includes(j.path))invalid();
  if(j.location==='mini-game'&&(j.miniKind!==undefined&&!['tavern','letter'].includes(j.miniKind)||j.miniKind==='letter'&&!j.letterMini||j.miniKind!=='letter'&&!j.mini))invalid();
  if(j.letterQuest!==undefined&&(!['alley','recovered','complete','failed'].includes(j.letterQuest.step)||j.letterQuest.defeated!==undefined&&typeof j.letterQuest.defeated!=='boolean'))invalid();
