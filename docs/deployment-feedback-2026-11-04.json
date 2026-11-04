@@ -1,0 +1,62 @@
+{
+  "at": "2026-11-04T05:20:33.914Z",
+  "sourceCommit": "f9d7f2d6125845c626b2e4e9d221f2a8740c2a3a",
+  "workerVersion": "60ff91ce-45e0-40e4-b2fa-510b2778c176",
+  "version": "0.6.69",
+  "homepage": {
+    "status": 200,
+    "mentionsVersion": true,
+    "cssReferences": [
+      "/_next/static/css/index.ojupCDo6.css",
+      "/_next/static/css/page.Ceir5DBk.css"
+    ]
+  },
+  "assets": [
+    {
+      "path": "/_next/static/css/index.ojupCDo6.css",
+      "status": 200,
+      "sha256": "1af24bce044ed833edda2decb1e53fd98f286a1f3d83e394fb6494debd8f8c56",
+      "match": true
+    },
+    {
+      "path": "/_next/static/css/page.Ceir5DBk.css",
+      "status": 200,
+      "sha256": "1cc00c9f2319ea8da2a701d2b3841adb3208f28f20783840731dedf45bfcf6bf",
+      "match": true
+    },
+    {
+      "path": "/_next/static/css/page.SmT-LMGj.css",
+      "status": 200,
+      "sha256": "b215bb0f19115fd9a9fb201ef9c2e9f709bd109ce18ad68c87df06f6c4415e1b",
+      "match": true
+    },
+    {
+      "path": "/_next/static/chunks/page-q20K2Mjy.js",
+      "status": 200,
+      "sha256": "13e7d9af9ed3a220ed54a8b255efa2119babe65baac2dda30e37a825eed8ab78",
+      "match": true
+    },
+    {
+      "path": "/_next/static/chunks/rpg-connection-scenes-CKWUf4f4.js",
+      "status": 200,
+      "sha256": "76cabd3915dccb6f4b266793ab572a22be037ea27d772495afd02640965db86d",
+      "match": true
+    }
+  ],
+  "browserChecks": {
+    "mode": "Public built-in RPG screen-test mode; saves are not written",
+    "viewport": "390x844",
+    "checks": [
+      "Map wordmark visible with actual hidden game header",
+      "HP aligned left and coins right",
+      "Avatar brief-info popup opens and closes",
+      "Tavern navigation and notebook at bottom left",
+      "Serin advances by tapping text without a Next button",
+      "Transparent compact dialogue with vertical final choices"
+    ],
+    "screenshots": [
+      "artifacts/deployed-feedback-map-2026-11-04.png",
+      "artifacts/deployed-feedback-dialogue-2026-11-04.png"
+    ]
+  }
+}
