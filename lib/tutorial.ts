@@ -1,9 +1,9 @@
 import {beats,combo,type Tile} from './game';
 const t=(n:number,s:number):Tile=>({id:(n-1)*4+s,n,s});
 export const TUTORIAL_LESSONS=[
- {title:'문양에도 순서가 있어요',text:'같은 숫자는 해 > 별 > 달 > 구름 순서예요. 가장 강한 해 패를 눌러보세요.',hand:[t(7,0),t(7,2),t(7,1),t(7,3)],target:[] as Tile[],kind:'color'},
+ {title:'문양에도 순서가 있어요',text:'같은 숫자는 왕관 > 비밀의 열쇠 > 성화 > 철문 순서예요. 가장 강한 왕관 패를 눌러보세요.',hand:[t(7,0),t(7,2),t(7,1),t(7,3)],target:[] as Tile[],kind:'color'},
  {title:'숫자 2가 가장 강해요',text:'숫자는 2 > 1 > 15 > … > 3 순서예요. 가장 강한 패를 골라보세요.',hand:[t(3,0),t(15,0),t(1,0),t(2,0)],target:[],kind:'number'},
- {title:'싱글에는 한 장으로',text:'상대가 구름 6을 냈어요. 이길 수 있는 한 장을 선택하고 내보세요. 같은 숫자라면 문양으로 비교해요.',hand:[t(3,0),t(6,2),t(8,1)],target:[t(6,0)],kind:'single'},
+ {title:'싱글에는 한 장으로',text:'상대가 철문 6을 냈어요. 이길 수 있는 한 장을 선택하고 내보세요. 같은 숫자라면 문양으로 비교해요.',hand:[t(3,0),t(6,2),t(8,1)],target:[t(6,0)],kind:'single'},
  {title:'같은 숫자 두 장은 페어',text:'상대는 5 페어예요. 7 두 장을 골라 내보세요. 페어에는 페어로 대응해야 해요.',hand:[t(7,0),t(7,2),t(9,3)],target:[t(5,0),t(5,1)],kind:'pair'},
  {title:'같은 숫자 세 장은 트리플',text:'7 세 장을 골라 5 트리플을 이겨보세요. 강한 싱글 한 장으로는 트리플을 넘을 수 없어요.',hand:[t(7,0),t(7,1),t(7,2),t(2,3)],target:[t(5,0),t(5,1),t(5,2)],kind:'triple'},
  {title:'5장 족보로 흐름을 바꿔요',text:'7 세 장과 9 두 장을 골라 풀하우스를 만들어보세요. 5장끼리는 더 높은 족보로도 이길 수 있어요.',hand:[t(7,0),t(7,1),t(7,2),t(9,0),t(9,1),t(3,3)],target:[t(3,0),t(4,1),t(5,2),t(6,3),t(7,3)],kind:'five'},

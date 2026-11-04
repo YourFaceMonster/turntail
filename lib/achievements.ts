@@ -22,7 +22,7 @@ export const ACHIEVEMENTS:Achievement[]=[
  {id:'hundred-tiles',title:'백 장의 선택',description:'패 누적 100장 제출',icon:'▥',goal:100,value:s=>s.tiles},
  {id:'secret-line',title:'한 줄의 기적',description:'스트레이트 플러시 제출',icon:'✺',goal:1,hidden:true,value:pattern('스트레이트 플러시')},
  {id:'secret-clean',title:'빌리지 않은 승리',description:'바닥 패를 한 장도 가져오지 않고 승리',icon:'☽',goal:1,hidden:true,value:s=>s.noDrawWin},
- {id:'secret-sun',title:'태양이 지는 순간',description:'해 문양 2 싱글로 마지막 패를 내며 승리',icon:'☀',goal:1,hidden:true,value:s=>s.redFinish},
+ {id:'secret-sun',title:'왕관을 내려놓는 순간',description:'왕관 문양 2 싱글로 마지막 패를 내며 승리',icon:'♛',goal:1,hidden:true,value:s=>s.redFinish},
  {id:'secret-temper',title:'분노는 패착을 남긴다',description:'라운드 72행동 이상인 장기전에서 히보를 상대로 승리',icon:'♨',goal:1,hidden:true,value:s=>s.hiboWin},
  {id:COMPLETION_ACHIEVEMENT,title:'모든 업적 달성',description:'히든을 포함한 나머지 업적 17개를 모두 달성',icon:'♔',goal:17,completion:true,value:()=>0},
 ];

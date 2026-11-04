@@ -1,4 +1,5 @@
 'use client';
+import {SuitEmblem} from './TileFace';
 import {useEffect,useRef,useState,type CSSProperties} from 'react';
 import {createPortal} from 'react-dom';
 import DialogueText from './DialogueText';
@@ -7,7 +8,7 @@ import {prologueAmbience} from '../../lib/rpg-prologue-audio';
 import {prologueArt,prologueSceneSources,prologueSceneGroup,storyPictureKey,storyPictureTransition} from '../../lib/rpg-prologue-art';
 
 export function TwoCrowns(){return <svg viewBox="0 0 100 70" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round"><path d="M12 21l13 10 10-19 11 19 14-10-5 29H17zM17 56h38"/><path d="M40 31l13 10 10-19 11 19 14-10-5 29H45zM45 66h38"/></g></svg>;}
-export function StoryTile({back=false}:{back?:boolean}){return <div className={`prologue-tile ${back?'is-back':''}`} aria-label={back?'겹친 두 왕관이 새겨진 낡은 패 뒷면':'낡은 빨간 숫자 2 패'}><div className="prologue-tile-front"><span>2</span><i>☾</i></div><div className="prologue-tile-back"><TwoCrowns/></div><b className="prologue-tile-scratch"/></div>;}
+export function StoryTile({back=false}:{back?:boolean}){return <div className={`prologue-tile ${back?'is-back':''}`} aria-label={back?'겹친 두 왕관이 새겨진 낡은 패 뒷면':'낡은 빨간 숫자 2 패'}><div className="prologue-tile-front"><span>2</span><i><SuitEmblem s={3}/></i></div><div className="prologue-tile-back"><TwoCrowns/></div><b className="prologue-tile-scratch"/></div>;}
 export function ProloguePicture({cut,duration=cut.duration,hiddenLight=false}:{cut:PrologueCut,duration?:number,hiddenLight?:boolean}){
  const artImage=useRef<HTMLImageElement>(null),[light,setLight]=useState<CSSProperties>();
  useEffect(()=>{

@@ -19,7 +19,7 @@ export const JOURNEY_NODES:{id:JourneyNode,name:string,x:number,y:number,kind:'b
  {id:'tavern',name:'눈길의 주점',x:67,y:40,kind:'place'},
  {id:'letter-alley',name:'시장 뒤 골목',x:82,y:65,kind:'place'},
  {id:'wayfarer-stop',name:'길가의 여행자',x:21,y:30,kind:'event'},
- {id:'watchtower',name:'검은 소나무 파수탑',x:20,y:17,kind:'place'},
+ {id:'watchtower',name:'검은 소나무 파수탑',x:29,y:23,kind:'place'},
  {id:'battle-2',name:'ST2 · 마을 광장',x:54,y:45,kind:'battle'},
  {id:'battle-3',name:'ST3 · 북쪽 성채',x:57,y:17,kind:'battle'},
 ];

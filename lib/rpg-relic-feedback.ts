@@ -17,8 +17,8 @@ export const ITEM_BATTLE_RELIC_HINTS:Record<string,{label:string,bonus:string,co
  'life-sigil':{label:'트리플 승리',bonus:'HP +2',condition:'트리플로 싸움에서 이기면 자신의 HP 2 회복. 대전의 최대 HP까지 회복해요.'},
  'sun-sigil':{label:'플러시 승리',bonus:'피해 +3',condition:'플러시로 싸움에서 이기면 상대 각각에게 추가 피해 3. 스트레이트 플러시는 별도 족보예요.'},
  'crimson-fang':{label:'해 포함 승리',bonus:'피해 +1',condition:'마지막 승리 족보에 해 문양이 하나 이상 있으면 추가 피해 1. 해의 장수와 관계없이 한 번 적용해요.'},
- 'cloud-blessing':{label:'구름 포함 승리',bonus:'HP +1',condition:'마지막 승리 족보에 구름 문양이 하나 이상 있으면 HP 1 회복. 붉은 송곳니와 함께 발동할 수 있어요.'},
- 'pioneers-eye':{label:'첫 분배',bonus:'구름 3 · 첫 선',condition:'새 아이템전의 첫 분배에만 적용해요. 기존 패와 교체해 손패 수를 유지하며 다음 라운드는 일반 분배예요.'},
+ 'cloud-blessing':{label:'철문 포함 승리',bonus:'HP +1',condition:'마지막 승리 족보에 철문 문양이 하나 이상 있으면 HP 1 회복. 붉은 송곳니와 함께 발동할 수 있어요.'},
+ 'pioneers-eye':{label:'첫 분배',bonus:'철문 3 · 첫 선',condition:'새 아이템전의 첫 분배에만 적용해요. 기존 패와 교체해 손패 수를 유지하며 다음 라운드는 일반 분배예요.'},
 };
 export const RPG_RELIC_HINTS:Record<string,{label:string,bonus:string,condition:string}>={
  'watchkeepers-blue-glass':{label:'응급 약초',bonus:'회복 +5',condition:'장착 중 자신이 사용하는 응급 약초의 회복량이 10에서 15로 늘어나요. 최대 HP를 넘지 않으며, 여행자에게 건네는 약초에는 적용되지 않아요.'},

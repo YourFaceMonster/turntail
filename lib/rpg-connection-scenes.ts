@@ -379,7 +379,7 @@ for(const [stage,sequence] of Object.entries(RPG_CONNECTION_SCENES)){
   for(const cut of cuts){cut.art=art;cut.focus='50% 40%';cut.location=`STAGE ${stage} · ${['','마을 관문','마을 광장','북쪽 성채'][Number(stage)]}`;}
  }
 }
-RPG_CONNECTION_SCENES[3].after.at(-1)!.art=sceneFrame('moon-castle-map-v3','moon-castle-map-portrait-v5');
+RPG_CONNECTION_SCENES[3].after.at(-1)!.art=sceneFrame('moon-castle-map-shops-wide-v1','moon-castle-map-shops-portrait-v1');
 RPG_CONNECTION_SCENES[3].after.at(-1)!.focus='57% 18%';
 
 // Pose changes retain the same mounted camera and background group.

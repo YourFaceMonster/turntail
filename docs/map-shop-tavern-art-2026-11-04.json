@@ -1,0 +1,74 @@
+{
+  "date": "2026-11-04",
+  "mode": "built-in imagegen reference-image generation/edit",
+  "status": "Integrated locally into the map on 2026-11-04. No build, commit, push or deployment.",
+  "files": [
+    "map-buildings-portrait-v1.png",
+    "map-buildings-wide-v1.png",
+    "tavern-icon-v1.png",
+    "shop-icon-v1.png"
+  ],
+  "requests": [
+    {
+      "key": "map-portrait",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Edit image1, the tall 9:16 village map. Image2 is STYLE reference only. Preserve its framing and ALL existing map features including the black pine round watchtower at upper left, the keep, stairs, fountain, gates and stone monolith. Change ONLY two existing buildings: (A) the tavern on right side above the fountain, around x=65..85%, y=36..48%: make a recognizable cozy two-storey timber tavern with snowy steep gable roof, chimney, amber windows, oak entrance, barrels beside doorway and a hanging wooden sign bearing ONLY a beer tankard pictogram. (B) general store on left above fountain around x=19..42%, y=35..45%: a smaller timber shop with snowy gable roof, muted moss-green short awning, crates and sacks at doorway, hanging wooden sign bearing ONLY a satchel pictogram. Both must remain map-scale and existing camera perspective; do not enlarge or move the village. Make the two silhouettes distinct at phone size. Hand-drawn 2D cartoon fantasy, expressive irregular dark ink contours, simple two/three-value cel shading, muted indigo/slate snow at twilight, restrained amber windows. No photorealism, glossy 3D, UI, labels, letters, watermarks or people.",
+        "referenced_image_paths": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/moon-castle-map-watchtower-portrait-v1.png",
+          "C:/Users/SONG/.codex/skills/turntale-cartoon-fantasy/references/prologue-approved.png"
+        ],
+        "transparent_background": false
+      }
+    },
+    {
+      "key": "map-wide",
+      "args": {
+        "prompt": "Use case: precise-object-edit. Edit image1, the wide 16:9 village map. Image2 is STYLE reference only. Preserve framing and ALL existing map features including black pine round watchtower at upper left, keep, fountain, gates, monolith and mountains. Change ONLY two existing town buildings: (A) tavern right of fountain around x=62..73%, y=29..43%: recognizable cozy two-storey timber tavern, snowy steep gable roof, chimney, amber windows, oak entrance, barrels, wooden hanging sign bearing ONLY beer tankard pictogram. (B) general store left of fountain around x=31..43%, y=31..45%: smaller timber shop, snowy gable roof, muted moss-green short awning, crates/sacks at entrance, hanging wooden sign bearing ONLY a satchel pictogram. Both must remain map-scale and match existing elevated perspective. Do not redesign or move other buildings. Hand-drawn 2D cartoon fantasy, expressive irregular dark ink contours, simple two/three-value cel shading, muted indigo/slate snow at twilight, restrained amber windows. No photorealism, glossy 3D, UI, labels, letters, watermarks or people.",
+        "referenced_image_paths": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/moon-castle-map-watchtower-wide-v1.png",
+          "C:/Users/SONG/.codex/skills/turntale-cartoon-fantasy/references/prologue-approved.png"
+        ],
+        "transparent_background": false
+      }
+    },
+    {
+      "key": "tavern-icon",
+      "args": {
+        "prompt": "Use case: stylized-concept. Asset: ONE transparent map destination icon for TURNTALE tavern. Image1 is style reference only. A stout wooden beer tankard with small cream foam cap, broad handle and two dark iron bands, angled slightly in three-quarter view. Warm ochre wood, strong readable dark ink silhouette. Simple and recognizable at 32-48px. Centered square composition with 12% transparent padding on every side, isolated true transparent background. No circular badge, scenery, text or building. Hand-drawn 2D cartoon fantasy, expressive irregular dark ink contours, simple two/three-value cel shading, muted indigo/slate snow at twilight, restrained amber windows. No photorealism, glossy 3D, UI, labels, letters, watermarks or people.",
+        "referenced_image_paths": [
+          "C:/Users/SONG/.codex/skills/turntale-cartoon-fantasy/references/prologue-approved.png"
+        ],
+        "transparent_background": true
+      }
+    },
+    {
+      "key": "shop-icon",
+      "args": {
+        "prompt": "Use case: stylized-concept. Asset: ONE transparent map destination icon for TURNTALE general store. Image1 is style reference only. A compact brown leather merchant satchel with a broad flap, single warm brass buckle, short carrying handle, small muted moss-green cloth corner protruding. Three-quarter view. Strong readable dark ink silhouette, simple and recognizable at 32-48px, matching wooden tankard icon in weight and warm ochre accents. Centered square composition with 12% transparent padding on all sides, true transparent background. No circular badge, scenery, text or building. Hand-drawn 2D cartoon fantasy, expressive irregular dark ink contours, simple two/three-value cel shading, muted indigo/slate snow at twilight, restrained amber windows. No photorealism, glossy 3D, UI, labels, letters, watermarks or people.",
+        "referenced_image_paths": [
+          "C:/Users/SONG/.codex/skills/turntale-cartoon-fantasy/references/prologue-approved.png"
+        ],
+        "transparent_background": true
+      }
+    }
+  ],
+  "uiAgreement": "Apply agreed map overlay HUD to tavern in a later explicitly authorized UI implementation. Dialogue fixed-size/paged/left aligned, lightly colored choices, shop two-line summaries and centered names. Bag discussion deferred.",
+  "integration": [
+    {
+      "source": "map-buildings-portrait-v1.png",
+      "file": "public/prologue/moon-castle-map-shops-portrait-v1.png"
+    },
+    {
+      "source": "map-buildings-wide-v1.png",
+      "file": "public/prologue/moon-castle-map-shops-wide-v1.png"
+    },
+    {
+      "source": "tavern-icon-v1.png",
+      "file": "public/ui/tavern-map-icon-v1.png"
+    },
+    {
+      "source": "shop-icon-v1.png",
+      "file": "public/ui/shop-map-icon-v1.png"
+    }
+  ]
+}

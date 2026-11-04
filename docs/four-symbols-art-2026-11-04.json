@@ -1,0 +1,119 @@
+{
+  "date": "2026-11-04",
+  "mode": "built-in imagegen reference-image editing; native SVG for gameplay suit icons",
+  "status": "local only; not built, committed, pushed or deployed",
+  "outputs": [
+    "public/prologue/wager-rest-wide-symbols-v1.png",
+    "public/prologue/wager-rest-portrait-symbols-v1.png",
+    "public/prologue/wager-speaking-wide-symbols-v1.png",
+    "public/prologue/wager-speaking-portrait-symbols-v1.png",
+    "public/prologue/tile-front-landscape-crown-v1.png",
+    "public/prologue/tile-front-portrait-crown-v1.png"
+  ],
+  "requests": [
+    {
+      "name": "wager-rest-wide-v3",
+      "args": {
+        "referenced_image_paths": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-wide-v3.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Use case: precise-object-edit. EDIT this exact TURNTALE 2D inked cartoon fantasy illustration, preserving aspect ratio, camera, composition, characters, identity, hands, lighting, props, tile materials and every numeral. Correct the central elderly white-bearded man's gaze so BOTH pupils look straight toward the viewer/player in front of him, never sideways to left or right; keep natural eyes and the same expression and head position. Replace only the printed suit marks on visible tile FACES: the offered/foreground red number 2 must have a RED THREE-POINTED CROWN instead of the red crescent, all other red suns become red crowns, green stars become GREEN ANCIENT KEYS with loop bow and toothed bit, black clouds become BLACK ANGULAR CLOSED IRON DOUBLE GATES with central lock, orange crescents become ORANGE UPRIGHT FLAMING TORCHES. These are flat engraved suit symbols, not physical objects or gold crowns. Preserve numbers and printed colors. Leave the ACTUAL moon in the window alone. Do not alter the setting, add characters, text, lore, glow, new ornaments or UI. Retain bold irregular hand-drawn ink, simplified cel shading and dim amber/cool blue tavern palette. The task is eyes and tile suit marks ONLY."
+      }
+    },
+    {
+      "name": "wager-rest-portrait-v3",
+      "args": {
+        "referenced_image_paths": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-portrait-v3.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Use case: precise-object-edit. EDIT this exact TURNTALE 2D inked cartoon fantasy illustration, preserving aspect ratio, camera, composition, characters, identity, hands, lighting, props, tile materials and every numeral. Correct the central elderly white-bearded man's gaze so BOTH pupils look straight toward the viewer/player in front of him, never sideways to left or right; keep natural eyes and the same expression and head position. Replace only the printed suit marks on visible tile FACES: the offered/foreground red number 2 must have a RED THREE-POINTED CROWN instead of the red crescent, all other red suns become red crowns, green stars become GREEN ANCIENT KEYS with loop bow and toothed bit, black clouds become BLACK ANGULAR CLOSED IRON DOUBLE GATES with central lock, orange crescents become ORANGE UPRIGHT FLAMING TORCHES. These are flat engraved suit symbols, not physical objects or gold crowns. Preserve numbers and printed colors. Leave the ACTUAL moon in the window alone. Do not alter the setting, add characters, text, lore, glow, new ornaments or UI. Retain bold irregular hand-drawn ink, simplified cel shading and dim amber/cool blue tavern palette. The task is eyes and tile suit marks ONLY."
+      }
+    },
+    {
+      "name": "wager-speaking-wide-v3",
+      "args": {
+        "referenced_image_paths": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-speaking-wide-v3.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Use case: precise-object-edit. EDIT this exact TURNTALE 2D inked cartoon fantasy illustration, preserving aspect ratio, camera, composition, characters, identity, hands, lighting, props, tile materials and every numeral. Correct the central elderly white-bearded man's gaze so BOTH pupils look straight toward the viewer/player in front of him, never sideways to left or right; keep natural eyes and the same expression and head position. Replace only the printed suit marks on visible tile FACES: the offered/foreground red number 2 must have a RED THREE-POINTED CROWN instead of the red crescent, all other red suns become red crowns, green stars become GREEN ANCIENT KEYS with loop bow and toothed bit, black clouds become BLACK ANGULAR CLOSED IRON DOUBLE GATES with central lock, orange crescents become ORANGE UPRIGHT FLAMING TORCHES. These are flat engraved suit symbols, not physical objects or gold crowns. Preserve numbers and printed colors. Leave the ACTUAL moon in the window alone. Do not alter the setting, add characters, text, lore, glow, new ornaments or UI. Retain bold irregular hand-drawn ink, simplified cel shading and dim amber/cool blue tavern palette. The task is eyes and tile suit marks ONLY."
+      }
+    },
+    {
+      "name": "wager-speaking-portrait-v3",
+      "args": {
+        "referenced_image_paths": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-speaking-portrait-v3.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Use case: precise-object-edit. EDIT this exact TURNTALE 2D inked cartoon fantasy illustration, preserving aspect ratio, camera, composition, characters, identity, hands, lighting, props, tile materials and every numeral. Correct the central elderly white-bearded man's gaze so BOTH pupils look straight toward the viewer/player in front of him, never sideways to left or right; keep natural eyes and the same expression and head position. Replace only the printed suit marks on visible tile FACES: the offered/foreground red number 2 must have a RED THREE-POINTED CROWN instead of the red crescent, all other red suns become red crowns, green stars become GREEN ANCIENT KEYS with loop bow and toothed bit, black clouds become BLACK ANGULAR CLOSED IRON DOUBLE GATES with central lock, orange crescents become ORANGE UPRIGHT FLAMING TORCHES. These are flat engraved suit symbols, not physical objects or gold crowns. Preserve numbers and printed colors. Leave the ACTUAL moon in the window alone. Do not alter the setting, add characters, text, lore, glow, new ornaments or UI. Retain bold irregular hand-drawn ink, simplified cel shading and dim amber/cool blue tavern palette. The task is eyes and tile suit marks ONLY."
+      }
+    },
+    {
+      "name": "tile-front-landscape-v1",
+      "args": {
+        "referenced_image_paths": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-landscape-v1.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Use case: precise-object-edit. EDIT this exact TURNTALE 2D inked cartoon fantasy illustration, preserving aspect ratio, camera, composition, characters, identity, hands, lighting, props, tile materials and every numeral. Correct the central elderly white-bearded man's gaze so BOTH pupils look straight toward the viewer/player in front of him, never sideways to left or right; keep natural eyes and the same expression and head position. Replace only the printed suit marks on visible tile FACES: the offered/foreground red number 2 must have a RED THREE-POINTED CROWN instead of the red crescent, all other red suns become red crowns, green stars become GREEN ANCIENT KEYS with loop bow and toothed bit, black clouds become BLACK ANGULAR CLOSED IRON DOUBLE GATES with central lock, orange crescents become ORANGE UPRIGHT FLAMING TORCHES. These are flat engraved suit symbols, not physical objects or gold crowns. Preserve numbers and printed colors. Leave the ACTUAL moon in the window alone. Do not alter the setting, add characters, text, lore, glow, new ornaments or UI. Retain bold irregular hand-drawn ink, simplified cel shading and dim amber/cool blue tavern palette. The task is eyes and tile suit marks ONLY."
+      }
+    },
+    {
+      "name": "tile-front-portrait-v1",
+      "args": {
+        "referenced_image_paths": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-portrait-v1.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Use case: precise-object-edit. EDIT this exact TURNTALE 2D inked cartoon fantasy illustration, preserving aspect ratio, camera, composition, characters, identity, hands, lighting, props, tile materials and every numeral. Correct the central elderly white-bearded man's gaze so BOTH pupils look straight toward the viewer/player in front of him, never sideways to left or right; keep natural eyes and the same expression and head position. Replace only the printed suit marks on visible tile FACES: the offered/foreground red number 2 must have a RED THREE-POINTED CROWN instead of the red crescent, all other red suns become red crowns, green stars become GREEN ANCIENT KEYS with loop bow and toothed bit, black clouds become BLACK ANGULAR CLOSED IRON DOUBLE GATES with central lock, orange crescents become ORANGE UPRIGHT FLAMING TORCHES. These are flat engraved suit symbols, not physical objects or gold crowns. Preserve numbers and printed colors. Leave the ACTUAL moon in the window alone. Do not alter the setting, add characters, text, lore, glow, new ornaments or UI. Retain bold irregular hand-drawn ink, simplified cel shading and dim amber/cool blue tavern palette. The task is eyes and tile suit marks ONLY."
+      }
+    }
+  ],
+  "corrections": [
+    {
+      "name": "wager-rest-wide-symbols-v1",
+      "args": {
+        "referenced_image_paths": [
+          "C:/Users/SONG/.codex/generated_images/01a1a377-2a19-7652-99b5-fbeb8ee143fd/exec-bd60d60a-0337-4434-a04b-de724e7ce90c.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Use case: precise-object-edit. Make ONE TINY color correction to this exact finished TURNTALE image. On the table, a small ivory tile with an ORANGE FLAMING TORCH has a red/burgundy numeral 2. Recolor ONLY that numeral 2 to ORANGE, matching its orange torch symbol, so all tile numbers match their suit color. The red crown 2 tile held out by the man must stay red with its crown. Keep every other pixel as close as possible, including his direct forward eye contact, his pose and head, hands, all other tile symbols and numbers, dim lighting, composition and aspect ratio. Do not redraw the scene or alter any facial expression. No other changes."
+      }
+    },
+    {
+      "name": "wager-rest-portrait-symbols-v1",
+      "args": {
+        "referenced_image_paths": [
+          "C:/Users/SONG/.codex/generated_images/01a1a377-2a19-7652-99b5-fbeb8ee143fd/exec-85990e74-4671-483d-9025-66fa33a2ee44.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Use case: precise-object-edit. Make ONE TINY color correction to this exact finished TURNTALE image. On the table, a small ivory tile with an ORANGE FLAMING TORCH has a red/burgundy numeral 2. Recolor ONLY that numeral 2 to ORANGE, matching its orange torch symbol, so all tile numbers match their suit color. The red crown 2 tile held out by the man must stay red with its crown. Keep every other pixel as close as possible, including his direct forward eye contact, his pose and head, hands, all other tile symbols and numbers, dim lighting, composition and aspect ratio. Do not redraw the scene or alter any facial expression. No other changes."
+      }
+    },
+    {
+      "name": "wager-speaking-wide-symbols-v1",
+      "args": {
+        "referenced_image_paths": [
+          "C:/Users/SONG/.codex/generated_images/01a1a377-2a19-7652-99b5-fbeb8ee143fd/exec-aae8369f-abe3-4ef9-8082-e4ee4e669780.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Use case: precise-object-edit. Make ONE TINY color correction to this exact finished TURNTALE image. On the table, a small ivory tile with an ORANGE FLAMING TORCH has a red/burgundy numeral 2. Recolor ONLY that numeral 2 to ORANGE, matching its orange torch symbol, so all tile numbers match their suit color. The red crown 2 tile held out by the man must stay red with its crown. Keep every other pixel as close as possible, including his direct forward eye contact, his pose and head, hands, all other tile symbols and numbers, dim lighting, composition and aspect ratio. Do not redraw the scene or alter any facial expression. No other changes."
+      }
+    },
+    {
+      "name": "wager-speaking-portrait-symbols-v1",
+      "args": {
+        "referenced_image_paths": [
+          "C:/Users/SONG/.codex/generated_images/01a1a377-2a19-7652-99b5-fbeb8ee143fd/exec-18687ab5-f1ec-49e2-a134-1df668ee1c5e.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Use case: precise-object-edit. Make ONE TINY color correction to this exact finished TURNTALE image. On the table, a small ivory tile with an ORANGE FLAMING TORCH has a red/burgundy numeral 2. Recolor ONLY that numeral 2 to ORANGE, matching its orange torch symbol, so all tile numbers match their suit color. The red crown 2 tile held out by the man must stay red with its crown. Keep every other pixel as close as possible, including his direct forward eye contact, his pose and head, hands, all other tile symbols and numbers, dim lighting, composition and aspect ratio. Do not redraw the scene or alter any facial expression. No other changes."
+      }
+    }
+  ],
+  "originals": "Original files and all generated intermediate files preserved. Four table-scene final files use the numeral-color correction pass.",
+  "gameplayArtwork": "app/components/SuitMotif.tsx; shared by ordinary/special faces, ornaments, stage motifs, title and achievement cards. Dedicated pixel Bomb renderer has corresponding silhouettes."
+}

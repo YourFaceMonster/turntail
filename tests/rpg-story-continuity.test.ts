@@ -14,7 +14,7 @@ test('all consecutive lines over one connection painting share a camera key and 
 });
 test('real artwork changes transition, while a repeated painting after another scene starts a fresh group',()=>{
  const front=FIRST_PROLOGUE.findIndex(c=>c.id==='P06a'),back=front+1;
- assert.notEqual(prologueSceneGroup(FIRST_PROLOGUE,front).key,prologueSceneGroup(FIRST_PROLOGUE,back).key);
+ assert.equal(prologueSceneGroup(FIRST_PROLOGUE,front).key,prologueSceneGroup(FIRST_PROLOGUE,back).key,'both unfamiliar-mark lines retain the back painting');
  const repeated=SECOND_PROLOGUE.findIndex(c=>c.id==='R02a');
  assert.equal(prologueSceneGroup(SECOND_PROLOGUE,repeated).key,prologueSceneGroup(SECOND_PROLOGUE,repeated+1).key);
  const sample:readonly PrologueCut[]=[FIRST_PROLOGUE[1],FIRST_PROLOGUE[2],FIRST_PROLOGUE[1]];
@@ -27,7 +27,7 @@ test('scene groups partition the full reel without altering the existing 216.75-
 });
 test('short connections preload only their own paintings in the requested orientation',()=>{
  assert.deepEqual(prologueSceneSources(RPG_CONNECTION_SCENES[3].before,true),['/prologue/twins-before-portrait-r61.png','/prologue/twins-reply-portrait-v1.png']);
- assert.deepEqual(prologueSceneSources(RPG_CONNECTION_SCENES[3].after,false),['/prologue/twins-after-r61.png','/prologue/twins-after-reply-wide-v1.png','/prologue/moon-castle-map-v3.png']);
+ assert.deepEqual(prologueSceneSources(RPG_CONNECTION_SCENES[3].after,false),['/prologue/twins-after-r61.png','/prologue/twins-after-reply-wide-v1.png','/prologue/moon-castle-map-shops-wide-v1.png']);
  assert.deepEqual(prologueSceneSources([FIRST_PROLOGUE[0]],true),[]);
 });
 test('dialogue pose drawings change while the camera group stays mounted and both drawings preload',()=>{

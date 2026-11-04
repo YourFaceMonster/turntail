@@ -21,11 +21,11 @@ test('ST2 story and RPG portraits use the same fox merchant and woman cook paint
  for(const index of [0,1,3,4]){const entry=RPG_CAST_ART[index],[x,y,size]=entry.face;assert.ok(x>=0&&y>=0&&x+size<=entry.width&&y+size<=entry.height);assert.ok(existsSync('public'+entry.src));const markup=renderToStaticMarkup(h(RpgCastPortrait,{index}));assert.ok(markup.includes(entry.src));}
 });
 test('handover tile and departure castle images exist in both orientations',()=>{
- for(const id of ['P05','P07']){const art=prologueArt(FIRST_PROLOGUE.find(c=>c.id===id)!);assert.ok(art);assert.ok(existsSync('public'+art!.landscape));assert.ok(existsSync('public'+art!.portrait));assert.match(art!.landscape,id==='P05'?/wager-speaking-wide-v3/:/castle-road-v2/);}
+ for(const id of ['P05','P07']){const art=prologueArt(FIRST_PROLOGUE.find(c=>c.id===id)!);assert.ok(art);assert.ok(existsSync('public'+art!.landscape));assert.ok(existsSync('public'+art!.portrait));assert.match(art!.landscape,id==='P05'?/wager-speaking-wide-symbols-v1/:/castle-road-v2/);}
 });
 test('tavern retains accessible character actions without the repeated conversation label',()=>{
  const game=createRpgJourneyGame('검증','',0,'cleric'),markup=renderToStaticMarkup(h(JourneyTavernView,{run:game.rpgRun!,busy:false,error:'',action:noop,exit:noop}));
- assert.ok(!markup.includes('<small>대화</small>'));assert.ok(markup.includes('피오 · 여우 여행자 · 이야기'));assert.equal((markup.match(/aria-haspopup="dialog"/g)||[]).length,3);assert.ok(markup.includes('tavern-living-art'));
+ assert.ok(!markup.includes('<small>대화</small>'));assert.ok(markup.includes('피오 · 여우 여행자 · 이야기'));assert.equal((markup.match(/class="tavern-character-label label-/g)||[]).length,3);assert.ok(markup.includes('tavern-living-art'));
 });
 test('single menu exposes three match choices and a separate RPG entry',()=>{
  const markup=renderToStaticMarkup(h(SinglePlayerMenu,{normal:noop,items:noop,rpg:noop,close:noop}));

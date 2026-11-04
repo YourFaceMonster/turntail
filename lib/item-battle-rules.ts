@@ -26,8 +26,8 @@ export function applyPioneerDeal(game:Game,now=Date.now()){
   game.players[0].hand=sorted(hand);
  }
  game.opening=lowestHandLead(game.players);game.turn=game.opening.who;
- game.log[0]=`라운드 ${game.round} · 첫 선 ${game.players[game.turn].name} (구름 3)`;
- Object.assign(run,withRelicActivations(run,[{relicId:'pioneers-eye',message:'첫 분배 · 구름 3으로 첫 선'}],now));
+ game.log[0]=`라운드 ${game.round} · 첫 선 ${game.players[game.turn].name} (철문 3)`;
+ Object.assign(run,withRelicActivations(run,[{relicId:'pioneers-eye',message:'첫 분배 · 철문 3으로 첫 선'}],now));
 }
 export function trapAvailability(game:Pick<Game,'phase'|'turn'|'rpgRun'|'round'|'turnReadyAt'|'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'roundActions'|'result'>,who:number,enabled=true,now=Date.now()){
  const state=itemBattleState(game),combat=game.rpgRun?.combat;

@@ -33,3 +33,29 @@ body:has(.journey-map-scene) .turntale>.topbar{visibility:hidden;pointer-events:
 .journey-game-brand>strong{display:grid;gap:2px}.journey-game-brand>strong>small{font-size:10px;font-weight:400;color:#b7c3b7}
 
 .journey-bag-consumables{padding-bottom:12px;border-bottom:1px solid #b9a16b44;margin-bottom:12px}.journey-bag-consumables>div{display:flex;flex-wrap:wrap;gap:8px}.journey-bag-consumables>div>span{display:flex;align-items:center;gap:6px;padding:5px 8px;background:#20372b66;border-radius:5px;font-size:12px}.journey-bag-consumables .rpg-item-icon{position:static!important;width:30px!important;height:30px!important}.journey-bag-consumables>small{display:block;margin-top:8px;color:#c9c2a5;font-size:11px}
+
+/* Shared scene overlay: map and tavern keep their paintings behind the HUD. */
+.journey-scene-shade:has(>.journey-tavern-scene){padding:0!important}
+.journey-scene-shade>:is(.journey-map-scene,.journey-tavern-scene).rpg-exploration{position:relative;display:block!important;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0!important;border:0;border-radius:0;overflow:hidden;background:#101c19}
+:is(.journey-map-scene,.journey-tavern-scene)>.journey-game-hud{position:absolute;inset:0 0 auto;z-index:20;padding:9px 12px 12px;background:linear-gradient(#10201ef0,#10201eb3 72%,#10201e00);border:0;pointer-events:none}
+.journey-game-hud button{pointer-events:auto}.journey-hud-top{display:grid;grid-template-columns:88px minmax(0,1fr) 88px;align-items:center;gap:6px;min-height:36px}
+.journey-game-brand{display:block;min-width:0}.journey-game-brand .journey-wordmark{display:block!important;visibility:visible!important;width:84px!important;height:33px!important;max-width:none;opacity:1!important}
+.journey-place{display:grid;gap:3px;text-align:center;font:600 12px/1.25 'Noto Sans KR',Arial,sans-serif;color:#f3dfaf;text-shadow:0 2px 4px #000}.journey-place small{font-size:11px;font-weight:500;color:#f3ead6;white-space:nowrap}
+.journey-game-hud .top-actions{justify-content:flex-end;gap:4px}.journey-game-hud .top-actions button{min-height:30px;padding:4px 6px;font-size:11px}.journey-game-hud .settings-trigger{width:28px}
+.journey-game-status{gap:12px;margin-top:7px}.journey-game-status .rpg-hp-bar{width:182px;height:29px;min-height:29px}.journey-game-status .rpg-hp-bar .hp-bar-identity{position:relative;display:flex;align-items:center;gap:0;padding:0 5px;width:34px;flex:none}.journey-game-status .rpg-hp-bar .hp-bar-current{display:flex;align-items:center;justify-content:center;gap:2px;flex:1;font-size:12px}.journey-game-status .rpg-hp-bar .hp-value b{font-size:13px}.journey-hp-avatar{display:grid;place-items:center;width:25px;height:25px;overflow:hidden;border-radius:50%;background:#162c28;border:1px solid #dbc17e}.journey-hp-avatar>:is(svg,img,span){display:block;width:24px!important;height:24px!important;object-fit:cover}.journey-hp-avatar svg{width:20px!important;height:20px!important}.journey-hp-avatar img{border-radius:50%}
+:is(.journey-map-scene,.journey-tavern-scene)>.journey-game-dock{position:absolute;inset:auto 0 0;z-index:20;display:grid;grid-template-columns:1fr auto 1fr;gap:16px;margin:0;padding:10px 12px max(8px,env(safe-area-inset-bottom));background:linear-gradient(#10201e00,#10201eb8 25%,#10201ee8);border:0}
+.journey-map-scene .journey-exploration-layout,.journey-tavern-scene .journey-tavern-stage{position:absolute;inset:0;display:block;width:100%;height:100%;min-height:0;margin:0;padding:0;container-type:size;overflow:hidden}
+.journey-map-scene .journey-map-scroll{position:absolute;inset:0;container-type:size}
+body:has(:is(.journey-map-scene,.journey-tavern-scene)) .turntale>.topbar{visibility:hidden;pointer-events:none}
+.journey-map-scene .journey-destination-icon{display:block;width:28px;height:28px;object-fit:contain}.journey-map-scene .rpg-map-node[data-node='tavern']{left:69%;top:37%}.journey-map-scene .map-village-shop{left:38%;top:40%}
+.journey-tavern-scene .journey-notes{position:absolute;right:12px;bottom:78px;z-index:21;display:flex;gap:4px;align-items:center;padding:4px 7px;background:#10201ec9;border:1px solid #cbb17866;border-radius:5px;font-size:10px}.journey-notes img{width:23px;height:23px}.journey-tavern-scene>.journey-error{position:absolute;z-index:22;top:90px;left:12px;right:12px}
+@media(max-aspect-ratio:1/1){.journey-map-scene .journey-map-scroll .rpg-node-map{width:max(100cqw,calc(100cqh * 9 / 16));height:max(100cqh,calc(100cqw * 16 / 9));aspect-ratio:9/16}.journey-map-scene .rpg-map-node[data-node='tavern']{left:78%;top:46%}.journey-map-scene .map-village-shop{left:30%;top:43%}}
+@media(max-width:360px){.journey-hud-top{grid-template-columns:76px minmax(0,1fr) 76px;gap:2px}.journey-game-brand .journey-wordmark{width:74px!important}.journey-place{font-size:11px}.journey-place small{font-size:10px}.journey-game-status{gap:8px}.journey-game-status .rpg-hp-bar{width:164px}}
+@media(max-height:500px) and (orientation:landscape){:is(.journey-map-scene,.journey-tavern-scene)>.journey-game-hud{padding:3px 12px 8px}.journey-hud-top{min-height:30px}.journey-game-status{margin-top:2px}.journey-game-status .rpg-hp-bar{height:24px;min-height:24px}.journey-tavern-scene .journey-notes{bottom:58px}.journey-game-brand .journey-wordmark{height:27px!important}}
+
+.journey-game-status .rpg-hp-bar.has-identity{display:flex!important;align-items:center;justify-content:space-between;padding:0 5px!important;overflow:hidden}
+.journey-game-status .rpg-hp-bar .hp-bar-identity{height:100%;padding:0!important;z-index:1}.journey-game-status .rpg-hp-bar .hp-bar-current{position:relative;z-index:1;margin:0;line-height:1}.journey-game-status .rpg-hp-bar .hp-value{line-height:1}
+
+/* The common dock owns the bag action; retain the existing bag popup content. */
+.journey-tavern-room .tavern-bag{display:none!important}
+@media(max-aspect-ratio:1/1){.journey-tavern-room .tavern-fire strong{transform:translateY(-50%)}}

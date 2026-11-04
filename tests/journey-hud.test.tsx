@@ -13,10 +13,10 @@ import {questArt} from '../lib/rpg-quest-art';
 import {FIRST_PROLOGUE} from '../lib/rpg-prologue';
 import {prologueArt} from '../lib/rpg-prologue-art';
 const noop=()=>{};
-test('map exposes save/settings, one HP meter, map/bag/relic controls without avatar or history',()=>{
+test('map exposes save/settings, one HP meter, map/bag/relic controls with HP avatar and without history',()=>{
  const g=createRpgJourneyGame('아바타중복금지','',0,'cleric');
  const html=render(h(JourneyMapView,{run:g.rpgRun!,busy:false,error:'',action:noop,exit:noop,save:()=>'',settings:noop,playerName:'아바타중복금지',playerAvatar:h('span',null,'중복아바타')}));
- assert.ok(html.includes('>저장</button>'));assert.ok(html.includes('aria-label="게임 설정"'));assert.ok(html.includes('MAP · 지도와 이야기'));assert.ok(html.includes('여행 가방 · 소지품과 장착'));assert.ok(html.includes('내 장착 유물'));assert.equal((html.match(/role="meter"/g)||[]).length,1);assert.equal((html.match(/빈 유물 자리/g)||[]).length,2);assert.ok(!html.includes('아바타중복금지'));assert.ok(!html.includes('중복아바타'));assert.ok(!html.includes('전적'));
+ assert.ok(html.includes('>저장</button>'));assert.ok(html.includes('aria-label="게임 설정"'));assert.ok(html.includes('MAP · 지도와 이야기'));assert.ok(html.includes('여행 가방 · 소지품과 장착'));assert.ok(html.includes('내 장착 유물'));assert.equal((html.match(/role="meter"/g)||[]).length,1);assert.equal((html.match(/빈 유물 자리/g)||[]).length,2);assert.ok(!html.includes('아바타중복금지'));assert.equal((html.match(/중복아바타/g)||[]).length,1);assert.ok(!html.includes('전적'));
 });
 test('Serin has two authored lines and current-scene dialogue never paints over the tavern',()=>{
  const lines=SERIN_INVITATION.split('\n');assert.deepEqual(lines,['한 판 할래?','세 판이면 네 실력 정도는 알 수 있겠지.']);

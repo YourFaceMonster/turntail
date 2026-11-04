@@ -43,7 +43,7 @@
 @media(max-width:600px){.journey-tavern-scene .journey-tavern-panel-shade{inset:auto 7px 7px}.journey-tavern-scene .journey-tavern-panel-shade .journey-tavern-panel{max-height:58dvh;padding:18px 16px}}
 
 /* Painted scene geometry: markers use the same uncropped composition at every width. */
-.journey-map-scene[data-stage] .rpg-map-paint{background:linear-gradient(#101c2622,#13242122),url('/prologue/moon-castle-map-v3.png') center/100% 100%;filter:none}
+.journey-map-scene[data-stage] .rpg-map-paint{background:linear-gradient(#101c2622,#13242122),url('/prologue/moon-castle-map-shops-wide-v1.png') center/100% 100%;filter:none}
 .journey-map-scene .rpg-node-map{height:auto;aspect-ratio:16/9;min-height:0}
 .journey-story-review{display:flex;justify-content:flex-end;align-items:center;gap:10px;font-size:12px;margin:0 0 12px}.journey-story-review select{padding:7px;border:1px solid #b49b61;background:#17252d;color:#f0e3c7;border-radius:6px}
 .journey-tavern-scene .journey-tavern-room{min-height:0;aspect-ratio:16/9;background:url('/prologue/tavern-landscape-v6.png') center/100% 100% no-repeat}
@@ -139,7 +139,7 @@
 @media(max-aspect-ratio:1/1){
  .journey-tavern-scene .journey-tavern-stage .journey-tavern-room{width:min(100cqw,calc(100cqh * 9 / 16));height:min(100cqh,calc(100cqw * 16 / 9));aspect-ratio:9/16}
  .journey-map-scroll{overflow-x:hidden}.journey-map-scroll .rpg-node-map{width:100%;min-width:0;aspect-ratio:9/16}
- .journey-map-scene[data-stage] .rpg-map-paint{background-image:linear-gradient(#101c2622,#13242122),url('/prologue/moon-castle-map-portrait-v5.png')}
+ .journey-map-scene[data-stage] .rpg-map-paint{background-image:linear-gradient(#101c2622,#13242122),url('/prologue/moon-castle-map-shops-portrait-v1.png')}
  .map-route-landscape{display:none}.map-route-portrait{display:block}
  .rpg-map-node[data-node='battle-1']{left:50%;top:58%}.rpg-map-node[data-node='tavern']{left:72%;top:40%}.rpg-map-node[data-node='battle-2']{left:52%;top:44%}
  .rpg-map-node[data-node='ruins']{left:28%;top:28%}.rpg-map-node[data-node='forest']{left:81%;top:29%}.rpg-map-node[data-node='battle-3']{left:56%;top:20%}
@@ -233,7 +233,7 @@
 .wayfarer-event-icon span{position:absolute;right:22%;top:19%;font-size:32px;color:#e4c77e}
 .wayfarer-event-copy{display:grid;gap:12px;max-width:600px}.wayfarer-event-copy>p:not(.eyebrow){color:#d1c9b7;line-height:1.7}.wayfarer-event-copy .journey-speech{margin:0;padding:14px 16px;border-left:3px solid #d9b979;background:#11191699;line-height:1.7}.wayfarer-no-herb{padding:12px;border-radius:9px;background:#11191699}
 @media(max-width:600px){.journey-map-scene .rpg-map-node[data-node='wayfarer-stop']{left:20%;top:35%}.wayfarer-event-card{grid-template-columns:1fr;gap:14px;min-height:0;padding:14px}.wayfarer-event-icon{min-height:130px;font-size:70px}.wayfarer-event-copy{gap:10px}}
-.rpg-map-node[data-node='watchtower']{left:20%;top:17%}
+.rpg-map-node[data-node='watchtower']{left:29%;top:23%}
 .journey-watchtower-scene .watchtower-event-card{background:linear-gradient(145deg,#0c1b25f0,#182b2ce8),radial-gradient(ellipse at 25% 72%,#58b9d766,transparent 48%)}
 .watchtower-event-card{display:grid;grid-template-columns:minmax(170px,.65fr) minmax(280px,1.35fr);align-items:center;gap:clamp(18px,4vw,44px);min-height:260px;padding:clamp(18px,4vw,42px);border:1px solid #9dd7db66;border-radius:18px;box-shadow:inset 0 0 44px #020a12aa}
 .watchtower-beacon{position:relative;display:grid;place-items:center;min-height:220px;border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#101d2a,#182723 62%,#171c17)}
@@ -242,7 +242,7 @@
 .watchtower-beacon i{position:absolute;bottom:12%;width:68%;height:9%;border-radius:50%;background:#71f0ff55;filter:blur(16px)}
 .watchtower-event-copy{display:grid;gap:12px;max-width:600px}.watchtower-event-copy h3{font-size:clamp(20px,3vw,28px);color:#baf5f3}.watchtower-event-copy>p:not(.eyebrow){color:#d1d8cf;line-height:1.7}.watchtower-event-copy .journey-speech{margin:0;padding:14px 16px;border-left:3px solid #7edee3;background:#0c1719b8;line-height:1.7}
 @keyframes beacon-glow{from{opacity:.72;transform:scale(.98)}to{opacity:1;transform:scale(1.035)}}
-@media(max-width:600px){.journey-map-scene .rpg-map-node[data-node='watchtower']{left:18%;top:18%}.watchtower-event-card{grid-template-columns:1fr;gap:14px;min-height:0;padding:14px}.watchtower-beacon{min-height:132px}.watchtower-beacon span{font-size:72px}.watchtower-event-copy{gap:10px}}
+@media(max-width:600px){.journey-map-scene .rpg-map-node[data-node='watchtower']{left:29%;top:23%}.watchtower-event-card{grid-template-columns:1fr;gap:14px;min-height:0;padding:14px}.watchtower-beacon{min-height:132px}.watchtower-beacon span{font-size:72px}.watchtower-event-copy{gap:10px}}
 
 /* Keep the battle table covered throughout both halves of a location fade. */
 .journey-scene-shade,.journey-scene-shade.is-leaving{background:#080e12;animation:none!important;opacity:1!important}
@@ -252,3 +252,6 @@
 
 .journey-final-ranking{list-style:none;margin:14px 0;padding:0;display:grid;gap:6px}.journey-final-ranking>li{padding:8px 12px;border-bottom:1px solid #c4ac7340}
 .journey-final-summary{display:grid;gap:5px;text-align:center;padding:16px;background:#ba94551a;border:1px solid #c9aa6666;border-radius:8px}.journey-final-summary small{font-size:11px;color:#c4b38c}.journey-final-summary strong{font-size:26px;color:#f1d590}.journey-final-summary span{font-size:15px;color:#e9d5a3}
+
+/* Keep the tower pin on the matching landmark when portrait art is selected. */
+@media(max-aspect-ratio:1/1){.journey-map-scene .rpg-map-node[data-node='watchtower']{left:29%;top:24%}}

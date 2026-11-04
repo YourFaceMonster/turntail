@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-04",
+  "version": "0.6.69",
+  "status": "local only; not built, committed, pushed or deployed",
+  "mode": "imagegen reference-image edit",
+  "purpose": "Match the village map landmark to the existing Black Pine Watchtower event art.",
+  "outputs": [
+    {
+      "orientation": "landscape",
+      "file": "public/prologue/moon-castle-map-watchtower-wide-v1.png",
+      "generatedFrom": "exec-6485f7ae-5730-4ce0-8e76-23df16e60b01.png"
+    },
+    {
+      "orientation": "portrait",
+      "file": "public/prologue/moon-castle-map-watchtower-portrait-v1.png",
+      "generatedFrom": "exec-ae06cf28-9cd4-4898-b2eb-8fc04a825ce3.png"
+    }
+  ],
+  "requests": [
+    {
+      "key": "wide",
+      "args": {
+        "prompt": "Use case: precise-object-edit. EDIT THE FIRST IMAGE, the LANDSCAPE 16:9 TURNTALE village map. Change ONLY the small NORTHWEST INTERIOR COURTYARD region inside the left/rear city wall, roughly x=18%..33%, y=20%..41%. Add a SMALL MAP-SCALE version of the BLACK PINE WATCHTOWER from image 2 there: weathered ROUND stone lookout tower with arched lower opening and stone steps, projecting square wooden lookout platform attached at upper right, a recognizable large dark living pine immediately on its left, and the low timber shed at its right. Tower and pine must look like the SAME LOCATION seen from a distant map camera. Fit it into the existing town scale, smaller than the northern keep; do not paste a close-up scene. The pine is dark green/black needle boughs with snow, not a leafless tree. Preserve the REST of image 1 as closely as possible: keep canvas and camera, central fountain and market, all gate positions, main castle silhouette, houses, mountains, snow path, moon, existing atmosphere and brightness. Do NOT redesign the whole village, enlarge the keep, add a second settlement, or change any other landmark. Match the thick expressive ink outlines and simplified 2D cartoon fantasy rendering already present. No text, labels, pins, UI, people or new dramatic magic glow.",
+        "referenced_image_paths": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/moon-castle-map-v3.png",
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/watchtower-arrival-wide-v4.png"
+        ],
+        "transparent_background": false
+      }
+    },
+    {
+      "key": "tall",
+      "args": {
+        "prompt": "Use case: precise-object-edit. EDIT THE FIRST IMAGE, the PORTRAIT 9:16 TURNTALE village map, preserving its tall composition. Change ONLY the SMALL WESTERN INNER COURTYARD around x=13%..34%, y=22%..35% where an older stone watchtower stands left of the central stairway. Replace that small map structure with the SAME BLACK PINE WATCHTOWER depicted in reference 2: round weathered stone tower, arched lower opening and steps, projecting square wooden lookout platform at upper right, low timber shed to its right, and prominent dark living snow-dusted pine on its LEFT. Adapt the architecture faithfully to the map's distant elevated perspective and scale. Make tower and pine recognizable together, smaller than the main keep. Preserve ALL other features and their locations from image 1: northern castle, central staircase, fountain, market and shops, front gate, stone monolith, outer walls, snow, mountains, lighting, palette, image framing and aspect ratio. Do not redesign the town or add text, labels, map pins, UI or people. Retain bold irregular hand-inked 2D cartoon fantasy style and readable blue-violet twilight. Reference 2 is ONLY for this small event location's architectural identity, not for the overall image composition.",
+        "referenced_image_paths": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/moon-castle-map-portrait-v5.png",
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/watchtower-arrival-wide-v4.png"
+        ],
+        "transparent_background": false
+      }
+    }
+  ]
+}

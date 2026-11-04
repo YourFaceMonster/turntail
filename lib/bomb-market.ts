@@ -2,8 +2,8 @@
 import type {Tile} from './game';
 export type {Tile};
 export const BOMB_REACTION_MS=3000, MARKET_COST=3, BOMB_ROUNDS=5, BOMB_HAND_SIZE=11, BOMB_MARKET_SIZE=16;
-// Existing art: black cloud=0, green star=1, orange moon=2, red sun=3.
-export const BOMB_SUIT_NAMES=['검정 구름','초록 별','주황 달','빨강 해'];
+// Stable saved IDs: iron gate=0, secret key=1, sacred flame=2, crown=3.
+export const BOMB_SUIT_NAMES=['검정 철문','초록 비밀의 열쇠','주황 성화','빨강 왕관'];
 export const bombSuitRank=(s:number)=>[0,2,1,3][s];
 export const bombRank=(n:number)=>n===2?17:n===1?16:n;
 export const bombSorted=(tiles:Tile[])=>[...tiles].sort((a,b)=>bombRank(a.n)-bombRank(b.n)||bombSuitRank(a.s)-bombSuitRank(b.s));

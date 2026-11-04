@@ -51,7 +51,9 @@ test('every visible story beat has finished landscape and portrait paintings, in
   }
   assert.ok(!html.includes('prologue-hand'),'finished paintings replace temporary prop geometry');
  }
- assert.notDeepEqual(prologueArt(FIRST_PROLOGUE[5]),prologueArt(FIRST_PROLOGUE[6]),'front and back have distinct rendered paintings');
+ assert.equal(FIRST_PROLOGUE[5].back,true,'the unfamiliar mark line shows the unusual back, not the ordinary crown suit');
+ assert.deepEqual(prologueArt(FIRST_PROLOGUE[5]),prologueArt(FIRST_PROLOGUE[6]));
+ assert.notDeepEqual(prologueArt({...FIRST_PROLOGUE[5],back:false}),prologueArt(FIRST_PROLOGUE[5]),'crown front and two-crown back remain distinct paintings');
  assert.equal(prologueArtSources(true).length,9);assert.equal(prologueArtSources(false).length,9);
  const tile=renderToStaticMarkup(h(StoryTile,{back:true}));assert.ok(tile.includes('is-back'));assert.ok(tile.includes('prologue-tile-scratch'));assert.ok(tile.includes('>2<'));
 });

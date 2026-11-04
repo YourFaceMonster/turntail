@@ -17,7 +17,7 @@ export default function MainMenu(p:Props){return <section className="title-scree
   <div className="title-crest" aria-hidden="true"><span/><b>✦</b><span/></div>
   <div className="title-logo title-logo-premium title-logo-approved"><h1 aria-label="턴테일"><TurntaleWordmark className="title-wordmark-crop"/></h1></div><p className="title-english">TURNTALE</p><div className="wordmark-rule" aria-hidden="true"><span/>✧<span/></div>
   <p className="title-tagline">한 장의 선택, 새로운 이야기</p>
-  <div className="title-suits" aria-label="해 · 별 · 달 · 구름">{[3,1,2,0].map(s=><span key={s} className={`title-suit-${s}`}><SuitEmblem s={s}/></span>)}</div>
+  <div className="title-suits" aria-label="왕관 · 비밀의 열쇠 · 성화 · 철문">{[3,1,2,0].map(s=><span key={s} className={`title-suit-${s}`}><SuitEmblem s={s}/></span>)}</div>
   <div className="title-play">
    <button className="pixel-button menu-single" onClick={p.single}><span className="menu-button-copy"><strong>{p.bomb?"폭탄시장전 시작":"싱글플레이"}</strong><small>{p.bomb?"3인 · 공개 시장 · 총 5판":"일반 대전 · 아이템전 · RPG 여정"}</small></span><ChevronRight className="menu-button-arrow" aria-hidden="true"/></button>
    <button className="pixel-button menu-continue" disabled={!p.canResume} onClick={p.resume} title={p.canResume?'저장된 게임을 이어서 플레이합니다':'저장된 게임이 없어요'}><span className="menu-button-copy"><strong>이어서 하기</strong><small>{p.canResume?'멈춰 둔 테이블로 돌아가기':'저장된 게임이 없어요'}</small></span><ChevronRight className="menu-button-arrow" aria-hidden="true"/></button>
