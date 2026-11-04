@@ -118,7 +118,8 @@ export function claimWatchtowerRelic(run:RpgRun,replace?:string):RpgRun{
  return {...run,relics,equipped,discovered:[...new Set([...run.discovered,BLUE_GLASS_ID])],unlocked:[...new Set([...run.unlocked,BLUE_GLASS_ID])],journey:{...j,watchtowerRelicClaimed:true},updatedAt:Date.now()};
 }
 export function equipJourneyRelic(run:RpgRun,id:string,replace?:string):RpgRun{
- assertJourneyTavern(run);if(!run.relics.includes(id))throw Error('보유한 유물을 선택해 주세요.');
+ if(!run.journey||(run.journey.location==='mini-game'||run.journey.location==='battle'&&run.status==='playing')||!['playing','ready','allocation','complete'].includes(run.status))throw Error('대결 중에는 유물을 변경할 수 없어요.');
+ if(!run.relics.includes(id))throw Error('보유한 유물을 선택해 주세요.');
  let equipped=run.equipped.filter(relic=>run.relics.includes(relic));
  if(equipped.includes(id)){equipped=equipped.filter(relic=>relic!==id);}
  else{if(equipped.length>=3){if(!replace||!equipped.includes(replace))throw Error('교체할 장착 유물을 선택해 주세요.');equipped=equipped.filter(relic=>relic!==replace);}equipped.push(id);}

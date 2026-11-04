@@ -1,4 +1,5 @@
-/** Shared emphasis for catalog copy; never changes the underlying item effect. */
+/** Shared catalog emphasis; display only, never alters item mechanics. */
 export default function EffectText({text}:{text:string}){
- return <>{text.split(/((?:HP|회복량?|피해|포인트|주화)\s*[+−-]\s*\d+)/g).map((part,index)=>/^(?:HP|회복량?|피해|포인트|주화)\s*[+−-]/.test(part)?<strong key={index} className={/^(HP|회복)/.test(part)&&!/[−-]/.test(part)?'shop-effect-gain':'shop-effect-value'}>{part}</strong>:part)}</>;
+ const token=/(HP\s*[+−-]\s*\d+|HP\s*\d+\s*회복|피해\s*\d+\s*(?:방어|감소)|\d+\s*(?:회복|방어)|(?:회복량?|방어|피해|포인트|주화)\s*[+−-]?\s*\d+)/g;
+ return <>{text.split(token).map((part,index)=>{if(!part||!new RegExp('^'+token.source+'$').test(part))return part;const benefit=/회복|방어|감소/.test(part)||/^HP/.test(part)&&!/[−-]/.test(part),harm=!benefit&&(/피해/.test(part)||/^HP/.test(part)&&/[−-]/.test(part));return <strong key={index} className={benefit?'shop-effect-gain':harm?'shop-effect-harm':'shop-effect-value'}>{part}</strong>;})}</>;
 }

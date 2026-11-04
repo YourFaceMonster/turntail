@@ -11,7 +11,7 @@ export const RPG_PHASE_ONE={maxHp:100,duelsPerGauge:3,enemyHp:[[70,70],[75,75],[
  shop:[{id:'emergency-herb',price:30},{id:'ember-bomb',price:45}],
  synergy:{id:'sheltered-light',name:'지켜낸 등불',requires:['cracked-heart','recovery-lantern'],clearHeal:2},
 } as const;
-export type RpgStageReward='relic'|'coins'|'heal';
+export type RpgStageReward='relic'|'coins'|'heal'|'all';
 export type RpgPhaseOneState={version:1,eliminated:number[],chargedBattles:string[],clearedStages:number[],rewardHistory?:{stage:number,choice:RpgStageReward,relicId?:string,replaced?:string,declined?:boolean}[],
  clear?:{stage:number,hpBefore:number,baseHeal:number,relicHeal:number,synergyHeal:number,relicId:string,chosen?:RpgStageReward,replaced?:string,declined?:boolean}};
 export function isRpgPhaseOne(game:{hpItemMode?:boolean,rpgTest?:boolean,rpgRun?:{phaseOne?:RpgPhaseOneState}|null}){return !!game.rpgRun?.phaseOne&&!game.hpItemMode&&!game.rpgTest;}
@@ -70,18 +70,20 @@ export function settleRpgPhaseOne(run:RpgRun,result:RpgResult):RpgRun{
 export function chooseRpgStageReward(run:RpgRun,choice:RpgStageReward,replace?:string,decline=false):RpgRun{
  const state=run.phaseOne,clear=state?.clear;
  if(!state||!clear||run.status!=='allocation'||clear.chosen)throw Error('선택할 스테이지 보상이 없어요.');
- if(!['relic','coins','heal'].includes(choice))throw Error('보상 3종 중 하나를 선택해 주세요.');
+ if(!['relic','coins','heal','all'].includes(choice))throw Error('올바른 스테이지 보상을 확인해 주세요.');
  if(run.journey)replace=undefined;
  let relics=[...run.relics],coins=run.coins,hp=[...run.hp];
- if(choice==='relic'&&!decline){
+ if((choice==='relic'||choice==='all'&&!!clear.relicId&&!relics.includes(clear.relicId))&&!decline){
   if(!clear.relicId||relics.includes(clear.relicId))throw Error('획득할 수 있는 새 유물이 없어요.');
   if(!run.journey&&relics.length>=RPG_PHASE_ONE.relicLimit){if(!replace||!relics.includes(replace))throw Error('교체할 기존 유물을 선택하거나 획득을 포기해 주세요.');relics=relics.filter(id=>id!==replace);}
   else if(replace)throw Error('빈 유물 자리가 있어 교체가 필요하지 않아요.');
   relics.push(clear.relicId);
- }else if(choice==='coins')coins+=RPG_PHASE_ONE.rewardCoins;
- else if(choice==='heal')hp[0]=Math.min(RPG_PHASE_ONE.maxHp,hp[0]+RPG_PHASE_ONE.rewardHeal);
- const nextState={...state,rewardHistory:[...(state.rewardHistory||[]),{stage:run.stage,choice,...(choice==='relic'&&!decline?{relicId:clear.relicId}:{}),...(replace?{replaced:replace}:{}),...(decline?{declined:true}:{})}],clear:{...clear,chosen:choice,...(replace?{replaced:replace}:{}),...(decline?{declined:true}:{})}};
- let equipped=run.journey?run.equipped.filter(id=>relics.includes(id)):[...relics];if(run.journey&&choice==='relic'&&!decline&&equipped.length<3&&!equipped.includes(clear.relicId))equipped.push(clear.relicId);
+ }
+ if(choice==='coins'||choice==='all')coins+=RPG_PHASE_ONE.rewardCoins;
+ if(choice==='heal'||choice==='all')hp[0]=Math.min(RPG_PHASE_ONE.maxHp,hp[0]+RPG_PHASE_ONE.rewardHeal);
+ const gotRelic=(choice==='relic'||choice==='all')&&!decline&&!!clear.relicId&&relics.includes(clear.relicId);
+ const nextState={...state,rewardHistory:[...(state.rewardHistory||[]),{stage:run.stage,choice,...(gotRelic?{relicId:clear.relicId}:{}),...(replace?{replaced:replace}:{}),...(decline?{declined:true}:{})}],clear:{...clear,chosen:choice,...(replace?{replaced:replace}:{}),...(decline?{declined:true}:{})}};
+ let equipped=run.journey?run.equipped.filter(id=>relics.includes(id)):[...relics];if(run.journey&&gotRelic&&equipped.length<3&&!equipped.includes(clear.relicId))equipped.push(clear.relicId);
  return journeyAfterReward({...run,phaseOne:nextState,relics,equipped,coins,hp,discovered:[...new Set([...run.discovered,...relics])],status:run.stage===3?'complete':'ready',updatedAt:Date.now()});
 }
 export function advanceRpgPhaseOne(run:RpgRun):RpgRun{

@@ -26,7 +26,7 @@ export class RpgPreviewSession{
   for(let prior=1;prior<stage;prior++){
    enterJourneyNode(next,`battle-${prior}` as 'battle-1'|'battle-2');
    next.rpgRun!.hp=[100,0,0];reconcileRpgEliminations(next);
-   next.rpgRun=chooseRpgStageReward(next.rpgRun!,'coins');
+   next.rpgRun=chooseRpgStageReward(next.rpgRun!,'all');
   }
   if(target==='failed'){enterJourneyNode(next,'battle-1');next.rpgRun!.fate=1;next.rpgRun!.hp[0]=0;reconcileRpgEliminations(next);}
   else if(target.startsWith('reward-')){enterJourneyNode(next,`battle-${stage}` as 'battle-1');next.rpgRun!.hp=[70,0,0];reconcileRpgEliminations(next);next.rpgRun!.journey!.seenScenes=[`ST${stage}_POST`];}
@@ -50,7 +50,7 @@ export class RpgPreviewSession{
     roundIds:run.roundIds.filter(id=>id!==game.result!.id),rounds:Math.max(0,run.rounds-(counted?1:0)),
     phaseOne:{...run.phaseOne!,eliminated:[1,2]}},counted?{...game.result,players:game.result.players.map(player=>({...player,delta:0}))}:game.result);
   }
-  game.rpgRun=chooseRpgStageReward(game.rpgRun!,'coins');
+  game.rpgRun=chooseRpgStageReward(game.rpgRun!,'all');
   game.log=['TEST · 한 판 완료 · 승패와 관계없이 다음 여정으로',...game.log].slice(0,40);
   return true;
  }

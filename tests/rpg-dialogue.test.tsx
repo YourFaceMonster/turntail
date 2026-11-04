@@ -38,7 +38,7 @@ for(const [scores,outcome] of [[[30,20,10],'win'],[[20,30,10],'second'],[[10,30,
 for(const [scores,reward,reaction] of [[[30,20,10],12,SERIN_RESULTS.win],[[20,30,10],8,SERIN_RESULTS.loss],[[10,30,20],4,SERIN_RESULTS.loss],[[30,30,10],12,undefined]] as const){
  test(`tavern ${scores.join('/')} keeps reward ${reward}, reaction and unrestricted replay`,()=>{
   const g=ready(),coins=g.rpgRun!.coins;startJourneyMini(g);round(g);assert.ok(!markup(g).includes(SERIN_RESULTS.win));nextJourneyMiniRound(g);round(g);nextJourneyMiniRound(g);round(g,[...scores]);
-  const text=markup(g);if(reaction)assert.ok(text.includes(reaction));else {assert.ok(!text.includes(SERIN_RESULTS.win));assert.ok(!text.includes(SERIN_RESULTS.loss));}
+  const text=markup(g);assert.ok(text.includes('세린의 이야기'));assert.ok(!text.includes(SERIN_RESULTS.win));assert.ok(!text.includes(SERIN_RESULTS.loss));
   assert.equal(g.rpgRun!.coins,coins+reward);settleJourneyMini(g);assert.equal(g.rpgRun!.coins,coins+reward);leaveJourneyMini(g);startJourneyMini(g);finish(g,[30,20,10]);assert.equal(g.rpgRun!.coins,coins+reward);
  });
 }

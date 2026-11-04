@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-04",
+  "tool": "image_gen.imagegen",
+  "asset": "public/ui/results/journey-rewards-v2.png",
+  "source": "C:/Users/SONG/.codex/generated_images/01a1a377-2a19-7652-99b5-fbeb8ee143fd/exec-77246ec9-ee26-4919-a6d2-4f83a2574be0.png",
+  "styleReference": "C:/Users/SONG/.codex/skills/turntale-cartoon-fantasy/references/prologue-approved.png",
+  "prompt": "Use case: stylized-concept. Production TURNTALE mobile RPG STAGE VICTORY reward background, portrait composition also center-croppable. Supplied image is a STYLE reference only: keep bold irregular ink outlines and simple 2-3 tone hand-painted 2D cartoon fantasy rendering, but CHANGE the mood to bright joyful clear morning after victory, substantially brighter than the reference. Snowy medieval courtyard with a stone arch framing sunny blue sky and distant village rooftops, warm golden sunlight on cream stone and pale lavender snow, small muted teal hanging cloth at edges, an open modest treasure chest near bottom edge. Welcoming and triumphant, light airy environment with readable details, no gloomy nighttime shadows. Center 65 percent spacious calm mid-light slate/stone area behind actual HTML reward options. No characters, text, numbers, banners with symbols, card suits, game UI, buttons, frames or watermark. Avoid photographic/3D glossy rendering, bloom, all-orange flooding, dense decoration. Preserve hand-drawn game art feel.",
+  "changes": [
+    "승리 화면 상태 요약(운명력/HP/주화/유물) 제거; 실패 화면은 유지",
+    "보상 3개 세로 목록, 이미지 왼쪽/이름·설명 가운데/수량 오른쪽",
+    "아침 햇살의 밝은 배경 새 버전 적용; 이전 원본 유지"
+  ],
+  "visualCheck": "390x760 로컬 확인: 3행 각각 x35,width320,height88, y305.6/402.6/499.6. 전체 보상/버튼 화면 내 노출.",
+  "screenshot": "../../artifacts/results-redesign-clear-bright-v2.png",
+  "deployment": "로컬 저장. 빌드/커밋/push/배포 안 함."
+}

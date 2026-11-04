@@ -43,7 +43,7 @@ test('HP zero still advances a disposable run, preserving its gear and leaving t
  const real=createRpgJourneyGame('기존 저장'),original=JSON.stringify(real);saveRpgGame(storage,real);const saved=[...values.entries()];
  const game=createRpgJourneyGame('테스트'),session=new RpgPreviewSession(game,'one-round'),gear=[...game.rpgRun!.relics];enterJourneyNode(game,'battle-1');session.update(game);
  game.rpgRun!.hp[0]=0;reconcileRpgEliminations(game);assert.equal(game.rpgRun!.status,'playing');assert.equal(game.rpgRun!.fate,2);assert.deepEqual(game.rpgRun!.relics,gear);
- assert.equal(session.update(game),true);assert.equal(game.rpgRun!.status,'ready');assert.equal(journeyNodeState(game.rpgRun!,'battle-2'),'available');assert.deepEqual(game.rpgRun!.relics,gear);assert.equal(game.rpgRun!.rounds,1);
+ assert.equal(session.update(game),true);assert.equal(game.rpgRun!.status,'ready');assert.equal(journeyNodeState(game.rpgRun!,'battle-2'),'available');assert.deepEqual(game.rpgRun!.relics,[...gear,'recovery-lantern']);assert.equal(game.rpgRun!.rounds,1);
  assert.deepEqual([...values.entries()],saved);assert.equal(JSON.stringify(real),original);
 });
 test('natural clears do not duplicate settlement or rewards; tavern mini-games retain their own three-round rules',()=>{

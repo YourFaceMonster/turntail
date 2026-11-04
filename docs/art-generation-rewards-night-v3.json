@@ -1,0 +1,8 @@
+{
+  "tool": "image_gen.imagegen",
+  "asset": "public/ui/results/journey-rewards-v3.png",
+  "editTarget": "public/ui/results/journey-rewards-v1.png",
+  "source": "C:/Users/SONG/.codex/generated_images/01a1a377-2a19-7652-99b5-fbeb8ee143fd/exec-63f9ce71-61a0-424a-baac-f04d2d7d3c94.png",
+  "prompt": "Use case: lighting-weather. EDIT this TURNTALE stage victory reward background. Preserve EXACT nighttime setting, crescent moon, snowy village, stone arch, blue fabric curtain, two lanterns, open chest, composition and hand-drawn thick ink outlines / simple 2-3 tone cartoon fantasy rendering. User correction: bright means more uplifting VICTORY mood at NIGHT, absolutely not morning/day/sunrise. Lift the dim shadows moderately so stone, snow and chest remain readable; strengthen soft silvery blue moonlight highlights on the arch and snow, and spread a welcoming warm amber lantern glow across nearby stones and chest coins. Add gentle restrained gold glints on the treasure only, not excessive sparkles. Blue curtain becomes a slightly lighter, richer midnight slate-blue, calm and uncluttered for actual HTML UI. Keep deep blue starry night sky, cool nighttime palette, limited warm accents, natural contrast. No sun, daylight, dawn, new objects, characters, text, UI or watermark. Mood: victorious relief and welcoming warmth in the same night scene, not gloomy failure.",
+  "change": "사용자 정정: 밤 배경 유지, 달빛과 등불/보물 금빛으로 승리 분위기. 아침 v2 대신 v3 적용. 세로 보상/상태 요약 제거 유지. 원본 보존. 로컬 미게시."
+}

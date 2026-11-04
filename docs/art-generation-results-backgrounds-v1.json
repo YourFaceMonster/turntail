@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-04",
+  "tool": "image_gen.imagegen",
+  "style": "turntale-cartoon-fantasy",
+  "originalDirectory": "C:/Users/SONG/.codex/generated_images/01a1a377-2a19-7652-99b5-fbeb8ee143fd",
+  "delivery": "Original generated PNGs copied into assets without raster editing; HTML/CSS supplies actual UI.",
+  "assets": [
+    {
+      "asset": "public/ui/results/tavern-results-v1.png",
+      "source": "exec-6c709709-0327-4de3-83ab-7dc22e64e037.png",
+      "prompt": "Use case: stylized-concept. Production TURNTALE RPG results background, portrait composition for a mobile game, also safe to crop center in landscape. Style reference image only: match its bold irregular hand-inked outlines, simple 2-3 tone cel shading, rough painted texture, dim readable fantasy tavern, muted charcoal/slate and restrained amber. Create an EMPTY cozy medieval tavern game alcove after a card match. Broad dark timber table in lower foreground, soft cool moonlit window upper background, a tiny candle and plain coin pouch at far side edges, shelves toward edges. Central 70 percent must remain calm dark uncluttered negative space for a results panel. No characters, no faces, no game UI, no text, numbers, cards with symbols, lettering, borders or watermark. Avoid glossy 3D, photographic texture, intense orange flooding or near-black loss of all detail. This is background art under actual HTML controls, not a screenshot."
+    },
+    {
+      "asset": "public/ui/results/journey-rewards-v1.png",
+      "source": "exec-c611117d-045b-4d96-8f4a-b6f419dd0866.png",
+      "prompt": "Use case: stylized-concept. TURNTALE mobile RPG stage-clear reward backdrop, portrait image also center-croppable for landscape. Style reference only: match hand-drawn 2D cartoon fantasy, bold imperfect ink lines, simple 2-3 value painted shapes, readable twilight blue-violet snow and restrained warm amber. An empty sheltered castle courtyard reward alcove after an adventure: stone arch framing distant snowy rooftops along the TOP edges, a dark slate-blue hanging fabric behind the center, small lanterns at side edges, a low weathered wooden chest open at the BOTTOM edge with a few plain coins and rolled cloth, no weapons or extra story. Center 65 percent is spacious quiet dark slate for a UI panel. Warm hopeful but understated, legible illustrated environment. No people, no text, no numeric rewards, no buttons, icons, frames, banner writing, card suit symbols or watermark. No glossy 3D/photo rendering or glowing loot explosion."
+    },
+    {
+      "asset": "public/ui/results/journey-failure-v1.png",
+      "source": "exec-e610069e-e7e7-4ea9-98f1-b0d5d866b0a5.png",
+      "prompt": "Use case: stylized-concept. TURNTALE journey failure / end-of-run mobile UI background. Portrait composition, safe center crop for landscape. Use supplied image as ART STYLE and twilight brightness reference only. Empty small roadside stone shelter on a snowy fantasy road at blue-violet night, cool moonlight, a nearly spent little campfire at far bottom left, a resting travel pack at far bottom right, tall dark pine silhouettes and distant snowy hills framing the TOP edges. Central 65 percent calm dark slate-blue open space for an actual UI panel with the player's OWN avatar, no drawn characters or faces. A quiet pause and chance for another journey, not horror or a corpse scene. Hand-drawn 2D cartoon fantasy, expressive irregular thick ink contours, broad 2-3 shaded values, restrained rough brush texture, muted indigo/charcoal, tiny amber ember accents. No words, titles, buttons, panels, symbols, crosses, skulls, numbers or watermark. No photographic or polished 3D rendering; keep the environment readable."
+    }
+  ]
+}
