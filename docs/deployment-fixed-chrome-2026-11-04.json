@@ -1,0 +1,34 @@
+{
+  "checkedAt": "2026-11-04T07:29:03.173Z",
+  "site": "https://turntail.yousexybaby.workers.dev",
+  "sourceCommit": "89b0775",
+  "workerVersion": "2a1afcf7-c1c4-4ea2-b79a-121b1dc674f2",
+  "homepageStatus": 200,
+  "homepageCssMatchesBuild": true,
+  "checks": [
+    {
+      "url": "/_next/static/chunks/page-DbJIIuQ2.js",
+      "status": 200,
+      "sha256": "38b095389f45aef3221dc4f1c4795c61cda942728721ace569e0e1752ff845d6",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/index.DeUxIj7O.css",
+      "status": 200,
+      "sha256": "204a50a603232b76fe64e30017074b4d748a18b1c1cd9f8b6b2e1ad73ce34b34",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/page.JfydBzQn.css",
+      "status": 200,
+      "sha256": "ca1097ed9455907dd4fb48eb468097cae0efd8449e55b6125f19dcfd86054ac4",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/page.SmT-LMGj.css",
+      "status": 200,
+      "sha256": "b215bb0f19115fd9a9fb201ef9c2e9f709bd109ce18ad68c87df06f6c4415e1b",
+      "match": true
+    }
+  ]
+}
