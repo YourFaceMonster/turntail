@@ -8,7 +8,7 @@ import {TILE_INKS} from '../../lib/tile-palette';
 import {KOREAN_OPPONENTS} from '../../lib/korean-opponents';
 
 const digits=['111101101101111','010110010010111','111001111100111','111001111001111','101101111001001','111100111001111','111100111101111','111001010010010','111101111101111','111101111001111'];
-const motifs=[['11111111','10100101','10111101','10111101','10100101','11111111'],['00111000','01000100','00111000','00010000','00011100','00010100'],['00010000','00111000','01111100','00111000','00010000','00010000'],['10010010','11010110','01111100','01111100','01111100','01111100']];
+const motifs=[['00111100','01100110','11011011','11000011','11011011','11111111'],['00111000','01000100','00111000','00010000','00111000','00010000'],['00010000','00111000','01111100','00111000','00010000','00010000'],['10010010','11010110','01111100','01111100','01111100','01111100']];
 export function PixelBombTile({tile}:{tile:Tile}){
  const ns=String(tile.n),offset=ns.length===2?4:8;
  return <svg className="bm-tile" viewBox="0 0 24 32" role="img" aria-label={`${BOMB_SUIT_NAMES[tile.s]} ${tile.n}`} shapeRendering="crispEdges"><path d="M2 0H22V2H24V30H22V32H2V30H0V2H2Z" fill="#25233a"/><path d="M2 2H22V28H2Z" fill="#f5e4b9"/><path d="M3 3H21V4H3ZM3 4H4V27H3Z" fill="#fff8dc"/><path d="M2 28H22V30H2Z" fill="#bda278"/><g fill={TILE_INKS[tile.s]}>{ns.split('').flatMap((n,k)=>digits[Number(n)].split('').map((bit,i)=>bit==='1'?<rect key={`${k}-${i}`} x={offset+k*8+i%3*2} y={5+Math.floor(i/3)*2} width="2" height="2"/>:null))}{motifs[tile.s].flatMap((row,y)=>row.split('').map((bit,x)=>bit==='1'?<rect key={`${x}:${y}`} x={8+x} y={20+y} width="1" height="1"/>:null))}</g></svg>;

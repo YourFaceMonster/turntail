@@ -59,3 +59,28 @@ body:has(:is(.journey-map-scene,.journey-tavern-scene)) .turntale>.topbar{visibi
 /* The common dock owns the bag action; retain the existing bag popup content. */
 .journey-tavern-room .tavern-bag{display:none!important}
 @media(max-aspect-ratio:1/1){.journey-tavern-room .tavern-fire strong{transform:translateY(-50%)}}
+
+/* November 4 feedback: neutral black chrome and compact, aligned controls. */
+:is(.journey-map-scene,.journey-tavern-scene)>.journey-game-hud{background:linear-gradient(#050505e8,#05050580 72%,#0000)}
+:is(.journey-map-scene,.journey-tavern-scene)>.journey-game-dock{background:linear-gradient(#0000,#05050599 25%,#050505dc)}
+.journey-game-status .rpg-hp-bar .hp-bar-current{justify-content:flex-start!important;padding-left:7px;flex:1}.journey-game-status>small{white-space:nowrap}.journey-game-status .journey-coins{margin-left:auto;white-space:nowrap}
+.journey-game-hud .journey-hp-avatar{position:relative;pointer-events:auto;cursor:pointer;padding:0!important;margin:0;min-width:25px;min-height:25px;width:25px;height:25px;flex:none;background:#171717;border:1px solid #bca77c;box-shadow:none}
+.journey-hp-avatar:focus-visible{outline:2px solid #f3d9a2;outline-offset:2px}.journey-profile-summary{color:#ede8df}.journey-profile-summary p{font-size:13px;line-height:1.6;margin:8px 0}
+.journey-map-scene .rpg-map-node{width:118px;min-height:78px;gap:3px;padding:5px;isolation:isolate}
+.journey-map-scene .rpg-map-node>span{position:relative;inset:auto;display:flex;align-items:center;justify-content:center;flex:0 0 42px;width:42px;height:42px;min-width:42px;min-height:42px;padding:0;margin:0;border-radius:50%;background:#141414;box-sizing:border-box;line-height:1;font-size:21px}
+.journey-map-scene .rpg-map-node>span>.journey-destination-icon{position:static!important;inset:auto!important;display:block!important;transform:none!important;margin:0!important;padding:0;width:32px!important;height:32px!important;max-width:32px;object-fit:contain;object-position:center;flex:none}
+.journey-map-scene .rpg-map-node strong{background:#070707cf}.journey-map-scene .rpg-map-node.node-available>span{background:#383125}.journey-map-scene .rpg-map-node.node-completed>span{background:#252525;color:#f1dfb9}
+.journey-game-dock .journey-dock-map,.journey-game-dock .journey-dock-bag{width:44px!important;min-width:44px;height:44px!important;min-height:44px;padding:0!important}
+.journey-game-dock .journey-dock-map{gap:0;align-content:start}.journey-game-dock .journey-dock-map img,.journey-game-dock .journey-dock-bag img{width:36px!important;height:36px!important;object-fit:contain}.journey-dock-map span{font-size:9px;line-height:1}
+.journey-dock-relics .rpg-relic-slots,.journey-dock-relics .rpg-relic-slot{height:44px!important}.journey-dock-relics .rpg-relic-slot{width:40px!important}.journey-dock-relics .rpg-relic-slot-frame{width:36px!important;height:36px!important;background:#15151599}.journey-dock-relics .rpg-relic-slot-frame img{width:32px!important;height:32px!important}
+.journey-tavern-scene .journey-notes{left:12px;right:auto;bottom:64px;background:#090909ad;border-color:#b8a57b66}
+.journey-save-notice,.journey-popup .secondary,.journey-destination .secondary{background:#171717!important;color:#eee3cd}
+body>.journey-popup-shade>.journey-popup{background:#0b0b0be8!important;border-color:#b3a17b88}body>.journey-popup-shade>.journey-popup:has(.village-market){background:linear-gradient(#080808b8,#080808ef 45%),url('/ui/market-interior-v1.png') center top/cover!important}
+.journey-popup-shade{background:#0008}.journey-popup .village-product.compact-product{background:#161616dd}.journey-popup .shop-product-buy{background:#b3a17b20}.journey-popup .shop-product-summary,.journey-popup .shop-product-effect{cursor:default}.journey-popup .shop-product-summary:focus,.journey-popup .shop-product-effect:focus{outline:none}
+.journey-destination{background:#111e!important}.journey-bag-consumables>div>span{background:#29292966}
+@media(max-width:360px){.journey-map-scene .rpg-map-node{width:108px}.journey-game-status{gap:6px}.journey-game-status .rpg-hp-bar{width:154px}}
+
+.journey-hp-block{position:relative;flex:none}.journey-hp-block>.journey-hp-avatar{position:absolute!important;left:4px;top:50%;transform:translateY(-50%);z-index:2;color:#f0e8d7!important}.journey-hp-block>.rpg-hp-bar>strong{display:flex!important;align-items:center;justify-content:flex-start!important;padding-left:34px;margin:0;text-align:left;gap:3px;position:relative;z-index:1;font-size:12px;height:100%}
+.journey-map-scene .rpg-map-node.is-current>span{outline-color:#d4bd83}
+
+.journey-game-hud .top-actions button{background:#101010b3;border-color:#b3a17b66}.journey-game-dock .journey-dock-bag small{background:#111e}

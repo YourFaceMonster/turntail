@@ -7,9 +7,9 @@ test('pagination preserves every character and speaker/painting source across lo
  for(const lines of [PIO_DIALOGUE,...Object.values(QUEST_DIALOGUE),[SERIN_INVITATION],['한 문장입니다. '.repeat(40)]]){
   const pages=questDialoguePages(lines);
   for(const [i,line] of lines.entries())assert.equal(normalize(pages.filter(p=>p.sourceIndex===i).map(p=>p.text).join('')),normalize(line));
-  for(const p of pages){assert.ok(p.text.length<=52);assert.ok(p.text.split('\n').reduce((n,line)=>n+Math.ceil(line.length/20),0)<=4);}
+  for(const p of pages){assert.ok(p.text.length<=36);assert.ok(p.text.split('\n').reduce((n,line)=>n+Math.ceil(line.length/20),0)<=2);}
  }
- const short=questDialoguePages([SERIN_INVITATION]);assert.equal(short.length,1);assert.equal(short[0].text,SERIN_INVITATION);
+ const short=questDialoguePages([SERIN_INVITATION]);assert.equal(short.length,2);assert.equal(short.map(p=>p.text).join('\n'),SERIN_INVITATION);
 });
 test('long sentences split at words and keep subsequent source identities',()=>{
  const words=Array.from({length:30},(_,i)=>`기억${i}`),lines=[words.join(' ')+'입니다.','마지막 선택.'];

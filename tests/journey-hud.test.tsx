@@ -21,7 +21,7 @@ test('map exposes save/settings, one HP meter, map/bag/relic controls with HP av
 test('Serin has two authored lines and current-scene dialogue never paints over the tavern',()=>{
  const lines=SERIN_INVITATION.split('\n');assert.deepEqual(lines,['한 판 할래?','세 판이면 네 실력 정도는 알 수 있겠지.']);
  const text=render(h(DialogueText,{text:SERIN_INVITATION}));assert.equal((text.match(/class="dialogue-sentence"/g)||[]).length,2);
- const html=render(h(QuestCutscene,{title:'세린',speaker:'세린',scene:'room',background:'current',busy:false,close:noop,lines:[SERIN_INVITATION],choices:[{label:'대화 마치기',choose:noop}]}));assert.ok(html.includes('is-tavern-conversation'));assert.ok(!html.includes('prologue-picture'));assert.ok(html.includes('대화 마치기'));
+ const html=render(h(QuestCutscene,{title:'세린',speaker:'세린',scene:'room',background:'current',busy:false,close:noop,lines:[SERIN_INVITATION],choices:[{label:'대화 마치기',choose:noop}]}));assert.ok(html.includes('is-tavern-conversation'));assert.ok(!html.includes('prologue-picture'));assert.ok(!html.includes('대화 마치기'));assert.ok(!html.includes('다음 →'));assert.ok(html.includes('data-dialogue-pages="2"'));
 });
 test('discovery keeps the painting clear and defers detailed relic content to its popup',()=>{
  const g=createRpgJourneyGame('발견','',0,'cleric'),run=g.rpgRun!;run.status='ready';run.journey!.location='watchtower';run.journey!.watchtowerRelicFound=true;
