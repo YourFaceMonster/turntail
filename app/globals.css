@@ -464,8 +464,8 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
  .candle-flame,.candle-light-wash,.candle-cast-shadow,.table-candle-reflection,.table-notice-lead>.notice-lead-label,.notice-lead-label:before,.notice-lead-label:after,.table-notice-lead>.notice-leader-name,.table-notice-lead>p,.table-notice-lead>.notice-lead-burst{animation:none!important}
  .candle-light-wash{opacity:.5}.candle-cast-shadow{opacity:.35}.table-candle-reflection{opacity:.4}.notice-lead-label:before,.notice-lead-label:after{transform:translateY(-50%)}.table-notice-lead>.notice-lead-burst{display:none}
 }
-.turntale .title-screen{background-image:url('/turntale-room-v036.png')}
-@media(orientation:portrait){.turntale .title-screen{background-image:url('/turntale-room-portrait-v036.png')}}
+.turntale .title-screen{background-image:url('/turntale-room-symbols-wide-v1.png')}
+@media(orientation:portrait){.turntale .title-screen{background-image:url('/turntale-room-symbols-portrait-v1.png')}}
 
 /* 0.3.8 — tutorial selection stays inside its own padded tray. */
 .turntale .tutorial-hand{position:relative;isolation:isolate;align-items:center;flex-wrap:wrap;gap:14px;margin:12px 0 20px;padding:18px 12px 20px;min-height:116px;background:#151c29;border:1px solid #555269;border-radius:12px}

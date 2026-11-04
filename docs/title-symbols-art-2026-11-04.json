@@ -1,0 +1,31 @@
+{
+  "mode": "built-in imagegen reference-image edit",
+  "purpose": "Replace old printed tile emblems remaining in both live title-screen backgrounds.",
+  "files": [
+    "public/turntale-room-symbols-wide-v1.png",
+    "public/turntale-room-symbols-portrait-v1.png"
+  ],
+  "requests": [
+    {
+      "name": "turntale-room-v036",
+      "args": {
+        "referenced_image_paths": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/turntale-room-v036.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Use case: precise-object-edit. Edit this exact TURNTALE menu background. Change ONLY the printed illustrations on the FOUR ivory tiles resting along the bottom foreground. Reading left to right, replace the ENTIRE old printed face motifs with: (1) a simple RED THREE-POINTED CROWN; (2) a GREEN ancient KEY with circular bow and toothed bit; (3) an ORANGE upright FLAMING TORCH; (4) a BLACK ANGULAR CLOSED IRON DOUBLE GATE with central lock and thin pale outline. Flat inked game emblems in the same hand-drawn 2D cartoon fantasy style. Remove old sun rays, stars, crescent moons, cloud shapes and plant patterns from the tile FRONTS so they are clear individual new emblems. Keep the ivory physical tiles, sizes, perspective, positions and side edges exactly as they are. Preserve ALL the rest: canvas size/aspect ratio, library, books, lamp, table, carpet, chair, amber lighting, blue window, actual moon/stars in the SKY and the empty dark center for the game menu. Do not add text, buttons, UI, characters, extra tiles or new scenery. Only tile face printing changes; match original inked painting."
+      }
+    },
+    {
+      "name": "turntale-room-portrait-v036",
+      "args": {
+        "referenced_image_paths": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/turntale-room-portrait-v036.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Use case: precise-object-edit. Edit this exact TURNTALE menu background. Change ONLY the printed illustrations on the FOUR ivory tiles resting along the bottom foreground. Reading left to right, replace the ENTIRE old printed face motifs with: (1) a simple RED THREE-POINTED CROWN; (2) a GREEN ancient KEY with circular bow and toothed bit; (3) an ORANGE upright FLAMING TORCH; (4) a BLACK ANGULAR CLOSED IRON DOUBLE GATE with central lock and thin pale outline. Flat inked game emblems in the same hand-drawn 2D cartoon fantasy style. Remove old sun rays, stars, crescent moons, cloud shapes and plant patterns from the tile FRONTS so they are clear individual new emblems. Keep the ivory physical tiles, sizes, perspective, positions and side edges exactly as they are. Preserve ALL the rest: canvas size/aspect ratio, library, books, lamp, table, carpet, chair, amber lighting, blue window, actual moon/stars in the SKY and the empty dark center for the game menu. Do not add text, buttons, UI, characters, extra tiles or new scenery. Only tile face printing changes; match original inked painting."
+      }
+    }
+  ],
+  "originals": "Original 036 images preserved; real sky moon/stars and setting unchanged."
+}
