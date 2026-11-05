@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-11-05T11:54:40.382Z",
+  "site": "https://turntail.yousexybaby.workers.dev",
+  "sourceCommit": "1cf4cb9fdc0c9cff300e5c6b6916cf5b4abbe418",
+  "manualWorkerVersion": "b0fed240-59e4-4bf0-b175-e4e04464c1bc",
+  "subsequentWorkerVersion": "9b072011-c4e4-4726-86fa-b06f2351c834",
+  "note": "A subsequent deployment at 11:51 UTC changed framework entry filenames after the manual deployment. Current application JS and CSS match this local build; framework entry is separately checked.",
+  "homepageStatus": 200,
+  "currentEntry": "_next/static/chunks/index-C4abz6Au.js",
+  "assertions": {
+    "currentEntryLoads": true,
+    "homepageUsesCurrentEntry": true,
+    "nameFateMarkup": true,
+    "shortenedPrologue": true,
+    "fixedPortrait": true,
+    "fixedLandscape": true
+  },
+  "checks": [
+    {
+      "url": "/_next/static/css/index.VPr2KoO-.css",
+      "status": 200,
+      "sha256": "428dda3dda732b85864db2f6179b8ed281f58390d3f3b958a18b4d57dd54e089",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/page-6VuCeURk.js",
+      "status": 200,
+      "sha256": "e1f51108281bcc30d5c254051447f5fb63959030e7741ecff35209c9450824cc",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/page-kQekT52J.js",
+      "status": 200,
+      "sha256": "afcf9585b45882f70fc328a3e387310e1466ef63ffd99f25ad300bd32978bd63",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/rpg-connection-scenes-atSal8Qy.js",
+      "status": 200,
+      "sha256": "3a2b511a5b5afccf516b3a4e06e3668105558a95cae3e2fccaafe35052fe9761",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/page.BidJjKlV.css",
+      "status": 200,
+      "sha256": "6eba6ed6c68efacc983d42a08d1ba88ed4b0036e37c587ab048afcb43f6dd581",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/page-BksVSNkK.js",
+      "status": 200,
+      "sha256": "375f233d200c80f89ffdb5e7f6acb7b4c4845f4772c7b2cbdb2db0acb776d54f",
+      "match": true
+    }
+  ]
+}

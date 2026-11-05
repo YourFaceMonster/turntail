@@ -10,4 +10,12 @@
 
 ## 게시
 
-커밋·GitHub push·Cloudflare 배포 진행 중. 이후 별도 지시 없는 수정은 로컬 저장만 한다.
+소스 1cf4cb9fdc0c9cff300e5c6b6916cf5b4abbe418를 GitHub main에 push하고 Cloudflare Worker b0fed240-59e4-4bf0-b175-e4e04464c1bc 배포 성공.
+
+이후 11:51 UTC에 후속 Worker 9b072011-c4e4-4726-86fa-b06f2351c834가 게시되어 일부 프레임워크 JS 이름이 달라졌다. 후속 배포의 발생은 Cloudflare deployments list로 확인했으며, 그 실행 주체/경로는 이번 확인만으로 단정하지 않는다. 초기 파일 비교 불일치 기록은 ../../artifacts/dialogue-fixed-initial-public-check-2026-11-05.json에 보존했다.
+
+현재 홈페이지 HTTP200, 홈페이지가 참조하는 현 진입 JS HTTP200, 변경된 앱 JS·CSS6개가 이번 로컬 운영 빌드와 SHA-256 일치. 공개 JS 안 이름 옆 운명력 마크업·축약 프롤로그, CSS 안 세로169px·가로160px 고정 설정 확인. 상세 deployment-dialogue-fixed-2026-11-05.json. 실제 브라우저 UI 화면은 이번에 검증하지 않았다.
+
+사이트 https://turntail.yousexybaby.workers.dev. 배포 로그 ../../artifacts/dialogue-fixed-release-deploy-2026-11-05.log.
+
+이후 별도 지시 없는 수정은 로컬 저장만 한다.
