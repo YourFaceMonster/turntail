@@ -19,4 +19,10 @@
 
 ## 게시
 
-GitHub main·Cloudflare 운영 배포 진행 중. 이후 별도 빌드·배포 요청 없는 수정은 로컬 저장만 한다.
+소스963d23b41f65906f493e3368e8ef0c23afbd8283를 GitHub main에 push하고 Cloudflare Worker a16b8a5b-5aed-4588-a235-64f954c64b13 배포 완료.
+
+공개 홈페이지 HTTP200·0.6.70 표시, 홈페이지 진입JS 로드, 수락/도둑3등 사전 안내/재도전 제한/저장 운명력 문구 확인. 변경JS·CSS·진입 manifest 등10개와 복원한 여행자 이미지4개, 총14개 파일의 SHA-256이 로컬 운영 빌드와 모두 일치했다. 상세 deployment-0.6.70-2026-11-05.json. 배포 로그 ../../artifacts/release-0.6.70-deploy.log.
+
+이 확인은 공개 응답/파일 검사이며 실제 브라우저 클릭·화면 레이아웃·실기기 연속 플레이 검증은 아니다.
+
+사이트 https://turntail.yousexybaby.workers.dev. 이후 별도 빌드·배포 요청 없는 수정은 로컬 저장만 한다. 다음 변경 배포는0.6.71부터 진행한다.
