@@ -16,3 +16,12 @@ test('long sentences split at words and keep subsequent source identities',()=>{
  const pages=questDialoguePages(lines);assert.ok(pages.length>2);assert.equal(pages.at(-1)?.sourceIndex,1);
  for(const p of pages.slice(0,-1))for(const word of p.text.split(/\s+/))assert.ok(lines[0].split(' ').includes(word));
 });
+
+// Regression: a long sentence used to leave only its ending on the next page.
+test('long narration never strands the ending on a page by itself',()=>{
+ const sentence='그날 밤, 방랑자에게는 그저 수많은 승부 중 하나였을 뿐이었습니다.';
+ const pages=questDialoguePages([sentence]);
+ assert.equal(normalize(pages.map(p=>p.text).join('')),normalize(sentence));
+ assert.ok(pages.length>1);
+ for(const page of pages){assert.ok(page.text.trim().split(/\s+/).length>=3);assert.ok(page.text.split('\n').length<=2);}
+});

@@ -13,14 +13,14 @@ import StoryCardCollection from '../app/components/StoryCardCollection.tsx';
 const normalize=(s:string)=>s.replace(/\s/g,'');
 function memory(){const data=new Map<string,string>();return {data,getItem:(key:string)=>data.get(key)??null,setItem:(key:string,value:string)=>{data.set(key,value);}};}
 function through(stage:number){const game=createRpgJourneyGame('이야기 검사');for(let n=1;n<=stage;n++){enterJourneyNode(game,`battle-${n}` as 'battle-1');game.rpgRun!.hp=[60,0,0];reconcileRpgEliminations(game);if(n<stage)game.rpgRun=chooseRpgStageReward(game.rpgRun!,'all',undefined,false,game.rpgRun!.phaseOne?.clear?.relicOffers?.[0]);}return game;}
-test('all nineteen boards retain the supplied exact words, order and speakers through sentence pagination',()=>{
- const approved=readFileSync('docs/prologue-revision-approved-2026-11-05.md','utf8');
+test('all nineteen shortened boards retain their words, order and speakers through sentence pagination',()=>{
+ const approved=readFileSync('docs/prologue-two-line-revision-2026-11-05.md','utf8');
  const boards=[...approved.matchAll(/### (P\d+)\.[^\n]*\n([\s\S]*?)(?=\n### P|\n---)/g)];assert.equal(boards.length,19);
  for(const [,id,body] of boards){const raw=body.split('**연출**')[0].replace(/\*\*[^*]+\*\*/g,'');const board=PROLOGUE_STORYBOARD.find(b=>b.id===id)!;assert.equal(normalize(board.parts.map(p=>p.line).join('')),normalize(raw),id);
   assert.equal(normalize(FIRST_PROLOGUE.filter(c=>c.storyboard===id).map(c=>c.line).join('')),normalize(raw),id+' pagination');
   for(const part of board.parts){const text=normalize(part.line);assert.ok(FIRST_PROLOGUE.filter(c=>c.storyboard===id&&c.speaker===part.speaker).some(c=>text.includes(normalize(c.line))),id+' speaker');}
  }
- assert.equal(FIRST_PROLOGUE[0].line,'패 한 장으로 시작된 여행도 있었다.');assert.equal(FIRST_PROLOGUE[0].scene,'dark');
+ assert.equal(FIRST_PROLOGUE[0].line.replace(/\n/g,' '),'패 한 장으로 시작된 여행도 있었다.');assert.equal(FIRST_PROLOGUE[0].scene,'dark');
  assert.ok(FIRST_PROLOGUE.filter(c=>c.storyboard==='P10').every(c=>c.scene==='card'&&!c.back));assert.ok(FIRST_PROLOGUE.filter(c=>['P11','P12'].includes(c.storyboard||'')).every(c=>c.back));
 });
 test('story keepsakes stay outside combat and grant the second card only on a real ST3 clear',()=>{

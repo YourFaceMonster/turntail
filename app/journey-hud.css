@@ -246,3 +246,10 @@ body>.journey-popup-shade>.journey-popup:has(.village-cart-market){height:min(82
 @media(min-aspect-ratio:1/1){.village-cart-market .village-holdings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.village-cart-market .village-holdings-row+div{border-top:0;border-left:1px solid #d2b67533;padding-left:10px}}
 
 .rpg-stage-result .stage-clear-choice .rpg-relic-offers{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 12px}.rpg-stage-result .rpg-relic-offers img{width:56px;height:56px}.rpg-stage-result .rpg-relic-offers button{border-radius:5px;background:#111b;min-height:112px}.rpg-stage-result .rpg-relic-offers button[aria-pressed=true]{border-color:#f6d58a;box-shadow:0 0 0 1px #f6d58a88}.journey-popup button.journey-consumable-cell{color:inherit;font:inherit;cursor:pointer}.journey-popup button.journey-consumable-cell:disabled{opacity:.5;cursor:default}
+
+/* Fate jewels sit beside the name inside the HP panel. */
+.journey-name-fate{display:flex;align-items:center;gap:4px;min-width:0}.journey-name-fate>b{min-width:0;flex:0 1 auto}
+.journey-hp-block .journey-name-fate .journey-fate-gems{position:static;flex:none;width:auto;height:12px;gap:1px;border:0;border-radius:0;background:none;box-shadow:none;filter:none;pointer-events:none}
+.journey-hp-block .journey-name-fate .journey-fate-gems>img{width:11px;height:12px;filter:brightness(1.25) saturate(1.15)}
+.journey-hp-block .journey-name-fate .journey-fate-gems>img.is-spent{filter:grayscale(1);opacity:.25}
+.journey-hp-block>.journey-hp-avatar{top:50%!important;bottom:auto;transform:translateY(-50%)!important}

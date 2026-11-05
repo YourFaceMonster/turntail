@@ -70,3 +70,11 @@ test('muting both buses creates no sources; music-only and effects-only stay ind
  const prior=created,stop=prologueAmbience(ctx,cut,false,40,true);assert.equal(created-prior,1);stop();stop();
  assert.doesNotThrow(()=>prologueAmbience({createBuffer(){throw Error('audio blocked');}} as unknown as AudioContext,cut,true,40)());
 });
+
+test('opening narration ends each page at a complete sentence within two lines',()=>{
+ for(const cut of FIRST_PROLOGUE){
+  if(cut.storyboard==='P19')continue;
+  assert.match(cut.line,/[.!?…]$/,cut.storyboard);
+  assert.ok(cut.line.split('\n').length<=2,cut.line);
+ }
+});

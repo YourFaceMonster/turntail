@@ -45,6 +45,7 @@ test('fate always has three gem slots inside the HP block and depleted slots sta
   assert.equal((html.match(/class="is-active"/g)||[]).length,fate);
   assert.equal((html.match(/class="is-spent"/g)||[]).length,3-fate);
   assert.ok(html.indexOf('journey-hp-block')<html.indexOf('journey-fate-gems'));
+  assert.match(html,/class="journey-name-fate"><b>[^<]+<\/b><span class="journey-fate-gems"/);
   assert.ok(html.indexOf('journey-fate-gems')<html.indexOf('journey-hp-avatar'));
   assert.ok(html.includes('철문의 영역')&&!html.includes('달의 영역'));
  }
