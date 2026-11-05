@@ -1,0 +1,146 @@
+{
+  "checkedAt": "2026-11-05T06:48:02.032Z",
+  "site": "https://turntail.yousexybaby.workers.dev",
+  "sourceCommit": "d7fcb2bd0c1c76108b8cfaed6e7db19a834b4cb1",
+  "workerVersion": "f4f26e4b-c10a-4d81-8abe-4bd55cce978c",
+  "homepageStatus": 200,
+  "checks": [
+    {
+      "url": "/prologue/stone-arrival-wide-v1.png",
+      "status": 200,
+      "sha256": "4f8c01969548d96b523207acab945682fde2021ec3e6fd80006aacc5425138f4",
+      "match": true
+    },
+    {
+      "url": "/quests/mor-request-wide-v1.png",
+      "status": 200,
+      "sha256": "0d411c6f8a0ebd076a66ea58cf2335965f2e5e2e12b03f93c31eb56dea681edd",
+      "match": true
+    },
+    {
+      "url": "/prologue/stone-arrival-portrait-v1.png",
+      "status": 200,
+      "sha256": "c8cbc967f4c8da471a47824b35b6c51c48928da14cf1871985f57acf4b66dd28",
+      "match": true
+    },
+    {
+      "url": "/quests/mor-request-portrait-v1.png",
+      "status": 200,
+      "sha256": "8f0585c55134af43a932bc45b86535ea42c65861e42cf574026d301ea4ccc13e",
+      "match": true
+    },
+    {
+      "url": "/prologue/wager-playing-wide-v1.png",
+      "status": 200,
+      "sha256": "09afd97ab956cd20a26b1c8de3412a6913fa3d5af21ca74fe4db6fec46ac838f",
+      "match": true
+    },
+    {
+      "url": "/prologue/st3-record-wide-v1.png",
+      "status": 200,
+      "sha256": "19b73ff4b66c79d94e61f61925461438458df491bf3c3d35580af6b66963a57a",
+      "match": true
+    },
+    {
+      "url": "/prologue/wager-playing-portrait-v1.png",
+      "status": 200,
+      "sha256": "19cba17d3082142fb455b7a0e9e7c8e51c58b946509673c97608cfeb7bced326",
+      "match": true
+    },
+    {
+      "url": "/prologue/st3-record-portrait-v1.png",
+      "status": 200,
+      "sha256": "e4926eb4d7f9a49361f53948d56a93d5c6ab9e9ffb2d2f874539ca19c5a9f2fe",
+      "match": true
+    },
+    {
+      "url": "/prologue/square-poko-wide-night-symbols-v5.png",
+      "status": 200,
+      "sha256": "5f84393be996b198e4d558e853ef97239b7d26f76dcdfddf34098d51b7f6d1e5",
+      "match": true
+    },
+    {
+      "url": "/prologue/square-mila-wide-night-symbols-v5.png",
+      "status": 200,
+      "sha256": "1eb5f0ee921eb04b04504e7e92c6ee960c6665fac60de0546a0b6c8798555c89",
+      "match": true
+    },
+    {
+      "url": "/prologue/square-poko-portrait-night-symbols-v5.png",
+      "status": 200,
+      "sha256": "b8aeff48a56cdb23f11d1e0d9577df1a5552fa190ecb8aafc43a0de5674336c0",
+      "match": true
+    },
+    {
+      "url": "/prologue/square-mila-portrait-night-symbols-v5.png",
+      "status": 200,
+      "sha256": "58a1c29c1c04364e0fcbaf941fa3c1b798c6108fb24e0596ad17a2936bde8c19",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/index.BL7XapyO.css",
+      "status": 200,
+      "sha256": "c0490f9a8c803bb2a6f9369aa986bfb2a31238c26f412c32e55a6367071e8a1d",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/page.BeLZ-_Zd.css",
+      "status": 200,
+      "sha256": "c224923dc0f4e6cd9c05badcdc88705c2c7374b52744c6f1742de3ae765ed742",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/index-CvAxfA1y.js",
+      "status": 200,
+      "sha256": "29a3ebe5ab96a8b2ac73773652aabbcea34f25e33043848a21a5d7e35a7dbcec",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/rolldown-runtime-C60lm6uB.js",
+      "status": 200,
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/framework-D_rUT4EX.js",
+      "status": 200,
+      "sha256": "939d0fabebb3b2f01753bb866b067d8d3384fb06da19f0e6557609d3b1a9f4f7",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/layout-segment-context-BMq3mrbY.js",
+      "status": 200,
+      "sha256": "9db9d988f173a22bb82a16695d4aadfd6d7a2c74b13e3088a06dc2a5465ead76",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/page-BWxlTAOA.js",
+      "status": 200,
+      "sha256": "43bd031cc6598bd451a458c07bfbe9da690f9a8a2e832ac24123747a603f6620",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/rpg-connection-scenes-ByBNyQYg.js",
+      "status": 200,
+      "sha256": "cf5bba68b810eebb406ab612a0f8a6b435b21822f556af7d621aa63377d54d09",
+      "match": true
+    }
+  ],
+  "browserVerification": {
+    "checkedAt": "2026-11-05T06:54:27.746Z",
+    "browser": "Chrome",
+    "viewport": "390x844",
+    "mode": "non-saving RPG screen preview",
+    "observations": [
+      "Missing-letter request shows mor-request rather than the recovered-letter painting",
+      "New portrait loaded from public URL",
+      "No horizontal overflow",
+      "Preview ended and resume remained disabled; viewport reset"
+    ],
+    "screenshot": "../../artifacts/public-scene-supplements-mor-2026-11-05.jpg",
+    "limitations": [
+      "No full public prologue or stage1-to3 playthrough repeated",
+      "Landscape cutscenes were checked locally in preceding work, not repeated on production"
+    ]
+  }
+}
