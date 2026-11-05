@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-05",
+  "method": "built-in image_gen",
+  "style": "turntale-cartoon-fantasy",
+  "originalsPreserved": true,
+  "records": [
+    {
+      "kind": "fate-gem",
+      "prompt": "Use case: stylized-concept. Asset: TURNTALE tiny fate/life UI gemstone icon. Generate ONE centered small faceted blue-violet gemstone with a clear diamond silhouette, transparent background, no frame, no text, no other objects, no cast shadow outside silhouette, no sparkles. Hand-drawn 2D cartoon fantasy, fine irregular charcoal ink contour, 2-3 simple cel-shaded facets with restrained icy lavender highlight, slate blue and indigo palette. Readable as a gem at 12 pixels. Flat illustrated game UI asset, no photorealism, no glossy 3D. Gem fills about 85% of square canvas, genuinely transparent surrounding pixels.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-e58085bc-f66a-4431-80ed-388fd0ed97de.png",
+      "output": "public/ui/fate-gem-v1.png"
+    },
+    {
+      "kind": "night-lighting",
+      "prompt": "Use case: lighting-weather edit. Image 1 is the edit target; image 2 is the approved TURNTALE exterior lighting and rendering reference. Change ONLY time of day and illumination of image 1 from bright daytime to a clearly moonlit night: deep muted indigo sky, blue-violet snow and distant mountains, readable middle-dark environment, warm amber existing lanterns and windows illuminate the characters and table locally. Preserve exact composition, image aspect ratio, all characters' identities and poses, clothing, architecture, banners, table, cards and marks, camera and ink linework. No new characters or objects, no text, no crop. Hand-drawn 2D cartoon fantasy, expressive irregular ink outlines, simple 2-3 shading values, restrained texture; match reference brightness, avoid pitch-black crushing or orange wash. Remove daylight yellow sun highlights on buildings and snow. Keep faces legible.",
+      "input": "public/prologue/square-poko-wide-v3.png",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-a776117d-1ef9-446f-aaa0-6ae29b5df71a.png",
+      "output": "public/prologue/square-poko-wide-night-v4.png"
+    },
+    {
+      "kind": "night-lighting",
+      "prompt": "Use case: lighting-weather edit. Image 1 is the edit target; image 2 is the approved TURNTALE exterior lighting and rendering reference. Change ONLY time of day and illumination of image 1 from bright daytime to a clearly moonlit night: deep muted indigo sky, blue-violet snow and distant mountains, readable middle-dark environment, warm amber existing lanterns and windows illuminate the characters and table locally. Preserve exact composition, image aspect ratio, all characters' identities and poses, clothing, architecture, banners, table, cards and marks, camera and ink linework. No new characters or objects, no text, no crop. Hand-drawn 2D cartoon fantasy, expressive irregular ink outlines, simple 2-3 shading values, restrained texture; match reference brightness, avoid pitch-black crushing or orange wash. Remove daylight yellow sun highlights on buildings and snow. Keep faces legible.",
+      "input": "public/prologue/square-poko-portrait-v3.png",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-cfaa2d3f-168c-4684-ba56-446f60ca9895.png",
+      "output": "public/prologue/square-poko-portrait-night-v4.png"
+    },
+    {
+      "kind": "night-lighting",
+      "prompt": "Use case: lighting-weather edit. Image 1 is the edit target; image 2 is the approved TURNTALE exterior lighting and rendering reference. Change ONLY time of day and illumination of image 1 from bright daytime to a clearly moonlit night: deep muted indigo sky, blue-violet snow and distant mountains, readable middle-dark environment, warm amber existing lanterns and windows illuminate the characters and table locally. Preserve exact composition, image aspect ratio, all characters' identities and poses, clothing, architecture, banners, table, cards and marks, camera and ink linework. No new characters or objects, no text, no crop. Hand-drawn 2D cartoon fantasy, expressive irregular ink outlines, simple 2-3 shading values, restrained texture; match reference brightness, avoid pitch-black crushing or orange wash. Remove daylight yellow sun highlights on buildings and snow. Keep faces legible.",
+      "input": "public/prologue/square-mila-wide-v3.png",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-939187f0-d5bf-42c9-a320-98438537286f.png",
+      "output": "public/prologue/square-mila-wide-night-v4.png"
+    },
+    {
+      "kind": "night-lighting",
+      "prompt": "Use case: lighting-weather edit. Image 1 is the edit target; image 2 is the approved TURNTALE exterior lighting and rendering reference. Change ONLY time of day and illumination of image 1 from bright daytime to a clearly moonlit night: deep muted indigo sky, blue-violet snow and distant mountains, readable middle-dark environment, warm amber existing lanterns and windows illuminate the characters and table locally. Preserve exact composition, image aspect ratio, all characters' identities and poses, clothing, architecture, banners, table, cards and marks, camera and ink linework. No new characters or objects, no text, no crop. Hand-drawn 2D cartoon fantasy, expressive irregular ink outlines, simple 2-3 shading values, restrained texture; match reference brightness, avoid pitch-black crushing or orange wash. Remove daylight yellow sun highlights on buildings and snow. Keep faces legible.",
+      "input": "public/prologue/square-mila-portrait-v3.png",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-112a5d3f-ec56-4c1e-ac5a-64a6f2b48536.png",
+      "output": "public/prologue/square-mila-portrait-night-v4.png"
+    }
+  ]
+}

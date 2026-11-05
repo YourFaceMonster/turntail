@@ -9,7 +9,7 @@ export const FIRST_PROLOGUE:readonly PrologueCut[]=[
  {id:'P06b',scene:'card',duration:6000,line:'오래된 물건이라더군. 나도 어디서 왔는지는 모르오.',speaker:'상대',back:true,audio:'hearth'},
  {id:'P07',scene:'road',duration:7000,line:'다음 날, 방랑자는\n다시 길 위에 올랐다.',audio:'wind'},
  {id:'P08',scene:'stone',duration:8000,line:'…분명 처음 보는 문양인데.',back:true,audio:'quiet'},
- {id:'P09',scene:'gate',duration:4000,line:'달의 마을',audio:'quiet'},
+ {id:'P09',scene:'gate',duration:4000,line:'노르문 마을',audio:'quiet'},
 ];
 // Reserved for the real normal-ending flag and matching handoff art. The current
 // stage-three trial completion is NOT a normal ending and must never select this.

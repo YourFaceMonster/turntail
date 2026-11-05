@@ -10,7 +10,7 @@ export const PROLOGUE_ART={
  cardBack:frame('tile-back-landscape-v1','tile-back-portrait-v1'),
  road:frame('dawn-castle-road-v2','dawn-castle-road-portrait-v2'),
  stone:frame('stone-revelation-landscape-v1','stone-revelation-portrait-v1'),
- gate:frame('moon-village-distant-wide-v1','moon-village-distant-portrait-v1'),
+ gate:frame('normun-village-distant-wide-v2','normun-village-distant-portrait-v2'),
 };
 export function prologueArt(cut:PrologueCut){
  if(cut.poseArt)return cut.poseArt;

@@ -53,6 +53,6 @@ test('dialogue preserves prologue opening, follow-up prologue, speaker order and
  assert.deepEqual(FIRST_PROLOGUE.slice(0,4).map(c=>c.line),['모든 길에는, 시작이 있다.','북쪽 고갯길을 지나던\n한 승부사가 있었다.','하룻밤의 추위를 피할 곳이면 충분했다.','그곳에서도, 사람들은\n패를 놓고 승부를 벌였다.']);
  assert.equal(FIRST_PROLOGUE.find(c=>c.id==='P06a')!.line,'이 문양은… 처음 보는군요.');assert.equal(FIRST_PROLOGUE.find(c=>c.id==='P08')!.line,'…분명 처음 보는 문양인데.');assert.equal(SECOND_PROLOGUE[0].line,'오래된 물건이지.');
  assert.deepEqual(RPG_CONNECTION_SCENES[2].before.map(c=>c.speaker),['포코','밀라','포코','밀라']);assert.deepEqual(RPG_CONNECTION_SCENES[3].after.map(c=>c.speaker),['둘째','첫째','둘째','첫째','첫째',undefined,undefined]);
- assert.equal(RPG_CONNECTION_SCENES[3].after.at(-1)!.line,'새로운 영역을 향해, 다시 한 걸음을 내디뎠다.');assert.match(RPG_CONNECTION_SCENES[3].after.at(-1)!.art!.landscape,/moon-castle-map/);
+ assert.equal(RPG_CONNECTION_SCENES[3].after.at(-1)!.line,'새로운 영역을 향해, 다시 한 걸음을 내디뎠다.');assert.match(RPG_CONNECTION_SCENES[3].after.at(-1)!.art!.landscape,/iron-gate-village-map/);
  assert.ok(PIO_DIALOGUE.some(line=>line.includes('광장 옆 잡화점')));assert.deepEqual(morDialogue(),QUEST_DIALOGUE.morOffer);assert.deepEqual(morDialogue({step:'alley'}),QUEST_DIALOGUE.morDirections);
 });

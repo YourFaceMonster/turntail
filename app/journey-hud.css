@@ -170,3 +170,18 @@ body:has(.journey-scene-shade) .quest-cutscene .quest-dialogue{bottom:max(76px,c
 .rpg-stage-result .rpg-stage-rewards>button>.stage-reward-number.is-heal{color:#8ce5a6!important;text-shadow:0 0 12px #68d98c44}
 .rpg-stage-result .rpg-stage-rewards>button:has(.is-heal)>strong{color:#a0eaba}
 .stage-rewards-claim{margin:4px 0 12px}
+
+/* Fate jewels and avatar remain completely inside the existing HP frame. */
+.journey-hp-block .journey-fate-gems{position:absolute;left:3px;top:2px;width:32px;height:9px;display:flex;align-items:center;justify-content:center;gap:1px;z-index:3;pointer-events:none}
+.journey-fate-gems>img{display:block;width:9px;height:9px;object-fit:contain}.journey-fate-gems>img.is-spent{filter:grayscale(1);opacity:.22}
+.journey-hp-block>.journey-hp-avatar{top:auto!important;bottom:2px;transform:none!important;width:22px!important;height:22px!important;min-width:22px!important;min-height:22px!important;left:8px;padding:0!important}
+.journey-hp-block>.journey-hp-avatar>:is(.avatar,span,svg){width:20px!important;height:20px!important;font-size:17px!important}
+@media(max-height:500px) and (orientation:landscape){.journey-hp-block>.journey-hp-avatar{height:18px!important;min-height:18px!important}.journey-hp-block>.journey-hp-avatar>:is(.avatar,span,svg){height:16px!important}}
+/* Tavern results show exactly one rank, avatar and name on a shared row. */
+.journey-mini-standings .single-rank-standings>div{grid-template-columns:minmax(136px,1fr) 32px 46px 58px!important;gap:6px!important}
+.journey-mini-standings .single-rank-standings .result-player-name{display:grid;grid-template-columns:32px 30px minmax(0,1fr);gap:6px;align-items:center}
+.journey-mini-standings .single-rank-standings .result-player-name>small{grid-column:auto;white-space:normal;font-size:11px;line-height:1.35}
+.journey-mini-standings .single-rank-standings .result-name-portrait{grid-row:auto;width:30px;height:34px}
+.journey-mini-standings .single-rank-standings .result-name-portrait>:is(img,span){width:30px!important;height:34px!important}
+.journey-mini-standings .single-rank-standings .result-total{display:block;text-align:right}
+@media(max-width:360px){.journey-mini-standings .single-rank-standings>div{grid-template-columns:minmax(120px,1fr) 27px 40px 49px!important;gap:3px!important}.journey-mini-standings .single-rank-standings .result-player-name{grid-template-columns:29px 26px minmax(0,1fr);gap:4px}.journey-mini-standings .single-rank-standings .result-name-portrait,.journey-mini-standings .single-rank-standings .result-name-portrait>:is(img,span){width:26px!important}}

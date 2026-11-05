@@ -1,0 +1,124 @@
+{
+  "method": "built-in image_gen",
+  "originalsPreserved": true,
+  "records": [
+    {
+      "key": "thief-spin-wide",
+      "output": "public/quests/alley-thief-spin-wide-v1.png",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/alley-thief-wide-v3.png",
+      "prompt": "Use case: illustration-story, new narrative insert matching reference. Image1 is character/location reference. Image2 style reference. Image3 approved gate emblem. Add the missing introductory cinematic of this SAME anthropomorphic gray wolf thief in patched charcoal hood, red scarf and leather gloves, sly grin, in same snowy night market alley. Clearly show ONE cream envelope with unbroken round red wax seal spinning between the fingers of his RIGHT hand, envelope tilted diagonally and balanced/pivoted on an upright gloved index finger, thumb loose, two short subtle curved ink motion marks beside envelope imply twirling. Exactly one envelope, anatomically coherent hand, do not duplicate fingers or letter. Medium waist-up composition with face and spinning letter both clearly visible and centrally framed; keep alley cobbles, market awnings/crates, stone gate and warm lanterns recognisable. His left forearm rests naturally on a tall wooden playing-tile crate on viewer right; top is elbow height with a small cloth, tile pieces and lantern. Gate banners use image3 emblem, not crosses. Match illustration 2's expressive irregular hand ink contours, flat 2-3 cel-shading values and muted indigo snow / amber lanterns, no glossy 3D or photographic textures. Preserve identity and outfit, no text or UI. Output aspect ratio exactly matching image1, keep all important content away from bottom caption area.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-bf5832f3-f5e3-4a7f-af19-dcb0db1a7252.png",
+      "status": "intermediate-original-retained"
+    },
+    {
+      "key": "thief-spin-portrait",
+      "output": "public/quests/alley-thief-spin-portrait-v1.png",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/alley-thief-portrait-v3.png",
+      "prompt": "Use case: illustration-story, new narrative insert matching reference. Image1 is character/location reference. Image2 style reference. Image3 approved gate emblem. Add the missing introductory cinematic of this SAME anthropomorphic gray wolf thief in patched charcoal hood, red scarf and leather gloves, sly grin, in same snowy night market alley. Clearly show ONE cream envelope with unbroken round red wax seal spinning between the fingers of his RIGHT hand, envelope tilted diagonally and balanced/pivoted on an upright gloved index finger, thumb loose, two short subtle curved ink motion marks beside envelope imply twirling. Exactly one envelope, anatomically coherent hand, do not duplicate fingers or letter. Medium waist-up composition with face and spinning letter both clearly visible and centrally framed; keep alley cobbles, market awnings/crates, stone gate and warm lanterns recognisable. His left forearm rests naturally on a tall wooden playing-tile crate on viewer right; top is elbow height with a small cloth, tile pieces and lantern. Gate banners use image3 emblem, not crosses. Match illustration 2's expressive irregular hand ink contours, flat 2-3 cel-shading values and muted indigo snow / amber lanterns, no glossy 3D or photographic textures. Preserve identity and outfit, no text or UI. Output aspect ratio exactly matching image1, keep all important content away from bottom caption area.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-1cd2de52-87ac-4b22-aab0-02d8bdaa7dbe.png",
+      "status": "intermediate-original-retained"
+    },
+    {
+      "key": "map-wide",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/moon-castle-map-shops-wide-v1.png",
+      "output": "public/prologue/iron-gate-village-map-wide-v2.png",
+      "prompt": "Use case: precise-object-edit. Image 1 edit target snowy walled village map, image 2 style reference, image 3 approved iron gate emblem. Preserve exactly the village wall footprint, main gate, fountain square, pub and shop buildings, central castle, camera and scene layout. Add 16-22 small-scale townsfolk in winter cloaks, market shoppers, stallholders and a few guards along roads, stalls, pub entrance and square; people must be proportional to doors and buildings, not foreground giants. Reduce the oversized round black-pine watchtower at upper left by about 28% in width and height, keeping it at its existing site, a low round stone tower with left black pine and right small wooden lookout/shed. It should match neighboring secondary buildings rather than rival the castle. Establish the thief's market back-alley at 82% across, 49% down with two modest market awnings, crates/barrels, narrow cobblestone passage and a warm lantern, connected to the pub/market; remove trees only immediately around this market-alley site, keep outer snow forest. Replace ALL old circular cross / sun marks on hanging banners with image 3's simplified dark iron-gate outline (soft pointed arch, central divider, vertical bars, small central latch), on muted charcoal blue banners with legible pale gate marks; no circular crosses remain on banners. Preserve moon, snow, mountains and existing night composition. Hand-drawn 2D cartoon fantasy matching supplied style reference: expressive irregular ink contours, slightly exaggerated illustrated faces, two or three clear cel-shaded values, muted indigo/slate and restrained amber lanterns, visible simplified shapes. Avoid glossy 3D, photorealistic/airbrushed faces, dense tiny hatching or excessive smooth gradients. Night stays readable. No text, no UI, preserve aspect ratio and framing.",
+      "refs": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-poko-wide-night-v4.png",
+        "D:/CHATGPT_CODEX/17_Turntail/artifacts/design-review-2026-11-05/iron-gate-D.png"
+      ],
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-bac21eb4-357b-4d81-b901-2cc7bc693791.png"
+    },
+    {
+      "key": "thief-wide",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/alley-thief-wide-v3.png",
+      "output": "public/quests/alley-thief-wide-v4.png",
+      "prompt": "Use case: precise-object-edit. Image 1 edit target, image 2 style reference, image 3 gate emblem. Keep same anthropomorphic gray wolf thief identity, patched hooded cloak, red scarf, expression, legs, right hand holding sealed envelope, night market alley, camera and framing. Raise the TOP of the large playing-tile wooden crate on the viewer's right to the height of the thief's LEFT forearm/elbow resting above it. Extend the crate upward from its existing base, do not lift base off cobbles. The left elbow and forearm must make natural visible supported contact with the crate top instead of floating; adjust resting left hand minimally for anatomically coherent contact. Move cloth, three tiles, lantern and pouch upward together onto raised top, retain their scale and positions relative to each other. Keep three readable tile numbers 2,1,4; use red crown on 2, green key on 1, dark gate on 4. Replace banner emblems with image 3 gate. No new limbs, maintain same number of hands and digits. Hand-drawn 2D cartoon fantasy matching supplied style reference: expressive irregular ink contours, slightly exaggerated illustrated faces, two or three clear cel-shaded values, muted indigo/slate and restrained amber lanterns, visible simplified shapes. Avoid glossy 3D, photorealistic/airbrushed faces, dense tiny hatching or excessive smooth gradients. Night stays readable. No text, no UI, preserve aspect ratio and framing.",
+      "refs": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-poko-wide-night-v4.png",
+        "D:/CHATGPT_CODEX/17_Turntail/artifacts/design-review-2026-11-05/iron-gate-D.png"
+      ],
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-4c3ccc89-32cf-4d29-a2b1-6376ecdf8b96.png"
+    },
+    {
+      "key": "traveler-injured-wide",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/traveler-injured-wide-v2.png",
+      "output": "public/quests/traveler-injured-wide-v3.png",
+      "prompt": "Use case: style-transfer. Image 1 edit target; image 2 reference for character rendering; image 3 gate emblem. Re-illustrate the SAME injured male traveler with curly dark brown hair, short beard, patched blue cloak, ochre tunic, wrapped injured shin, boots beside cart and pine. Preserve his identifiable clothing/colors, age, hair, cart/tree/wall layout, night lighting and camera composition. Make character noticeably more hand-drawn and expressive, less generic AI handsome: slightly asymmetrical face, larger expressive nose and eyebrows, rough irregular ink contours, simpler broad cheek planes, no smooth gradient skin, no glossy eyes, only 2-3 flat shading values; match human cartoon rendering in image2. Hands must be anatomically coherent and simplified. He sits holding his injured bandaged leg, pained but approachable expression, NOT a bright grin. All visible gate banners use image3 emblem. Preserve backdrop, character position, proportions and portrait/landscape frame. Hand-drawn 2D cartoon fantasy matching supplied style reference: expressive irregular ink contours, slightly exaggerated illustrated faces, two or three clear cel-shaded values, muted indigo/slate and restrained amber lanterns, visible simplified shapes. Avoid glossy 3D, photorealistic/airbrushed faces, dense tiny hatching or excessive smooth gradients. Night stays readable. No text, no UI, preserve aspect ratio and framing.",
+      "refs": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-poko-wide-night-v4.png",
+        "D:/CHATGPT_CODEX/17_Turntail/artifacts/design-review-2026-11-05/iron-gate-D.png"
+      ],
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-faaa468a-5d7c-402c-b443-777e29cfa341.png"
+    },
+    {
+      "key": "traveler-aided-wide",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/traveler-aided-wide-v2.png",
+      "output": "public/quests/traveler-aided-wide-v4.png",
+      "prompt": "Use case: style-transfer. Image 1 edit target; image 2 reference for character rendering; image 3 gate emblem. Re-illustrate the SAME injured male traveler with curly dark brown hair, short beard, patched blue cloak, ochre tunic, wrapped injured shin, boots beside cart and pine. Preserve his identifiable clothing/colors, age, hair, cart/tree/wall layout, night lighting and camera composition. Make character noticeably more hand-drawn and expressive, less generic AI handsome: slightly asymmetrical face, larger expressive nose and eyebrows, rough irregular ink contours, simpler broad cheek planes, no smooth gradient skin, no glossy eyes, only 2-3 flat shading values; match human cartoon rendering in image2. Hands must be anatomically coherent and simplified. He sits relieved after receiving medicinal herbs; keep existing gesture with small coins and herb pouch without adding any new rewards. All visible gate banners use image3 emblem. Preserve backdrop, character position, proportions and portrait/landscape frame. Hand-drawn 2D cartoon fantasy matching supplied style reference: expressive irregular ink contours, slightly exaggerated illustrated faces, two or three clear cel-shaded values, muted indigo/slate and restrained amber lanterns, visible simplified shapes. Avoid glossy 3D, photorealistic/airbrushed faces, dense tiny hatching or excessive smooth gradients. Night stays readable. No text, no UI, preserve aspect ratio and framing.",
+      "refs": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-poko-wide-night-v4.png",
+        "D:/CHATGPT_CODEX/17_Turntail/artifacts/design-review-2026-11-05/iron-gate-D.png"
+      ],
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-b8c404bd-2a9e-41fc-9bf2-1fe57990e49d.png"
+    },
+    {
+      "key": "map-portrait",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/moon-castle-map-shops-portrait-v1.png",
+      "output": "public/prologue/iron-gate-village-map-portrait-v2.png",
+      "prompt": "Use case: precise-object-edit. Image 1 edit target snowy walled village map, image 2 style reference, image 3 approved iron gate emblem. Preserve exactly the village wall footprint, main gate, fountain square, pub and shop buildings, central castle, camera and scene layout. Add 16-22 small-scale townsfolk in winter cloaks, market shoppers, stallholders and a few guards along roads, stalls, pub entrance and square; people must be proportional to doors and buildings, not foreground giants. Reduce the oversized round black-pine watchtower at upper left by about 28% in width and height, keeping it at its existing site, a low round stone tower with left black pine and right small wooden lookout/shed. It should match neighboring secondary buildings rather than rival the castle. Establish the thief's market back-alley at 84% across, 58% down with two modest market awnings, crates/barrels, narrow cobblestone passage and a warm lantern, connected to the pub/market; remove trees only immediately around this market-alley site, keep outer snow forest. Replace ALL old circular cross / sun marks on hanging banners with image 3's simplified dark iron-gate outline (soft pointed arch, central divider, vertical bars, small central latch), on muted charcoal blue banners with legible pale gate marks; no circular crosses remain on banners. Preserve moon, snow, mountains and existing night composition. Hand-drawn 2D cartoon fantasy matching supplied style reference: expressive irregular ink contours, slightly exaggerated illustrated faces, two or three clear cel-shaded values, muted indigo/slate and restrained amber lanterns, visible simplified shapes. Avoid glossy 3D, photorealistic/airbrushed faces, dense tiny hatching or excessive smooth gradients. Night stays readable. No text, no UI, preserve aspect ratio and framing.",
+      "refs": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-poko-wide-night-v4.png",
+        "D:/CHATGPT_CODEX/17_Turntail/artifacts/design-review-2026-11-05/iron-gate-D.png"
+      ],
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-2571a69e-4d9a-459b-969d-e5314fe0b046.png"
+    },
+    {
+      "key": "thief-portrait",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/alley-thief-portrait-v3.png",
+      "output": "public/quests/alley-thief-portrait-v5.png",
+      "prompt": "Use case: precise-object-edit. Image 1 edit target, image 2 style reference, image 3 gate emblem. Keep same anthropomorphic gray wolf thief identity, patched hooded cloak, red scarf, expression, legs, right hand holding sealed envelope, night market alley, camera and framing. Raise the TOP of the large playing-tile wooden crate on the viewer's right to the height of the thief's LEFT forearm/elbow resting above it. Extend the crate upward from its existing base, do not lift base off cobbles. The left elbow and forearm must make natural visible supported contact with the crate top instead of floating; adjust resting left hand minimally for anatomically coherent contact. Move cloth, three tiles, lantern and pouch upward together onto raised top, retain their scale and positions relative to each other. Keep three readable tile numbers 2,1,4; use red crown on 2, green key on 1, dark gate on 4. Replace banner emblems with image 3 gate. No new limbs, maintain same number of hands and digits. Hand-drawn 2D cartoon fantasy matching supplied style reference: expressive irregular ink contours, slightly exaggerated illustrated faces, two or three clear cel-shaded values, muted indigo/slate and restrained amber lanterns, visible simplified shapes. Avoid glossy 3D, photorealistic/airbrushed faces, dense tiny hatching or excessive smooth gradients. Night stays readable. No text, no UI, preserve aspect ratio and framing.",
+      "refs": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-poko-wide-night-v4.png",
+        "D:/CHATGPT_CODEX/17_Turntail/artifacts/design-review-2026-11-05/iron-gate-D.png"
+      ],
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-c31faa86-e539-42a2-99a5-aef4c34895b8.png"
+    },
+    {
+      "key": "traveler-injured-portrait",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/traveler-injured-portrait-v2.png",
+      "output": "public/quests/traveler-injured-portrait-v3.png",
+      "prompt": "Use case: style-transfer. Image 1 edit target; image 2 reference for character rendering; image 3 gate emblem. Re-illustrate the SAME injured male traveler with curly dark brown hair, short beard, patched blue cloak, ochre tunic, wrapped injured shin, boots beside cart and pine. Preserve his identifiable clothing/colors, age, hair, cart/tree/wall layout, night lighting and camera composition. Make character noticeably more hand-drawn and expressive, less generic AI handsome: slightly asymmetrical face, larger expressive nose and eyebrows, rough irregular ink contours, simpler broad cheek planes, no smooth gradient skin, no glossy eyes, only 2-3 flat shading values; match human cartoon rendering in image2. Hands must be anatomically coherent and simplified. He sits holding his injured bandaged leg, pained but approachable expression, NOT a bright grin. All visible gate banners use image3 emblem. Preserve backdrop, character position, proportions and portrait/landscape frame. Hand-drawn 2D cartoon fantasy matching supplied style reference: expressive irregular ink contours, slightly exaggerated illustrated faces, two or three clear cel-shaded values, muted indigo/slate and restrained amber lanterns, visible simplified shapes. Avoid glossy 3D, photorealistic/airbrushed faces, dense tiny hatching or excessive smooth gradients. Night stays readable. No text, no UI, preserve aspect ratio and framing.",
+      "refs": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-poko-wide-night-v4.png",
+        "D:/CHATGPT_CODEX/17_Turntail/artifacts/design-review-2026-11-05/iron-gate-D.png"
+      ],
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-8d0da5e5-f677-47d3-b187-fa742c691461.png"
+    },
+    {
+      "key": "traveler-aided-portrait",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/traveler-aided-portrait-v3.png",
+      "output": "public/quests/traveler-aided-portrait-v4.png",
+      "prompt": "Use case: style-transfer. Image 1 edit target; image 2 reference for character rendering; image 3 gate emblem. Re-illustrate the SAME injured male traveler with curly dark brown hair, short beard, patched blue cloak, ochre tunic, wrapped injured shin, boots beside cart and pine. Preserve his identifiable clothing/colors, age, hair, cart/tree/wall layout, night lighting and camera composition. Make character noticeably more hand-drawn and expressive, less generic AI handsome: slightly asymmetrical face, larger expressive nose and eyebrows, rough irregular ink contours, simpler broad cheek planes, no smooth gradient skin, no glossy eyes, only 2-3 flat shading values; match human cartoon rendering in image2. Hands must be anatomically coherent and simplified. He sits relieved after receiving medicinal herbs; keep existing gesture with small coins and herb pouch without adding any new rewards. All visible gate banners use image3 emblem. Preserve backdrop, character position, proportions and portrait/landscape frame. Hand-drawn 2D cartoon fantasy matching supplied style reference: expressive irregular ink contours, slightly exaggerated illustrated faces, two or three clear cel-shaded values, muted indigo/slate and restrained amber lanterns, visible simplified shapes. Avoid glossy 3D, photorealistic/airbrushed faces, dense tiny hatching or excessive smooth gradients. Night stays readable. No text, no UI, preserve aspect ratio and framing.",
+      "refs": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-poko-wide-night-v4.png",
+        "D:/CHATGPT_CODEX/17_Turntail/artifacts/design-review-2026-11-05/iron-gate-D.png"
+      ],
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-4ec26d5d-0ae3-4830-8ff4-f32562cc399d.png"
+    },
+    {
+      "key": "spin-final-wide",
+      "output": "public/quests/alley-thief-spin-wide-v1.png",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/alley-thief-spin-wide-v1.png",
+      "prompt": "Precise small prop correction only. Image1 edit target spinning-letter shot, image2 reference for the THREE correct playing tiles on crate, image3 gate emblem. Change ONLY the faces of the three small ivory tiles lying on the crate cloth, to match image2: left tile red number 2 with a small red crown, center tile green number 1 with a green key, right tile dark number 4 with the approved dark iron-gate emblem. Exactly three tiles. No moon, star, club or cloud symbols. Preserve every other part of image1 exactly, especially the twirling wax-sealed envelope, motion marks, wolf face, clothing, hands, supported left forearm, crate height, frame and illumination. No extra text. Keep original image aspect ratio and resolution.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-f29223f7-b067-4a68-a0c2-73a30261f9c9.png"
+    },
+    {
+      "key": "spin-final-portrait",
+      "output": "public/quests/alley-thief-spin-portrait-v1.png",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/quests/alley-thief-spin-portrait-v1.png",
+      "prompt": "Precise small prop correction only. Image1 edit target spinning-letter shot, image2 reference for the THREE correct playing tiles on crate, image3 gate emblem. Change ONLY the faces of the three small ivory tiles lying on the crate cloth, to match image2: left tile red number 2 with a small red crown, center tile green number 1 with a green key, right tile dark number 4 with the approved dark iron-gate emblem. Exactly three tiles. No moon, star, club or cloud symbols. Preserve every other part of image1 exactly, especially the twirling wax-sealed envelope, motion marks, wolf face, clothing, hands, supported left forearm, crate height, frame and illumination. No extra text. Keep original image aspect ratio and resolution.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-4d63b04b-a81b-4ccb-9517-18bd69bc587a.png"
+    }
+  ]
+}

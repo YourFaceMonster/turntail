@@ -1,0 +1,248 @@
+{
+  "method": "built-in image_gen",
+  "originalsPreserved": true,
+  "records": [
+    {
+      "name": "gate-before-r61",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/gate-before-r61.png",
+      "output": "public/prologue/gate-before-r61-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-ee8deeb3-680b-4c8a-becf-130d941ddbe9.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      }
+    },
+    {
+      "name": "gate-before-portrait-r61",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/gate-before-portrait-r61.png",
+      "output": "public/prologue/gate-before-portrait-r61-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-cf44b050-d41d-442e-bab3-8838954d1398.png",
+      "dimensions": {
+        "width": 941,
+        "height": 1671
+      }
+    },
+    {
+      "name": "gate-reply-wide-v1",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/gate-reply-wide-v1.png",
+      "output": "public/prologue/gate-reply-wide-v1-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-dbccaf9f-ac1a-4558-9cbd-ffc6a5c1dbdb.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      }
+    },
+    {
+      "name": "gate-reply-portrait-v1",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/gate-reply-portrait-v1.png",
+      "output": "public/prologue/gate-reply-portrait-v1-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-1f271efd-bf52-4e0e-bc6c-39e7697bd082.png",
+      "dimensions": {
+        "width": 941,
+        "height": 1672
+      }
+    },
+    {
+      "name": "gate-after-r61",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/gate-after-r61.png",
+      "output": "public/prologue/gate-after-r61-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-d9e4db64-4adc-4fbf-b857-c15ff5d207a0.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      }
+    },
+    {
+      "name": "gate-after-portrait-r61",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/gate-after-portrait-r61.png",
+      "output": "public/prologue/gate-after-portrait-r61-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-f44fad04-022e-4306-be53-189d87941d89.png",
+      "dimensions": {
+        "width": 941,
+        "height": 1672
+      }
+    },
+    {
+      "name": "gate-after-reply-wide-v1",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/gate-after-reply-wide-v1.png",
+      "output": "public/prologue/gate-after-reply-wide-v1-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-fe3cb4fb-b2d5-4f45-819e-63c8153bd886.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      }
+    },
+    {
+      "name": "gate-after-reply-portrait-v1",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/gate-after-reply-portrait-v1.png",
+      "output": "public/prologue/gate-after-reply-portrait-v1-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-840c076e-1815-4a89-bdd9-7b492bac9b06.png",
+      "dimensions": {
+        "width": 941,
+        "height": 1672
+      }
+    },
+    {
+      "name": "square-poko-wide-night-v4",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-poko-wide-night-v4.png",
+      "output": "public/prologue/square-poko-wide-night-v4-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-cb1e21ef-7d70-4d21-b049-bc8ce0b644bd.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      }
+    },
+    {
+      "name": "square-poko-portrait-night-v4",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-poko-portrait-night-v4.png",
+      "output": "public/prologue/square-poko-portrait-night-v4-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-921df91c-5c09-4a40-ba9a-8d9ef0f36084.png",
+      "dimensions": {
+        "width": 941,
+        "height": 1672
+      }
+    },
+    {
+      "name": "square-mila-wide-night-v4",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-mila-wide-night-v4.png",
+      "output": "public/prologue/square-mila-wide-night-v4-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-8c241028-b566-4156-9d10-f5a5d35c22d9.png",
+      "dimensions": {
+        "width": 1670,
+        "height": 941
+      }
+    },
+    {
+      "name": "square-mila-portrait-night-v4",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-mila-portrait-night-v4.png",
+      "output": "public/prologue/square-mila-portrait-night-v4-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-5e916cd2-d566-40c4-adbb-563ff968ecce.png",
+      "dimensions": {
+        "width": 941,
+        "height": 1672
+      }
+    },
+    {
+      "name": "connection-twins-v3",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/connection-twins-v3.png",
+      "output": "public/prologue/connection-twins-v3-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-eefb5629-4fbb-4d59-be59-1d08cf2f167d.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      }
+    },
+    {
+      "name": "twins-before-portrait-r61",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/twins-before-portrait-r61.png",
+      "output": "public/prologue/twins-before-portrait-r61-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-6a08b9a0-4f47-4a3e-bef4-df2fdf5e182d.png",
+      "dimensions": {
+        "width": 941,
+        "height": 1671
+      }
+    },
+    {
+      "name": "twins-reply-wide-v1",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/twins-reply-wide-v1.png",
+      "output": "public/prologue/twins-reply-wide-v1-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-215e07b8-8d6b-47a4-90db-ad86627f7e80.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      }
+    },
+    {
+      "name": "twins-reply-portrait-v1",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/twins-reply-portrait-v1.png",
+      "output": "public/prologue/twins-reply-portrait-v1-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-73436cee-6e41-4de1-91d0-6e65b2304d95.png",
+      "dimensions": {
+        "width": 941,
+        "height": 1672
+      }
+    },
+    {
+      "name": "twins-after-r61",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/twins-after-r61.png",
+      "output": "public/prologue/twins-after-r61-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-900617b9-fd91-439c-a374-c5a14fea769f.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      }
+    },
+    {
+      "name": "twins-after-portrait-r61",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/twins-after-portrait-r61.png",
+      "output": "public/prologue/twins-after-portrait-r61-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-2d724e89-c62e-42c2-ba20-a9b429d45080.png",
+      "dimensions": {
+        "width": 941,
+        "height": 1672
+      }
+    },
+    {
+      "name": "twins-after-reply-wide-v1",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/twins-after-reply-wide-v1.png",
+      "output": "public/prologue/twins-after-reply-wide-v1-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-643d3b08-f966-4542-b03c-eae9941e3be8.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      }
+    },
+    {
+      "name": "twins-after-reply-portrait-v1",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/twins-after-reply-portrait-v1.png",
+      "output": "public/prologue/twins-after-reply-portrait-v1-iron-v1.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-89173bbc-d5a9-40f6-9020-05512768f6c3.png",
+      "dimensions": {
+        "width": 941,
+        "height": 1672
+      }
+    },
+    {
+      "name": "moon-village-distant-wide-v1",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/moon-village-distant-wide-v1.png",
+      "output": "public/prologue/normun-village-distant-wide-v2.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark. This distant establishing shot depicts the same village as image3: retain the very distant panorama and foreground snowy road, but match the small round pine watchtower, pub and shop, market awnings and gate layout of image3 at appropriate distant scale. Add only tiny distant people along village paths. Do not zoom in or make people large.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-c717aec2-647e-4a12-8584-b6a008df17cd.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      }
+    },
+    {
+      "name": "moon-village-distant-portrait-v1",
+      "input": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/moon-village-distant-portrait-v1.png",
+      "output": "public/prologue/normun-village-distant-portrait-v2.png",
+      "prompt": "Use case: precise-object-edit. Image1 is the EDIT TARGET, image2 approved iron-gate D emblem, image3 current canonical village map. Change ONLY the emblems painted on hanging CLOTH BANNERS of image1: replace old circular-cross/celestial/animal banner emblems with image2's iron-gate outline (soft pointed arch, three vertical divisions and small central latch), in a pale muted gold/ivory ink on the same dark cloth. Maintain banner shapes, positions, age, ragged edges and perspective. No circular cross marks remain on banners. Do NOT change personal jewelry/brooches, carved stone/throne reliefs, playing tiles, mysterious tile-back symbols, monument markings or animal characters. Preserve every character identity, face, size, exact pose, hands, camera, framing, architecture, shadows, snow, night lighting and aspect ratio. Maintain existing hand-drawn 2D cartoon fantasy linework; avoid stylistic repainting. No text, labels, UI or watermark. This distant establishing shot depicts the same village as image3: retain the very distant panorama and foreground snowy road, but match the small round pine watchtower, pub and shop, market awnings and gate layout of image3 at appropriate distant scale. Add only tiny distant people along village paths. Do not zoom in or make people large.",
+      "source": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-696f1e03-c2c0-4164-8769-39684906ce9f.png",
+      "dimensions": {
+        "width": 941,
+        "height": 1671
+      }
+    }
+  ]
+}

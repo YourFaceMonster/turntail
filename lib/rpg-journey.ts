@@ -4,6 +4,7 @@ import {player,room,start,uid,type Game} from './game.ts';
 import type {RpgRun} from './rpg.ts';
 
 export type JourneyNode='battle-1'|'tavern'|'letter-alley'|'wayfarer-stop'|'watchtower'|'battle-2'|'town-event'|'ruins'|'forest'|'battle-3';
+export const JOURNEY_STAGE_NAMES:Record<number,string>={1:'마을 관문',2:'마을 광장',3:'북쪽 성채'};
 export type JourneyMini={game:Game,roundIds:string[],lastReward:number};
 export type LetterQuest={step:'alley'|'recovered'|'complete'|'failed',defeated?:boolean};
 export type VillageRequestReward='coins'|'heal';
@@ -17,9 +18,9 @@ export const JOURNEY_BLUE_GLASS_RUMOR={id:'blue-glass-hidden-route',title:'파�
 export const JOURNEY_NODES:{id:JourneyNode,name:string,x:number,y:number,kind:'battle'|'place'|'event'|'choice'}[]=[
  {id:'battle-1',name:'ST1 · 마을 관문',x:52,y:66,kind:'battle'},
  {id:'tavern',name:'눈길의 주점',x:67,y:40,kind:'place'},
- {id:'letter-alley',name:'시장 뒤 골목',x:82,y:65,kind:'place'},
- {id:'wayfarer-stop',name:'길가의 여행자',x:21,y:30,kind:'event'},
- {id:'watchtower',name:'검은 소나무 파수탑',x:29,y:23,kind:'place'},
+ {id:'letter-alley',name:'시장 뒤 골목',x:82,y:49,kind:'place'},
+ {id:'wayfarer-stop',name:'길가의 여행자',x:17,y:43,kind:'event'},
+ {id:'watchtower',name:'검은 소나무 파수탑',x:28,y:31,kind:'place'},
  {id:'battle-2',name:'ST2 · 마을 광장',x:54,y:45,kind:'battle'},
  {id:'battle-3',name:'ST3 · 북쪽 성채',x:57,y:17,kind:'battle'},
 ];

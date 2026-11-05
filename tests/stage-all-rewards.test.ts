@@ -12,7 +12,7 @@ test('each stage grants relic, coins and healing together once, including save/r
   const before=structuredClone(game.rpgRun!),id=before.phaseOne!.clear!.relicId;
   game.rpgRun=chooseRpgStageReward(before,'all');
   assert.equal(game.rpgRun.coins,before.coins+RPG_PHASE_ONE.rewardCoins);
-  assert.equal(game.rpgRun.hp[0],before.hp[0]+20);
+  assert.equal(game.rpgRun.hp[0],before.hp[0]+30);
   assert.ok(game.rpgRun.relics.includes(id));assert.ok(before.relics.every(x=>game.rpgRun!.relics.includes(x)));
   assert.equal(new Set(game.rpgRun.relics).size,game.rpgRun.relics.length);assert.ok(game.rpgRun.equipped.length<=3);
   assert.equal(game.rpgRun.phaseOne!.rewardHistory!.length,stage);
@@ -25,6 +25,14 @@ test('each stage grants relic, coins and healing together once, including save/r
  }
 });
 
+test('base healing is granted only on reward claim and only once',()=>{
+ const game=createRpgJourneyGame('회복 검증');enterJourneyNode(game,'battle-1');
+ game.rpgRun!.equipped=[];game.rpgRun!.hp=[40,0,0];reconcileRpgEliminations(game);
+ assert.equal(game.rpgRun!.hp[0],40);assert.equal(game.rpgRun!.phaseOne!.clear!.baseHeal,0);
+ game.rpgRun=chooseRpgStageReward(game.rpgRun!,'all');assert.equal(game.rpgRun.hp[0],70);
+ assert.throws(()=>chooseRpgStageReward(game.rpgRun!,'all'));assert.equal(game.rpgRun.hp[0],70);
+});
+
 test('all rewards cap healing at 100 and still grant coins when the relic pool is exhausted',()=>{
  const game=createRpgJourneyGame('가득 찬 보상');enterJourneyNode(game,'battle-1');
  game.rpgRun!.relics=[...RPG_PHASE_ONE.relicPool];game.rpgRun!.equipped=game.rpgRun!.relics.slice(0,3);
@@ -32,4 +40,26 @@ test('all rewards cap healing at 100 and still grant coins when the relic pool i
  game.rpgRun=chooseRpgStageReward(game.rpgRun!,'all');
  assert.equal(game.rpgRun.hp[0],100);assert.equal(game.rpgRun.coins,before.coins+30);
  assert.deepEqual(game.rpgRun.relics,before.relics);assert.deepEqual(game.rpgRun.equipped,before.equipped);
+});
+
+test('resumed old pending clears count the already received 10 HP toward the same 30 HP',()=>{
+ const game=createRpgJourneyGame('기존 회복 저장');enterJourneyNode(game,'battle-1');
+ game.rpgRun!.equipped=[];game.rpgRun!.hp=[40,0,0];reconcileRpgEliminations(game);
+ game.rpgRun!.hp[0]=50;game.rpgRun!.phaseOne!.clear!.baseHeal=10;
+ const data=new Map<string,string>(),storage={getItem:(key:string)=>data.get(key)||null,setItem:(key:string,value:string)=>{data.set(key,value);}};
+ saveRpgGame(storage,game);const resumed=readRpgArchive(storage).active!;
+ const before=JSON.stringify(resumed.rpgRun),claimed=chooseRpgStageReward(resumed.rpgRun!,'all');
+ assert.equal(claimed.hp[0],70);assert.equal(claimed.hp[0]-40,30);
+ assert.equal(JSON.stringify(resumed.rpgRun),before,'claim leaves the source save untouched');
+ assert.throws(()=>chooseRpgStageReward(claimed,'all'));assert.equal(claimed.hp[0],70);
+});
+
+test('old partial base heal at the HP cap and independent relic recovery remain intact',()=>{
+ for(const [hpBefore,baseHeal,relicHeal,synergyHeal,expected] of [[95,5,0,0,100],[40,10,5,2,77]]){
+  const game=createRpgJourneyGame('기존 추가 회복');enterJourneyNode(game,'battle-1');
+  game.rpgRun!.equipped=[];game.rpgRun!.hp=[hpBefore,0,0];reconcileRpgEliminations(game);
+  Object.assign(game.rpgRun!.phaseOne!.clear!,{baseHeal,relicHeal,synergyHeal});
+  game.rpgRun!.hp[0]=hpBefore+baseHeal+relicHeal+synergyHeal;
+  assert.equal(chooseRpgStageReward(game.rpgRun!,'all').hp[0],expected);
+ }
 });

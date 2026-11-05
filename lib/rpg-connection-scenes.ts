@@ -345,7 +345,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "id": "ST3_POST_6",
     "scene": "stone",
     "duration": 6250,
-    "line": "달의 영역 너머, 구름에 둘러싸인 다음 길이 모습을 드러냈다.",
+    "line": "철문의 영역 너머, 구름에 둘러싸인 다음 길이 모습을 드러냈다.",
     "audio": "quiet",
     "art": {
      "landscape": "/prologue/moon-castle-map-v3.png",
@@ -371,27 +371,28 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
 
 // Reviewed distinct before/after paintings and dedicated portrait art.
 const sceneFrame=(wide:string,tall:string)=>({landscape:'/prologue/'+wide+'.png',portrait:'/prologue/'+tall+'.png'});
+const ironFrame=(wide:string,tall:string)=>sceneFrame(wide+'-iron-v1',tall+'-iron-v1');
 for(const [stage,sequence] of Object.entries(RPG_CONNECTION_SCENES)){
  for(const [phase,cuts] of Object.entries(sequence)){
-  const art=stage==='1'?sceneFrame('gate-'+phase+'-r61','gate-'+phase+'-portrait-r61'):
-   stage==='2'?sceneFrame('square-poko-wide-v3','square-poko-portrait-v3'):
-   sceneFrame(phase==='before'?'connection-twins-v3':'twins-after-r61',phase==='before'?'twins-before-portrait-r61':'twins-after-portrait-r61');
+  const art=stage==='1'?ironFrame('gate-'+phase+'-r61','gate-'+phase+'-portrait-r61'):
+   stage==='2'?ironFrame('square-poko-wide-night-v4','square-poko-portrait-night-v4'):
+   ironFrame(phase==='before'?'connection-twins-v3':'twins-after-r61',phase==='before'?'twins-before-portrait-r61':'twins-after-portrait-r61');
   for(const cut of cuts){cut.art=art;cut.focus='50% 40%';cut.location=`STAGE ${stage} · ${['','마을 관문','마을 광장','북쪽 성채'][Number(stage)]}`;}
  }
 }
-RPG_CONNECTION_SCENES[3].after.at(-1)!.art=sceneFrame('moon-castle-map-shops-wide-v1','moon-castle-map-shops-portrait-v1');
+RPG_CONNECTION_SCENES[3].after.at(-1)!.art=sceneFrame('iron-gate-village-map-wide-v3','iron-gate-village-map-portrait-v3');
 RPG_CONNECTION_SCENES[3].after.at(-1)!.focus='57% 18%';
 
 // Pose changes retain the same mounted camera and background group.
-RPG_CONNECTION_SCENES[1].before[2].poseArt=sceneFrame('gate-reply-wide-v1','gate-reply-portrait-v1');
-RPG_CONNECTION_SCENES[1].after[1].poseArt=sceneFrame('gate-after-reply-wide-v1','gate-after-reply-portrait-v1');
+RPG_CONNECTION_SCENES[1].before[2].poseArt=ironFrame('gate-reply-wide-v1','gate-reply-portrait-v1');
+RPG_CONNECTION_SCENES[1].after[1].poseArt=ironFrame('gate-after-reply-wide-v1','gate-after-reply-portrait-v1');
 for(const phase of ['before','after'] as const){
  for(const cut of RPG_CONNECTION_SCENES[2][phase]){
-  if(cut.speaker==='밀라')cut.poseArt=sceneFrame('square-mila-wide-v3','square-mila-portrait-v3');
+  if(cut.speaker==='밀라')cut.poseArt=ironFrame('square-mila-wide-night-v4','square-mila-portrait-night-v4');
  }
 }
-RPG_CONNECTION_SCENES[3].before[2].poseArt=sceneFrame('twins-reply-wide-v1','twins-reply-portrait-v1');
-RPG_CONNECTION_SCENES[3].after[1].poseArt=sceneFrame('twins-after-reply-wide-v1','twins-after-reply-portrait-v1');
+RPG_CONNECTION_SCENES[3].before[2].poseArt=ironFrame('twins-reply-wide-v1','twins-reply-portrait-v1');
+RPG_CONNECTION_SCENES[3].after[1].poseArt=ironFrame('twins-after-reply-wide-v1','twins-after-reply-portrait-v1');
 
 /** Viewing only: no combat, save, settlement or reward callbacks are part of this reel. */
 export const RPG_STORY_REEL:readonly PrologueCut[]=[...FIRST_PROLOGUE,...[1,2,3].flatMap(stage=>[...RPG_CONNECTION_SCENES[stage].before,...RPG_CONNECTION_SCENES[stage].after])];

@@ -5,7 +5,7 @@ import type {RpgRun,RpgResult} from './rpg.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
 
 /** Phase-one tuning only. Never used by normal play, item matches or legacy RPG saves. */
-export const RPG_PHASE_ONE={maxHp:100,duelsPerGauge:3,enemyHp:[[70,70],[75,75],[85,85]],clearHealRatio:.1,rewardCoins:30,rewardHeal:20,startingRelic:'cracked-heart',relicLimit:3,
+export const RPG_PHASE_ONE={maxHp:100,duelsPerGauge:3,enemyHp:[[70,70],[75,75],[85,85]],rewardCoins:30,rewardHeal:30,startingRelic:'cracked-heart',relicLimit:3,
  relicPool:['cracked-heart','recovery-lantern','wind-sigil','warrior-crest','life-sigil','sun-sigil','crimson-fang','cloud-blessing'],
  enemyStartingItems:[] as readonly string[],
  shop:[{id:'emergency-herb',price:30},{id:'ember-bomb',price:45}],
@@ -59,7 +59,7 @@ export function settleRpgPhaseOne(run:RpgRun,result:RpgResult):RpgRun{
  if(!run.hp.slice(1).every(hp=>hp<=0))return base;
  const state=structuredClone(run.phaseOne!);if(state.clearedStages.includes(run.stage))return base;
  state.clearedStages.push(run.stage);
- const hpBefore=run.hp[0],baseHeal=Math.min(RPG_PHASE_ONE.maxHp-hpBefore,Math.round(RPG_PHASE_ONE.maxHp*RPG_PHASE_ONE.clearHealRatio));
+ const hpBefore=run.hp[0],baseHeal=0;
  const relicHeal=(run.journey?run.equipped:run.relics).includes('recovery-lantern')?Math.min(5,RPG_PHASE_ONE.maxHp-hpBefore-baseHeal):0;
  const synergyHeal=Math.min(rpgSynergies(run).reduce((sum,effect)=>sum+effect.clearHeal,0),RPG_PHASE_ONE.maxHp-hpBefore-baseHeal-relicHeal);
  const relicId=RPG_PHASE_ONE.relicPool.find(id=>!run.relics.includes(id))||'';
@@ -80,7 +80,8 @@ export function chooseRpgStageReward(run:RpgRun,choice:RpgStageReward,replace?:s
   relics.push(clear.relicId);
  }
  if(choice==='coins'||choice==='all')coins+=RPG_PHASE_ONE.rewardCoins;
- if(choice==='heal'||choice==='all')hp[0]=Math.min(RPG_PHASE_ONE.maxHp,hp[0]+RPG_PHASE_ONE.rewardHeal);
+ // Older pending clears already granted baseHeal; count it toward the same 30 HP.
+ if(choice==='heal'||choice==='all')hp[0]=Math.min(RPG_PHASE_ONE.maxHp,hp[0]+Math.max(0,RPG_PHASE_ONE.rewardHeal-Math.max(0,clear.baseHeal)));
  const gotRelic=(choice==='relic'||choice==='all')&&!decline&&!!clear.relicId&&relics.includes(clear.relicId);
  const nextState={...state,rewardHistory:[...(state.rewardHistory||[]),{stage:run.stage,choice,...(gotRelic?{relicId:clear.relicId}:{}),...(replace?{replaced:replace}:{}),...(decline?{declined:true}:{})}],clear:{...clear,chosen:choice,...(replace?{replaced:replace}:{}),...(decline?{declined:true}:{})}};
  let equipped=run.journey?run.equipped.filter(id=>relics.includes(id)):[...relics];if(run.journey&&gotRelic&&equipped.length<3&&!equipped.includes(clear.relicId))equipped.push(clear.relicId);
