@@ -1,0 +1,135 @@
+{
+  "date": "2026-11-05",
+  "generator": "image_gen.imagegen",
+  "style": "turntale-cartoon-fantasy",
+  "records": [
+    {
+      "key": "stone-arrival-wide",
+      "ref": "public/prologue/stone-revelation-landscape-v1.png",
+      "asset": "public/prologue/stone-arrival-wide-v1.png",
+      "prompt": "Use case: precise-object-edit. Edit this exact landscape TURNTALE painting into the moment BEFORE the wanderer takes out his tile. Remove ONLY the entire foreground hand, wrist, sleeve and brown portable tile. Reconstruct the snow road, low snowy rocks and distant pine trees naturally in that removed area. Preserve the exact standing stone, its TWO OVERLAPPING CROWNS carving, mountains, dawn sky, camera, palette and hand-drawn 2D cartoon ink style. The stone must have the SAME two-crown mark, no other symbols. No people, hands or portable tiles anywhere. Keep the same 16:9 composition and twilight brightness. No new text or magic effects.",
+      "refs": [
+        "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public/prologue/stone-revelation-landscape-v1.png"
+      ],
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-79556e58-aef1-4cfb-bc1e-cf482fe14b5d.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-79556e58-aef1-4cfb-bc1e-cf482fe14b5d.png"
+    },
+    {
+      "key": "mor-request-wide",
+      "ref": "public/quests/mor-letter-wide-v1.png",
+      "asset": "public/quests/mor-request-wide-v1.png",
+      "prompt": "Use case: precise-object-edit. Edit this exact landscape TURNTALE tavern painting to show Mor REQUESTING help finding his stolen letter BEFORE it has been recovered. Remove the parchment, wax seal and every letter/envelope entirely. Keep Mor the identical black raven man at center, elf woman left, hooded fox right, their exact clothes and positions, background bottles/barrel/window/firelight and the same broad 16:9 framing. Change ONLY Mor's arm/hand pose: one EMPTY bird hand rests naturally on the wooden counter, the other empty bird hand gestures modestly while asking for help. Natural anatomy and exactly two hands. No papers, envelopes or letters visible anywhere, not in another hand or on the counter. Dim readable hand-drawn 2D cartoon fantasy, thick irregular ink outlines, simple2-3 shading values, muted amber/indigo, match original. No text.",
+      "refs": [
+        "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public/quests/mor-letter-wide-v1.png"
+      ],
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-17edaae2-6df8-4bc1-8ba5-21488897a3c3.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-17edaae2-6df8-4bc1-8ba5-21488897a3c3.png"
+    },
+    {
+      "key": "stone-arrival-portrait",
+      "refs": [
+        "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public/prologue/stone-revelation-portrait-v1.png",
+        "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-79556e58-aef1-4cfb-bc1e-cf482fe14b5d.png"
+      ],
+      "asset": "public/prologue/stone-arrival-portrait-v1.png",
+      "prompt": "Precise-object-edit. Image1 is the portrait edit TARGET; Image2 shows the approved companion wide scene. On Image1 remove ONLY the ENTIRE foreground glove/hand/arm/sleeve and the portable brown tile. Fill removed area with natural snow road and rocks/trees. Preserve portrait9:16 dimensions, standing stone position, TWO OVERLAPPING CROWNS carving (exactly unchanged), dawn mountains, sky and original hand-drawn2Dcartoon ink line style and brightness. No people, hands or portable tiles anywhere. This is BEFORE taking out the tile. Do not crop/replace with landscape, no text, no magicalglow. Keep carving centered in upper-middle and bottom20% clean for dialogue.",
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-d4e6e58e-5305-4d6e-94de-00a33a3c9bb1.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-d4e6e58e-5305-4d6e-94de-00a33a3c9bb1.png"
+    },
+    {
+      "key": "mor-request-portrait",
+      "refs": [
+        "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public/quests/mor-letter-portrait-v1.png",
+        "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-17edaae2-6df8-4bc1-8ba5-21488897a3c3.png"
+      ],
+      "asset": "public/quests/mor-request-portrait-v1.png",
+      "prompt": "Precise-object-edit. Image1 is the portrait edit TARGET, Image2 approved matching landscape variant. Turn Image1 into Mor asking for help BEFORE stolen letter recovered: completely remove parchment, waxseal and all letters/envelopes. Mor's two empty bird hands must match Image2 pose: one resting on counter, other gesturing modestly palmup. Same raven man face, beige shirt/leatherapron, same elf left, foxright, bar/candles/bottles/window and portrait9:16 composition. Preserve illustrated thickink linework and dim amber/indigo lighting. No papers anywhere. No newcharacters/text. Leave lower20% for dialogue.",
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-61e9b353-026f-4d30-a846-9377e57360e8.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-61e9b353-026f-4d30-a846-9377e57360e8.png"
+    },
+    {
+      "key": "wager-playing-wide",
+      "refs": [
+        "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public/prologue/wager-rest-wide-symbols-v1.png"
+      ],
+      "asset": "public/prologue/wager-playing-wide-v1.png",
+      "prompt": "Use case: illustration-story. Create the actual ongoing casual tile-game moment BEFORE reward handoff, faithfully extending this exact TURNTALE tavern. Keep same bald elderly white-bearded broad human opponent, offwhite shirt, brown leather apron, elf on left and hooded male patron on right in background, same timber room/fireplace/blue moonlitwindow/mugs. 16:9 landscape, first-person ordinary wanderer across table: one worn brown fingerless gloved hand in foreground places an ivory tile flat on table, elderly opponent studies a small fan of tiles held facing himself and his other hand rests on table. NO reward offering gesture. Show the special red crown2 placed separately near the far edge as an incidental wager, NOT in play or in anyone's fan. Ordinary played tiles on center table use ONLY FOUR approved suits: red crown, green old key with round bow and two teeth, orange flaming torch, black arched barred iron gate. No moon/star/clover/heart/spade/poker suits. Clear game action, natural human hands. Thick irregular ink, simplified2Dcartoon fantasy 2-3shade masses, dimamber/slate lighting exactly match reference. No captions or magicaleffects. Leave lower20% lowdetail for subtitles.",
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-d64bbcc2-757d-4b15-ab75-f2b17a9e6710.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-d64bbcc2-757d-4b15-ab75-f2b17a9e6710.png"
+    },
+    {
+      "key": "st3-record-wide",
+      "refs": [
+        "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public/prologue/st3-keepsake-compare-wide-v1.png"
+      ],
+      "asset": "public/prologue/st3-record-wide-v1.png",
+      "prompt": "Use case: illustration-story. Create a landscape16:9 companion to this exact TURNTALE castle scene a moment LATER: first-person ordinary wanderer now sets the EXACT TWO brown story tile backs (left TWO overlapping gold crowns, right TWO overlapping gold barred arch iron gates) sidebyside flat on stone ledge. He uses TWO naturally positioned worn brown fingerless-gloved hands to open and study the old leather book. Camera looks slightly down at the large OPEN worn book occupying central middle of image, twins remain recognizable smaller in background either side of samebluecastle door with gold iron-gate banners and warmbraziers. On open parchment show a small faded ORANGE FLAMING TORCH sketch and fragmentary unreadable worn strokes, torn missing portions. NO readable text, NO maps/routes/pins, NO numbers, no third or fourth story tile, no keys. Exactly TWO existing keepsakes, readable symbols, both fully on stone ledge beside book. Main emphasis is the OPEN BOOK being examined, not cards held up. Same faces/outfits/stone/castle, thick irregular ink and simple2Dcartoon painted style, mutedindigo/amber. No magic effects. Keep keybook in middle30-65%height and lower20%free for caption.",
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-4b39f2fd-2e7c-4347-a9c4-5bde5230ea6f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-4b39f2fd-2e7c-4347-a9c4-5bde5230ea6f.png"
+    },
+    {
+      "key": "wager-playing-portrait",
+      "refs": [
+        "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-d64bbcc2-757d-4b15-ab75-f2b17a9e6710.png",
+        "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public/prologue/wager-rest-portrait-symbols-v1.png"
+      ],
+      "asset": "public/prologue/wager-playing-portrait-v1.png",
+      "prompt": "Illustration-story, create9:16 PORTRAIT companion to image1's actual ongoing casual tile game. Image1 is definitive ACTION and tile-symbol reference. Image2 supplies same tavern and elderly opponent portrait composition only, do NOT reproduce his reward-offering pose. Same bald whitebearded elder offwhite shirt/brown apron, elfleft/hoodedpatronright in background, exact same room, dimamber candle/coolblue moonlight and handdrawn2Dcartoon thickink simplecelshade style. Elder holds fan of tile backs facing himself in one hand, other hand on table. First-person wanderer's SINGLE fingerlessgloved hand places ordinary flame-torch tile flat onto table. A few ordinary crown,key,iron-gate,torch tiles on table. Separate redcrown2 lies far edge as WAGER, never heldoffered or played. Exactly same four suit icons asimage1, no moon/clover/star/pokersuits. Main action and table tiles in middle35-65%height so captionlower20% does not obscure them. No title/text/magicaleffects. True portrait composition, not stretched landscape.",
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-73a96505-fbc4-4962-a77f-4b9291bcaaad.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-73a96505-fbc4-4962-a77f-4b9291bcaaad.png"
+    },
+    {
+      "key": "st3-record-portrait",
+      "refs": [
+        "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-4b39f2fd-2e7c-4347-a9c4-5bde5230ea6f.png",
+        "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public/prologue/st3-keepsake-compare-portrait-v1.png"
+      ],
+      "asset": "public/prologue/st3-record-portrait-v1.png",
+      "prompt": "Illustration-story. Create true9:16 PORTRAIT companion toimage1's OPEN ancient recordbook scene. Image1 definitive ACTION/book/cards/style;image2 canonical same castle and twin brothers portrait proportions. Same first-person wanderer TWO natural fingerlessgloved hands open and study worn leatherbook on stoneledge. OPENBOOK middle35-65%height with fadedORANGE flamingTORCH sketch and unreadable damagedstrokes on tornpages. EXACTLY TWO existing brown storytiles lieFLATsidebyside on ledge besidebook: twooverlappinggoldCROWNS and twooverlappinggoldIRON GATES. Keep bothbackswhole and legible, no handheldtiles/no extra cards. Same smallertwins with emptyhands, darkcoatsgreenbrooches, bluecastle arch andgoldiron-gate banners/warmbraziers in background. Handdrawn2Dcartoon thickirregularink, restrainedamber/slate simplecelshades. No readabletext/numbers/map/routes/locationpins/keys or magic. Keep importantbookartabove bottom20%subtitles and headroom top12%HUD.",
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-d0cbb78e-c41b-4a9b-8bb0-e373bb1f2c38.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-d0cbb78e-c41b-4a9b-8bb0-e373bb1f2c38.png"
+    },
+    {
+      "key": "square-poko-wide",
+      "refs": [
+        "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public/prologue/square-poko-wide-night-v4-iron-v1.png"
+      ],
+      "asset": "public/prologue/square-poko-wide-night-symbols-v5.png",
+      "prompt": "Use case: precise-object-edit. Edit ONLY THE PRINTED SUIT SYMBOLS ON ALL IVORY GAME TILES of this exact landscape TURNTALE painting. Every visible tile must use one of current4suits: a RED simple3point CROWN, a GREEN old KEY with circularbow andtwo teeth, an ORANGE flaming TORCH, or a BLACK pointed-arch barred IRON GATE with centerdivider, horizontallatchbar. REPLACE every crescentMOON -> BLACK IRON GATE; every CLOVER/STAR -> GREEN KEY; every SUN -> ORANGE flaming TORCH; ambiguous redcross/oldmark -> RED CROWN. Preserve all existing printed NUMBERS exactly, all tile positions/sizes, hands, faces, expressions/poses, foxPoko, womanMila, hoodedbackpacker, table/coinbag/mug, snowycastlemarket/nightmoonSKY, correctgoldiron-gate BANNERS. The MOON IN THE SKY MUST STAY, change ONLY tilefaces. Do not introduce stars/clovers/hearts/spades or nonsuit shapes on anytile. Keep same16:9 landscapecomposition, exact original2Dhanddrawncartoon style/ink/light/colors everywhere except tiny tileface prints. No newtext or extraobjects.",
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-b6bcf961-b71e-4a40-bdab-b1a16f97d943.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-b6bcf961-b71e-4a40-bdab-b1a16f97d943.png"
+    },
+    {
+      "key": "square-mila-wide",
+      "refs": [
+        "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public/prologue/square-mila-wide-night-v4-iron-v1.png"
+      ],
+      "asset": "public/prologue/square-mila-wide-night-symbols-v5.png",
+      "prompt": "Use case: precise-object-edit. Edit ONLY THE PRINTED SUIT SYMBOLS ON ALL IVORY GAME TILES of this exact landscape TURNTALE painting. Every visible tile must use one of current4suits: a RED simple3point CROWN, a GREEN old KEY with circularbow andtwo teeth, an ORANGE flaming TORCH, or a BLACK pointed-arch barred IRON GATE with centerdivider, horizontallatchbar. REPLACE every crescentMOON -> BLACK IRON GATE; every CLOVER/STAR -> GREEN KEY; every SUN -> ORANGE flaming TORCH; ambiguous redcross/oldmark -> RED CROWN. Preserve all existing printed NUMBERS exactly, all tile positions/sizes, hands, faces, expressions/poses, foxPoko, womanMila, hoodedbackpacker, table/coinbag/mug, snowycastlemarket/nightmoonSKY, correctgoldiron-gate BANNERS. The MOON IN THE SKY MUST STAY, change ONLY tilefaces. Do not introduce stars/clovers/hearts/spades or nonsuit shapes on anytile. Keep same16:9 landscapecomposition, exact original2Dhanddrawncartoon style/ink/light/colors everywhere except tiny tileface prints. No newtext or extraobjects.",
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-65cdb370-dc1f-4ee8-a516-12e2f7953737.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-65cdb370-dc1f-4ee8-a516-12e2f7953737.png"
+    },
+    {
+      "key": "square-poko-portrait",
+      "refs": [
+        "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public/prologue/square-poko-portrait-night-v4-iron-v1.png",
+        "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-b6bcf961-b71e-4a40-bdab-b1a16f97d943.png"
+      ],
+      "asset": "public/prologue/square-poko-portrait-night-symbols-v5.png",
+      "prompt": "Use case: precise-object-edit. Image1 is EXACT PORTRAIT EDIT TARGET, image2 shows corrected suiticons only. Onimage1 change ONLY printed SUITMARKS on ALL ivory playingtiles, includingevery heldtile and small flat/stacktop tile. Replace each crescentMOON with BLACK pointedarch barred IRONGATE, each STAR/CLOVER with GREEN oldKEY(roundbow2teeth), each SUN with ORANGE flamingTORCH, oldredcross/unidentifiablemark with RED simple3pointCROWN. Keep existing NUMBERS EXACTLY. Never introduce moons/stars/clovers/hearts/pokersuits on tiles. Keep actual MOON IN SKY UNCHANGED. Preserve everything else pixel-close: portrait9:16 framing, foxPoko and womanMila faces/clothes/expressions/handposes, hoodedbackpacker, tablemugcoinbag, nightlightsnowmarket/iron-gatebanners/architecture. Samehanddrawn2Dcartoon ink/celshade rendering. Do NOT useimage2 landscape framing. No newtext/objects.",
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-4a5b3aca-2b59-459f-9404-56c9a350ead2.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-4a5b3aca-2b59-459f-9404-56c9a350ead2.png"
+    },
+    {
+      "key": "square-mila-portrait",
+      "refs": [
+        "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public/prologue/square-mila-portrait-night-v4-iron-v1.png",
+        "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-65cdb370-dc1f-4ee8-a516-12e2f7953737.png"
+      ],
+      "asset": "public/prologue/square-mila-portrait-night-symbols-v5.png",
+      "prompt": "Use case: precise-object-edit. Image1 is EXACT PORTRAIT EDIT TARGET, image2 shows corrected suiticons only. Onimage1 change ONLY printed SUITMARKS on ALL ivory playingtiles, includingevery heldtile and small flat/stacktop tile. Replace each crescentMOON with BLACK pointedarch barred IRONGATE, each STAR/CLOVER with GREEN oldKEY(roundbow2teeth), each SUN with ORANGE flamingTORCH, oldredcross/unidentifiablemark with RED simple3pointCROWN. Keep existing NUMBERS EXACTLY. Never introduce moons/stars/clovers/hearts/pokersuits on tiles. Keep actual MOON IN SKY UNCHANGED. Preserve everything else pixel-close: portrait9:16 framing, foxPoko and womanMila faces/clothes/expressions/handposes, hoodedbackpacker, tablemugcoinbag, nightlightsnowmarket/iron-gatebanners/architecture. Samehanddrawn2Dcartoon ink/celshade rendering. Do NOT useimage2 landscape framing. No newtext/objects.",
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-4564d8dd-54e4-47e9-a950-f0bc8047ddf7.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-4564d8dd-54e4-47e9-a950-f0bc8047ddf7.png"
+    }
+  ]
+}

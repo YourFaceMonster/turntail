@@ -379,7 +379,7 @@ const ironFrame=(wide:string,tall:string)=>sceneFrame(wide+'-iron-v1',tall+'-iro
 for(const [stage,sequence] of Object.entries(RPG_CONNECTION_SCENES)){
  for(const [phase,cuts] of Object.entries(sequence)){
   const art=stage==='1'?ironFrame('gate-'+phase+'-r61','gate-'+phase+'-portrait-r61'):
-   stage==='2'?ironFrame('square-poko-wide-night-v4','square-poko-portrait-night-v4'):
+   stage==='2'?sceneFrame('square-poko-wide-night-symbols-v5','square-poko-portrait-night-symbols-v5'):
    ironFrame(phase==='before'?'connection-twins-v3':'twins-after-r61',phase==='before'?'twins-before-portrait-r61':'twins-after-portrait-r61');
   for(const cut of cuts){cut.art=art;cut.focus='50% 40%';cut.location=`STAGE ${stage} · ${['','마을 관문','마을 광장','북쪽 성채'][Number(stage)]}`;}
  }
@@ -392,7 +392,7 @@ RPG_CONNECTION_SCENES[1].before[2].poseArt=ironFrame('gate-reply-wide-v1','gate-
 RPG_CONNECTION_SCENES[1].after[1].poseArt=ironFrame('gate-after-reply-wide-v1','gate-after-reply-portrait-v1');
 for(const phase of ['before','after'] as const){
  for(const cut of RPG_CONNECTION_SCENES[2][phase]){
-  if(cut.speaker==='밀라')cut.poseArt=ironFrame('square-mila-wide-night-v4','square-mila-portrait-night-v4');
+  if(cut.speaker==='밀라')cut.poseArt=sceneFrame('square-mila-wide-night-symbols-v5','square-mila-portrait-night-symbols-v5');
  }
 }
 RPG_CONNECTION_SCENES[3].before[2].poseArt=ironFrame('twins-reply-wide-v1','twins-reply-portrait-v1');
@@ -405,6 +405,7 @@ for(const cut of RPG_CONNECTION_SCENES[3].after){
  if(beat===7)cut.keepsakeFace='front';
  if(beat===8)cut.keepsakeFace='back';
  if(beat>=9&&beat<=13){cut.art=sceneFrame('st3-keepsake-compare-wide-v1','st3-keepsake-compare-portrait-v1');cut.focus='50% 50%';}
+ if(beat===11||beat===12){cut.art=sceneFrame('st3-record-wide-v1','st3-record-portrait-v1');cut.focus='50% 50%';}
  if(beat===14){cut.art=sceneFrame('iron-gate-village-map-wide-v3','iron-gate-village-map-portrait-v3');cut.focus='57% 18%';}
 }
 

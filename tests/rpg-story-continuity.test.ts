@@ -27,7 +27,7 @@ test('scene groups partition the full reel without dropping any expanded narrati
 });
 test('short connections preload only their own paintings in the requested orientation',()=>{
  assert.deepEqual(prologueSceneSources(RPG_CONNECTION_SCENES[3].before,true),['/prologue/twins-before-portrait-r61-iron-v1.png','/prologue/twins-reply-portrait-v1-iron-v1.png']);
- assert.deepEqual(prologueSceneSources(RPG_CONNECTION_SCENES[3].after,false),['/prologue/twins-after-r61-iron-v1.png','/prologue/twins-after-reply-wide-v1-iron-v1.png','/prologue/st3-keepsake-handoff-wide-v1.png','/story-cards/iron-gate-two-front-v1.png','/story-cards/iron-gate-two-back-v1.png','/prologue/st3-keepsake-compare-wide-v1.png','/prologue/iron-gate-village-map-wide-v3.png']);
+ assert.deepEqual(prologueSceneSources(RPG_CONNECTION_SCENES[3].after,false),['/prologue/twins-after-r61-iron-v1.png','/prologue/twins-after-reply-wide-v1-iron-v1.png','/prologue/st3-keepsake-handoff-wide-v1.png','/story-cards/iron-gate-two-front-v1.png','/story-cards/iron-gate-two-back-v1.png','/prologue/st3-keepsake-compare-wide-v1.png','/prologue/st3-record-wide-v1.png','/prologue/iron-gate-village-map-wide-v3.png']);
  assert.deepEqual(prologueSceneSources([FIRST_PROLOGUE[0]],true),[]);
 });
 test('dialogue pose drawings change while the camera group stays mounted and both drawings preload',()=>{
