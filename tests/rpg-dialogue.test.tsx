@@ -26,7 +26,7 @@ for(const [scores,outcome] of [[[30,20,10],'win'],[[20,30,10],'second'],[[10,30,
   assert.equal(g.rpgRun!.coins,before.coins);assert.deepEqual(g.rpgRun!.hp,before.hp);assert.deepEqual(g.rpgRun!.consumables,before.items);assert.deepEqual(g.rpgRun!.relics,before.relics);
   assert.equal(activeJourneyMini(g)!.rpgMini!.won,outcome==='win');g=restore(g);assert.ok(markup(g).includes(THIEF_RESULTS[outcome]));leaveJourneyMini(g);
   if(outcome==='win'){
-   g.rpgRun=returnLetterToMor(g.rpgRun!);assert.equal(g.rpgRun!.coins,before.coins+10);assert.equal(g.rpgRun!.journey!.letterQuest!.step,'complete');assert.ok(g.rpgRun!.journey!.rumors.includes('sealed-letter-relic'));assert.throws(()=>returnLetterToMor(g.rpgRun!));assert.deepEqual(morDialogue(g.rpgRun!.journey!.letterQuest),QUEST_DIALOGUE.morComplete);
+   g.rpgRun=returnLetterToMor(g.rpgRun!);assert.equal(g.rpgRun!.coins,before.coins+30);assert.equal(g.rpgRun!.journey!.letterQuest!.step,'complete');assert.ok(g.rpgRun!.journey!.rumors.includes('sealed-letter-relic'));assert.throws(()=>returnLetterToMor(g.rpgRun!));assert.deepEqual(morDialogue(g.rpgRun!.journey!.letterQuest),QUEST_DIALOGUE.morComplete);
   }else if(outcome==='third'){
    assert.equal(g.rpgRun!.journey!.location,'tavern');assert.equal(g.rpgRun!.journey!.letterQuest!.step,'failed');assert.deepEqual(morDialogue(g.rpgRun!.journey!.letterQuest),QUEST_DIALOGUE.morFailed);assert.throws(()=>returnLetterToMor(g.rpgRun!));assert.throws(()=>startLetterQuest(g.rpgRun!));
    g.rpgRun!.journey!.location='market-alley';assert.throws(()=>startLetterDuel(g));g.rpgRun!.journey!.location='tavern';returnJourneyMap(g);assert.equal(journeyNodeState(g.rpgRun!,'letter-alley'),'completed');enterJourneyNode(g,'battle-2');assert.equal(g.rpgRun!.stage,2);

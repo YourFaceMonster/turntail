@@ -25,7 +25,7 @@ test('screen preview uses unchanged RPG rules, while a foreign game and the exis
  const other=createRpgJourneyGame('실제 RPG'),old=JSON.stringify(other);assert.equal(session.owns(other),false);assert.equal(session.update(other),false);assert.equal(JSON.stringify(other),old);
  assert.throws(()=>new RpgPreviewSession(createRpgTestGame('기존 장비'),'one-round'));
 });
-test('one losing hand per stage unlocks the map, tavern and branch, and ends at stage three exactly once',()=>{
+test('one losing hand per stage unlocks the map and tavern, and ends at stage three exactly once',()=>{
  const game=createRpgJourneyGame('빠른 확인'),session=new RpgPreviewSession(game,'one-round');
  for(let stage=1;stage<=3;stage++){
   enterJourneyNode(game,`battle-${stage}` as 'battle-1'|'battle-2'|'battle-3');session.update(game);const coinsBefore=game.rpgRun!.coins;finishHand(game,1);
@@ -34,7 +34,7 @@ test('one losing hand per stage unlocks the map, tavern and branch, and ends at 
   assert.equal(session.update(game),true);const after=JSON.stringify(game);assert.equal(session.update(game),false);assert.equal(JSON.stringify(game),after);
   assert.equal(game.rpgRun!.rounds,stage);assert.equal(game.rpgRun!.phaseOne!.rewardHistory!.length,stage);assert.equal(game.rpgRun!.coins,settledCoins+30,'preview clear rewards once without charging round losses twice');
   if(stage===1){assert.equal(journeyNodeState(game.rpgRun!,'tavern'),'available');enterJourneyNode(game,'tavern');returnJourneyMap(game);}
-  if(stage===2)assert.equal(journeyNodeState(game.rpgRun!,'ruins'),'available');
+  if(stage===2)assert.equal(journeyNodeState(game.rpgRun!,'tavern'),'available');
  }
  assert.equal(game.rpgRun!.stage,3);assert.equal(game.rpgRun!.status,'complete');assert.equal(game.rpgRun!.phaseOne!.clearedStages.length,3);assert.deepEqual(game.rpgRun!.unlocked,[]);
 });

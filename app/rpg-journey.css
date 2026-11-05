@@ -142,7 +142,7 @@
  .journey-map-scene[data-stage] .rpg-map-paint{background-image:linear-gradient(#101c2622,#13242122),url('/prologue/iron-gate-village-map-portrait-v3.png')}
  .map-route-landscape{display:none}.map-route-portrait{display:block}
  .rpg-map-node[data-node='battle-1']{left:50%;top:58%}.rpg-map-node[data-node='tavern']{left:72%;top:40%}.rpg-map-node[data-node='battle-2']{left:52%;top:44%}
- .rpg-map-node[data-node='ruins']{left:28%;top:28%}.rpg-map-node[data-node='forest']{left:81%;top:29%}.rpg-map-node[data-node='battle-3']{left:56%;top:20%}
+ .rpg-map-node[data-node='battle-3']{left:56%;top:20%}
  .map-village-shop{left:31%;top:44%}.rpg-hub-main>picture img{aspect-ratio:auto;height:auto;max-height:32dvh;object-fit:contain}
 }
 
@@ -195,14 +195,14 @@
 }
 .journey-tavern-scene .journey-tavern-stage .journey-tavern-room,.journey-map-scroll .rpg-node-map{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
 .journey-tavern-room .tavern-door{display:none}.journey-tavern-scene .journey-tavern-footer{gap:6px}
-@media(max-aspect-ratio:1/1){.rpg-map-node[data-node='forest']{left:76%}.journey-map-scene .rpg-map-node.node-choice{width:76px}}
+
 .journey-tavern-room .tavern-person strong{position:absolute;left:50%;top:78%;transform:translate(-50%,-50%);white-space:nowrap}
 @media(max-aspect-ratio:1/1){.journey-tavern-room .tavern-fire{left:18%;width:17%}.journey-tavern-room .tavern-serin strong{top:48%}.journey-tavern-room .tavern-mor strong{top:74%}.journey-tavern-room .tavern-pio strong{top:57%}}
 @media(max-aspect-ratio:1/1){
  .journey-map-scroll .rpg-node-map{width:max(100cqw,calc(100cqh * 225 / 376));height:max(100cqh,calc(100cqw * 376 / 225));aspect-ratio:225/376}
  .rpg-map-content{top:0;height:106.382979%}
  .rpg-map-node[data-node='battle-1']{left:50%;top:80%}.rpg-map-node[data-node='tavern']{left:77%;top:52%}.rpg-map-node[data-node='battle-2']{left:50%;top:53%}
- .rpg-map-node[data-node='ruins']{left:28%;top:28%}.rpg-map-node[data-node='forest']{left:76%;top:32%}.rpg-map-node[data-node='battle-3']{left:55%;top:17%}.map-village-shop{left:27%;top:53%}
+ .rpg-map-node[data-node='battle-3']{left:55%;top:17%}.map-village-shop{left:27%;top:53%}
 }
 .journey-tavern-room .tavern-object strong{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap}
 /* Portrait companion to the approved landscape room. */
