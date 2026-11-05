@@ -1,0 +1,89 @@
+{
+  "checkedAt": "2026-11-05T22:35:36.185Z",
+  "site": "https://turntail.yousexybaby.workers.dev",
+  "appVersion": "0.6.71",
+  "sourceCommit": "50134a131d863df9f8c44c2f8708a01dd3953f0e",
+  "workerVersion": "c6f7f139-79be-473b-aee7-386e2ada894e",
+  "homepageStatus": 200,
+  "currentEntry": "_next/static/chunks/index-Be3eZF3H.js",
+  "assertions": {
+    "homepageVersion": true,
+    "currentEntryLoads": true,
+    "homepageUsesCurrentEntry": true,
+    "mutedSvgShade": true,
+    "speakerPinned": true,
+    "measuredWrapping": true,
+    "rewardViewportBounds": true,
+    "moderatePrologue": true,
+    "workerLoads": true
+  },
+  "checks": [
+    {
+      "url": "/vinext-client-entry-manifest.json",
+      "status": 200,
+      "sha256": "f96745246449daaa78877c2b4c1b2711c1080950ea65dff13931c853c0823cf9",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/app-route-prefetch-policy-CjkZzQzp.js",
+      "status": 200,
+      "sha256": "c4e9247a050a1943b4e5b690b01c526c8465701bf3b37debc7ea458695f460ec",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/index-Be3eZF3H.js",
+      "status": 200,
+      "sha256": "248bc91a7a5d6563a47c2783b955b33374c11a108ed4a3012442911137b92bbc",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/index.DM6vuqwL.css",
+      "status": 200,
+      "sha256": "2aea84acfe717f4d51b02f38524315061995b416909d0fb276604557df38d26b",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/page-zF4NNsw7.js",
+      "status": 200,
+      "sha256": "dfdab3dc13f3605a0ea24b6a2f4e63b264b21e89f1f641e5f4ccfdda2ceb3a19",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/page-B108zZ7d.js",
+      "status": 200,
+      "sha256": "8f679cb8b6a550b74d4b150dbec30e29bccbeead66ab66d6f4536f2dad8b8d40",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/rpg-connection-scenes-BLGiE-9y.js",
+      "status": 200,
+      "sha256": "949555b6ea7a9e906f455ba52cfa77dfbd25b6e5296bbd9c49734bb23db61e8f",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/layout-segment-context-CwBkWSQO.js",
+      "status": 200,
+      "sha256": "6c4ac810f39fa449ff14fe2201b3d27ca29b55f2a2ad6b9e029a5417f5ec97ba",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/page.qKz-35TA.css",
+      "status": 200,
+      "sha256": "523a2d494e35fbdb8aad57e34650defcc6eaff8de6f48c0e15766ba84d67008c",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/page-BhLoePaJ.js",
+      "status": 200,
+      "sha256": "56036227401b45ef9f4c33e11edd1384ddbb1c3d6e6b3e8c283485eb00770298",
+      "match": true
+    },
+    {
+      "url": "/_next/static/local-bot-worker-DwJe0FDx.js",
+      "status": 200,
+      "sha256": "a5252e43a4f73685c45d02a308a0e287aa3057217c95c0159ad94680aff188d5",
+      "match": true
+    }
+  ],
+  "limits": "HTTP and public asset checks only; no Android device, Layer borders or actual reward-dialogue layout verification."
+}

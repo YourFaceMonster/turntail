@@ -23,4 +23,10 @@
 
 ## 게시
 
-GitHub main push 및 Cloudflare 운영 배포 진행 중. 이후 별도 빌드·배포 요청 없는 수정은 로컬만 저장하며 다음 변경 배포 버전은0.6.72부터 진행한다.
+소스50134a131d863df9f8c44c2f8708a01dd3953f0e를 GitHub main에 push하고 Cloudflare Worker c6f7f139-79be-473b-aee7-386e2ada894e 운영 배포 완료.
+
+이번 공개 홈페이지 HTTP200·0.6.71 표시, 현재 진입JS/봇Worker 로드 및 공개JS·CSS·manifest·Worker 총11개 파일 SHA-256이 로컬 최종 빌드와 모두 일치했다. SVG 회색 면·화자 고정·실측 줄바꿈·보상 viewport 경계·중간 분량 프롤로그 코드 반영을 공개 파일에서 확인했다. 상세 deployment-0.6.71-complete-2026-11-06.json. 배포 로그 ../../artifacts/release-0.6.71-complete-2026-11-06-deploy.log.
+
+이 확인은 실제 Android 화면·합성 레이어·글리치 소멸·보상창 하단의 시각 검증을 의미하지 않는다.
+
+사이트 https://turntail.yousexybaby.workers.dev. 이후 별도 빌드·배포 요청 없는 수정은 로컬만 저장하며 다음 변경 배포 버전은0.6.72부터 진행한다.
