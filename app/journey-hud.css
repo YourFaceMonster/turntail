@@ -253,3 +253,11 @@ body>.journey-popup-shade>.journey-popup:has(.village-cart-market){height:min(82
 .journey-hp-block .journey-name-fate .journey-fate-gems>img{width:11px;height:12px;filter:brightness(1.25) saturate(1.15)}
 .journey-hp-block .journey-name-fate .journey-fate-gems>img.is-spent{filter:grayscale(1);opacity:.25}
 .journey-hp-block>.journey-hp-avatar{top:50%!important;bottom:auto;transform:translateY(-50%)!important}
+
+/* Reward borders and final actions remain inside the dynamic viewport, including safe areas. */
+:is(.journey-match-result-shade,.stage-clear-shade,.quest-reward-overlay){--reward-height:calc(100dvh - max(12px,env(safe-area-inset-top)) - max(12px,env(safe-area-inset-bottom)));box-sizing:border-box;padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom))!important;overflow:hidden}
+:is(.journey-match-result-shade,.stage-clear-shade,.quest-reward-overlay)>:is(.journey-mini-result-panel,.rpg-stage-result,.quest-reward-popup){box-sizing:border-box;min-height:0;max-height:min(94dvh,var(--reward-height))!important;max-width:100%;margin:0;overflow-y:auto!important;overflow-x:hidden;overscroll-behavior:contain;scroll-padding-block:12px;flex-shrink:1}
+:is(.journey-mini-result-panel,.rpg-stage-result,.quest-reward-popup)>button:last-child{margin-bottom:2px}
+@media(max-height:500px){.journey-match-result-shade .journey-mini-result-panel{padding:12px 16px!important}.serin-reward-panel .journey-coin-reward{width:64px;height:64px;margin:8px auto}.serin-reward-panel .journey-reward-amount{font-size:32px}.serin-reward-panel>.primary{margin-top:8px}}
+
+main[data-rpg-mini="true"] :is(.own-avatar,.profile-trigger){cursor:default}

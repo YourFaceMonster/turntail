@@ -9,7 +9,7 @@ test('pagination preserves every character and speaker/painting source across lo
   for(const [i,line] of lines.entries())assert.equal(normalize(pages.filter(p=>p.sourceIndex===i).map(p=>p.text).join('')),normalize(line));
   for(const p of pages){assert.ok(p.text.length<=32);assert.ok(p.text.split('\n').reduce((n,line)=>n+Math.ceil(line.length/16),0)<=2);}
  }
- const short=questDialoguePages([SERIN_INVITATION]);assert.ok(short.length>=2);assert.equal(normalize(short.map(p=>p.text).join('')),normalize(SERIN_INVITATION));
+ const short=questDialoguePages([SERIN_INVITATION]);assert.equal(short.length,1);assert.equal(normalize(short.map(p=>p.text).join('')),normalize(SERIN_INVITATION));
 });
 test('long sentences split at words and keep subsequent source identities',()=>{
  const words=Array.from({length:30},(_,i)=>`기억${i}`),lines=[words.join(' ')+'입니다.','마지막 선택.'];

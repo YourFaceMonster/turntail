@@ -119,3 +119,10 @@ body>.journey-popup-shade>.journey-popup:has(.village-market){width:min(780px,ca
 @media(max-height:500px) and (orientation:landscape){.quest-cutscene .quest-dialogue,.quest-cutscene[data-painting] .quest-dialogue{height:160px;min-height:160px;max-height:160px;grid-template-columns:minmax(0,1fr) minmax(220px,.8fr);grid-template-rows:94px 24px}.quest-cutscene .quest-scene-choices{grid-column:2;grid-row:1/3}.quest-cutscene .quest-dialogue-text{grid-row:1}.quest-cutscene .npc-dialogue-details{grid-column:1;grid-row:2}}
 /* Matching adjacent thief frames must use the same camera, with no independent zoom. */
 .quest-cutscene:is([data-painting=alley-thief],[data-painting=alley-thief-spin]) .prologue-camera{animation:none!important;transform:none!important}
+
+/* Keep the reference window; pin the speaker independently from the advancing text. */
+.quest-cutscene .quest-dialogue-speaker{position:absolute;top:11px;left:12px;right:40px;height:15px;margin:0;color:#e4c58d;text-align:left;font:600 11px/15px 'Noto Sans KR',Arial,sans-serif;pointer-events:none}
+.quest-cutscene .quest-dialogue-text{box-sizing:border-box;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;padding:18px 0 0!important;border:0;overflow:visible}
+.quest-cutscene .quest-dialogue-text p,.quest-cutscene[data-painting] .quest-dialogue-text p{width:100%;min-width:0;font-size:18px!important;line-height:1.35!important;text-wrap:wrap;word-break:keep-all;overflow-wrap:anywhere;animation:none}
+.quest-cutscene .quest-dialogue-text p .dialogue-sentence{display:inline!important;text-wrap:wrap!important}
+.quest-cutscene .quest-scene-choices>button{font-size:15.5px!important;line-height:1.2}

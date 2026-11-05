@@ -62,3 +62,6 @@
 @media(max-aspect-ratio:1/1){.prologue-keepsake-preview{width:66vw;height:52dvh;top:43%}}
 .story-card-faces{display:flex;gap:5px;justify-content:center;margin-bottom:5px}
 .story-card-faces img{width:42px;height:62px;object-fit:contain;border-radius:5px;background:#16212a}
+
+/* Authored beats are continuous captions; width, not a character count, wraps them. */
+.rpg-prologue .prologue-cut .prologue-caption p .dialogue-sentence{display:inline;text-wrap:wrap}

@@ -1,0 +1,41 @@
+{
+  "version": "0.6.71",
+  "status": "built-locally-not-published",
+  "checkedAt": "2026-11-05T13:08:13.672Z",
+  "checks": {
+    "version": true,
+    "mutedShade": true,
+    "workerAsset": true,
+    "workerReference": true,
+    "packageVersion": true,
+    "displayVersion": true
+  },
+  "tests": {
+    "passed": 15,
+    "failed": 0,
+    "knownExistingFailures": [
+      "hp-item-mode",
+      "hp-item-battle",
+      "interaction-polish-0650",
+      "stage-ui"
+    ],
+    "knownFailuresRecheckedThisTurn": false
+  },
+  "typecheck": "passed",
+  "build": "pnpm@11.25.0 build: 5 stages passed",
+  "assets": [
+    {
+      "path": "dist\\client\\_next\\static\\local-bot-worker-DwJe0FDx.js",
+      "sha256": "a5252e43a4f73685c45d02a308a0e287aa3057217c95c0159ad94680aff188d5"
+    },
+    {
+      "path": "dist\\client\\_next\\static\\chunks\\page-BHXv1EIw.js",
+      "sha256": "cc9bdbfeb5845bf5a234782ec0a67e2ee252a045bc6226884ced38e22cbfb14e"
+    },
+    {
+      "path": "dist\\client\\_next\\static\\chunks\\rpg-connection-scenes-ChT-HQiZ.js",
+      "sha256": "d7e5db65ec9e3919eeacb29fcfbe1645c5490f8773a4a467ef496a345e7bcde8"
+    }
+  ],
+  "published": false
+}
