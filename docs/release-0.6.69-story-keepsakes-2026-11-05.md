@@ -23,4 +23,10 @@
 
 ## 게시
 
-검증 중. 완료 후 소스 커밋·Worker 버전·공개 해시와 브라우저 검증 결과를 별도 배포 JSON 및 이 문서에 기록한다. 이후 수정의 빌드·배포 권한으로 이어지지 않는다.
+소스 5047c40c2ca7d0377480e18811f5f565394edd16를 GitHub main에 push하고 Cloudflare Worker 1d0fb8fb-ade9-41b3-96d6-62a6be29d281 배포 완료. 공개 홈페이지 HTTP200, 신규 원화·수정 도둑 원화 및 공개 JS/CSS 총16개 파일이 이번 빌드 SHA-256과 일치했다. 상세 deployment-story-keepsakes-2026-11-05.json.
+
+공개 Chrome 저장 없는 테스트에서 ST3 새 후일담 자동 연결 후 스킵·보상 수령·완료 문구·두 이야기 패의 앞뒤4이미지 로드·세로 가로 넘침 없음 확인. 잡화점 소비6종/판매 유물7종(푸른유리는 퀘스트 전용) 및 렌즈10주화 결제1000→990/보유1 확인. 캡처 ../../artifacts/public-story-collection-portrait-2026-11-05.jpg, public-shop-lens-purchase-2026-11-05.jpg. 테스트 종료 후 저장된 게임 없음 유지·viewport 복원. 전체1~3연속 플레이와 실제 모바일 기기/청감은 미검증.
+
+공개 사이트: https://turntail.yousexybaby.workers.dev. 배포 로그 ../../artifacts/story-release-deploy-2026-11-05.log.
+
+ 이후 수정의 빌드·배포 권한으로 이어지지 않는다.

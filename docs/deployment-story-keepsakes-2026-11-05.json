@@ -1,0 +1,131 @@
+{
+  "checkedAt": "2026-11-05T05:48:07.936Z",
+  "site": "https://turntail.yousexybaby.workers.dev",
+  "sourceCommit": "5047c40c2ca7d0377480e18811f5f565394edd16",
+  "workerVersion": "1d0fb8fb-ade9-41b3-96d6-62a6be29d281",
+  "homepageStatus": 200,
+  "checks": [
+    {
+      "url": "/story-cards/iron-gate-two-front-v1.png",
+      "status": 200,
+      "sha256": "eebe926e58c3449d25ddc8b5a9adaaf68f4459d9db229bf9d81bffdc86de6e88",
+      "match": true
+    },
+    {
+      "url": "/story-cards/iron-gate-two-back-v1.png",
+      "status": 200,
+      "sha256": "6d71d4795a1caefe007fc53f683dcbe8e7bab0ac2d089bfd300f567a0364be06",
+      "match": true
+    },
+    {
+      "url": "/prologue/st3-keepsake-handoff-wide-v1.png",
+      "status": 200,
+      "sha256": "b064ff03bee029827a7ce23ac577f7749b40aecd10b97754800fb6b31fcb58b0",
+      "match": true
+    },
+    {
+      "url": "/prologue/st3-keepsake-handoff-portrait-v1.png",
+      "status": 200,
+      "sha256": "c28d7d6ec66922bc4e7c6130dc471e598d6c5bcf5a34f380178c35f6526c18af",
+      "match": true
+    },
+    {
+      "url": "/prologue/st3-keepsake-compare-wide-v1.png",
+      "status": 200,
+      "sha256": "47bf0042a13636c449735818ae6641aeda091c72c5adff1197e70a2da0ffae57",
+      "match": true
+    },
+    {
+      "url": "/prologue/st3-keepsake-compare-portrait-v1.png",
+      "status": 200,
+      "sha256": "4f4bfc415a79c195329b92616986a1f14335da5ab6e3b2215ae4061de9e15fbf",
+      "match": true
+    },
+    {
+      "url": "/quests/alley-thief-spin-wide-v2.png",
+      "status": 200,
+      "sha256": "f5175a7b300c1ede05b238bda37909fa3445d5470ab754118ec8bf0907aa35db",
+      "match": true
+    },
+    {
+      "url": "/quests/alley-thief-spin-portrait-v2.png",
+      "status": 200,
+      "sha256": "48a214f86e2d319ef238283f9fa3fa6f7b009125770a90b2a57722cab436d07b",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/index.BL7XapyO.css",
+      "status": 200,
+      "sha256": "c0490f9a8c803bb2a6f9369aa986bfb2a31238c26f412c32e55a6367071e8a1d",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/page.BeLZ-_Zd.css",
+      "status": 200,
+      "sha256": "c224923dc0f4e6cd9c05badcdc88705c2c7374b52744c6f1742de3ae765ed742",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/index-DsSQeDvv.js",
+      "status": 200,
+      "sha256": "39a32dbb41a72515cb525db91fe3a6499d74fea2c495df13431d17cfb854f3a7",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/rolldown-runtime-C60lm6uB.js",
+      "status": 200,
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/framework-D_rUT4EX.js",
+      "status": 200,
+      "sha256": "939d0fabebb3b2f01753bb866b067d8d3384fb06da19f0e6557609d3b1a9f4f7",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/layout-segment-context-C2jBG1oa.js",
+      "status": 200,
+      "sha256": "ec39f0e880099c2543a7bef48f5c57173430a78caeb7c6f5fa02d020ac722217",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/page-WsWJIGHH.js",
+      "status": 200,
+      "sha256": "416a12462d5a1bbfbb80706586dd306326d3a2b519ae2bf0b6be8fcc4e50bcee",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/rpg-connection-scenes-DBHoIG_P.js",
+      "status": 200,
+      "sha256": "7002c43e65ed2bd9a986fc1249a680738a7751c128fb8489c27217e794395d9f",
+      "match": true
+    }
+  ],
+  "browserVerification": {
+    "checkedAt": "2026-11-05T05:51:05.730Z",
+    "browser": "Chrome",
+    "sizes": [
+      "390x844",
+      "1265x550"
+    ],
+    "mode": "non-saving RPG screen preview",
+    "observations": [
+      "ST3 new epilogue automatically connected before rewards",
+      "ST3 rewards claimed, complete heading and two story keepsakes displayed",
+      "All four collection images loaded, no horizontal overflow",
+      "Demo shop has six consumables and seven sale relics; quest-only blue glass excluded",
+      "Scout lens quote10, confirmed purchase1000->990 and owned count1",
+      "Preview ended, no saved game before/after; viewport reset"
+    ],
+    "screenshots": [
+      "../../artifacts/public-story-collection-portrait-2026-11-05.jpg",
+      "../../artifacts/public-story-collection-2026-11-05.jpg",
+      "../../artifacts/public-shop-lens-purchase-2026-11-05.jpg"
+    ],
+    "limitations": [
+      "No complete stage1-to3 continuous live playthrough",
+      "Full reel real-time unattended playback and physical mobile/audio not verified"
+    ]
+  }
+}
