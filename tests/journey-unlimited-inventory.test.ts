@@ -21,7 +21,7 @@ test('repeat consumables and many unique relics preserve costs, uniqueness and t
  const bad=structuredClone(g);bad.rpgRun!.equipped=bad.rpgRun!.relics.slice(0,4);assert.throws(()=>validateJourneySave(bad));
 });
 test('stage and watchtower rewards add to large inventories without discarding older relics',()=>{
- const g=fresh(),run=g.rpgRun!;run.relics=['cracked-heart','recovery-lantern','wind-sigil','warrior-crest','life-sigil','sun-sigil','crimson-fang'];run.equipped=run.relics.slice(0,3);
+ const g=fresh(),run=g.rpgRun!;run.relics=['cracked-heart','final-knot','second-heart','second-ring','stopped-hourglass','two-sided-coin','gamblers-gloves'];run.equipped=run.relics.slice(0,3);
  run.status='allocation';run.phaseOne!.clear={stage:1,hpBefore:100,baseHeal:0,relicHeal:0,synergyHeal:0,relicId:'mor-quill'};
  const reward=chooseRpgStageReward(run,'relic','cracked-heart');assert.equal(reward.relics.length,8);assert.ok(reward.relics.includes('cracked-heart'));assert.equal(reward.equipped.length,3);
  reward.status='ready';reward.journey!.location='watchtower';reward.journey!.wayfarerHerbGiven=true;

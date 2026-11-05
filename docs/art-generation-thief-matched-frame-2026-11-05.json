@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-05",
+  "tool": "built-in image_gen",
+  "mode": "precise-object-edit",
+  "entries": [
+    {
+      "orientation": "portrait",
+      "input": "public/quests/alley-thief-portrait-v5.png",
+      "output": "public/quests/alley-thief-spin-portrait-v2.png",
+      "generatedSource": "C:/Users/SONG/.codex/generated_images/01a1a6ea-f841-7cd0-b6a0-3147421ec204/exec-79e27ca3-12e0-4d19-84b4-e43ca686160c.png",
+      "dimensions": {
+        "width": 941,
+        "height": 1672
+      },
+      "prompt": "Precise local edit of the supplied portrait game cutscene. Keep EXACT same canvas aspect ratio, camera, framing, character scale, character position, head/face, torso, clothing, legs, boots, tail, LEFT FOREARM RESTING ON CRATE, crate height and size, lantern, all three tile props, all background buildings, flags and every pixel outside the raised hand and envelope region. Do NOT zoom, crop, recompose, move the thief, change style or redraw the scene. Only edit the raised right hand on viewer-left: preserve its wrist and forearm location, adjust fingertips slightly so ONE same small sealed envelope balances spinning on one fingertip, with two thin curved ink motion marks around envelope. The envelope must remain near its ORIGINAL position and ORIGINAL size (do not enlarge or lift it). This is a matched adjacent animation/story frame of the ORIGINAL shot, NOT a new shot. Hand drawn 2D cartoon fantasy, preserve existing ink lines, palette and brightness. Output same portrait dimensions as input, complete unchanged scene around tiny edited hand/envelope region."
+    },
+    {
+      "orientation": "wide",
+      "input": "public/quests/alley-thief-wide-v4.png",
+      "output": "public/quests/alley-thief-spin-wide-v2.png",
+      "generatedSource": "C:/Users/SONG/.codex/generated_images/01a1a6ea-f841-7cd0-b6a0-3147421ec204/exec-be166233-30c0-46f9-8adb-7a53296c1a59.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "prompt": "Precise local edit of supplied LANDSCAPE cutscene; preserve EXACT wide canvas aspect ratio and camera. This must be the SAME shot, all positions identical, not a new scene. Keep thief exact size/position/head/expression/torso/legs/boots/tail, crate exact size/height, resting arm, all props, tiles, lantern, buildings, flags, sky and every region unchanged except raised hand holding envelope on viewer-left. Only slightly adjust fingertips, keeping wrist and forearm fixed, to balance the SAME SMALL sealed envelope spinning on one fingertip. Keep envelope its original size and near ORIGINAL coordinates. Add two tiny thin curved ink motion lines near it. Do NOT zoom in, crop, reframe, enlarge character/envelope, alter scene brightness or generate a new composition. Exact same existing hand drawn 2D cartoon style and colors. Return unchanged surrounding shot with only hand/envelope local edit."
+    }
+  ]
+}

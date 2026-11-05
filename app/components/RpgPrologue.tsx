@@ -1,4 +1,5 @@
 'use client';
+import {STORY_CARD_ART} from '../../lib/rpg-story-card-art';
 import {questLightAnchor,coverImagePoint} from '../../lib/quest-light-position';
 import {SuitEmblem} from './TileFace';
 import {useEffect,useRef,useState,type CSSProperties} from 'react';
@@ -19,13 +20,14 @@ export function ProloguePicture({cut,duration=cut.duration,hiddenLight=false}:{c
  const observer=new ResizeObserver(align);observer.observe(box);image.addEventListener('load',align);align();return()=>{observer.disconnect();image.removeEventListener('load',align);};
  },[hiddenLight,cut.art?.landscape,cut.art?.portrait]);
  const indoor=['room','table','card'].includes(cut.scene),art=prologueArt(cut);
- return <div className={`prologue-picture scene-${cut.scene}`} data-location={cut.location||undefined} style={{'--scene-duration':`${duration}ms`} as CSSProperties} aria-hidden="true">
+ return <div className={`prologue-picture scene-${cut.scene}`} data-keepsake-face={cut.keepsakeFace} data-location={cut.location||undefined} style={{'--scene-duration':`${duration}ms`} as CSSProperties} aria-hidden="true">
   {art&&<div className="prologue-canvas"><div className="prologue-camera" style={cut.location?{transformOrigin:cut.focus}:undefined}>
    <picture><source media="(max-aspect-ratio:1/1)" srcSet={art.portrait}/><img ref={artImage} style={cut.focus?{objectPosition:cut.focus}:undefined} className="prologue-scene-art" src={art.landscape} alt="" decoding="async"/></picture>{hiddenLight&&light&&<span className="quest-hidden-light" style={light}/> }
   </div></div>}
   {indoor&&<div className="prologue-firelight"/>}
   {['snow','inn'].includes(cut.scene)&&Array.from({length:24},(_,i)=><i key={i} className="prologue-snow" style={{'--x':`${(i*37)%100}%`,'--delay':`${-i*.73}s`,'--drift':`${12+i%5*7}px`} as CSSProperties}/>)}
   <div className="prologue-shade"/>
+  {cut.keepsakeFace&&<img className="prologue-keepsake-preview" src={STORY_CARD_ART['iron-gate-two'][cut.keepsakeFace]} alt=""/>}
  </div>;
 }
 /** Decode first and retain keyed layers so the outgoing painting never restarts its fade. */
@@ -67,9 +69,9 @@ export default function RpgPrologue({enter,context,music=true,sound=true,musicVo
  useEffect(()=>{if(!artReady||!visible||!context||context.state!=='running')return;return prologueAmbience(context,cut,music,musicVolume,sound);},[context,cut,visible,artReady,music,musicVolume,sound]);
  function advance(){if(!artReady)return;const now=performance.now();if(now-lastTap.current<350)return;lastTap.current=now;clock.current!.next();setIndex(clock.current!.index);}
  if(typeof document==='undefined')return null;
- return createPortal(<section ref={root} tabIndex={-1} className={`rpg-prologue ${closing?'is-story-closing':''}`} role="dialog" aria-modal="true" aria-label={label} data-cut={cut.id} data-paused={!visible} onKeyDown={event=>{event.stopPropagation();if(event.key==='Escape'){event.preventDefault();clock.current!.complete();}if(event.target===event.currentTarget&&(event.key===' '||event.key==='Enter')){event.preventDefault();advance();}if(event.key==='Tab'){event.preventDefault();root.current?.querySelector<HTMLButtonElement>('.prologue-skip')?.focus();}}}>
+ return createPortal(<section ref={root} tabIndex={-1} className={`rpg-prologue ${closing?'is-story-closing':''}`} role="dialog" aria-modal="true" aria-label={label} data-cut={cut.id} data-storyboard={cut.storyboard} data-paused={!visible} onKeyDown={event=>{event.stopPropagation();if(event.key==='Escape'){event.preventDefault();clock.current!.complete();}if(event.target===event.currentTarget&&(event.key===' '||event.key==='Enter')){event.preventDefault();advance();}if(event.key==='Tab'){event.preventDefault();root.current?.querySelector<HTMLButtonElement>('.prologue-skip')?.focus();}}}>
   {chrome}
-  {artReady?<div className="prologue-tap-surface" onClick={advance}><div className="prologue-cut" data-scene={cut.scene} style={{'--cut-duration':`${cut.duration}ms`} as CSSProperties}><CrossfadePicture cut={{...cuts[sceneGroup.start],poseArt:cut.poseArt}} duration={sceneGroup.duration}/><div key={cut.id} className="prologue-caption" aria-live="polite">{cut.speaker&&<small>{cut.speaker}</small>}<p><DialogueText text={cut.line}/></p>{cuts===FIRST_PROLOGUE&&cut.scene==='gate'&&<small>시작 유물 · 금이 간 심장</small>}</div></div></div>:<p className="prologue-loading" role="status">이야기를 펼치는 중…</p>}
+  {artReady?<div className="prologue-tap-surface" onClick={advance}><div className="prologue-cut" data-scene={cut.scene} style={{'--cut-duration':`${cut.duration}ms`} as CSSProperties}><CrossfadePicture cut={{...cuts[sceneGroup.start],poseArt:cut.poseArt}} duration={sceneGroup.duration}/><div key={cut.id} className="prologue-caption" aria-live="polite">{cut.speaker&&<small>{cut.speaker}</small>}<p><DialogueText text={cut.line}/></p>{cuts===FIRST_PROLOGUE&&cut.storyboard==='P19'&&<small>시작 유물 · 금이 간 심장</small>}</div></div></div>:<p className="prologue-loading" role="status">이야기를 펼치는 중…</p>}
   <button className="prologue-skip" onClick={()=>clock.current!.complete()}>{skipLabel} <span aria-hidden="true">↗</span></button><span className="prologue-touch-hint">화면을 누르면 다음 장면</span>
   {artReady&&cut.location&&<div className="prologue-location"><small>현재 위치</small><strong>{cut.location}</strong></div>}
  <div className="story-exit-fade" aria-hidden="true"/></section>,document.body);

@@ -1,3 +1,4 @@
+import {DEMO_ENDING} from './rpg-demo-ending.ts';
 import {FIRST_PROLOGUE,type PrologueCut} from './rpg-prologue.ts';
 // Dialogue follows the 2026-11-02 handoff; original prologue assets are preserved.
 export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];after:readonly PrologueCut[]}>={
@@ -369,6 +370,9 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
  }
 };
 
+// Keep the twins' approved response, then connect the two story keepsakes.
+RPG_CONNECTION_SCENES[3].after=[...RPG_CONNECTION_SCENES[3].after.slice(0,5),...DEMO_ENDING];
+
 // Reviewed distinct before/after paintings and dedicated portrait art.
 const sceneFrame=(wide:string,tall:string)=>({landscape:'/prologue/'+wide+'.png',portrait:'/prologue/'+tall+'.png'});
 const ironFrame=(wide:string,tall:string)=>sceneFrame(wide+'-iron-v1',tall+'-iron-v1');
@@ -393,6 +397,16 @@ for(const phase of ['before','after'] as const){
 }
 RPG_CONNECTION_SCENES[3].before[2].poseArt=ironFrame('twins-reply-wide-v1','twins-reply-portrait-v1');
 RPG_CONNECTION_SCENES[3].after[1].poseArt=ironFrame('twins-after-reply-wide-v1','twins-after-reply-portrait-v1');
+
+// Matching story paintings in both orientations; the first five approved replies remain.
+for(const cut of RPG_CONNECTION_SCENES[3].after){
+ const beat=Number(/^ST3_POST_(\d+)/.exec(cut.id)?.[1]);
+ if(beat>=6&&beat<=8){cut.art=sceneFrame('st3-keepsake-handoff-wide-v1','st3-keepsake-handoff-portrait-v1');cut.focus='50% 45%';}
+ if(beat===7)cut.keepsakeFace='front';
+ if(beat===8)cut.keepsakeFace='back';
+ if(beat>=9&&beat<=13){cut.art=sceneFrame('st3-keepsake-compare-wide-v1','st3-keepsake-compare-portrait-v1');cut.focus='50% 50%';}
+ if(beat===14){cut.art=sceneFrame('iron-gate-village-map-wide-v3','iron-gate-village-map-portrait-v3');cut.focus='57% 18%';}
+}
 
 /** Viewing only: no combat, save, settlement or reward callbacks are part of this reel. */
 export const RPG_STORY_REEL:readonly PrologueCut[]=[...FIRST_PROLOGUE,...[1,2,3].flatMap(stage=>[...RPG_CONNECTION_SCENES[stage].before,...RPG_CONNECTION_SCENES[stage].after])];

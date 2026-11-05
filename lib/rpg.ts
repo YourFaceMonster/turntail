@@ -1,3 +1,6 @@
+import {isRpgDemo,demoShop} from './rpg-demo-catalog.ts';
+import {emergencyHerbHealing} from './blue-glass.ts';
+import type {StoryCardId} from './rpg-story-cards.ts';
 import type {RpgRoundHealth} from './rpg-round-health';
 import {BLUE_GLASS_ID} from './blue-glass.ts';
 import type {RpgJourneyState} from './rpg-journey.ts';
@@ -11,7 +14,7 @@ export type RpgStatus='playing'|'allocation'|'relic'|'ready'|'complete'|'game-ov
 export type RpgResult={id:string,at:number,players:{count:number,delta:number,total?:number}[]};
 export type RpgReward={stage:number,rank:number,counts:number[],hpAfterSettlement:number[],coins:number,points:number,nextStage:number,offers:string[],retry:boolean,special?:boolean,reason:'clear'|'fate'|'end'};
 export type RpgShop={area:number,stock:{id:string,kind:'relic'|'consumable',price:number,quantity:number}[]};
-export type RpgRun={roundHealth?:RpgRoundHealth,journey?:RpgJourneyState,phaseOne?:RpgPhaseOneState,maxHp?:number,combat?:RpgProfessionCombat,itemGuards?:Record<number,boolean>,tactics?:Record<number,RpgTacticalState>,enemyConsumables?:Record<number,string[]>,protectedCounts?:number[],lastItem?:RpgItemEvent,version:1,id:string,stage:number,status:RpgStatus,hp:number[],fate:number,coins:number,points:number,rounds:number,roundIds:string[],gloveRoundIds:string[],startedAt:number,updatedAt:number,reward:RpgReward|null,relics:string[],equipped:string[],consumables:string[],shops:RpgShop[],scaleUsed:number[],pendingSoup:boolean,pendingBandage:boolean,shield:number,bossCoinPaid:number[],crackedHeartUsed:number[],discovered:string[],unlocked:string[],relicActivations?:RpgRelicActivation[],lastExchange?:RpgExchangeEvent,tacticalRound?:number,tacticalUsed?:number,tacticalTurn?:number,tacticalPeeks?:{round:number,index:number,tile:{id:number,n:number,s:number}}[],tacticalPeek?:{round:number,index:number,tile:{id:number,n:number,s:number}}};
+export type RpgRun={storyCards?:StoryCardId[],roundHealth?:RpgRoundHealth,journey?:RpgJourneyState,phaseOne?:RpgPhaseOneState,maxHp?:number,combat?:RpgProfessionCombat,itemGuards?:Record<number,boolean>,tactics?:Record<number,RpgTacticalState>,enemyConsumables?:Record<number,string[]>,protectedCounts?:number[],lastItem?:RpgItemEvent,version:1,id:string,stage:number,status:RpgStatus,hp:number[],fate:number,coins:number,points:number,rounds:number,roundIds:string[],gloveRoundIds:string[],startedAt:number,updatedAt:number,reward:RpgReward|null,relics:string[],equipped:string[],consumables:string[],shops:RpgShop[],scaleUsed:number[],pendingSoup:boolean,pendingBandage:boolean,shield:number,bossCoinPaid:number[],crackedHeartUsed:number[],discovered:string[],unlocked:string[],relicActivations?:RpgRelicActivation[],lastExchange?:RpgExchangeEvent,tacticalRound?:number,tacticalUsed?:number,tacticalTurn?:number,tacticalPeeks?:{round:number,index:number,tile:{id:number,n:number,s:number}}[],tacticalPeek?:{round:number,index:number,tile:{id:number,n:number,s:number}}};
 export const RPG_BOSSES=[3,6,9,10];
 export const RPG_TEST_ROUNDS=5;
 export const RPG_RELIC_REWARD_STAGES=[1,2,4,5,7,8];
@@ -52,7 +55,7 @@ function catalogShopStock(run:RpgRun,shop:RpgShop):RpgShop{
  const relics=RPG_MARKET_RELICS.map(item=>old.get(item.id)||{id:item.id,kind:'relic' as const,price:item.grade==='legendary'?230:item.grade==='rare'?150:90,quantity:item.id===BLUE_GLASS_ID&&!run.unlocked?.includes(BLUE_GLASS_ID)||run.relics.includes(item.id)||item.id==='second-heart'&&!run.unlocked?.includes('second-heart')||shop.area<4&&['mor-quill','twin-needle-compass','split-mirror'].includes(item.id)?0:1});
  return {...shop,stock:[...consumables,...relics]};
 }
-export function currentRpgShop(run:RpgRun){const shop=(run.shops||[]).find(item=>item.area===rpgArea(run.reward?.nextStage||run.stage));return shop?catalogShopStock(run,shop):undefined;}
+export function currentRpgShop(run:RpgRun){const shop=(run.shops||[]).find(item=>item.area===rpgArea(run.reward?.nextStage||run.stage));return shop?(isRpgDemo(run)?demoShop(run,catalogShopStock(run,shop)):catalogShopStock(run,shop)):undefined;}
 function makeShop(run:RpgRun,area:number,seed:string):RpgShop{
  void seed;
  const shop={area,stock:[] as RpgShop['stock']};
@@ -159,10 +162,11 @@ export function restRpg(run:RpgRun,kind:'light'|'deep'):RpgRun{
 export function useRpgConsumable(run:RpgRun,id:string):RpgRun{
  if(run.status!=='ready')throw Error('이 소모품은 전투 준비 중에 사용해 주세요.');
  if(!run.consumables.includes(id))throw Error('보유하지 않은 소모품이에요.');
- if(id==='red-vial'&&run.hp[0]>=100)throw Error('HP가 이미 가득 찼어요.');
+ const herb=id==='emergency-herb'&&isRpgDemo(run);
+ if((id==='red-vial'||herb)&&run.hp[0]>=100)throw Error('HP가 이미 가득 찼어요.');
  if(id==='moonlight-soup'&&run.pendingSoup)throw Error('달빛 수프 효과가 이미 대기 중이에요.');
  if(id==='guardian-bandage'&&run.pendingBandage)throw Error('붕대 보호가 이미 대기 중이에요.');
- if(!['red-vial','moonlight-soup','guardian-bandage'].includes(id))throw Error('전술 아이템은 카드 승부 중 내 차례에 사용해 주세요.');
+ if(!herb&&!['red-vial','moonlight-soup','guardian-bandage'].includes(id))throw Error('전술 아이템은 카드 승부 중 내 차례에 사용해 주세요.');
  const index=run.consumables.indexOf(id);
- return {...run,hp:id==='red-vial'?[Math.min(100,run.hp[0]+20),run.hp[1],run.hp[2]]:run.hp,pendingSoup:run.pendingSoup||id==='moonlight-soup',pendingBandage:run.pendingBandage||id==='guardian-bandage',consumables:run.consumables.filter((_,i)=>i!==index),updatedAt:Date.now()};
+ return {...run,hp:id==='red-vial'||herb?[Math.min(100,run.hp[0]+(herb?emergencyHerbHealing(run.equipped):20)),run.hp[1],run.hp[2]]:run.hp,pendingSoup:run.pendingSoup||id==='moonlight-soup',pendingBandage:run.pendingBandage||id==='guardian-bandage',consumables:run.consumables.filter((_,i)=>i!==index),updatedAt:Date.now()};
 }

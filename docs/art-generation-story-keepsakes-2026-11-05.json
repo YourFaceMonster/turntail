@@ -1,0 +1,84 @@
+{
+  "date": "2026-11-05",
+  "generator": "image_gen.imagegen",
+  "style": "turntale-cartoon-fantasy",
+  "records": [
+    {
+      "key": "gate-front",
+      "prompt": "Create ONE isolated story keepsake tile FRONT for TURNTALE, transparent background. References: image1 is the approved red crown 2 story tile (material, hand-drawn linework, wear and proportions ONLY); image2 provides the approved iron gate emblem on the castle banners. Draw only a single entire upright rectangular ivory/bone tile with rounded corners, about 2:3 proportions, front face nearly straight-on with a tiny right-side thickness. Match the reference tile's cream face, dark scuffed edges, diagonal small scratches, chipped lower-right corner. Top half has one clearly legible BLACK numeral '2'. Bottom half has one BLACK wrought-iron gate symbol: soft pointed arch outline, central seam, two slim vertical bars and horizontal crossbar with a small central square latch, like banner. Thin clear ink lines, recognizable gate, no thick solid blob. No crown, moon, key, flame, letters or other marks. Whole tile centered and filling 85% image height with small transparent margin. Hand-drawn 2D cartoon fantasy, expressive irregular ink contours, simple 2-3-value shading, restrained rough texture, muted cream/charcoal, no photorealism or glossy 3D. This is a special story item, not a screenshot. No hands, people, castle, table, frame, background, glow or shadow outside tile.",
+      "refs": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-portrait-crown-v1.png",
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/twins-after-r61-iron-v1.png"
+      ],
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-d8cde595-cefc-4286-8943-9f05dfce4e1e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-d8cde595-cefc-4286-8943-9f05dfce4e1e.png",
+      "asset": "public/story-cards/iron-gate-two-front-v1.png"
+    },
+    {
+      "key": "gate-back",
+      "prompt": "Create the BACK of the same single story tile as image1, as a transparent-background isolated asset. Image1 locks the precise upright tile outline, size/proportions, thin side thickness, chipped lower-right corner and edge wear. Image2 is the canonical story-back material and paired-emblem style reference. Same front-on camera, entire tile centered filling85% height. Back surface is dark worn brown with a narrow distressed cream edge. Replace all front content with EXACTLY TWO clearly distinguishable small pointed-arch iron gates, engraved in pale worn brass/ochre, overlapping diagonally as one paired ancient insignia. Each gate has soft pointed arch, central seam, two slim vertical bars, horizontal crossbar and tiny central square latch, matching gate motif image1. Upper-left gate and lower-right gate both remain countable. NO numeral2, crown, sun, moon, key, flame, text or extra insignia. Hand-drawn 2D cartoon fantasy, irregular expressive ink lines, broad simple shaded masses, restrained worn texture. Match approved brown two-crown back's brightness/style, no glow, magical rays, glossy3D or photo. No hands, characters, castle, tabletop, background or outer cast shadow. Transparent background preserved. Make the physical outline/wear match image1, not a different object.",
+      "refs": [
+        "C:/Users/SONG/.codex/generated_images/01a1a6ea-f841-7cd0-b6a0-3147421ec204/exec-d8cde595-cefc-4286-8943-9f05dfce4e1e.png",
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-back-portrait-v1.png"
+      ],
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-e84f5cfd-0802-4635-a579-1ef3db38a543.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-e84f5cfd-0802-4635-a579-1ef3db38a543.png",
+      "asset": "public/story-cards/iron-gate-two-back-v1.png"
+    },
+    {
+      "key": "handoff-wide",
+      "prompt": "Precise scene edit, LANDSCAPE16:9. Image1 is the exact target shot and canonical character/environment reference. Image2 is the exact story tile FRONT to insert, shown much smaller at real hand size. Preserve image1 camera, framing, character scales, twin men's faces/hair/green brooches/black leather clothing, orange braziers, blue night doorway, thin iron-gate banner emblems, hooded ordinary wanderer and rolled backpack in foreground. Only change the left twin's presenting hand/forearm: replace the small sun-marked card he currently holds with the cream worn tile from image2, showing black2 above black pointed-arch gate, and extend it slightly toward the traveler. Add the traveler's single fingerless-leather-gloved receiving hand reaching naturally upward from his existing foreground body, fingertips just approaching tile. This is the moment of a quiet physical handoff after a game, not magic. Tile has correct tiny real-world hand size, no oversized floating card. Keep both twins and foreground traveler in same positions, no zoom, no shot recomposition. Whole scene same muted indigo/amber hand-drawn 2D cartoon fantasy, expressive irregular outlines and simplified shading. No speech bubbles, text overlays, glowing card, magical rays, new people, extra cards or extra limbs. Preserve readable background and lower subtitle space. Output same wide aspect and overall shot as image1.",
+      "refs": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/twins-after-r61-iron-v1.png",
+        "C:/Users/SONG/.codex/generated_images/01a1a6ea-f841-7cd0-b6a0-3147421ec204/exec-d8cde595-cefc-4286-8943-9f05dfce4e1e.png"
+      ],
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-a3633b63-34e8-4e16-a043-209197c88e9f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-a3633b63-34e8-4e16-a043-209197c88e9f.png",
+      "asset": "public/prologue/st3-keepsake-handoff-wide-v1.png"
+    },
+    {
+      "key": "handoff-portrait",
+      "prompt": "Precise local edit of image1, PORTRAIT9:16. Image1 locks portrait camera, entire castle doorway, twin men's faces/hair/black leather coats/green brooches and their full-body positions, traveler hooded back and rolled backpack, warm braziers, blue night opening, iron gate banners. Image2 is the corresponding approved wide handoff action, image3 is exact tile front. Only change left twin's presenting forearm/hand from image1 to extend a small ivory worn story tile toward the traveler: clear BLACK2 above black pointed-arch iron gate, replacing old sun-marked object. Add traveler's one receiving fingerless-leather-gloved hand naturally reaching up from his existing foreground shoulder/body to the tile. Match the wide version's action and tile design while preserving ORIGINAL PORTRAIT framing and character scale, no enlargement/recomposition. The tile is real hand-sized, not oversized. No extra people/limbs/cards, no magic/glow, no text overlay. Keep background architecture/light and the full vertical canvas of image1, preserve subtitle space at bottom. Same hand-drawn2D cartoon fantasy, thick irregular ink contours with simple shading, restrained indigo/slate and local amber light. Not glossy3D/photorealistic. This is same shot plus a quiet physical handoff.",
+      "refs": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/twins-after-portrait-r61-iron-v1.png",
+        "C:/Users/SONG/.codex/generated_images/01a1a6ea-f841-7cd0-b6a0-3147421ec204/exec-a3633b63-34e8-4e16-a043-209197c88e9f.png",
+        "C:/Users/SONG/.codex/generated_images/01a1a6ea-f841-7cd0-b6a0-3147421ec204/exec-d8cde595-cefc-4286-8943-9f05dfce4e1e.png"
+      ],
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-e28f7905-7afa-40c6-8e17-edd62b71ea01.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-e28f7905-7afa-40c6-8e17-edd62b71ea01.png",
+      "asset": "public/prologue/st3-keepsake-handoff-portrait-v1.png"
+    },
+    {
+      "key": "compare-wide-initial",
+      "prompt": "New LANDSCAPE16:9 adjacent story close-up at the SAME castle doorway from image3. Image1 defines canonical first tile BACK: dark brown worn face, chipped cream rim, TWO overlapping gold crowns. Image2 defines exact second tile BACK: same brown worn face, cream rim, TWO overlapping slim pointed-arch iron gates in gold. Show EXACTLY TWO physical hand-sized rectangular tiles side-by-side in the foreground, backs facing viewer, held by the ordinary wanderer's two fingerless brown leather-gloved hands just over an old waist-high stone ledge. LEFT tile has only the paired overlapping crowns from image1; RIGHT tile has only the paired overlapping gates from image2. Both tiles same size/proportions/material, full silhouettes, correct distinct emblems, no numeral2 or other text on backs. Clearly count two crowns and two gates. Tiles occupy central40-65% of width and middle30-65% of height, large enough to read, while hands/wrists naturally support them. In softly simplified background, recognizable same dark stone arch, amber brazier light on left, cool blue night doorway, two distant black-cloaked long-haired twin men with small green brooches from image3. A closed worn record book may rest at far ledge edge, NO readable text, map or magical guide. Bottom20% remains quiet stone/robe for subtitles. Match existing hand-drawn2D cartoon fantasy, bold irregular ink contours, simple2-3-value shading, muted indigo/brown and restrained amber. No photorealistic/glossy3D, no glow/beams, no third/fourth card, no extra fingers or other emblems. Quiet discovery/comparison, not an inventory UI.",
+      "refs": [
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-back-portrait-v1.png",
+        "C:/Users/SONG/.codex/generated_images/01a1a6ea-f841-7cd0-b6a0-3147421ec204/exec-e84f5cfd-0802-4635-a579-1ef3db38a543.png",
+        "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/twins-after-r61-iron-v1.png"
+      ],
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-01e1b217-dcf9-4d99-8bc8-64599fdbd5b8.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-01e1b217-dcf9-4d99-8bc8-64599fdbd5b8.png"
+    },
+    {
+      "key": "compare-wide",
+      "prompt": "Precise tiny cleanup edit ONLY. Preserve this entire landscape comparison image exactly: foreground two tile backs, both hands, crowns/gates, stone ledge, book, castle, twin faces and lighting all unchanged. In the BACKGROUND on viewer-left, the left twin still holds a tiny gray rectangular old card beside his belt/hip (behind the foreground left crown tile). REMOVE that one small background card/rectangle. His hand must simply hang relaxed EMPTY with natural dark leather glove/fingers. Do not add any other object, tile, symbol or hand. There must be exactly two physical cards in the scene: the two large foreground comparison tiles. No reframing, zoom, crop, style or brightness changes. Keep original wide dimensions.",
+      "refs": [
+        "C:/Users/SONG/.codex/generated_images/01a1a6ea-f841-7cd0-b6a0-3147421ec204/exec-01e1b217-dcf9-4d99-8bc8-64599fdbd5b8.png"
+      ],
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-1a202a80-c389-4863-ad12-5aec223badab.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-1a202a80-c389-4863-ad12-5aec223badab.png",
+      "asset": "public/prologue/st3-keepsake-compare-wide-v1.png"
+    },
+    {
+      "key": "compare-portrait",
+      "prompt": "Create the PORTRAIT 9:16 companion to reference1, preserving exactly the same story moment and painted hand-drawn 2D cartoon fantasy look, thick irregular ink contours, simple shaded masses, dark slate blue castle and warm braziers. Reference2 supplies the canonical portrait castle and identical twin brothers in dark long coats with green brooches. First-person ordinary wanderer's TWO natural worn fingerless-gloved hands hold EXACTLY TWO old rectangular tile BACKS beside each other at the center, clearly readable and uncropped: LEFT has TWO overlapping gold crowns exactly as ref1, RIGHT has TWO overlapping gold arched iron gates exactly as ref1. Same brown worn material and cream chipped rims. Keep both whole tile backs visible in central 35-65% height so portrait dialogue UI lower20% does not obscure symbols. Twin brothers stand smaller in background with EMPTY hands, NO other tiles anywhere. Closed old record book on right stone ledge. Tall castle door background, safe headroom. No text, no numbers, no new magical glow, no additional cards. Produce a true portrait composition, not landscape cropped.",
+      "refs": [
+        "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-1a202a80-c389-4863-ad12-5aec223badab.png",
+        "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\twins-after-portrait-r61-iron-v1.png"
+      ],
+      "hint": "Generated images are saved to C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204 as C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-fac6612a-dd0c-4e37-ab0c-cea3af79dc3f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original": "C:\\Users\\SONG\\.codex\\generated_images\\01a1a6ea-f841-7cd0-b6a0-3147421ec204\\exec-fac6612a-dd0c-4e37-ab0c-cea3af79dc3f.png",
+      "asset": "public/prologue/st3-keepsake-compare-portrait-v1.png"
+    }
+  ]
+}

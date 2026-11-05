@@ -1,3 +1,5 @@
+import {isRpgDemo,demoRelicOffers,restoreDemoReward} from './rpg-demo-catalog.ts';
+import {storyCardsForRun} from './rpg-story-cards.ts';
 import {recordRpgRoundHealth} from './rpg-round-health';
 import {journeyAfterReward} from './rpg-journey.ts';
 import {settle,type Game} from './game.ts';
@@ -13,7 +15,7 @@ export const RPG_PHASE_ONE={maxHp:100,duelsPerGauge:3,enemyHp:[[70,70],[75,75],[
 } as const;
 export type RpgStageReward='relic'|'coins'|'heal'|'all';
 export type RpgPhaseOneState={version:1,eliminated:number[],chargedBattles:string[],clearedStages:number[],rewardHistory?:{stage:number,choice:RpgStageReward,relicId?:string,replaced?:string,declined?:boolean}[],
- clear?:{stage:number,hpBefore:number,baseHeal:number,relicHeal:number,synergyHeal:number,relicId:string,chosen?:RpgStageReward,replaced?:string,declined?:boolean}};
+ clear?:{relicOffers?:string[],stage:number,hpBefore:number,baseHeal:number,relicHeal:number,synergyHeal:number,relicId:string,chosen?:RpgStageReward,replaced?:string,declined?:boolean}};
 export function isRpgPhaseOne(game:{hpItemMode?:boolean,rpgTest?:boolean,rpgRun?:{phaseOne?:RpgPhaseOneState}|null}){return !!game.rpgRun?.phaseOne&&!game.hpItemMode&&!game.rpgTest;}
 export function rpgAlive(game:Pick<Game,'rpgRun'|'hpItemMode'|'rpgTest'|'players'>,seat:number){return !isRpgPhaseOne(game)||!!game.players[seat]&&game.rpgRun!.hp[seat]>0;}
 export function nextRpgSeat(game:Pick<Game,'rpgRun'|'hpItemMode'|'rpgTest'|'players'>,seat:number){for(let step=1;step<=game.players.length;step++){const next=(seat+step)%game.players.length;if(rpgAlive(game,next))return next;}return 0;}
@@ -62,15 +64,21 @@ export function settleRpgPhaseOne(run:RpgRun,result:RpgResult):RpgRun{
  const hpBefore=run.hp[0],baseHeal=0;
  const relicHeal=(run.journey?run.equipped:run.relics).includes('recovery-lantern')?Math.min(5,RPG_PHASE_ONE.maxHp-hpBefore-baseHeal):0;
  const synergyHeal=Math.min(rpgSynergies(run).reduce((sum,effect)=>sum+effect.clearHeal,0),RPG_PHASE_ONE.maxHp-hpBefore-baseHeal-relicHeal);
- const relicId=RPG_PHASE_ONE.relicPool.find(id=>!run.relics.includes(id))||'';
- state.clear={stage:run.stage,hpBefore,baseHeal,relicHeal,synergyHeal,relicId};
+ const relicOffers=isRpgDemo(run)?demoRelicOffers(run):undefined;
+ const relicId=relicOffers?relicOffers[0]||'':RPG_PHASE_ONE.relicPool.find(id=>!run.relics.includes(id))||'';
+ state.clear={...(relicOffers?{relicOffers}:{}),stage:run.stage,hpBefore,baseHeal,relicHeal,synergyHeal,relicId};
  const effects=[...(relicHeal?[{relicId:'recovery-lantern',message:`추가 회복 +${relicHeal} HP`}]:[]),...(synergyHeal?[{relicId:'recovery-lantern',message:`${RPG_PHASE_ONE.synergy.name} · 조합 회복 +${synergyHeal} HP`}]:[])];
- return withRelicActivations({...base,phaseOne:state,hp:[hpBefore+baseHeal+relicHeal+synergyHeal,...run.hp.slice(1)],status:'allocation',reward:null},effects,result.at);
+ return withRelicActivations({...base,...(run.journey?{storyCards:storyCardsForRun({...run,phaseOne:state})}:{}),phaseOne:state,hp:[hpBefore+baseHeal+relicHeal+synergyHeal,...run.hp.slice(1)],status:'allocation',reward:null},effects,result.at);
 }
-export function chooseRpgStageReward(run:RpgRun,choice:RpgStageReward,replace?:string,decline=false):RpgRun{
+export function chooseRpgStageReward(run:RpgRun,choice:RpgStageReward,replace?:string,decline=false,selectedRelic?:string):RpgRun{
+ run=structuredClone(run);restoreDemoReward(run);
  const state=run.phaseOne,clear=state?.clear;
  if(!state||!clear||run.status!=='allocation'||clear.chosen)throw Error('선택할 스테이지 보상이 없어요.');
  if(!['relic','coins','heal','all'].includes(choice))throw Error('올바른 스테이지 보상을 확인해 주세요.');
+ if(isRpgDemo(run)&&!decline&&(choice==='all'||choice==='relic')&&clear.relicOffers?.length){
+  if(run.stage===2&&clear.relicOffers.length>1&&!selectedRelic)throw Error('유물 후보 중 하나를 선택해 주세요.');
+  const picked=selectedRelic||clear.relicOffers[0];if(!clear.relicOffers.includes(picked))throw Error('제시된 유물 후보 중에서 선택해 주세요.');clear.relicId=picked;
+ }
  if(run.journey)replace=undefined;
  let relics=[...run.relics],coins=run.coins,hp=[...run.hp];
  if((choice==='relic'||choice==='all'&&!!clear.relicId&&!relics.includes(clear.relicId))&&!decline){

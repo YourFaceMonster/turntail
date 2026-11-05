@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {createElement as h} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
-import {FIRST_PROLOGUE,SECOND_PROLOGUE,PrologueClock,prologueCuts} from '../lib/rpg-prologue.ts';
+import {FIRST_PROLOGUE,PROLOGUE_STORYBOARD,SECOND_PROLOGUE,PrologueClock,prologueCuts} from '../lib/rpg-prologue.ts';
 import {ProloguePicture,StoryTile} from '../app/components/RpgPrologue.tsx';
 import {createRpgJourneyGame,enterJourneyNode} from '../lib/rpg-game.ts';
 import {saveRpgGame,readRpgArchive} from '../lib/rpg-storage.ts';
@@ -10,9 +10,11 @@ import {prologueAmbience} from '../lib/rpg-prologue-audio.ts';
 import {prologueArt,prologueArtSources} from '../lib/rpg-prologue-art.ts';
 import {readFileSync} from 'node:fs';
 
-test('first run follows the ordinary wanderer story in 68 seconds; second run requires both real prerequisites',()=>{
- assert.equal(FIRST_PROLOGUE.reduce((n,c)=>n+c.duration,0),68000);
- assert.deepEqual(FIRST_PROLOGUE.map(c=>c.scene),['dark','snow','inn','room','table','card','card','road','stone','gate']);
+test('approved nineteen-board prologue keeps read time and second-run prerequisites',()=>{
+ assert.ok(FIRST_PROLOGUE.reduce((n,c)=>n+c.duration,0)>68000);
+ assert.equal(PROLOGUE_STORYBOARD.length,19);
+ assert.equal(new Set(FIRST_PROLOGUE.map(c=>c.duration)).size>1,true);
+ assert.deepEqual([...new Set(FIRST_PROLOGUE.map(c=>c.storyboard))],Array.from({length:19},(_,i)=>`P${String(i+1).padStart(2,'0')}`));
  assert.equal(prologueCuts(),FIRST_PROLOGUE);
  assert.equal(prologueCuts({normalEndingCleared:false,handoffSceneReady:true}),FIRST_PROLOGUE);
  assert.equal(prologueCuts({normalEndingCleared:true,handoffSceneReady:false}),FIRST_PROLOGUE);
@@ -51,9 +53,10 @@ test('every visible story beat has finished landscape and portrait paintings, in
   }
   assert.ok(!html.includes('prologue-hand'),'finished paintings replace temporary prop geometry');
  }
- assert.equal(FIRST_PROLOGUE[5].back,true,'the unfamiliar mark line shows the unusual back, not the ordinary crown suit');
- assert.deepEqual(prologueArt(FIRST_PROLOGUE[5]),prologueArt(FIRST_PROLOGUE[6]));
- assert.notDeepEqual(prologueArt({...FIRST_PROLOGUE[5],back:false}),prologueArt(FIRST_PROLOGUE[5]),'crown front and two-crown back remain distinct paintings');
+ const back=FIRST_PROLOGUE.find(c=>c.id==='P06a')!,nextBack=FIRST_PROLOGUE.find(c=>c.id==='P06b')!;
+ assert.equal(back.back,true,'the unfamiliar mark line shows the unusual back, not the ordinary crown suit');
+ assert.deepEqual(prologueArt(back),prologueArt(nextBack));
+ assert.notDeepEqual(prologueArt({...back,back:false}),prologueArt(back),'crown front and two-crown back remain distinct paintings');
  assert.equal(prologueArtSources(true).length,9);assert.equal(prologueArtSources(false).length,9);
  const tile=renderToStaticMarkup(h(StoryTile,{back:true}));assert.ok(tile.includes('is-back'));assert.ok(tile.includes('prologue-tile-scratch'));assert.ok(tile.includes('>2<'));
 });
@@ -62,7 +65,7 @@ test('muting both buses creates no sources; music-only and effects-only stay ind
  const param=()=>({value:0,setValueAtTime(){},linearRampToValueAtTime(){},exponentialRampToValueAtTime(){}});
  const node=()=>({gain:param(),frequency:param(),connect(){},disconnect(){disconnected++;},start(){},stop(){stopped++;}});
  const ctx={sampleRate:100,currentTime:0,destination:{},createGain:node,createOscillator:()=>{created++;return node();},createBufferSource:()=>{created++;return node();},createBiquadFilter:node,createBuffer:()=>({getChannelData:()=>new Float32Array(300)})} as unknown as AudioContext;
- const cut=FIRST_PROLOGUE[3];prologueAmbience(ctx,cut,false,0,false)();assert.equal(created,0);
+ const cut=FIRST_PROLOGUE.find(c=>c.scene==='room')!;prologueAmbience(ctx,cut,false,0,false)();assert.equal(created,0);
  const musicStop=prologueAmbience(ctx,cut,true,40,false);assert.ok(created>0);musicStop();assert.ok(stopped>0);assert.ok(disconnected>0);
  const prior=created,stop=prologueAmbience(ctx,cut,false,40,true);assert.equal(created-prior,1);stop();stop();
  assert.doesNotThrow(()=>prologueAmbience({createBuffer(){throw Error('audio blocked');}} as unknown as AudioContext,cut,true,40)());

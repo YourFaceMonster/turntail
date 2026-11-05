@@ -1,3 +1,4 @@
+import {STORY_CARD_ART} from './rpg-story-card-art.ts';
 import type {PrologueCut} from './rpg-prologue.ts';
 
 const frame=(landscape:string,portrait:string)=>({landscape:`/prologue/${landscape}.png`,portrait:`/prologue/${portrait}.png`});
@@ -22,12 +23,12 @@ export function prologueArtSources(portrait:boolean){
  return [...new Set(Object.values(PROLOGUE_ART).map(frame=>portrait?frame.portrait:frame.landscape))];
 }
 export function prologueSceneSources(cuts:readonly PrologueCut[],portrait:boolean){
- return [...new Set(cuts.flatMap(cut=>{const art=prologueArt(cut);return art?[portrait?art.portrait:art.landscape]:[];}))];
+ return [...new Set(cuts.flatMap(cut=>{const art=prologueArt(cut);return [...(art?[portrait?art.portrait:art.landscape]:[]),...(cut.keepsakeFace?[STORY_CARD_ART['iron-gate-two'][cut.keepsakeFace]]:[])];}))];
 }
 
 /** Consecutive captions over one painting share a single mounted picture and camera. */
 export function prologueSceneGroup(cuts:readonly PrologueCut[],index:number){
- const identity=(cut:PrologueCut)=>{const art=prologueArt({...cut,poseArt:undefined});return art?JSON.stringify([art.landscape,art.portrait,cut.focus||'']):'dark';};
+ const identity=(cut:PrologueCut)=>{const art=prologueArt({...cut,poseArt:undefined});return art?JSON.stringify([art.landscape,art.portrait,cut.focus||'',cut.keepsakeFace||'']):'dark';};
  if(!cuts[index])throw Error('이야기 장면을 찾을 수 없어요.');
  const visual=identity(cuts[index]);let start=index,end=index;
  while(start>0&&identity(cuts[start-1])===visual)start--;
@@ -35,7 +36,7 @@ export function prologueSceneGroup(cuts:readonly PrologueCut[],index:number){
  return {key:`${start}:${visual}`,start,end,duration:cuts.slice(start,end+1).reduce((sum,cut)=>sum+cut.duration,0)};
 }
 
-export function storyPictureKey(cut:PrologueCut){const art=prologueArt(cut);return JSON.stringify([cut.scene,art?.landscape,art?.portrait,cut.focus||'']);}
+export function storyPictureKey(cut:PrologueCut){const art=prologueArt(cut);return JSON.stringify([cut.scene,art?.landscape,art?.portrait,cut.focus||'',cut.keepsakeFace||'']);}
 function storyPlace(cut:PrologueCut){
  if(cut.location)return cut.location;
  if(cut.id.startsWith('quest-'))return cut.id;

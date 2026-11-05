@@ -1,3 +1,5 @@
+import {restoreDemoReward} from './rpg-demo-catalog.ts';
+import {restoreStoryCards,ST3_STORY_KEY} from './rpg-story-cards.ts';
 import {letterDuelOutcome} from './rpg-dialogue.ts';
 import {BLUE_GLASS_ID} from './blue-glass.ts';
 import {player,room,start,uid,type Game} from './game.ts';
@@ -26,7 +28,7 @@ export const JOURNEY_NODES:{id:JourneyNode,name:string,x:number,y:number,kind:'b
 ];
 export function initRpgJourney(game:Game){
  const run=game.rpgRun;if(!run?.phaseOne||game.hpItemMode||game.rpgTest)throw Error('새 RPG 여정에서 시작해 주세요.');
- run.fate=3;run.journey={version:1,livesVersion:1,location:'map',currentNode:'battle-1',startedStages:[],completedNodes:[],rumors:[],tavernRewardPaid:false};
+ run.storyCards=['crown-two'];run.fate=3;run.journey={version:1,livesVersion:1,location:'map',currentNode:'battle-1',startedStages:[],completedNodes:[],rumors:[],tavernRewardPaid:false};
  game.phase='ended';game.turnDeadline=0;
 }
 export function journeyNodeState(run:RpgRun,id:JourneyNode):'available'|'completed'|'locked'|'closed'{
@@ -83,6 +85,7 @@ export function chooseVillageRequestReward(run:RpgRun,reward:unknown):RpgRun{
  else hp[0]=Math.min(100,hp[0]+JOURNEY_TRIAL.villageRequestHeal);
  return {...run,hp,coins,journey:{...j,villageRequestReward:reward},updatedAt:Date.now()};
 }
+export function assertJourneyPreparation(run:RpgRun){if(!run.journey||run.status!=='ready'||['battle','mini-game'].includes(run.journey.location))throw Error('전투 밖 준비 구간에서 사용할 수 있어요.');}
 export function assertJourneyShop(run:RpgRun){if(!run.journey||run.journey.location!=='map'||run.status!=='ready')throw Error('마을 지도의 잡화점에서 구매할 수 있어요.');}
 export function hearJourneyRumor(run:RpgRun):RpgRun{assertJourneyTavern(run);return {...run,journey:{...run.journey!,rumors:[...new Set([...run.journey!.rumors,JOURNEY_RUMOR.id])]},updatedAt:Date.now()};}
 export function startLetterQuest(run:RpgRun):RpgRun{
@@ -176,9 +179,9 @@ export function leaveJourneyMini(game:Game){const {run,j}=journeyGame(game);if(j
 export function journeyDisplayGame(game:Game){return activeJourneyMini(game)||game;}
 /** Reject unsupported/corrupt new journey data without rewriting the original storage. */
 export function validateJourneySave(game:Game){
- const run=game.rpgRun,j=run?.journey;if(!j)return;
+ const run=game.rpgRun,j=run?.journey;if(run){restoreStoryCards(run);restoreDemoReward(run);}if(!j)return;
  const nodes=new Set<JourneyNode>([...JOURNEY_NODES.map(node=>node.id),'ruins','forest','town-event']),unique=(items:unknown)=>Array.isArray(items)&&new Set(items).size===items.length;
- if(j.seenScenes!==undefined&&(!Array.isArray(j.seenScenes)||!j.seenScenes.every(id=>typeof id==='string'&&/^ST[123]_POST$/.test(id))))throw Error('이야기 감상 기록의 형식이 올바르지 않아요.');
+ if(j.seenScenes!==undefined&&(!Array.isArray(j.seenScenes)||!j.seenScenes.every(id=>typeof id==='string'&&(/^ST[123]_POST$/.test(id)||id===ST3_STORY_KEY))))throw Error('이야기 감상 기록의 형식이 올바르지 않아요.');
  const invalid=()=>{throw Error('탐험 여정의 저장 형식이 올바르지 않거나 지원하지 않는 버전이에요. 기존 데이터는 보존했어요.');};
  if(!unique(run.relics)||!unique(run.equipped)||run.equipped.length>3||run.equipped.some(id=>!run.relics.includes(id))||!Array.isArray(run.consumables))invalid();
  if(j.livesVersion===undefined){if(run.fate===0&&!['game-over','complete','abandoned'].includes(run.status))run.fate=3;j.livesVersion=1;}if(j.livesVersion!==1||!Number.isInteger(run.fate)||run.fate<0||run.fate>3||j.retryStage!==undefined&&(!Number.isInteger(j.retryStage)||j.retryStage!==run.stage||j.location!=='map'||run.status!=='playing'))invalid();

@@ -49,3 +49,16 @@
 @media(prefers-reduced-motion:reduce){.story-painting-stack>.story-painting-in{animation:none!important}.story-painting-out{display:none}}
 
 .rpg-prologue .prologue-cut .prologue-caption p .dialogue-sentence{display:block;text-wrap:balance;word-break:keep-all;overflow-wrap:break-word}
+
+/* Approved opening is a centered sentence on black, in either orientation. */
+.rpg-prologue[data-cut=P01] .prologue-picture,.rpg-prologue[data-cut=P01] .story-painting-stack{background:#000!important}
+.rpg-prologue[data-cut=P01] .prologue-cut .prologue-caption{top:50%!important;bottom:auto!important;left:50%!important;transform:translate(-50%,-50%)!important;height:auto!important;min-height:0!important;padding:0 12px!important;background:transparent!important;animation:story-caption-in 1.2s ease-out both}
+.rpg-prologue[data-storyboard=P18] .prologue-cut .prologue-caption p{font-size:18px;line-height:1.6}
+.story-card-collection{margin:14px 0;padding:10px 0;border-top:1px solid #b6a07855;text-align:left}.story-card-collection h4{margin:0 0 5px;font-size:13px;color:#e5cf9d}.story-card-collection>p{font-size:10px!important;margin:0 0 7px!important;color:#bcb29f}.story-card-collection ul{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:6px}.story-card-collection li{padding:6px 9px;border:1px solid #b6a07844;border-radius:4px;background:#08080866}.story-card-collection li>strong,.story-card-collection li>small{display:block}.story-card-collection strong{font-size:12px;color:#f2dfb5}.story-card-collection small{font-size:10px;margin-top:3px;color:#c5bca9}
+
+/* Story-only keepsake closeups retain the original handoff location. */
+.prologue-picture[data-keepsake-face] .prologue-camera{filter:blur(3px) brightness(.42)}
+.prologue-keepsake-preview{position:absolute;z-index:3;left:50%;top:43%;transform:translate(-50%,-50%);width:min(42vw,300px);height:60dvh;object-fit:contain;filter:drop-shadow(0 12px 22px #0009)}
+@media(max-aspect-ratio:1/1){.prologue-keepsake-preview{width:66vw;height:52dvh;top:43%}}
+.story-card-faces{display:flex;gap:5px;justify-content:center;margin-bottom:5px}
+.story-card-faces img{width:42px;height:62px;object-fit:contain;border-radius:5px;background:#16212a}

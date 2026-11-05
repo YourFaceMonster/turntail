@@ -23,7 +23,7 @@ test('thief introduction and replay show the spinning letter for every narrator 
   for(const page of pages)assert.equal(element.props.paintings[Math.min(page.sourceIndex,1)],page.sourceIndex===0?'alley-thief-spin':'alley-thief');
  }
  assert.ok(render(live).includes('data-painting="alley-thief-spin"'));
- assert.ok(render(replay).includes('alley-thief-spin-wide-v1.png'));
+ assert.ok(render(replay).includes('alley-thief-spin-wide-v2.png'));
 });
 test('traveler before and after states use their revised responsive artwork without changing quest state',()=>{
  const game=createRpgJourneyGame('여행자 확인'),run=game.rpgRun!;

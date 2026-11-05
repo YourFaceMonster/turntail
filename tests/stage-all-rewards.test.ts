@@ -10,7 +10,7 @@ test('each stage grants relic, coins and healing together once, including save/r
   enterJourneyNode(game,`battle-${stage}` as 'battle-1'|'battle-2'|'battle-3');
   game.rpgRun!.hp=[40,0,0];reconcileRpgEliminations(game);
   const before=structuredClone(game.rpgRun!),id=before.phaseOne!.clear!.relicId;
-  game.rpgRun=chooseRpgStageReward(before,'all');
+  game.rpgRun=chooseRpgStageReward(before,'all',undefined,false,before.phaseOne!.clear!.relicOffers?.[0]);
   assert.equal(game.rpgRun.coins,before.coins+RPG_PHASE_ONE.rewardCoins);
   assert.equal(game.rpgRun.hp[0],before.hp[0]+30);
   assert.ok(game.rpgRun.relics.includes(id));assert.ok(before.relics.every(x=>game.rpgRun!.relics.includes(x)));
@@ -20,7 +20,7 @@ test('each stage grants relic, coins and healing together once, including save/r
   const data=new Map<string,string>(),store={getItem:(k:string)=>data.get(k)||null,setItem:(k:string,v:string)=>{data.set(k,v);}};
   saveRpgGame(store,game);const resumed=readRpgArchive(store).active;
   if(resumed)assert.throws(()=>chooseRpgStageReward(resumed.rpgRun!,'all'));
-  assert.throws(()=>chooseRpgStageReward(game.rpgRun!,'all'));
+  assert.throws(()=>chooseRpgStageReward(game.rpgRun!,'all',undefined,false,game.rpgRun!.phaseOne!.clear!.relicOffers?.[0]));
   assert.equal(game.rpgRun.status,stage===3?'complete':'ready');
  }
 });

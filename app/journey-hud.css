@@ -185,3 +185,64 @@ body:has(.journey-scene-shade) .quest-cutscene .quest-dialogue{bottom:max(76px,c
 .journey-mini-standings .single-rank-standings .result-name-portrait>:is(img,span){width:30px!important;height:34px!important}
 .journey-mini-standings .single-rank-standings .result-total{display:block;text-align:right}
 @media(max-width:360px){.journey-mini-standings .single-rank-standings>div{grid-template-columns:minmax(120px,1fr) 27px 40px 49px!important;gap:3px!important}.journey-mini-standings .single-rank-standings .result-player-name{grid-template-columns:29px 26px minmax(0,1fr);gap:4px}.journey-mini-standings .single-rank-standings .result-name-portrait,.journey-mini-standings .single-rank-standings .result-name-portrait>:is(img,span){width:26px!important}}
+
+/* Readable fate jewels overlap the avatar's upper edge. */
+.journey-hp-block .journey-fate-gems{left:1px;top:-5px;width:45px;height:18px;gap:0;z-index:5;filter:drop-shadow(0 1px 2px #000)}
+.journey-hp-block .journey-fate-gems>img{width:15px;height:18px;filter:brightness(1.45) saturate(1.25) drop-shadow(0 0 2px #9ebeff)}
+.journey-hp-block .journey-fate-gems>img.is-spent{filter:grayscale(1);opacity:.28}
+
+/* Fixed shop chrome, two owned rows and independently scrolling half shelves. */
+body>.journey-popup-shade>.journey-popup:has(.village-cart-market){height:min(820px,calc(100dvh - 24px));max-height:calc(100dvh - 24px);width:min(860px,100%);overflow:hidden!important;padding:14px 12px!important}
+.village-cart-market{height:100%;min-height:0;display:flex;flex-direction:column;gap:10px}
+.village-cart-market .village-market-heading{margin:0;min-height:34px;align-items:center;padding-right:28px}
+.village-cart-market .village-market-heading h3{font-size:19px;margin:0!important}
+.village-cart-market .market-wallet{font-size:11px}.village-cart-market .market-wallet b{font-size:20px}
+.village-holdings{flex:none;border-block:1px solid #d2b67555;background:#09090988}
+.village-holdings-row{display:flex;align-items:center;gap:5px;height:43px;padding:3px 0}.village-holdings-row+div{border-top:1px solid #d2b67522}
+.village-holdings-row>strong{width:55px;flex:none;font-size:10px;color:#e4c98e;text-align:center}
+.village-holdings-scroll{display:flex;align-items:center;gap:6px;overflow-x:auto;min-width:0;height:100%;flex:1;scrollbar-width:thin}
+.village-held-item{display:flex;align-items:center;gap:3px;flex:none;padding:2px 4px;border:1px solid #aa987244;border-radius:4px;background:#121212}
+.village-held-item>img,.village-held-item>.rpg-item-icon{width:25px!important;height:25px!important;object-fit:contain}
+.village-held-item>span{display:flex;flex-direction:column}.village-held-item b{font-size:9px;white-space:nowrap;color:#e7dfce}.village-held-item small{font-size:9px;line-height:12px;color:#d0c6b1}.village-held-item em{font-style:normal;color:#9fe5ab;font-weight:800}.village-held-item.has-pending{border-color:#d2b675aa;background:#252115}
+.village-held-item>button{background:#ffffff12;border:1px solid #a58b5655;min-height:25px;width:22px;padding:0;color:#ead6a9}
+.village-holdings-empty{font-size:10px;color:#aaa18c}
+.village-cart-market .village-market-layout{display:flex;flex:1;min-height:0;overflow:hidden}
+.village-cart-market .village-market-shelf{display:grid;grid-template-columns:1fr!important;grid-template-rows:repeat(2,minmax(0,1fr));gap:12px!important;flex:1;min-height:0;overflow:hidden}
+.village-cart-market .village-market-group{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.village-cart-market .village-market-group>h4{font-size:13px;margin:0 0 5px;padding-bottom:5px;flex:none}
+.journey-popup .village-cart-market .village-market-grid{display:grid;grid-template-columns:1fr!important;grid-auto-rows:58px;align-content:start;gap:4px;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;padding-right:2px}
+.journey-popup .village-cart-market .village-product.compact-product{display:grid;grid-template-columns:102px minmax(0,1fr) 53px 42px;grid-template-rows:56px;height:58px;min-height:58px;border-radius:5px}
+.journey-popup .village-cart-market .shop-product-summary{gap:3px;padding:2px 3px;min-width:0}
+.journey-popup .village-cart-market .shop-product-name strong{font-size:11px!important;line-height:1.15}.village-cart-market .shop-name-word{white-space:normal}
+.journey-popup .village-cart-market .shop-product-effect{font-size:10px!important;line-height:1.35!important;align-self:center;max-height:none;padding:0 3px}
+.journey-popup .village-cart-market .shop-product-price{font-size:11px;gap:3px}.village-cart-market .shop-product-price>b{font-weight:700}.journey-popup .village-cart-market .shop-owned-count{margin:0;font-size:8px!important;color:#d1cbbf;white-space:normal}
+.journey-popup .village-cart-market .village-product.compact-product>button{height:56px!important;font-size:10px;padding:3px!important;min-width:0}
+.village-checkout{flex:none;border-top:1px solid #bca26c66;padding-top:6px}
+.village-checkout-message{font-size:10px;min-height:16px;line-height:16px;color:#e9d6a9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.village-checkout-actions{display:flex;align-items:center;gap:6px;margin-top:4px}.village-checkout-actions>span{flex:1;font-size:11px;color:#cfc2a6}.village-checkout-actions small{display:block;font-size:10px}.village-checkout-actions>button{min-height:36px;padding:6px 10px;font-size:12px}
+@media(max-height:500px) and (orientation:landscape){.village-cart-market{gap:5px}.village-cart-market .village-market-heading{min-height:25px}.village-holdings-row{height:32px}.village-held-item>img,.village-held-item>.rpg-item-icon{width:21px!important;height:21px!important}.village-cart-market .village-market-shelf{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:minmax(0,1fr)}.village-checkout-message{min-height:12px;line-height:12px}}
+
+.village-cart-market>.village-checkout{display:block!important;width:100%;text-align:left}.village-cart-market .village-checkout-actions{width:100%;justify-content:flex-end}.village-cart-market .village-checkout-actions>span{min-width:95px}.village-cart-market .village-checkout-message{display:block;width:100%;text-align:left}
+
+.village-holdings-scroll{overflow-y:hidden;scrollbar-width:none}.village-holdings-scroll::-webkit-scrollbar{display:none}
+
+.journey-hp-block .journey-fate-gems{left:-3px;top:-12px;width:60px;height:23px;border:1px solid #b6a5efaa;border-radius:7px;background:#11162be8;box-shadow:0 1px 5px #0009;gap:0}.journey-hp-block .journey-fate-gems>img{width:19px;height:22px;filter:brightness(1.65) saturate(1.35) drop-shadow(0 0 2px #b9caff)}.journey-hp-block .journey-fate-gems>img.is-spent{filter:grayscale(1);opacity:.25}
+
+/* Six large icon slots per holdings row, with details only on demand. */
+.village-cart-market .village-holdings{position:relative;display:block;padding:3px 0}
+.village-cart-market .village-holdings-row{display:flex;flex-direction:column;align-items:stretch;gap:4px;height:76px;padding:4px 0}
+.village-cart-market .village-holdings-row>strong{width:auto;text-align:left;padding-left:2px;font-size:11px;line-height:14px}
+.village-cart-market .village-holdings-scroll{display:flex;gap:6px;height:50px;min-height:50px;flex:none;overflow-x:auto;overflow-y:hidden}
+.village-cart-market .village-holdings-scroll>:is(.village-held-item,.village-held-empty){box-sizing:border-box;flex:0 0 calc((100% - 30px)/6);min-width:0;height:50px;border:1px solid #aa98725c;border-radius:5px;padding:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;background:#121212bb}
+.village-cart-market .village-holdings-scroll>.village-held-item{cursor:pointer;color:#ece1c9}.village-cart-market .village-held-item[aria-pressed=true]{outline:1px solid #e2c48d;background:#3b3020}
+.village-cart-market .village-held-item>img,.village-cart-market .village-held-item>.rpg-item-icon{width:34px!important;height:34px!important;object-fit:contain;flex:none}
+.village-cart-market .village-held-item>small{height:12px;font:700 11px/12px Arial,sans-serif;white-space:nowrap;margin:0;color:#e6ddcb}.village-cart-market .village-held-item em{font-style:normal;color:#9fe5ab;font-weight:800}
+.village-cart-market .village-holdings-scroll>.village-held-empty{background:#1118;color:#aa98722e;border-style:dashed;font-size:22px}
+.village-cart-market .village-held-item.has-pending{border-color:#b9cc88;background:#292d1bbb}
+.village-held-details{position:absolute;left:0;right:0;top:100%;z-index:20;display:flex;align-items:center;gap:8px;padding:12px 30px 12px 10px;background:#15130ff5;border:1px solid #d2b675aa;border-radius:5px;box-shadow:0 6px 18px #000a;text-align:left}
+.village-held-detail-art{flex:none;width:38px;height:38px}.village-held-detail-art>img,.village-held-detail-art>.rpg-item-icon{width:38px!important;height:38px!important;object-fit:contain}
+.village-held-details>div:not(.village-held-adjust){flex:1;min-width:0}.village-held-details strong{font-size:13px;color:#ffe0a1}.village-held-details p{font-size:11px;line-height:1.4;margin:4px 0!important}.village-held-details small{font-size:10px}.village-held-details em{font-style:normal;color:#9fe5ab}
+.village-held-adjust{display:flex;gap:4px}.village-held-adjust>button{width:28px;min-height:32px;padding:0;background:#ffffff12;border:1px solid #bba77b77;color:#f5dfb5;font-size:18px}.village-held-detail-close{position:absolute;right:3px;top:2px;width:24px;min-height:24px;padding:0;border:0;background:none;color:#ccb990;font-size:18px}
+@media(min-aspect-ratio:1/1){.village-cart-market .village-holdings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.village-cart-market .village-holdings-row+div{border-top:0;border-left:1px solid #d2b67533;padding-left:10px}}
+
+.rpg-stage-result .stage-clear-choice .rpg-relic-offers{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 12px}.rpg-stage-result .rpg-relic-offers img{width:56px;height:56px}.rpg-stage-result .rpg-relic-offers button{border-radius:5px;background:#111b;min-height:112px}.rpg-stage-result .rpg-relic-offers button[aria-pressed=true]{border-color:#f6d58a;box-shadow:0 0 0 1px #f6d58a88}.journey-popup button.journey-consumable-cell{color:inherit;font:inherit;cursor:pointer}.journey-popup button.journey-consumable-cell:disabled{opacity:.5;cursor:default}
