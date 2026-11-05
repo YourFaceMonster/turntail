@@ -1,0 +1,335 @@
+{
+  "checkedAt": "2026-11-05T03:51:28.243Z",
+  "site": "https://turntail.yousexybaby.workers.dev",
+  "sourceCommit": "36d16981627c79f5ba7ccf93ee5683ba00baacfc",
+  "workerVersion": "0f520280-69ca-421d-bffb-47fde63d3b43",
+  "homepageStatus": 200,
+  "checks": [
+    {
+      "url": "/prologue/connection-twins-v3-iron-v1.png",
+      "status": 200,
+      "sha256": "8f9b63c014d485f0b05d15de0a4064a4a8884d0f664a7799fc90955c2ce7a1d6",
+      "match": true
+    },
+    {
+      "url": "/prologue/gate-after-portrait-r61-iron-v1.png",
+      "status": 200,
+      "sha256": "0fb6257db87a8894a8dc19e90891b0ebcbbab8b97578c3321e309cfd999f9e3e",
+      "match": true
+    },
+    {
+      "url": "/prologue/gate-after-r61-iron-v1.png",
+      "status": 200,
+      "sha256": "0e2443183fef6c4c5f850d6d47b14e92bdc748fdd50fa6301650b61dd31e9e0b",
+      "match": true
+    },
+    {
+      "url": "/prologue/gate-after-reply-portrait-v1-iron-v1.png",
+      "status": 200,
+      "sha256": "01b0099b4d49ef91a8a9c0519ca029b886b1a64cab8afe5350703f481decec1b",
+      "match": true
+    },
+    {
+      "url": "/prologue/gate-after-reply-wide-v1-iron-v1.png",
+      "status": 200,
+      "sha256": "2409ff39e831f08ea63be9f16113bda2c32878d0738425c8631707dd7c571461",
+      "match": true
+    },
+    {
+      "url": "/prologue/gate-before-portrait-r61-iron-v1.png",
+      "status": 200,
+      "sha256": "ca9caff9e5caff11ca36fb9e5f10552c58b2f7d606c20cf36dc105396acb802e",
+      "match": true
+    },
+    {
+      "url": "/prologue/gate-before-r61-iron-v1.png",
+      "status": 200,
+      "sha256": "406929a39a477ce0fdb630e0a7e761877ddb21d93c932b3a5c5ee28910139c9b",
+      "match": true
+    },
+    {
+      "url": "/prologue/gate-reply-portrait-v1-iron-v1.png",
+      "status": 200,
+      "sha256": "4419188965b29f4986cb47ac31660bb20ed10866b765b811bc70ccc8631590e4",
+      "match": true
+    },
+    {
+      "url": "/prologue/gate-reply-wide-v1-iron-v1.png",
+      "status": 200,
+      "sha256": "1d058a0159c7dd202866781ba3978fe3da7651bfd765d96583b27cda9a720ba5",
+      "match": true
+    },
+    {
+      "url": "/prologue/iron-gate-village-map-portrait-v2.png",
+      "status": 200,
+      "sha256": "90978910b4de7fdfacb2188e6e3c8846241eec363e90d219a197b01f2c7c9641",
+      "match": true
+    },
+    {
+      "url": "/prologue/iron-gate-village-map-portrait-v3.png",
+      "status": 200,
+      "sha256": "5ef45d72100c9a967330947e823e36a79fa6352231b2feb6480ce59f1a40bde5",
+      "match": true
+    },
+    {
+      "url": "/prologue/iron-gate-village-map-wide-v2.png",
+      "status": 200,
+      "sha256": "10397d9df7222961a81943d78df1da89f32b472c0eddebddefa89a2ceac98e15",
+      "match": true
+    },
+    {
+      "url": "/prologue/iron-gate-village-map-wide-v3.png",
+      "status": 200,
+      "sha256": "17fe72637d57256e0d44a6c734bcf7c1b5b7d97c57f88481e89ff0d6fa8a7da8",
+      "match": true
+    },
+    {
+      "url": "/prologue/normun-village-distant-portrait-v2.png",
+      "status": 200,
+      "sha256": "1ee493f082210bbeadc2a62aa8647255dac08c924fb1182d15ee3a539e3a1823",
+      "match": true
+    },
+    {
+      "url": "/prologue/normun-village-distant-wide-v2.png",
+      "status": 200,
+      "sha256": "e824d6baa6649ce529e6a6d3deb62bc4794a857ee4057950f2580cba613dc69f",
+      "match": true
+    },
+    {
+      "url": "/prologue/square-mila-portrait-night-v4-iron-v1.png",
+      "status": 200,
+      "sha256": "1c9425533811a0d242a29b155d85076bebaa2cda0c20881085e78263459a9b64",
+      "match": true
+    },
+    {
+      "url": "/prologue/square-mila-portrait-night-v4.png",
+      "status": 200,
+      "sha256": "6d06ea27f462a7e9d96a7526e959fe0d283785ded7ff2c1ecac9d1e083855050",
+      "match": true
+    },
+    {
+      "url": "/prologue/square-mila-wide-night-v4-iron-v1.png",
+      "status": 200,
+      "sha256": "ee59b28b04e1371e27f2cce4a862706846098144d958c8984e64958cc0fc396a",
+      "match": true
+    },
+    {
+      "url": "/prologue/square-mila-wide-night-v4.png",
+      "status": 200,
+      "sha256": "8d055d135a9afad7d8bdf9993f26afe5818af100388ce65d760925da4eb8d3f3",
+      "match": true
+    },
+    {
+      "url": "/prologue/square-poko-portrait-night-v4-iron-v1.png",
+      "status": 200,
+      "sha256": "8d0091dcfc05073154933f3429650482f8ce0543663f8944ca2fb64554ea15b7",
+      "match": true
+    },
+    {
+      "url": "/prologue/square-poko-portrait-night-v4.png",
+      "status": 200,
+      "sha256": "967ab9185672033f5588fe332afe19027a55e331c562ae9a71a4f517927519e9",
+      "match": true
+    },
+    {
+      "url": "/prologue/square-poko-wide-night-v4-iron-v1.png",
+      "status": 200,
+      "sha256": "6905e1bfe1612ad20e8a4e578bde95e9b6c62a9d438d539f9d96d2344f55be3f",
+      "match": true
+    },
+    {
+      "url": "/prologue/square-poko-wide-night-v4.png",
+      "status": 200,
+      "sha256": "9d05114082bb4dfe1676344c7e64b52bf78703a6756402feee9c2e9b919931f0",
+      "match": true
+    },
+    {
+      "url": "/prologue/twins-after-portrait-r61-iron-v1.png",
+      "status": 200,
+      "sha256": "e3bde0a46df1d7b603bd155a6d1dc089aa41e0d5ea012cbb4dc1693bc8dce445",
+      "match": true
+    },
+    {
+      "url": "/prologue/twins-after-r61-iron-v1.png",
+      "status": 200,
+      "sha256": "0becbc45145045b8accfedaf24172d308290bd0ca285058effcfb1800fa0b4d8",
+      "match": true
+    },
+    {
+      "url": "/prologue/twins-after-reply-portrait-v1-iron-v1.png",
+      "status": 200,
+      "sha256": "73bff67c0aa277477bd328d03d1e94e65b0107ea9a856c0d05bdb7b3d355e826",
+      "match": true
+    },
+    {
+      "url": "/prologue/twins-after-reply-wide-v1-iron-v1.png",
+      "status": 200,
+      "sha256": "765665bc23870eabd101fdee8c5af05994ed5085f14e47f5fbc624698d18c956",
+      "match": true
+    },
+    {
+      "url": "/prologue/twins-before-portrait-r61-iron-v1.png",
+      "status": 200,
+      "sha256": "bba934e020a37d9eb65d112819c427b423d252e3de0302b4a8a2e2848315563c",
+      "match": true
+    },
+    {
+      "url": "/prologue/twins-reply-portrait-v1-iron-v1.png",
+      "status": 200,
+      "sha256": "bae5cfd38d781a92bdb30bb2e0a40ff23c4819551c5d0680d52539093d7b3aa4",
+      "match": true
+    },
+    {
+      "url": "/prologue/twins-reply-wide-v1-iron-v1.png",
+      "status": 200,
+      "sha256": "3469c12f8ebb9d38fa23b43b8d65b3fd7da8301a0906ba88f87b1bcc457f2c91",
+      "match": true
+    },
+    {
+      "url": "/quests/alley-thief-portrait-v5.png",
+      "status": 200,
+      "sha256": "c1a4667cef7908757619568a44ab7d0dd625faddac2acb3a6c65920c4b7a27ac",
+      "match": true
+    },
+    {
+      "url": "/quests/alley-thief-spin-portrait-v1.png",
+      "status": 200,
+      "sha256": "cdaa421dd2308ca54611d76250c00b4988f3f9fb93b8a315c2851e49f7d2d50d",
+      "match": true
+    },
+    {
+      "url": "/quests/alley-thief-spin-wide-v1.png",
+      "status": 200,
+      "sha256": "39d8bbe29c1aa1963f4bbef320579d4d0adae904a564f6b305cae738569c8f10",
+      "match": true
+    },
+    {
+      "url": "/quests/alley-thief-wide-v4.png",
+      "status": 200,
+      "sha256": "7975a4560872697e89b7d336c5fb865abf2f4f8b5f13c5b3065a6d5448ed962e",
+      "match": true
+    },
+    {
+      "url": "/quests/traveler-aided-portrait-v4.png",
+      "status": 200,
+      "sha256": "cbef4c0d0a5935db456a3f11a33ea21295ba074977a28316a943bf98d46da197",
+      "match": true
+    },
+    {
+      "url": "/quests/traveler-aided-wide-v4.png",
+      "status": 200,
+      "sha256": "54623dcd50cd84a9a48ad5ae06f0e71d892d080df154a56a35fed4923f7eaa1c",
+      "match": true
+    },
+    {
+      "url": "/quests/traveler-injured-portrait-v3.png",
+      "status": 200,
+      "sha256": "a9c3559f6db40ee396f8aabdda9018f1c0f1183fc8ed4405806bbf86bce62253",
+      "match": true
+    },
+    {
+      "url": "/quests/traveler-injured-wide-v3.png",
+      "status": 200,
+      "sha256": "e3197bde40d8503e6a6c85cca918be2272f0b468e3a7f7e2218fffba9b7165dd",
+      "match": true
+    },
+    {
+      "url": "/ui/fate-gem-v1.png",
+      "status": 200,
+      "sha256": "eee435318ec302cc74e9fb88f1c86a1196aa863047e498f1e9a4f74fdf7fd46a",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/index.BJwIR1UF.css",
+      "status": 200,
+      "sha256": "ccde78a0db21e049e44c1ab02ed7ee71ed391655e0ed2a86b4536b582a2cd9d1",
+      "match": true
+    },
+    {
+      "url": "/_next/static/css/page.JfydBzQn.css",
+      "status": 200,
+      "sha256": "ca1097ed9455907dd4fb48eb468097cae0efd8449e55b6125f19dcfd86054ac4",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/index-ppvABWyi.js",
+      "status": 200,
+      "sha256": "36e79b2d552e131b097038ef73a99e9cd1ee841c2d0aa347a007e69e8a6acabf",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/rolldown-runtime-C60lm6uB.js",
+      "status": 200,
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/framework-D_rUT4EX.js",
+      "status": 200,
+      "sha256": "939d0fabebb3b2f01753bb866b067d8d3384fb06da19f0e6557609d3b1a9f4f7",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/layout-segment-context-DccMBlYi.js",
+      "status": 200,
+      "sha256": "d01c31a3d1a679da5ece780eef56ff637214084539fdfd3f4d3f124769af87e1",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/page-Bea04fgF.js",
+      "status": 200,
+      "sha256": "9c27a939a2810a7f16313466a2e5ba97185d26db5a2901f076f36f114bcd3ce4",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/rpg-connection-scenes-MTP6kvqI.js",
+      "status": 200,
+      "sha256": "b3568bf7506c9379926d9bd9cbc9071602cbdcdcac1b682b9a66aa51b5c4fdfb",
+      "match": true
+    }
+  ],
+  "browser": {
+    "viewport": "390x844",
+    "mode": "저장하지 않는 프롤로그·화면 테스트",
+    "entry": "철문의 영역 · 노르문 마을 / STAGE 1 · 마을 관문",
+    "rewards": {
+      "shownHeal": 30,
+      "hpBefore": 70,
+      "hpAfter": 100,
+      "coinsBefore": 1000,
+      "coinsAfter": 1030
+    },
+    "fateGems": {
+      "count": 3,
+      "hpBounds": {
+        "x": 10,
+        "y": 52,
+        "width": 238,
+        "height": 36
+      },
+      "gemBounds": {
+        "x": 13,
+        "y": 54,
+        "width": 32,
+        "height": 9
+      }
+    },
+    "map": "세로 새 지도·정문 로웬/루미·주민·시장·파수탑 육안 확인",
+    "serinFinal": {
+      "ranks": [
+        "1등 테스트 방랑자",
+        "2등 세린",
+        "3등 여행자"
+      ],
+      "duplicateRankBadges": 0,
+      "panelWidth": 348,
+      "panelScrollWidth": 348
+    },
+    "stage2": {
+      "place": "마을 광장",
+      "portraits": "/prologue/square-poko-wide-night-v4-iron-v1.png"
+    },
+    "cleanup": "테스트 종료·viewport 재설정·저장된 게임 없음 유지",
+    "limitations": "전체 여정 연속 플레이 및 실제 기기 햅틱은 미검증"
+  }
+}

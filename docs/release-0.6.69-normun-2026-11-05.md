@@ -19,4 +19,11 @@
 
 ## 게시
 
-GitHub main 및 Cloudflare 게시 진행. 공개 결과와 소스 커밋/Worker 버전은 게시 후 기록한다. 사용자 명시 요청에 따른 이번 게시이며 후속 수정의 빌드·배포 권한으로 이어지지 않는다.
+소스 36d16981627c79f5ba7ccf93ee5683ba00baacfc를 GitHub main에 push. Cloudflare Worker 0f520280-69ca-421d-bffb-47fde63d3b43 배포 성공. 공개 홈페이지 HTTP200, 신규 PNG와 홈페이지 CSS/JS 총47개 파일의 SHA-256이 이번 빌드와 모두 일치했다.
+
+공개 Chrome 390×844 저장 없는 테스트에서 노르문 진입 설명·마을 관문/광장 장소명·보상 HP30 및 실제 HP70→100/주화1000→1030·HP 틀 안 보석3개·새 지도·세린 최종 단일 순위/중복 배지0개/가로 넘침 없음·ST2 밤 원화 아바타를 확인했다. 테스트 종료 후 viewport를 재설정했으며 저장된 게임 없음 상태를 유지했다. 전체 여정 연속 플레이와 실제 기기 햅틱은 미검증.
+
+공개 사이트: https://turntail.yousexybaby.workers.dev
+상세: deployment-normun-2026-11-05.json. 배포 로그: ../../artifacts/normun-release-deploy.log.
+
+사용자 명시 요청에 따른 이번 게시이며 후속 수정의 빌드·배포 권한으로 이어지지 않는다.
