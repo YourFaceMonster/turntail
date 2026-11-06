@@ -14,4 +14,10 @@
 
 ## 게시
 
-GitHub main push·Cloudflare 배포 진행 중. 이후 별도 요청 없는 수정은 로컬만 저장하며 다음 변경 배포는0.6.73 이상으로 올린다.
+소스5cdc0d82fee0f4a5479cd20f2f4fbc84689fddff를 GitHub main에 push하고 Cloudflare Worker6562c605-9ac6-4e99-8a09-676802156d6e 운영 배포 완료.
+
+공개 홈페이지 HTTP200·0.6.72 표시, 현재 진입JS 로드, 변경 파일8개 SHA-256이 로컬 최종 빌드와 모두 일치했다. 공개 JS에서 새 여정 주화50 추가 및 아이템 종류별2개 생성 코드도 확인했다. 상세 deployment-0.6.72-2026-11-06.json. 배포 로그 ../../artifacts/release-0.6.72-2026-11-06-deploy.log.
+
+이번 공개 확인은 HTTP/파일 검사이며 실제 사용자 저장을 만들거나 바꾸지 않았다. 사이트 https://turntail.yousexybaby.workers.dev.
+
+이후 별도 요청 없는 수정은 로컬만 저장하며 다음 변경 배포는0.6.73 이상으로 올린다.

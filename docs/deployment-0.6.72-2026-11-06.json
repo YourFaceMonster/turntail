@@ -1,0 +1,67 @@
+{
+  "checkedAt": "2026-11-06T01:20:23.478Z",
+  "site": "https://turntail.yousexybaby.workers.dev",
+  "appVersion": "0.6.72",
+  "sourceCommit": "5cdc0d82fee0f4a5479cd20f2f4fbc84689fddff",
+  "workerVersion": "6562c605-9ac6-4e99-8a09-676802156d6e",
+  "homepageStatus": 200,
+  "currentEntry": "_next/static/chunks/index--5oF2auF.js",
+  "assertions": {
+    "versionInHomepage": true,
+    "currentEntryLoads": true,
+    "homepageUsesCurrentEntry": true,
+    "startingCoinsGrant": true,
+    "twoCopiesOfEachItem": true
+  },
+  "checks": [
+    {
+      "url": "/vinext-client-entry-manifest.json",
+      "status": 200,
+      "sha256": "34a9e6bc778b43f24c35c2c684f770eb03746614b2a04002743ec40ac1dde52c",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/app-route-prefetch-policy-CISt843F.js",
+      "status": 200,
+      "sha256": "f2a2cd9054e75c3515523244987b945d483b694155c360f2c6ba049b29ea82ff",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/rpg-connection-scenes-DJ95TdWV.js",
+      "status": 200,
+      "sha256": "e789df3cbc99b480d017f60a5cd14d3599544b50682d95f8f180c8a9f0826941",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/page-CdqCqVd_.js",
+      "status": 200,
+      "sha256": "e3b9b5c16fc8b0313151c6d3ca1b828af6d3725a6c8a14cf3cba8898cedae33c",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/page-C247pHWA.js",
+      "status": 200,
+      "sha256": "cfc7205e1078ce30b79e88f7183ceec2f2ecf0f744b92962f004183f35770b5f",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/page-B-5HDhMZ.js",
+      "status": 200,
+      "sha256": "3f21b6774846f0ed8c71ee39ff63e45efabb296a057619b011af625bb814044c",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/layout-segment-context--no2_Nai.js",
+      "status": 200,
+      "sha256": "d80ed8b64ab1b59d108c69a77d915b982bd8fc64596623df922a2712ea7e9cf8",
+      "match": true
+    },
+    {
+      "url": "/_next/static/chunks/index--5oF2auF.js",
+      "status": 200,
+      "sha256": "4daf2b7b5517cf86cb9fd026d0f9a9db4efbf912961bd3fef10bb7d5ee9c7a18",
+      "match": true
+    }
+  ],
+  "limits": "Public HTTP/assets checked; no production saved game created and no browser-play verification."
+}
