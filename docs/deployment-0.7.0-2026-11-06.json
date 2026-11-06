@@ -1,0 +1,75 @@
+{
+  "deployExitCode": 0,
+  "homepageVersion": "0.7.0",
+  "githubCommit": "ec6e297c7ebd353d2d067d3fe39462623676bd17",
+  "additionalPublicAssets": 2,
+  "requestedDeploymentVersionId": "afcc33f9-c3c4-494e-b0c6-3665d2785245",
+  "browserGameplayVerified": false,
+  "version": "0.7.0",
+  "matchedLocalAssets": 7,
+  "homepageStatus": 200,
+  "files": [
+    {
+      "path": "/_next/static/chunks/framework-D_rUT4EX.js",
+      "matchesLocal": true,
+      "sha256": "939d0fabebb3b2f01753bb866b067d8d3384fb06da19f0e6557609d3b1a9f4f7",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/index-DALREyyD.js",
+      "matchesLocal": null,
+      "sha256": "4b34254c98d3c0fe8b15c3934179c8a09a4eadae517e233b74a19ede09e6e287",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/layout-segment-context-BdNp9f_z.js",
+      "matchesLocal": null,
+      "sha256": "c1473cfbe1c3fc6afb0eadb33bd58ae7bf3831bcef9daee06f17f27444f0e12f",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/page-DvLaDUjr.js",
+      "matchesLocal": true,
+      "sha256": "3355bd694687b1b817d8a6267b5ebd419d08813268f19326fc0048003c93c0ad",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/rolldown-runtime-C60lm6uB.js",
+      "matchesLocal": true,
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/chunks/rpg-connection-scenes-DHBnNood.js",
+      "matchesLocal": true,
+      "sha256": "88a3eb6b252919dac0177de8c42a4da580caf4b9f086063aae09dd7772c4cdd1",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/css/index.Cc09jyuB.css",
+      "matchesLocal": true,
+      "sha256": "00b04311347dcb1d3000d6c8a275184df04ea13aa0abb0fe519158c179838df1",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/css/page.qKz-35TA.css",
+      "matchesLocal": true,
+      "sha256": "523a2d494e35fbdb8aad57e34650defcc6eaff8de6f48c0e15766ba84d67008c",
+      "status": 200
+    },
+    {
+      "path": "/_next/static/local-bot-worker-5w0rpZuR.js",
+      "matchesLocal": true,
+      "sha256": "947f117e8f21009aff2db3d8978a9a4a215d3923574de9d7abdbe1afd90bd170",
+      "status": 200
+    }
+  ],
+  "url": "https://turntail.yousexybaby.workers.dev",
+  "checkedAt": "2026-11-06T11:35:10.9872253Z",
+  "publicRoundSettlementCode": true,
+  "observedFollowupVersionId": "0605d7d8-75bd-47a3-8811-839292c2f79f",
+  "deployLog": "../../artifacts/deploy-0.7.0-2026-11-06.log",
+  "sourceCommit": "bf6932c326892eed922dce1b18109cfd0655b4cb",
+  "previousPublicVersion": "0.6.72",
+  "followupNote": "Observed subsequent wrangler deployment; origin not established. Public application, story and bot bundles match local build. Entry/layout chunk names differ and were checked for HTTP 200, without claiming local hash equality."
+}
