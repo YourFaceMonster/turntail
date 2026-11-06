@@ -1,4 +1,5 @@
 "use client";
+import {hasRoundCombat} from '../../lib/profession-round-rules';
 import {useLayoutEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
 import type {view} from '../../lib/game.ts';
@@ -20,6 +21,6 @@ export function RpgCombatEffects({game,onHit,onGuard,onAttack,onHpPresentation}:
   const timer=setTimeout(()=>setHit(null),delay+(event.kind==='heal'?1100:650));return()=>{clearTimeout(impact);clearTimeout(timer);animation?.cancel();callback.current.onHpPresentation?.(null);};
  },[event?.id,game.me]);
  if(!hit)return null;
- const healing=hit.event.kind==='heal',deferred=game.hpItemMode&&!isBattleItemMode(game);
+ const healing=hit.event.kind==='heal',deferred=hasRoundCombat(game)||game.hpItemMode&&!isBattleItemMode(game);
  return createPortal(<span key={hit.event.id} className={`rpg-hit-overlay ${healing?'is-heal':'is-damage'}`} role="status" aria-label={`${game.players[hit.event.target].name} HP ${hit.event.amount} ${healing?'회복':'피해'}${deferred?' 정산 예정':''}`}><span className="rpg-hit-flash"/>{healing&&<span className="rpg-healing-rings" aria-hidden="true"/>}<b className="rpg-hit-number">{healing?'+':'−'}{hit.event.amount}{deferred&&<small>정산 예정</small>}</b></span>,hit.anchor);
 }

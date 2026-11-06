@@ -1,8 +1,10 @@
+// Pre-0.7 saved-rule compatibility; new rules have a separate integration suite.
+import {createLegacyRpgPhaseOneGame as createRpgPhaseOneGame} from './fixtures/legacy-profession';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {createElement as h} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
-import {createRpgPhaseOneGame} from '../lib/rpg-game';
+
 import {beginRpgRoundHealth} from '../lib/rpg-round-health';
 import {settleRpgPhaseOne} from '../lib/rpg-phase-one';
 import {useRpgTacticalItem} from '../lib/rpg-items';

@@ -1,3 +1,5 @@
+import {hasRoundCombat} from './profession-round-rules';
+import {queueRoundDamage} from './profession-round-combat';
 import {recordRpgRoundHealth} from './rpg-round-health';
 import {isRpgPhaseOne,reconcileRpgEliminations,rpgAlive} from './rpg-phase-one.ts';
 import {assertTurnReady,lowestHandLead,sorted,uid,view,type Game,type Tile} from './game.ts';
@@ -6,7 +8,7 @@ import {withRelicActivations} from './rpg-relic-feedback.ts';
 import {AMBUSH_IMPACT_MS,AMBUSH_PRESENTATION_MS,TRAP_IMPACT_MS,TRAP_TURN_READY_MS} from './pickup-presentation.ts';
 import {professionActiveAvailability,consumeProfessionGauge} from './profession-actives.ts';
 
-export type FloorTrap={id:string,owner:number,index:number,tileId:number,round:number};
+export type FloorTrap={damage?:number,id:string,owner:number,index:number,tileId:number,round:number};
 export type TrapIntel={index:number,tileId:number,trapped:boolean};
 export type TrapBurst={id:string,owner:number,owners?:number[],target:number,index:number,damage:number,hpBefore:number,hpAfter:number,at:number,safe:boolean};
 export type AmbushBurst={id:string,round:number,owner:number,index:number,damage:number[],hpBefore:number[],hpAfter:number[],at:number};
@@ -59,6 +61,10 @@ export function triggerFloorTrap(game:Game,who:number,index:number,tile:Tile,now
  const state=itemBattleState(game),run=game.rpgRun;if(!state||!run)return;
  const traps=state.traps.filter(trap=>trap.tileId===tile.id&&trap.round===game.round&&rpgAlive(game,trap.owner));state.traps=state.traps.filter(trap=>!traps.includes(trap));
  for(const key of Object.keys(state.trapIntel))state.trapIntel[Number(key)]=state.trapIntel[Number(key)].filter(intel=>intel.tileId!==tile.id);
+ if(hasRoundCombat(game)){
+  for(const trap of traps){const safe=trap.owner===who,damage=safe?0:trap.damage??4;if(damage)queueRoundDamage(game,who,damage,'trap');state.trapEvents.push({id:uid(),owner:trap.owner,target:who,index,damage,hpBefore:run.hp[who],hpAfter:run.hp[who],at:now,safe});if(!safe)game.log=[`${game.players[trap.owner].name}의 함정 · ${game.players[who].name} 피해 ${damage} 적립`,...game.log].slice(0,40);}
+  run.updatedAt=now;return;
+ }
  const hpBeforePickup=run.hp[who],triggered:TrapBurst[]=[];
  for(const trap of traps){
   const safe=trap.owner===who,hpBefore=run.hp[who],damage=safe?0:blockItemBattleDamage(game,who,4,now);run.hp[who]=Math.max(0,hpBefore-damage);
@@ -72,6 +78,7 @@ export function triggerFloorTrap(game:Game,who:number,index:number,tile:Tile,now
 }
 /** Only profession-origin scouting arms this pickup attack; lenses never arm it. */
 export function triggerScoutedPickup(game:Game,who:number,index:number,tile:Tile,now=Date.now()){
+ if(hasRoundCombat(game))return null;
  const run=game.rpgRun,state=itemBattleState(game),tactic=run?.tactics?.[who];
  if(!run||!state||run.combat?.professions[who]!=='rogue'||tactic?.round!==game.round)return null;
  const peeks=tactic.peeks||(tactic.peek?[tactic.peek]:[]);if(!peeks.some(peek=>peek.source==='profession'&&peek.round===game.round&&peek.tile.id===tile.id)||state.ambushedTileIds?.includes(tile.id))return null;

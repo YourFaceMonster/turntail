@@ -1,3 +1,4 @@
+import {settleProfessionRound} from '../lib/profession-round-combat';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {createElement as h} from 'react';
@@ -29,7 +30,7 @@ test('demo shop has six consumables, normalizes legacy lens price to 10 and excl
 test('preparation and combat herbs share 10/15 healing, caps and exact one-item consumption',()=>{
  for(const equipped of [[],[BLUE_GLASS_ID]])for(const hp of [60,96]){
   const g=ready(),run=g.rpgRun!;run.equipped=equipped;run.hp[0]=hp;run.consumables=['emergency-herb','emergency-herb'];const result=useRpgConsumable(run,'emergency-herb');assert.equal(result.hp[0],Math.min(100,hp+(equipped.length?15:10)));assert.equal(result.consumables.length,1);assert.equal(run.consumables.length,2);
-  const fight=combat();fight.rpgRun!.equipped=equipped;fight.rpgRun!.hp[0]=hp;fight.rpgRun!.consumables=['emergency-herb','emergency-herb'];useRpgTacticalItem(fight,'emergency-herb');assert.equal(fight.rpgRun!.hp[0],result.hp[0]);assert.equal(fight.rpgRun!.consumables.length,1);assert.equal(fight.turn,0);
+  const fight=combat();fight.rpgRun!.equipped=equipped;fight.rpgRun!.hp[0]=hp;fight.rpgRun!.consumables=['emergency-herb','emergency-herb'];useRpgTacticalItem(fight,'emergency-herb');assert.equal(fight.rpgRun!.hp[0],hp,'combat healing waits for the round end');fight.phase='ended';fight.winner=0;settleProfessionRound(fight);assert.equal(fight.rpgRun!.hp[0],result.hp[0]);assert.equal(fight.rpgRun!.consumables.length,1);assert.equal(fight.turn,0);
  }
  const full=ready().rpgRun!;full.consumables=['emergency-herb'];const before=JSON.stringify(full);assert.throws(()=>useRpgConsumable(full,'emergency-herb'));assert.equal(JSON.stringify(full),before);
  const wrong=combat();wrong.turn=1;wrong.rpgRun!.consumables=['emergency-herb'];wrong.rpgRun!.hp[0]=50;assert.equal(rpgItemAvailability(view(wrong,wrong.players[0].token),'emergency-herb',true).usable,false);assert.throws(()=>useRpgTacticalItem(wrong,'emergency-herb'));
@@ -53,6 +54,6 @@ test('equipped combat relics activate; unequipped effects do not; old excluded g
  const cases:[string,Tile[],number,number][]=[['wind-sigil',[t(7),t(7,1)],1,0],['warrior-crest',[t(7),t(7,1),t(7,2)],2,0],['life-sigil',[t(7),t(7,1),t(7,2)],0,2],['sun-sigil',[t(3),t(5),t(7),t(9),t(11)],3,0],['crimson-fang',[t(7,3)],1,0]];
  for(const [id,tiles,damage,heal] of cases)for(const equipped of [false,true]){const g=combat('mage');g.rpgRun!.hp[0]=60;g.rpgRun!.relics=[id];g.rpgRun!.equipped=equipped?[id]:[];g.lastBy=0;g.trick=tiles;g.tablePlay={id:crypto.randomUUID(),who:0,tiles};g.rpgRun!.combat!.battleTiles[0]=tiles.length;const event=resolveProfessionRpgBattle(g,100)!;assert.equal(event.relicDamage||0,equipped?damage:0);assert.equal(event.relicHealing||0,equipped?heal:0);}
  const g=ready(),run=g.rpgRun!;run.relics=['final-knot','cracked-heart','recovery-lantern',BLUE_GLASS_ID];run.equipped=run.relics.slice(0,3);assert.equal(rpgSynergies(run).length,1);assert.throws(()=>equipJourneyRelic(run,BLUE_GLASS_ID));const off=equipJourneyRelic(run,'recovery-lantern');assert.equal(rpgSynergies(off).length,0);assert.ok(off.relics.includes('final-knot'));
- const first=combat();first.rpgRun!.equipped=['cracked-heart'];first.rpgRun!.hp[0]=90;first.lastBy=1;first.trick=[t(7)];first.tablePlay={id:crypto.randomUUID(),who:1,tiles:first.trick};first.rpgRun!.combat!.battleTiles[1]=10;const blocked=resolveProfessionRpgBattle(first,100)!;assert.equal(blocked.blockedDamage![0],8);
+ const first=combat();first.rpgRun!.equipped=['cracked-heart'];first.rpgRun!.hp[0]=90;first.lastBy=1;first.trick=[t(7)];first.tablePlay={id:crypto.randomUUID(),who:1,tiles:first.trick};first.rpgRun!.combat!.battleTiles[1]=10;resolveProfessionRpgBattle(first,100);assert.equal(first.rpgRun!.crackedHeartUsed.length,0);first.phase='ended';first.winner=1;settleProfessionRound(first);assert.equal(first.rpgRun!.combat!.lastBattle!.blockedDamage![0],1);
  const lantern=createRpgJourneyGame('등불 검사');enterJourneyNode(lantern,'battle-1');lantern.rpgRun!.relics=['cracked-heart','recovery-lantern'];lantern.rpgRun!.equipped=[...lantern.rpgRun!.relics];lantern.rpgRun!.hp=[50,0,0];reconcileRpgEliminations(lantern);assert.equal(lantern.rpgRun!.phaseOne!.clear!.relicHeal,5);assert.equal(lantern.rpgRun!.phaseOne!.clear!.synergyHeal,2);
 });

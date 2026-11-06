@@ -1,12 +1,14 @@
+// Pre-0.7 saved-rule compatibility; new rules have a separate integration suite.
+import {createLegacyHpItemGame as createHpItemGame,createLegacyRpgGame as createRpgGame,startLegacyRpgRound as startRpgRound} from './fixtures/legacy-profession';
 // Explicit 100 HP fixtures also cover compatibility with pre-0.6.44 saved matches.
 import assert from 'node:assert/strict';
 import {act,accessible,view,type Game,type Tile} from '../lib/game.ts';
-import {createHpItemGame,readHpItemArchive,saveHpItemGame} from '../lib/hp-item-mode.ts';
+import {readHpItemArchive,saveHpItemGame} from '../lib/hp-item-mode.ts';
 import {buyHpItemLoadout} from '../lib/hp-item-shop.ts';
 import {prepareFloorCoins,claimFloorCoin,choosePublicCoinDraw} from '../lib/floor-coins.ts';
 import {placeFloorTrap,scoutProfessionFloor} from '../lib/item-battle-rules.ts';
 import {useRpgTacticalItem} from '../lib/rpg-items.ts';
-import {createRpgGame,startRpgRound} from '../lib/rpg-game.ts';
+
 const fresh=(profession:'rogue'|'swordsman'|'mage'|'cleric'='rogue')=>{const game=createHpItemGame('주화 검증','',Date.now(),2,'toto',profession,100);buyHpItemLoadout(game,[]);game.rpgRun!.combat!.actives!.gauge=game.players.map(()=>4);game.turn=0;game.turnReadyAt=0;game.completedBattles=1;game.rpgRun!.equipped=[];game.rpgRun!.combat!.professions[1]='swordsman';game.rpgRun!.combat!.professions[2]='mage';return game;};
 function ready(game:Game,who=0){game.turn=who;game.turnReadyAt=0;if(!game.trick.length){const other=game.players[(who+2)%3],tile=other.hand.pop()!;game.trick=[tile];game.playedTiles=[...(game.playedTiles||[]),tile];}game.lastBy=(who+2)%3;}
 const initial=fresh(),original=JSON.stringify(initial);assert.ok(initial.stacks.flat().some(tile=>tile?.id===initial.floorCoins!.randomTileId));assert.equal(prepareFloorCoins(initial),false);assert.equal(JSON.stringify(initial),original,'opening an initialized round never moves its one random coin');

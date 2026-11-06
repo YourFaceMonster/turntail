@@ -1,6 +1,8 @@
+// Pre-0.7 saved-rule compatibility; new rules have a separate integration suite.
+import {createLegacyRpgPhaseOneGame as createRpgPhaseOneGame,startLegacyRpgRound as startRpgRound,createLegacyRpgGame as createRpgGame,createLegacyHpItemGame as createHpItemGame} from './fixtures/legacy-profession';
 import assert from 'node:assert/strict';
 import {act,view,rpgTwinBotView,type Game,type Tile} from '../lib/game.ts';
-import {createRpgPhaseOneGame,startRpgRound,createRpgGame} from '../lib/rpg-game.ts';
+
 import {RPG_PHASE_ONE,reconcileRpgEliminations,chooseRpgStageReward,advanceRpgPhaseOne,rpgSynergies,chargeRpgDuel} from '../lib/rpg-phase-one.ts';
 import {resolveProfessionRpgBattle} from '../lib/rpg-profession-combat.ts';
 import {useProfessionActive} from '../lib/profession-actives.ts';
@@ -8,7 +10,7 @@ import {saveRpgGame,readRpgArchive,RPG_STORAGE_KEY,RPG_PHASE_ONE_STORAGE_KEY} fr
 import {useRpgTacticalItem} from '../lib/rpg-items.ts';
 import {hpBattleSummary} from '../lib/hp-battle-summary.ts';
 import {placeFloorTrap} from '../lib/item-battle-rules.ts';
-import {createHpItemGame} from '../lib/hp-item-mode.ts';
+
 import {buyHpItemLoadout} from '../lib/hp-item-shop.ts';
 
 

@@ -1,6 +1,8 @@
+// Pre-0.7 saved-rule compatibility; new rules have a separate integration suite.
+import {createLegacyHpItemGame as createHpItemGame} from './fixtures/legacy-profession';
 // Explicit 100 HP fixtures also cover compatibility with pre-0.6.44 saved matches.
 import assert from 'node:assert/strict';
-import {createHpItemGame} from '../lib/hp-item-mode';
+
 import {buyHpItemLoadout} from '../lib/hp-item-shop';
 import {view,botMove,beats,combo,type Game,type Tile} from '../lib/game';
 import {analyzeItemBattleTurn,itemBattlePositionValue} from '../lib/item-battle-plan';

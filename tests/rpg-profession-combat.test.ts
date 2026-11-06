@@ -1,7 +1,9 @@
+// Pre-0.7 saved-rule compatibility; new rules have a separate integration suite.
+import {createLegacyRpgGame as createRpgGame,startLegacyRpgRound as startRpgRound,createLegacyHpItemGame as createHpItemGame} from './fixtures/legacy-profession';
 // Explicit 100 HP fixtures also cover compatibility with pre-0.6.44 saved matches.
 import assert from 'node:assert/strict';
-import {createRpgGame,startRpgRound} from '../lib/rpg-game.ts';
-import {createHpItemGame,saveHpItemGame,readHpItemArchive} from '../lib/hp-item-mode.ts';
+
+import {saveHpItemGame,readHpItemArchive} from '../lib/hp-item-mode.ts';
 import {resolveHpItemBattle,recordHpBattlePlay} from '../lib/hp-item-battle.ts';
 import {resolveProfessionRpgBattle,recordProfessionBattlePlay} from '../lib/rpg-profession-combat.ts';
 import {settleRpgRound,newRpgRun} from '../lib/rpg.ts';

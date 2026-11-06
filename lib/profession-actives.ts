@@ -1,3 +1,4 @@
+import {hasRoundCombat} from './profession-round-rules';
 import {recordRpgRoundHealth} from './rpg-round-health';
 import {isRpgPhaseOne,reconcileRpgEliminations,RPG_PHASE_ONE} from './rpg-phase-one.ts';
 import {hpLimit} from './hp-limit';
@@ -18,7 +19,7 @@ export type ProfessionActiveEvent={id:string,round:number,actor:number,professio
 export type ProfessionActiveState={version:1,gauge:number[],lastUsedTurn:(string|null)[],chargedRounds:number[],events:ProfessionActiveEvent[],lastEvent?:ProfessionActiveEvent};
 export type ActiveContext=Pick<Game,'phase'|'turn'|'rpgRun'|'round'|'turnReadyAt'|'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'roundActions'|'result'>;
 export function newProfessionActives(size:number):ProfessionActiveState{return {version:1,gauge:Array(size).fill(1),lastUsedTurn:Array(size).fill(null),chargedRounds:[],events:[]};}
-export function hasProfessionActives(game:ActiveContext){return (isRpgPhaseOne(game)||!!game.hpItemMode&&game.hpItemVariant===2&&game.hpItemRules===4)&&!!game.rpgRun?.combat?.itemBattle;}
+export function hasProfessionActives(game:ActiveContext){return !hasRoundCombat(game)&&(isRpgPhaseOne(game)||!!game.hpItemMode&&game.hpItemVariant===2&&game.hpItemRules===4)&&!!game.rpgRun?.combat?.itemBattle;}
 /** Old saves receive the starting one cell, never retroactive round charges. */
 export function ensureProfessionActives(game:ActiveContext){
  if(!hasProfessionActives(game))return;const combat=game.rpgRun!.combat!,state=combat.actives??=newProfessionActives(combat.professions.length);
@@ -27,6 +28,7 @@ export function ensureProfessionActives(game:ActiveContext){
 export function professionTurnKey(game:Pick<Game,'round'|'turn'|'roundActions'>){return `${game.round}:${game.turn}:${game.roundActions||0}`;}
 export function activeGauge(game:ActiveContext,who:number){const profession=game.rpgRun?.combat?.professions[who]||'swordsman';return Math.max(0,Math.min(PROFESSION_ACTIVES[profession].maxGauge,game.rpgRun?.combat?.actives?.gauge[who]??1));}
 export function professionActiveAvailability(game:ActiveContext,who:number,enabled=true,now=Date.now()){
+ if(hasRoundCombat(game))return {usable:false,reason:'족보 승리로 자동 발동 · 판 종료 정산'};
  const combat=game.rpgRun?.combat,profession=combat?.professions[who];if(!hasProfessionActives(game)||!profession)return {usable:false,reason:'아이템전 직업 스킬'};
  const config=PROFESSION_ACTIVES[profession],gauge=activeGauge(game,who);
  if(game.phase!=='playing'||game.rpgRun!.status!=='playing'||game.rpgRun!.hp[who]<=0)return {usable:false,reason:'대전 종료'};

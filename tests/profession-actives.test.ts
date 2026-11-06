@@ -1,9 +1,11 @@
+// Pre-0.7 saved-rule compatibility; new rules have a separate integration suite.
+import {createLegacyHpItemGame as createHpItemGame,startLegacyRpgRound as startRpgRound} from './fixtures/legacy-profession';
 // Explicit 100 HP fixtures also cover compatibility with pre-0.6.44 saved matches.
 import assert from 'node:assert/strict';
 import {act,view,type Game} from '../lib/game.ts';
-import {createHpItemGame,saveHpItemGame,readHpItemArchive} from '../lib/hp-item-mode.ts';
+import {saveHpItemGame,readHpItemArchive} from '../lib/hp-item-mode.ts';
 import {finishHpItemRoundReport,buyHpItemLoadout} from '../lib/hp-item-shop.ts';
-import {startRpgRound} from '../lib/rpg-game.ts';
+
 import {placeFloorTrap,scoutProfessionFloor,triggerScoutedPickup} from '../lib/item-battle-rules.ts';
 import {useRpgTacticalItem} from '../lib/rpg-items.ts';
 import {PROFESSION_ACTIVES,professionActiveAvailability,useProfessionActive,chargeProfessionActives,ensureProfessionActives,tryBotProfessionActive,ACTIVE_PRESENTATION_MS} from '../lib/profession-actives.ts';

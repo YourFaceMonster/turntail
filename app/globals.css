@@ -2038,3 +2038,5 @@ button.exchange-stage-tile:not(:disabled){pointer-events:auto;cursor:pointer}but
 
 main.turntale.active-table[data-rpg-mini="true"] .action-buttons{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
 
+
+.round-combat-pending{display:flex;flex-direction:column;gap:1px;max-width:110px;font-size:10px;line-height:1.25;white-space:nowrap}.round-combat-pending b{color:#e5c78b}

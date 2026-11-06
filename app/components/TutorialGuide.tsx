@@ -7,24 +7,24 @@ import TileBack from './TileBack';
 import {suits,type Tile} from '../../lib/game';
 import {TUTORIAL_LESSONS as lessons,tutorialAnswer} from '../../lib/tutorial';
 import {NEW_ITEM_MATCH_HP} from '../../lib/hp-limit';
-import {PROFESSION_ACTIVES} from '../../lib/profession-actives';
+import {roundProfessionDescription} from '../../lib/profession-round-rules';
 import {CoinArtwork} from './FloorCoins';
 import './tutorial-0647.css';
 
 const roles=[
- {id:'swordsman',name:'검사',image:'swordsman-strike-v1.png',detail:'상대 한 명을 골라 공격해요. 모은 게이지를 모두 써서 강타합니다.'},
- {id:'mage',name:'마법사',image:'mage-fireball-v1.png',detail:'다른 상대 모두를 공격해요. 게이지를 많이 모으면 더 강한 화염을 사용해요.'},
+ {id:'swordsman',name:'검사',image:'swordsman-strike-v1.png',detail:'족보 승리마다 무작위 상대 한 명에게 공격을 적립해요.'},
+ {id:'mage',name:'마법사',image:'mage-fireball-v1.png',detail:'검사보다 낮은 피해를 다른 상대 각각에게 적립해요.'},
  {id:'cleric',name:'성직자',image:'cleric-heal-v1.png',detail:'자신의 HP를 회복해요. 최대 HP를 넘어서 회복하지 않아요.'},
- {id:'rogue',name:'도적',image:null,detail:'2칸을 써서 보이는 바닥패 어디든 함정을 설치해요. 상대가 가져가면 피해 4. 위층·아래층 모두 가능해요.'},
+ {id:'rogue',name:'도적',image:null,detail:'페어 이상 승리마다 바닥패를 확인하고, 트리플 이상이면 함정을 자동 설치해요. 남은 함정은 개당 피해 1로 정산해요.'},
 ] as const;
-const itemLessons=[{title:'HP로 이어지는 아이템전',text:`나와 AI 2명이 HP ${NEW_ITEM_MATCH_HP}으로 시작해요. 손패를 먼저 비우면 한 판 승리, 누군가 HP가 0이 되면 대전이 끝나요.`},{title:'위층 아래 숨은 주화',text:'위층을 걷어내기 전에는 아래층 주화를 볼 수 없어요. 위층 패를 눌러 숨은 주화를 찾아보세요.'},{title:'직업 스킬은 내 차례에',text:'시작 게이지는 1칸, 한 판이 끝나면 +1칸 충전돼요. 남은 게이지는 다음 판에도 이어져요. 직업을 눌러 특징을 확인하세요.'},{title:'상점과 유물 활용하기',text:'첫 결투에는 소비 아이템을 사용할 수 없어요. 결투가 끝난 뒤 자기 차례에 아이템을 쓰고, 유물은 적힌 조건을 달성하면 자동으로 발동해요.'}];
+const itemLessons=[{title:'HP로 이어지는 아이템전',text:`나와 AI 2명이 HP ${NEW_ITEM_MATCH_HP}으로 시작해요. 손패를 먼저 비우면 한 판 승리, 누군가 HP가 0이 되면 대전이 끝나요.`},{title:'위층 아래 숨은 주화',text:'위층을 걷어내기 전에는 아래층 주화를 볼 수 없어요. 위층 패를 눌러 숨은 주화를 찾아보세요.'},{title:'족보 승리로 자동 스킬',text:'게이지와 수동 스킬 없이 족보 승리로 효과를 적립해요. 한 명이 손패를 모두 비우면 공격과 회복을 한꺼번에 반영해요.'},{title:'상점과 유물 활용하기',text:'첫 결투에는 소비 아이템을 사용할 수 없어요. 결투가 끝난 뒤 자기 차례에 아이템을 쓰고, 유물은 적힌 조건을 달성하면 자동으로 발동해요.'}];
 type LessonFlight={tile:Tile,sx:number,sy:number,ex:number,ey:number,width:number,height:number,draw?:boolean};
 
 export default function TutorialGuide({close}:{close:()=>void}){
  const [chapter,setChapter]=useState<'basic'|'items'>('basic'),[step,setStep]=useState(0),[itemStep,setItemStep]=useState(0),[selected,setSelected]=useState<number[]>([]),[done,setDone]=useState(false),[message,setMessage]=useState(''),[picked,setPicked]=useState(false),[finish,setFinish]=useState(0),[revealed,setRevealed]=useState(false),[role,setRole]=useState<typeof roles[number]['id']>('swordsman');
  const [flights,setFlights]=useState<LessonFlight[]>([]),[played,setPlayed]=useState<Tile[]>([]),[drawn,setDrawn]=useState<Tile|null>(null),[animating,setAnimating]=useState(false),handRef=useRef<HTMLDivElement>(null),tableRef=useRef<HTMLDivElement>(null),busyRef=useRef(false),flightTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
  useEffect(()=>()=>{if(flightTimer.current)clearTimeout(flightTimer.current);},[]);
- const l=lessons[step],basic=chapter==='basic',index=basic?step:itemStep,total=basic?lessons.length:itemLessons.length,profession=roles.find(value=>value.id===role)!,active=PROFESSION_ACTIVES[role];
+ const l=lessons[step],basic=chapter==='basic',index=basic?step:itemStep,total=basic?lessons.length:itemLessons.length,profession=roles.find(value=>value.id===role)!,description=roundProfessionDescription(role);
  function reset(){if(flightTimer.current)clearTimeout(flightTimer.current);busyRef.current=false;setAnimating(false);setFlights([]);setPlayed([]);setDrawn(null);setSelected([]);setDone(false);setMessage('');setPicked(false);setFinish(0);}
  function nextFeel(){try{if(localStorage.getItem('jangseong-haptic')!=='off'&&navigator.vibrate)navigator.vibrate(12);}catch{}}
  function move(to:number){if(to>index)nextFeel();reset();if(basic)setStep(to);else{setItemStep(to);setRevealed(false);}}
@@ -55,7 +55,7 @@ export default function TutorialGuide({close}:{close:()=>void}){
   </>:<div className="tutorial-item-stage">
    {itemStep===0&&<><div className="tutorial-hp-demo"><Shield aria-hidden="true"/><span>HP <b>{NEW_ITEM_MATCH_HP}</b></span><small>패 대전 · 직업 · 아이템 · 유물</small></div><ul className="tutorial-rule-list"><li>결투 승리: 승자가 그 결투에서 낸 패의 누적 장수가 기본 피해예요.</li><li>직업·유물의 추가 피해와 회복도 함께 적용돼요.</li><li>한 판이 끝나면 정산을 확인하고 다음 판으로 이어져요.</li></ul></>}
    {itemStep===1&&<><div className="tutorial-coin-stack"><span className="tutorial-coin-lower"><TileFace tile={{id:8,n:3,s:0}}/>{revealed&&<span className="tutorial-found-coin"><CoinArtwork/>3P</span>}</span>{!revealed&&<button aria-label="위층 걷어내기" onClick={()=>setRevealed(true)}><TileBack/><small>눌러서 위층 걷기</small></button>}</div><p className="tutorial-coin-result" role="status">{revealed?'주화 발견! 아래층 3을 가져가면 주화도 함께 받아요.':'아래층 주화는 아직 보이지 않아요.'}</p><ul className="tutorial-rule-list"><li>랜덤 주화는 라운드당 1개: 도적 1P · 다른 직업 3P.</li><li>바닥의 마지막 패는 누구나 5P.</li><li>두 보상이 겹치면 도적 6P · 다른 직업 8P.</li></ul></>}
-   {itemStep===2&&<><div className="tutorial-professions" role="group" aria-label="직업 스킬 선택">{roles.map(value=><button key={value.id} aria-pressed={role===value.id} onClick={()=>setRole(value.id)}><img src={value.image?`/item-battle-v1/skills/${value.image}`:'/item-battle-v1/trap-v1.webp'} alt=""/>{value.name}</button>)}</div><div className="tutorial-skill-detail"><strong>{profession.name} · {active.name}</strong><p>{profession.detail}</p><small>{role==='rogue'?'2칸 소비 · 자기 턴 (1회)':`1~${active.maxGauge}칸 전량 소비 · ${role==='cleric'?'회복':'피해'} ${active.values.slice(1).join(' / ')}`}</small></div><p className="tutorial-tip">족보 승리로 자동 발동하는 직업 효과는 별도예요. 단순히 패를 내는 것만으로는 발동하지 않아요.</p></>}
+   {itemStep===2&&<><div className="tutorial-professions" role="group" aria-label="직업 스킬 선택">{roles.map(value=><button key={value.id} aria-pressed={role===value.id} onClick={()=>setRole(value.id)}><img src={value.image?`/item-battle-v1/skills/${value.image}`:'/item-battle-v1/trap-v1.webp'} alt=""/>{value.name}</button>)}</div><div className="tutorial-skill-detail"><strong>{profession.name} · 족보 자동 스킬</strong><p>{profession.detail}</p><small>{description.slice(0,2).join(' / ')}</small></div><p className="tutorial-tip">단순히 패를 내는 것만으로는 발동하지 않아요. 해당 족보로 싸움에서 이겨야 적립돼요.</p></>}
    {itemStep===3&&<><div className="tutorial-kit-art" aria-hidden="true"><img src="/rpg-items-v1/consumables/emergency-herb-v2.webp" alt=""/><img src="/rpg-items-v1/consumables/ember-bomb-v2.webp" alt=""/><img src="/item-battle-v1/relics/sun-sigil.webp" alt=""/></div><ul className="tutorial-rule-list"><li>상점: 가진 주화 안에서 구매해요. 부족하면 회색으로 표시돼요.</li><li>장착 유물: 오른쪽 유물을 누르면 정확한 조건을 확인해요.</li><li>투시: 패 내용과 함정 유무를 확인해요. 함정 설치와는 다른 효과예요.</li><li>대전 도중 얻은 주화로 다음 상점에서 필요한 아이템을 준비하세요.</li></ul></>}
   </div>}
   <footer className="tutorial-actions"><button className="secondary tutorial-back-step" disabled={index===0||animating} onClick={()=>move(index-1)}><ChevronLeft/>이전</button>

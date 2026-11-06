@@ -1,3 +1,5 @@
+import {settleProfessionRound} from './profession-round-combat';
+import {hasRoundCombat} from './profession-round-rules';
 import {isRpgPhaseOne,rpgAlive,nextRpgSeat,reconcileRpgEliminations,settleRpgPhaseOne} from './rpg-phase-one.ts';
 import {publicCoinEvents,nextCoinPresentationAt} from './coin-presentation';
 import {recordProfessionBattlePlay,resetProfessionCombat,resolveProfessionRpgBattle} from './rpg-profession-combat.ts';
@@ -147,7 +149,7 @@ export function settle(g:Game):RoundResult{
   const reached=g.players.map((p,i)=>({i,points:p.points||0,count:p.hand.length})).filter(p=>p.points>=(g.targetScore||100)).sort((a,b)=>b.points-a.points||a.count-b.count||a.i-b.i);
   g.matchWinner=reached[0]?.i??null;
  }
- g.result={id:`${g.code}:${g.round}`,at:Date.now(),round:g.round,players,transfers,voided,voidReason:voided?"AI가 대신 진행한 참가자가 있어 전적과 점수를 반영하지 않아요.":undefined};if(g.stageRun){g.stageRun=settleStageRun(g.stageRun,g.result);g.result.stageRun=structuredClone(g.stageRun);}if(g.rpgRun){if(isRpgPhaseOne(g)){g.rpgRun=settleRpgPhaseOne(g.rpgRun,g.result);}else if(isBattleItemMode(g)){settleHpBattleMoney(g);}else{applyPendingHpItems(g);const beforeHp=[...g.rpgRun.hp];g.rpgRun=settleRpgRound(g.rpgRun,g.result,g.winner,!!g.rpgTest,!!g.hpItemMode);if(g.hpItemMode){finishHpItemRoundReport(g,beforeHp);finishHpItemMatch(g);}if(g.rpgTest&&g.rpgRun.rounds>=RPG_TEST_ROUNDS)g.rpgRun={...g.rpgRun,status:'complete',reward:null};}}if(g.challenge){g.challenge=advanceChallenge(g.challenge,g.result);g.result.challenge=structuredClone(g.challenge);}return g.result;
+ g.result={id:`${g.code}:${g.round}`,at:Date.now(),round:g.round,players,transfers,voided,voidReason:voided?"AI가 대신 진행한 참가자가 있어 전적과 점수를 반영하지 않아요.":undefined};settleProfessionRound(g);if(g.stageRun){g.stageRun=settleStageRun(g.stageRun,g.result);g.result.stageRun=structuredClone(g.stageRun);}if(g.rpgRun){if(isRpgPhaseOne(g)){g.rpgRun=settleRpgPhaseOne(g.rpgRun,g.result);}else if(isBattleItemMode(g)){settleHpBattleMoney(g);}else{applyPendingHpItems(g);const beforeHp=[...g.rpgRun.hp];g.rpgRun=settleRpgRound(g.rpgRun,g.result,g.winner,!!g.rpgTest,!!g.hpItemMode);if(g.hpItemMode){finishHpItemRoundReport(g,beforeHp);finishHpItemMatch(g);}if(g.rpgTest&&g.rpgRun.rounds>=RPG_TEST_ROUNDS)g.rpgRun={...g.rpgRun,status:'complete',reward:null};}}if(g.challenge){g.challenge=advanceChallenge(g.challenge,g.result);g.result.challenge=structuredClone(g.challenge);}return g.result;
 }
 export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now=Date.now(),automatic=false){
  if(hpItemShopPending(g))throw Error("이번 판의 상점 준비를 마쳐 주세요. 구매 없이 시작할 수도 있어요.");
@@ -168,7 +170,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   recordHpBattlePlay(g,who,tiles.length);recordProfessionBattlePlay(g,who,tiles.length);
   p.hand=p.hand.filter(t=>!ids.includes(t.id));const protection=g.rpgRun?.tactics?.[who];if(protection?.sealed)protection.sealed=protection.sealed.filter(id=>!ids.includes(id));g.playedTiles=[...(g.playedTiles||[]),...tiles];if(g.publicDraws?.[p.id])g.publicDraws[p.id]=g.publicDraws[p.id].filter(t=>!ids.includes(t.id));g.trick=tiles;g.lastBy=who;
   const introductions=new Set(g.announcedCombos??[1,2,3].filter(n=>g.log.some(line=>line.includes(`· ${['싱글','페어','트리플'][n-1]} ${n}개 제출`))));
-  const showNotice=shouldShowPlayNotice(introductions,tiles.length),reviewMs=showNotice?announcedPlayDuration(tiles.length):QUICK_PLAY_MS;g.announcedCombos=[...introductions];
+  const showNotice=!hasRoundCombat(g)&&shouldShowPlayNotice(introductions,tiles.length),reviewMs=showNotice?announcedPlayDuration(tiles.length):QUICK_PLAY_MS;g.announcedCombos=[...introductions];
   g.rally=(g.rally||0)+1;g.turnReadyAt=now+reviewMs;
   g.lastEvent={id:uid(),type:"play",who,tiles,label:combo(tiles)!.label,at:now,rally:g.rally,showNotice,reviewMs};
   g.tablePlay={tiles:tiles.map(t=>({...t})),who,id:g.lastEvent.id};

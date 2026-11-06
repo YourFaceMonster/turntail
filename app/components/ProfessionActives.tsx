@@ -1,4 +1,5 @@
-'use client';
+"use client";
+import {hasRoundCombat} from '../../lib/profession-round-rules';
 import {RPG_PHASE_ONE} from '../../lib/rpg-phase-one.ts';
 import {useLayoutEffect,useRef,useState,type CSSProperties} from 'react';
 import {createPortal} from 'react-dom';
@@ -14,12 +15,12 @@ export function SwordsmanSlash({impact=false}:{impact?:boolean}){return <span cl
  {impact&&<><svg className="steel-impact-flare" viewBox="0 0 180 100"><path className="steel-impact-trail" d="M-6 104Q60 51 184-5L166 18Q70 70-6 104Z"/><path className="steel-impact-line" d="M-6 104L184-5"/></svg><span className="steel-contact"><i/><i/><i/><i/><i/><i/></span></>}
  </span>;}
 export function ProfessionGauge({game,seat=game.me}:{game:View,seat?:number}){
- const profession=game.rpgRun?.combat?.professions[seat];if(!profession||seat!==game.me)return null;
+ const profession=game.rpgRun?.combat?.professions[seat];if(!profession||seat!==game.me||hasRoundCombat(game))return null;
  const max=PROFESSION_ACTIVES[profession].maxGauge,value=activeGauge(game,seat);
  return <span className={`profession-gauge ${value===max?'is-full':''}`} role="meter" aria-label={`액티브 게이지 ${value}/${max}${value===max?' · 완충':''}`} aria-valuemin={0} aria-valuemax={max} aria-valuenow={value} title={`게이지 ${value}/${max} · ${game.rpgRun?.phaseOne?`결투 ${RPG_PHASE_ONE.duelsPerGauge}회마다 +1`:'판 종료 시 +1'} · 남은 칸 이월`}>{Array.from({length:max},(_,index)=><i key={index} className={index<value?'is-filled':''}/>)}</span>;
 }
 export function ProfessionActiveControl({game,enabled,targeting,choose}:{game:View,enabled:boolean,targeting:boolean,choose:()=>void}){
- const combat=game.rpgRun?.combat;if(!combat?.itemBattle)return null;const profession=combat.professions[game.me],config=PROFESSION_ACTIVES[profession],available=professionActiveAvailability(game,game.me,enabled),value=activeGauge(game,game.me),name=profession==='mage'?mageSpellPresentation(value).name:config.name;
+ const combat=game.rpgRun?.combat;if(!combat?.itemBattle||hasRoundCombat(game))return null;const profession=combat.professions[game.me],config=PROFESSION_ACTIVES[profession],available=professionActiveAvailability(game,game.me,enabled),value=activeGauge(game,game.me),name=profession==='mage'?mageSpellPresentation(value).name:config.name;
  return <span className={`profession-active-control profession-${profession} ${value===config.maxGauge?'is-full':''}`} title={`${name} · ${value}/${config.maxGauge}칸 · ${available.reason}`}>
   {profession==='rogue'?<RogueTrapControl game={game} enabled={enabled} targeting={targeting} choose={choose}/>:<button type="button" className={`text-btn profession-active-button ${targeting?'is-targeting':''}`} disabled={!available.usable} aria-label={targeting?`${name} 대상 선택 취소`:`${name} · 게이지 ${value}/${config.maxGauge} · ${available.reason}`} aria-pressed={profession==='swordsman'?targeting:undefined} onClick={choose}><img src={PROFESSION_SKILL_IMAGES[profession]} alt="" draggable={false}/></button>}
   <ProfessionGauge game={game}/>

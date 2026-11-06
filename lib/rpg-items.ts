@@ -1,3 +1,5 @@
+import {hasRoundCombat} from './profession-round-rules';
+import {queueRoundDamage,queueRoundHealing} from './profession-round-combat';
 import {recordRpgRoundHealth} from './rpg-round-health';
 import {letterQuestView} from './rpg-journey.ts';
 import {BLUE_GLASS_ID,emergencyHerbHealing} from './blue-glass.ts';
@@ -78,8 +80,8 @@ export function rpgItemAvailability(game:ReturnType<typeof view>,id:string,enabl
  if(id==='ward-seal')return {usable:!run.itemGuards?.[game.me],reason:run.itemGuards?.[game.me]?'비밀 방패가 이미 준비됐어요':'다음 공격·패 교환 아이템 1회 방어'};
  if(id==='whisper-eye')return {usable:game.players.some((player,index)=>index!==game.me&&player.count>0),reason:'선택한 상대의 손패 무작위 1장 확인 · 나에게만 공개'};
  if(isAttackItem(id)){
-  if(!game.players.some((_,i)=>i!==game.me&&hpItemEffectiveHp(game,i)>(game.hpItemMode||isRpgPhaseOne(game)?0:1)))return {usable:false,reason:'공격할 수 있는 상대가 없어요'};
-  return {usable:true,reason:isRpgPhaseOne(game)?`선택한 생존 상대에게 즉시 HP ${id==='spark-dart'?3:8} 피해 · HP 0이면 퇴장`:isBattleItemMode(game)?`즉시 HP ${id==='spark-dart'?3:8} 피해 · HP 0이면 종료`:game.hpItemMode?`HP ${id==='spark-dart'?3:8} 피해 · 판 종료 시 정산`:`선택한 상대에게 즉시 HP ${id==='spark-dart'?3:8} 피해 · 최소 HP 1`};
+  if(!game.players.some((_,i)=>i!==game.me&&(hasRoundCombat(game)?run.hp[i]:hpItemEffectiveHp(game,i))>(game.hpItemMode||isRpgPhaseOne(game)?0:1)))return {usable:false,reason:'공격할 수 있는 상대가 없어요'};
+  return {usable:true,reason:hasRoundCombat(game)?`선택한 상대 피해 ${id==='spark-dart'?3:8} 적립 · 판 종료 시 정산`:isRpgPhaseOne(game)?`선택한 생존 상대에게 즉시 HP ${id==='spark-dart'?3:8} 피해 · HP 0이면 퇴장`:isBattleItemMode(game)?`즉시 HP ${id==='spark-dart'?3:8} 피해 · HP 0이면 종료`:game.hpItemMode?`HP ${id==='spark-dart'?3:8} 피해 · 판 종료 시 정산`:`선택한 상대에게 즉시 HP ${id==='spark-dart'?3:8} 피해 · 최소 HP 1`};
  }
  const minimum=exchangeMinimum(id);
  if(game.players[game.me].count<minimum)return {usable:false,reason:`내 손패 ${minimum}장 이상 필요`};
@@ -88,7 +90,7 @@ export function rpgItemAvailability(game:ReturnType<typeof view>,id:string,enabl
 }
 function randomIndex(length:number){const value=new Uint32Array(1);crypto.getRandomValues(value);return value[0]%length;}
 function takeRandom(hand:Tile[],count:number){const pool=[...hand],picked:Tile[]=[];for(let i=0;i<count;i++)picked.push(pool.splice(randomIndex(pool.length),1)[0]);return picked;}
-function record(g:Game,who:number,id:RpgTacticalItem,target:number,kind:RpgItemEvent['kind'],amount?:number){g.rpgRun!.lastItem={id:uid(),actor:who,target,itemId:id,kind,amount,at:Date.now()};if((kind==='damage'||kind==='heal')&&(!g.hpItemMode||isBattleItemMode(g))){const after=g.rpgRun!.hp[target];g.rpgRun!.lastItem.hpAfter=after;g.rpgRun!.lastItem.hpBefore=after+(kind==='damage'?1:-1)*(amount||0);if(!g.hpItemMode){const before=[...g.rpgRun!.hp];before[target]=g.rpgRun!.lastItem.hpBefore;recordRpgRoundHealth(g.rpgRun!,before);}}if(g.hpItemMatch)g.hpItemMatch.roundItems.push({actor:who,target,id,kind,amount});}
+function record(g:Game,who:number,id:RpgTacticalItem,target:number,kind:RpgItemEvent['kind'],amount?:number){g.rpgRun!.lastItem={id:uid(),actor:who,target,itemId:id,kind,amount,at:Date.now()};if((kind==='damage'||kind==='heal')&&!hasRoundCombat(g)&&(!g.hpItemMode||isBattleItemMode(g))){const after=g.rpgRun!.hp[target];g.rpgRun!.lastItem.hpAfter=after;g.rpgRun!.lastItem.hpBefore=after+(kind==='damage'?1:-1)*(amount||0);if(!g.hpItemMode){const before=[...g.rpgRun!.hp];before[target]=g.rpgRun!.lastItem.hpBefore;recordRpgRoundHealth(g.rpgRun!,before);}}if(g.hpItemMatch)g.hpItemMatch.roundItems.push({actor:who,target,id,kind,amount});}
 export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:number[]=[],who=0){
  const run=g.rpgRun;
  if(!g.practice||!run||run.status!=='playing'||g.phase!=='playing'||g.turn!==who||!g.players[who])throw Error('RPG 전술 아이템은 진행 중인 내 차례에만 사용할 수 있어요.');
@@ -108,9 +110,9 @@ export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:numbe
  }else if(id==='ward-seal'){
   run.itemGuards={...run.itemGuards,[who]:true};target=who;
  }else if(id==='emergency-herb'){
-  const amount=Math.min(who===0?emergencyHerbHealing(run.equipped):10,hpLimit(run)-hpItemEffectiveHp(g,who));if(who===0&&amount>10)Object.assign(run,withRelicActivations(run,[{relicId:BLUE_GLASS_ID,message:`약초 추가 회복 +${amount-10} HP`}]));if(g.hpItemMode&&!isBattleItemMode(g)&&g.hpItemMatch){g.hpItemMatch.pendingItemDelta??=g.players.map(()=>0);g.hpItemMatch.pendingItemDelta[who]+=amount;}else run.hp[who]+=amount;record(g,who,id,who,'heal',amount);
+  const amount=Math.min(who===0?emergencyHerbHealing(run.equipped):10,hpLimit(run)-hpItemEffectiveHp(g,who));if(who===0&&amount>10)Object.assign(run,withRelicActivations(run,[{relicId:BLUE_GLASS_ID,message:`약초 추가 회복 +${amount-10} HP`}]));if(hasRoundCombat(g)){queueRoundHealing(g,who,amount,true);}else if(g.hpItemMode&&!isBattleItemMode(g)&&g.hpItemMatch){g.hpItemMatch.pendingItemDelta??=g.players.map(()=>0);g.hpItemMatch.pendingItemDelta[who]+=amount;}else run.hp[who]+=amount;record(g,who,id,who,'heal',amount);
  }else if(isAttackItem(id)){
-  if(!Number.isInteger(target)||!g.players[target]||target===who||hpItemEffectiveHp(g,target)<=(g.hpItemMode||isRpgPhaseOne(g)?0:1))throw Error('공격할 수 있는 상대를 선택해 주세요.');
+  if(!Number.isInteger(target)||!g.players[target]||target===who||(hasRoundCombat(g)?run.hp[target]:hpItemEffectiveHp(g,target))<=(g.hpItemMode||isRpgPhaseOne(g)?0:1))throw Error('공격할 수 있는 상대를 선택해 주세요.');
   applyRpgEmberDamage(g,who,target,Date.now(),id);
  }else{
   const count=id==='fates-scales'?2:1;
@@ -148,6 +150,7 @@ export function refundLegacyEmbers(g:Game){
 }
 function applyRpgEmberDamage(g:Game,who:number,target:number,now:number,id:RpgTacticalItem='ember-bomb'){
  if(blockHostileItem(g,who,target,id))return;
+ if(hasRoundCombat(g)){const damage=id==='spark-dart'?3:8;queueRoundDamage(g,target,damage,'item');record(g,who,id,target,'damage',damage);return;}
  const run=g.rpgRun!;let damage=Math.min(id==='spark-dart'?3:8,Math.max(0,hpItemEffectiveHp(g,target)-(g.hpItemMode||isRpgPhaseOne(g)?0:1)));
  if(target===0&&damage>0){
   if(run.equipped.includes('cracked-heart')&&!run.crackedHeartUsed.includes(run.stage)){
