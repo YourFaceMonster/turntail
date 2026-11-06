@@ -9,7 +9,7 @@ const fresh=()=>{const run=createRpgJourneyGame('잡화점 검사').rpgRun!;run.
 test('cart quote is side effect free, supports repeated consumables, and checkout grants everything together',()=>{
  const run=fresh(),before=JSON.stringify(run),cart=['emergency-herb','emergency-herb','merchants-scales'];
  const quote=quoteRpgCart(run,cart);assert.equal(JSON.stringify(run),before);assert.equal(quote.coins,100);
- const purchased=buyRpgCart(run,cart);assert.equal(purchased.coins,100);assert.equal(purchased.consumables.filter(id=>id==='emergency-herb').length,2);assert.equal(purchased.relics.filter(id=>id==='merchants-scales').length,1);
+ const purchased=buyRpgCart(run,cart);assert.equal(purchased.coins,100);assert.equal(purchased.consumables.filter(id=>id==='emergency-herb').length,run.consumables.filter(id=>id==='emergency-herb').length+2);assert.equal(purchased.relics.filter(id=>id==='merchants-scales').length,1);
  assert.equal(JSON.stringify(run),before);
 });
 test('failed later items, duplicate relics, locked items and insufficient funds leave the entire original purchase untouched',()=>{

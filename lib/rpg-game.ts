@@ -5,7 +5,7 @@ import {newProfessionCombat} from './rpg-profession-combat.ts';
 import type {RpgProfessionId} from './rpg-professions.ts';
 import {player,room,start,uid,type Game} from './game.ts';
 import {advanceRpgStage,newRpgRun,RPG_RELICS} from './rpg.ts';
-import {RPG_BASIC_ITEMS,giveRpgEnemyItems} from './rpg-items.ts';
+import {RPG_BASIC_ITEMS,RPG_SHOP_ITEMS,giveRpgEnemyItems} from './rpg-items.ts';
 import {stageOpponents} from './stage-theme.ts';
 import {RPG_TWINS} from './rpg-twins.ts';
 
@@ -46,5 +46,9 @@ export function abandonRpgGame(game:Game,now=Date.now()){
 
 export function createRpgPhaseOneGame(name:string,avatar='',now=Date.now(),profession:RpgProfessionId='swordsman'){return createRpgGame(name,avatar,now,profession,true);}
 
-export function createRpgJourneyGame(name:string,avatar='',now=Date.now(),profession:RpgProfessionId='swordsman'){const game=createRpgPhaseOneGame(name,avatar,now,profession);initRpgJourney(game);return game;}
+export function createRpgJourneyGame(name:string,avatar='',now=Date.now(),profession:RpgProfessionId='swordsman'){
+ const game=createRpgPhaseOneGame(name,avatar,now,profession);initRpgJourney(game);
+ game.rpgRun!.consumables=RPG_SHOP_ITEMS.flatMap(id=>[id,id]);game.rpgRun!.coins+=50;
+ return game;
+}
 export function enterJourneyNode(game:Game,id:JourneyNode,now=Date.now()){const retry=!!game.rpgRun?.journey?.retryStage;const stage=visitJourneyNode(game,id);if(stage===undefined)return;if(stage===1&&!retry){game.phase='playing';game.turnReadyAt=now+3000;game.lastEvent={...game.lastEvent!,at:now};}else startRpgRound(game,now);}
