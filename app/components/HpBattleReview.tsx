@@ -25,7 +25,7 @@ export default function HpBattleReview({game,paused=false,onHit,onReviewChange,o
  const [shown,setShown]=useState<HpBattleEvent|null>(null),[ready,setReady]=useState(false),notice=useRef<HTMLElement>(null),confirm=useRef<HTMLButtonElement>(null),[position,setPosition]=useState({left:0,top:0});
  const dismiss=()=>{if(!ready)return;setShown(null);callback.current.onReviewChange?.(false);};
  useLayoutEffect(()=>{
-  if(!event||event.round!==game.round){setShown(null);return;}
+  if(!event||event.round!==game.round){setShown(null);deferred.current=null;callback.current.onHpPresentation?.(null);callback.current.onReviewChange?.(false);return;}
   if(paused){if(event.id!==seen.current||deferred.current===event.id){deferred.current=event.id;callback.current.onHpPresentation?.(event);return()=>callback.current.onHpPresentation?.(null);}return;}if(event.id===seen.current&&deferred.current!==event.id)return;const delayed=deferred.current===event.id;deferred.current=null;seen.current=event.id;setShown(null);setReady(false);callback.current.onHpPresentation?.(event);callback.current.onReviewChange?.(true);
   let finished=false;const delay=delayed?HP_BATTLE_REVIEW_MS:Math.max(0,event.at+HP_BATTLE_REVIEW_MS-Date.now());
   const timer=setTimeout(()=>{finished=true;setShown(event);callback.current.onHpPresentation?.(null);callback.current.onHit();},delay),unlock=setTimeout(()=>setReady(true),delay+1000);

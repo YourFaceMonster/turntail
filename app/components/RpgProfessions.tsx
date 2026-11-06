@@ -1,5 +1,5 @@
 "use client";
-import {hasRoundCombat,roundProfessionDescription} from '../../lib/profession-round-rules';
+import {hasRoundCombat,hasImmediateSkills,roundProfessionDescription} from '../../lib/profession-round-rules';
 import {RPG_PHASE_ONE} from '../../lib/rpg-phase-one.ts';
 import {useEffect,useLayoutEffect,useRef,useState,type CSSProperties} from 'react';
 import {PROFESSION_PORTRAITS,professionPortraitStyle} from '../../lib/profession-art';
@@ -35,8 +35,8 @@ export function RpgProfessionPicker({selected,choose,itemBattle=false,rpgPhase=f
 }
 export function RpgProfessionStatus({game,seat,detail=false}:{game:ReturnType<typeof view>,seat:number,detail?:boolean}){
  const state=game.rpgRun?.combat;if(!state)return null;const id=state.professions[seat];
- const description=hasRoundCombat(game)?roundProfessionDescription(id):game.rpgRun?.phaseOne?rpgPhaseDescription(id):state.itemBattle?.version===1?itemBattleDescription(id):[passiveText(id),`${activeText(id)}${id==="mage"?"":" (1회)"}`],ownGauge=!hasRoundCombat(game)&&detail&&!!state.itemBattle&&seat===game.me;
- return <span className={`profession-status ${detail?'is-detailed':''}`} title={description.join(' / ')}><ProfessionIcon id={id}/><b>{rpgProfession(id).name}</b><small>{hasRoundCombat(game)?'족보 승리 · 판 종료 정산':id==='mage'?'자동 스킬 반복 발동':state.activeUsed[seat]?'자동 스킬 소진':'자동 스킬 대기'}</small>{detail&&<span className="profession-description">{description.map((line,index)=><span key={line}>{index>0&&<br/>}<EffectDescription line={line}/></span>)}</span>}{ownGauge&&<span className="profession-active-readout"><b>액티브 {activeGauge(game,seat)}/{PROFESSION_ACTIVES[id].maxGauge}</b><ProfessionGauge game={game} seat={seat}/><small>{game.rpgRun?.phaseOne?`결투 ${RPG_PHASE_ONE.duelsPerGauge}회마다`:"판 종료"} +1 · 이월</small></span>}</span>;
+ const description=hasRoundCombat(game)?roundProfessionDescription(id,hasImmediateSkills(game)):game.rpgRun?.phaseOne?rpgPhaseDescription(id):state.itemBattle?.version===1?itemBattleDescription(id):[passiveText(id),`${activeText(id)}${id==="mage"?"":" (1회)"}`],ownGauge=!hasRoundCombat(game)&&detail&&!!state.itemBattle&&seat===game.me;
+ return <span className={`profession-status ${detail?'is-detailed':''}`} title={description.join(' / ')}><ProfessionIcon id={id}/><b>{rpgProfession(id).name}</b><small>{hasImmediateSkills(game)?'스킬 즉시 · 패만 최종 정산':hasRoundCombat(game)?'족보 승리 · 판 종료 정산':id==='mage'?'자동 스킬 반복 발동':state.activeUsed[seat]?'자동 스킬 소진':'자동 스킬 대기'}</small>{detail&&<span className="profession-description">{description.map((line,index)=><span key={line}>{index>0&&<br/>}<EffectDescription line={line}/></span>)}</span>}{ownGauge&&<span className="profession-active-readout"><b>액티브 {activeGauge(game,seat)}/{PROFESSION_ACTIVES[id].maxGauge}</b><ProfessionGauge game={game} seat={seat}/><small>{game.rpgRun?.phaseOne?`결투 ${RPG_PHASE_ONE.duelsPerGauge}회마다`:"판 종료"} +1 · 이월</small></span>}</span>;
 }
 export function RpgProfessionIntel({game}:{game:ReturnType<typeof view>}){
  const state=game.rpgRun?.combat,reveal=state?.privateReveals[game.me]?.at(-1),button=useRef<HTMLButtonElement>(null),panel=useRef<HTMLElement>(null),[open,setOpen]=useState(false),[position,setPosition]=useState({left:0,top:0});
@@ -54,5 +54,6 @@ export function RpgProfessionHistory({game}:{game:ReturnType<typeof view>}){
 export function RoundCombatPending({game}:{game:ReturnType<typeof view>}){
  const pending=game.rpgRun?.combat?.pendingRound;if(!hasRoundCombat(game)||game.phase!=='playing')return null;
  const effects=game.rpgRun?.combat?.effects||[],last=effects.at(-1);
+ if(hasImmediateSkills(game))return <span className="round-combat-pending" role="status" title={last?`${game.players[last.actor].name} · ${professionEffectText(last)}`:'직업 스킬은 즉시 적용되고 기본 패 피해만 마지막에 정산해요'}><b>스킬 즉시 적용</b><span>패 피해 {pending?.damage[game.me]||0} 정산 예정</span>{last&&<small className="instant-skill-readout">{game.players[last.actor].name} · {last.floorScout?`바닥 ${last.revealed}장 확인`:last.heal?`HP +${last.heal}`:last.damage?`공격 ${last.damage}`:'회복 한도'}</small>}</span>;
  return <span className="round-combat-pending" role="status" title={last?`${game.players[last.actor].name} · ${professionEffectText(last)}`:"한 명이 손패를 비우면 공격·회복을 함께 반영해요"}><b>판 종료 정산</b><span>피해 {pending?.damage[game.me]||0} · 회복 {pending?.healing[game.me]||0}</span></span>;
 }

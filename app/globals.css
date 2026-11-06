@@ -2040,3 +2040,5 @@ main.turntale.active-table[data-rpg-mini="true"] .action-buttons{display:grid!im
 
 
 .round-combat-pending{display:flex;flex-direction:column;gap:1px;max-width:110px;font-size:10px;line-height:1.25;white-space:nowrap}.round-combat-pending b{color:#e5c78b}
+
+.round-combat-pending .instant-skill-readout{display:block;max-width:110px;overflow:hidden;text-overflow:ellipsis;font-size:9px;color:#fff0ba}

@@ -1,4 +1,4 @@
-import {hasRoundCombat} from './profession-round-rules';
+import {hasRoundCombat,hasImmediateSkills} from './profession-round-rules';
 import {hpLimit} from './hp-limit';
 import {chargeProfessionActives} from './profession-actives.ts';
 import {expireHpSkills,resetHpSkills,type HpSkillState,type HpSkillUse} from './hp-item-skills.ts';
@@ -69,7 +69,7 @@ export function beginHpItemRound(game:Game){
  state.roundStartHp=[...run.hp];state.roundItems=[];state.roundEarned=game.players.map(()=>0);state.pendingItemDelta=game.players.map(()=>0);state.pendingItemPoints=game.players.map(()=>0);
  if(isBattleItemMode(game)){resetHpSkills(game);state.battleTiles=game.players.map(()=>0);state.battles=[];state.lastBattle=undefined;state.roundMoneyBefore=[...state.points];state.moneyBefore=undefined;state.moneyDelta=undefined;state.moneyDamage=undefined;state.moneySkipped=false;state.endReason=undefined;}
 }
-export function hpItemEffectiveHp(game:Pick<Game,'hpItemMode'|'hpItemMatch'|'rpgRun'>,seat:number){return Math.max(0,Math.min(hpLimit(game.rpgRun),(game.rpgRun?.hp[seat]||0)+(hasRoundCombat(game)&&!game.rpgRun?.combat?.pendingRound?.settled?(game.rpgRun?.combat?.pendingRound?.healing[seat]||0)-(game.rpgRun?.combat?.pendingRound?.damage[seat]||0):0)+(game.hpItemMode?game.hpItemMatch?.pendingItemDelta?.[seat]||0:0)));}
+export function hpItemEffectiveHp(game:Pick<Game,'hpItemMode'|'hpItemMatch'|'rpgRun'>,seat:number){return Math.max(0,Math.min(hpLimit(game.rpgRun),(game.rpgRun?.hp[seat]||0)+(hasRoundCombat(game)&&!hasImmediateSkills(game)&&!game.rpgRun?.combat?.pendingRound?.settled?(game.rpgRun?.combat?.pendingRound?.healing[seat]||0)-(game.rpgRun?.combat?.pendingRound?.damage[seat]||0):0)+(game.hpItemMode?game.hpItemMatch?.pendingItemDelta?.[seat]||0:0)));}
 /** Apply queued HP once, immediately before the card settlement. */
 export function applyPendingHpItems(game:Game){if(!game.hpItemMode||!game.hpItemMatch||!game.rpgRun)return;game.rpgRun.hp=game.rpgRun.hp.map((_,seat)=>hpItemEffectiveHp(game,seat));game.hpItemMatch.pendingItemDelta=game.players.map(()=>0);}
 export function hpItemDisplayHp(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'>,seat:number,reveal=false,heldBattle:HpBattleEvent|null=null,heldItem:{id:string,target:number,before:number}|null=null){

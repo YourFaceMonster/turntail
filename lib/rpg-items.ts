@@ -1,4 +1,5 @@
-import {hasRoundCombat} from './profession-round-rules';
+import {applyImmediateEffects} from './profession-immediate-combat';
+import {hasRoundCombat,hasImmediateSkills} from './profession-round-rules';
 import {queueRoundDamage,queueRoundHealing} from './profession-round-combat';
 import {recordRpgRoundHealth} from './rpg-round-health';
 import {letterQuestView} from './rpg-journey.ts';
@@ -81,7 +82,7 @@ export function rpgItemAvailability(game:ReturnType<typeof view>,id:string,enabl
  if(id==='whisper-eye')return {usable:game.players.some((player,index)=>index!==game.me&&player.count>0),reason:'선택한 상대의 손패 무작위 1장 확인 · 나에게만 공개'};
  if(isAttackItem(id)){
   if(!game.players.some((_,i)=>i!==game.me&&(hasRoundCombat(game)?run.hp[i]:hpItemEffectiveHp(game,i))>(game.hpItemMode||isRpgPhaseOne(game)?0:1)))return {usable:false,reason:'공격할 수 있는 상대가 없어요'};
-  return {usable:true,reason:hasRoundCombat(game)?`선택한 상대 피해 ${id==='spark-dart'?3:8} 적립 · 판 종료 시 정산`:isRpgPhaseOne(game)?`선택한 생존 상대에게 즉시 HP ${id==='spark-dart'?3:8} 피해 · HP 0이면 퇴장`:isBattleItemMode(game)?`즉시 HP ${id==='spark-dart'?3:8} 피해 · HP 0이면 종료`:game.hpItemMode?`HP ${id==='spark-dart'?3:8} 피해 · 판 종료 시 정산`:`선택한 상대에게 즉시 HP ${id==='spark-dart'?3:8} 피해 · 최소 HP 1`};
+  return {usable:true,reason:hasImmediateSkills(game)?`선택한 상대에게 즉시 피해 ${id==='spark-dart'?3:8} · HP 0이면 탈락`:hasRoundCombat(game)?`선택한 상대 피해 ${id==='spark-dart'?3:8} 적립 · 판 종료 시 정산`:isRpgPhaseOne(game)?`선택한 생존 상대에게 즉시 HP ${id==='spark-dart'?3:8} 피해 · HP 0이면 퇴장`:isBattleItemMode(game)?`즉시 HP ${id==='spark-dart'?3:8} 피해 · HP 0이면 종료`:game.hpItemMode?`HP ${id==='spark-dart'?3:8} 피해 · 판 종료 시 정산`:`선택한 상대에게 즉시 HP ${id==='spark-dart'?3:8} 피해 · 최소 HP 1`};
  }
  const minimum=exchangeMinimum(id);
  if(game.players[game.me].count<minimum)return {usable:false,reason:`내 손패 ${minimum}장 이상 필요`};
@@ -110,7 +111,7 @@ export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:numbe
  }else if(id==='ward-seal'){
   run.itemGuards={...run.itemGuards,[who]:true};target=who;
  }else if(id==='emergency-herb'){
-  const amount=Math.min(who===0?emergencyHerbHealing(run.equipped):10,hpLimit(run)-hpItemEffectiveHp(g,who));if(who===0&&amount>10)Object.assign(run,withRelicActivations(run,[{relicId:BLUE_GLASS_ID,message:`약초 추가 회복 +${amount-10} HP`}]));if(hasRoundCombat(g)){queueRoundHealing(g,who,amount,true);}else if(g.hpItemMode&&!isBattleItemMode(g)&&g.hpItemMatch){g.hpItemMatch.pendingItemDelta??=g.players.map(()=>0);g.hpItemMatch.pendingItemDelta[who]+=amount;}else run.hp[who]+=amount;record(g,who,id,who,'heal',amount);
+  const amount=Math.min(who===0?emergencyHerbHealing(run.equipped):10,hpLimit(run)-hpItemEffectiveHp(g,who));if(who===0&&amount>10)Object.assign(run,withRelicActivations(run,[{relicId:BLUE_GLASS_ID,message:`약초 추가 회복 +${amount-10} HP`}]));if(hasImmediateSkills(g)){applyImmediateEffects(g,g.players.map(()=>0),g.players.map((_,seat)=>seat===who?amount:0));}else if(hasRoundCombat(g)){queueRoundHealing(g,who,amount,true);}else if(g.hpItemMode&&!isBattleItemMode(g)&&g.hpItemMatch){g.hpItemMatch.pendingItemDelta??=g.players.map(()=>0);g.hpItemMatch.pendingItemDelta[who]+=amount;}else run.hp[who]+=amount;record(g,who,id,who,'heal',amount);
  }else if(isAttackItem(id)){
   if(!Number.isInteger(target)||!g.players[target]||target===who||(hasRoundCombat(g)?run.hp[target]:hpItemEffectiveHp(g,target))<=(g.hpItemMode||isRpgPhaseOne(g)?0:1))throw Error('공격할 수 있는 상대를 선택해 주세요.');
   applyRpgEmberDamage(g,who,target,Date.now(),id);
@@ -150,6 +151,7 @@ export function refundLegacyEmbers(g:Game){
 }
 function applyRpgEmberDamage(g:Game,who:number,target:number,now:number,id:RpgTacticalItem='ember-bomb'){
  if(blockHostileItem(g,who,target,id))return;
+ if(hasImmediateSkills(g)){const result=applyImmediateEffects(g,g.players.map((_,seat)=>seat===target?(id==='spark-dart'?3:8):0),g.players.map(()=>0),now);record(g,who,id,target,'damage',result.damage[target]);return;}
  if(hasRoundCombat(g)){const damage=id==='spark-dart'?3:8;queueRoundDamage(g,target,damage,'item');record(g,who,id,target,'damage',damage);return;}
  const run=g.rpgRun!;let damage=Math.min(id==='spark-dart'?3:8,Math.max(0,hpItemEffectiveHp(g,target)-(g.hpItemMode||isRpgPhaseOne(g)?0:1)));
  if(target===0&&damage>0){

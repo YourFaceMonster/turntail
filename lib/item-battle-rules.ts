@@ -1,4 +1,5 @@
-import {hasRoundCombat} from './profession-round-rules';
+import {applyImmediateEffects,finishImmediateCombat} from './profession-immediate-combat';
+import {hasRoundCombat,hasImmediateSkills} from './profession-round-rules';
 import {queueRoundDamage} from './profession-round-combat';
 import {recordRpgRoundHealth} from './rpg-round-health';
 import {isRpgPhaseOne,reconcileRpgEliminations,rpgAlive} from './rpg-phase-one.ts';
@@ -61,6 +62,10 @@ export function triggerFloorTrap(game:Game,who:number,index:number,tile:Tile,now
  const state=itemBattleState(game),run=game.rpgRun;if(!state||!run)return;
  const traps=state.traps.filter(trap=>trap.tileId===tile.id&&trap.round===game.round&&rpgAlive(game,trap.owner));state.traps=state.traps.filter(trap=>!traps.includes(trap));
  for(const key of Object.keys(state.trapIntel))state.trapIntel[Number(key)]=state.trapIntel[Number(key)].filter(intel=>intel.tileId!==tile.id);
+ if(hasImmediateSkills(game)){
+  for(const trap of traps){const safe=trap.owner===who,damage=game.players.map((_,seat)=>seat===who&&!safe?trap.damage??4:0),result=applyImmediateEffects(game,damage,game.players.map(()=>0),now);state.trapEvents.push({id:uid(),owner:trap.owner,target:who,index,damage:result.damage[who],hpBefore:result.before[who],hpAfter:result.after[who],at:now,safe});if(!safe)game.log=[`${game.players[trap.owner].name}의 함정 · ${game.players[who].name} HP −${result.damage[who]}`,...game.log].slice(0,40);}
+  if(!deferFinish)finishImmediateCombat(game,now,'trap');return;
+ }
  if(hasRoundCombat(game)){
   for(const trap of traps){const safe=trap.owner===who,damage=safe?0:trap.damage??4;if(damage)queueRoundDamage(game,who,damage,'trap');state.trapEvents.push({id:uid(),owner:trap.owner,target:who,index,damage,hpBefore:run.hp[who],hpAfter:run.hp[who],at:now,safe});if(!safe)game.log=[`${game.players[trap.owner].name}의 함정 · ${game.players[who].name} 피해 ${damage} 적립`,...game.log].slice(0,40);}
   run.updatedAt=now;return;

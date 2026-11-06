@@ -1,4 +1,4 @@
-import {hasRoundCombat,roundSkill} from './profession-round-rules';
+import {hasRoundCombat,hasImmediateSkills,roundSkill} from './profession-round-rules';
 import {hpLimit} from './hp-limit';
 import {combo,legalOptions,rank,sorted,type BotPosition,type BotAction,type Tile} from './game';
 import {chooseStrategicAction,publicBotCandidates,publicControlChance} from './bot';
@@ -42,14 +42,14 @@ export function itemBattlePositionValue(hp:number[],counts:number[],me:number,te
  return first*RANK_VALUE[0]+second*RANK_VALUE[1]+last*RANK_VALUE[2];
 }
 function value(p:BotPosition,s:State){
- const terminal=s.ended||(!hasRoundCombat(p)&&s.hp.some(hp=>hp<=0));if(terminal)return itemBattlePositionValue(s.hp,s.counts,p.me,true);
+ const terminal=s.ended||((!hasRoundCombat(p)||hasImmediateSkills(p))&&s.hp.some(hp=>hp<=0));if(terminal)return itemBattlePositionValue(s.hp,s.counts,p.me,true);
  const outlook=[...s.hp],debt=Math.max(0,s.counts[p.me]*s.counts.length-s.counts.reduce((sum,n)=>sum+n,0)-s.wallet);
  // Hoarding floor tiles can preserve today's HP and still bankrupt us at the
  // round settlement. Discount that public own-wallet liability before ranking.
  outlook[p.me]=Math.max(.1,outlook[p.me]-debt*.65)+s.futureGuard;
  return itemBattlePositionValue(outlook,s.counts,p.me,false)+s.wallet*.8;
 }
-function initial(p:BotPosition):State{return {hp:p.rpgRun!.hp.map((hp,seat)=>hasRoundCombat(p)?hp-(p.rpgRun!.combat?.pendingRound?.damage[seat]||0)+(p.rpgRun!.combat?.pendingRound?.healing[seat]||0):hp),counts:p.players.map(player=>player.count),wallet:p.hpItemMatch?.points[p.me]||0,cost:0,bonus:0,futureGuard:p.rpgRun!.itemGuards?.[p.me]?4.2:0,steps:[],ended:false};}
+function initial(p:BotPosition):State{return {hp:p.rpgRun!.hp.map((hp,seat)=>hasRoundCombat(p)&&!hasImmediateSkills(p)?hp-(p.rpgRun!.combat?.pendingRound?.damage[seat]||0)+(p.rpgRun!.combat?.pendingRound?.healing[seat]||0):hp),counts:p.players.map(player=>player.count),wallet:p.hpItemMatch?.points[p.me]||0,cost:0,bonus:0,futureGuard:p.rpgRun!.itemGuards?.[p.me]?4.2:0,steps:[],ended:false};}
 function copy(s:State):State{return {...s,hp:[...s.hp],counts:[...s.counts],steps:[...s.steps]};}
 function totals(p:BotPosition,seat:number){
  const recorded=p.hpItemMatch?.battleTiles?.[seat];if(recorded!==undefined)return recorded;
@@ -70,8 +70,15 @@ function resolveBattle(p:BotPosition,s:State,seat:number,tiles:Tile[],submitted:
   const result=copy(s),label=combo(tiles)?.label||'싱글',role=p.rpgRun!.combat!.professions[seat],skill=roundSkill(role,label),targets=p.players.flatMap((_,i)=>i!==seat&&p.rpgRun!.hp[i]>0?[i]:[]);
   const relicIds=seat===0&&p.me===0?p.rpgRun!.equipped:publicBattleRelicIds(p.hpItemMatch,seat),relic=itemBattleRelicWin(relicIds,label,tiles);
   const hit=label==='싱글'||role==='mage'?skill.damage:role==='swordsman'?skill.damage/Math.max(1,targets.length):role==='rogue'&&skill.trap?(skill.trap*.45+.55)/Math.max(1,targets.length):0;
+  if(hasImmediateSkills(p)){
+   const immediateHit=label==='싱글'||role==='rogue'?0:hit;
+   result.hp=result.hp.map((hp,i)=>i===seat?Math.min(hpLimit(p.rpgRun),hp+skill.heal+relic.heal):targets.includes(i)?Math.max(0,hp-immediateHit-relic.damage):hp);
+   result.ended=result.hp.some(hp=>hp<=0);
+   if(!result.ended&&result.counts.some(n=>n===0)){result.hp=result.hp.map((hp,i)=>Math.max(0,hp-(p.rpgRun!.combat!.pendingRound?.damage[i]||0)-(label==='싱글'&&targets.includes(i)?1:0)));result.ended=result.hp.some(hp=>hp<=0);}
+   return result;
+  }
   result.hp=result.hp.map((hp,i)=>i===seat?hp+skill.heal+relic.heal:targets.includes(i)?hp-hit-relic.damage:hp);
-  if(result.counts.some(n=>n===0)){result.hp=result.hp.map(hp=>Math.max(0,Math.min(hpLimit(p.rpgRun),hp)));result.ended=result.hp.some(hp=>hp<=0);}
+  if(result.counts.some(n=>n===0)||hasImmediateSkills(p)&&label!=='싱글'){result.hp=result.hp.map(hp=>Math.max(0,Math.min(hpLimit(p.rpgRun),hp)));result.ended=result.hp.some(hp=>hp<=0);}
   return result;
  }
  const result=copy(s),effect=battleEffect(p,seat,tiles,submitted);
@@ -101,7 +108,7 @@ function draw(p:BotPosition,start:State,index:number){
  s.wallet+=stack.coinAmount||0;
  if(!hasRoundCombat(p)&&p.rpgRun!.combat!.professions[p.me]==='rogue'&&peek?.source==='profession')s.hp=s.hp.map((hp,seat)=>seat===p.me?hp:Math.max(0,hp-1));
  const hostile=extra.trapIntel[p.me]?.some(intel=>intel.index===index&&intel.trapped);if(hostile)s.hp[p.me]=Math.max(0,s.hp[p.me]-4);
- s.ended=(!hasRoundCombat(p)||s.counts.some(n=>n===0))&&s.hp.some(hp=>hp<=0);if(s.ended||p.lastBy===null)return {score:value(p,s),state:s};
+ s.ended=(!hasRoundCombat(p)||hasImmediateSkills(p)||s.counts.some(n=>n===0))&&s.hp.some(hp=>hp<=0);if(s.ended||p.lastBy===null)return {score:value(p,s),state:s};
  const next=(p.me+1)%p.players.length,probability=next===p.lastBy?1:publicControlChance(p,p.trick,p.lastBy,[p.me]),won=resolveBattle(p,s,p.lastBy,p.trick,Math.max(p.trick.length,totals(p,p.lastBy)));
  let score=probability*value(p,won)+(1-probability)*value(p,s);
  const opponent=p.players[next],finishes=next!==p.me&&opponent.known.length===opponent.count?legalOptions(opponent.known,p.trick).filter(option=>option.tiles.length===opponent.count):[];
@@ -199,7 +206,7 @@ function applyAux(p:BotPosition,before:State,action:ItemBattleAux,hasPlay:boolea
   if(action.id==='scout-lens')s.bonus+=95+(p.stacks[action.target!].coinAmount||0)*8;
   if(action.id==='swapped-fate'||action.id==='fates-scales')s.bonus+=hasPlay?15:160;
  }
- s.ended=(!hasRoundCombat(p)||s.counts.some(n=>n===0))&&s.hp.some(hp=>hp<=0);if(s.ended){s.cost=0;s.bonus=0;}return s;
+ s.ended=(!hasRoundCombat(p)||hasImmediateSkills(p)||s.counts.some(n=>n===0))&&s.hp.some(hp=>hp<=0);if(s.ended){s.cost=0;s.bonus=0;}return s;
 }
 /** Compare cards, skills, items and both skill/item orders under one objective.
  * Execute only the first step, then replan after the actual observation/animation. */

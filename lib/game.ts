@@ -1,5 +1,5 @@
-import {settleProfessionRound} from './profession-round-combat';
-import {hasRoundCombat} from './profession-round-rules';
+import {roundCombatState,settleProfessionRound} from './profession-round-combat';
+import {hasRoundCombat,hasImmediateSkills} from './profession-round-rules';
 import {isRpgPhaseOne,rpgAlive,nextRpgSeat,reconcileRpgEliminations,settleRpgPhaseOne} from './rpg-phase-one.ts';
 import {publicCoinEvents,nextCoinPresentationAt} from './coin-presentation';
 import {recordProfessionBattlePlay,resetProfessionCombat,resolveProfessionRpgBattle} from './rpg-profession-combat.ts';
@@ -175,7 +175,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
   g.lastEvent={id:uid(),type:"play",who,tiles,label:combo(tiles)!.label,at:now,rally:g.rally,showNotice,reviewMs};
   g.tablePlay={tiles:tiles.map(t=>({...t})),who,id:g.lastEvent.id};
   note(g,`${p.name} · ${combo(tiles)!.label} ${tiles.length}개 제출`);
-  if(!p.hand.length){resolveHpItemBattle(g,now+reviewMs,true);resolveProfessionRpgBattle(g,now+reviewMs,true);if(g.rpgRun&&g.rpgRun.status!=='playing')return;g.phase="ended";g.turnDeadline=0;g.winner=who;if(!automatic)p.timeouts=0;settle(g);note(g,g.result?.voided?`${p.name} 손패 소진 · AI 대체로 무효 경기입니다.`:`${p.name} 승리! 손패를 모두 냈습니다.`);return;}
+  if(!p.hand.length){if(hasImmediateSkills(g))roundCombatState(g).handFinished=true;resolveHpItemBattle(g,now+reviewMs,true);resolveProfessionRpgBattle(g,now+reviewMs,true);if(g.rpgRun&&g.rpgRun.status!=='playing')return;g.phase="ended";g.turnDeadline=0;g.winner=who;if(!automatic)p.timeouts=0;settle(g);note(g,g.result?.voided?`${p.name} 손패 소진 · AI 대체로 무효 경기입니다.`:`${p.name} 승리! 손패를 모두 냈습니다.`);return;}
  }else if(action==="draw"){
   if(!g.trick.length)throw Error("선을 잡은 차례에는 패를 반드시 내야 해요.");
   if(!Number.isInteger(index)||!accessible(g,index))throw Error("밝게 표시된 외곽 타일만 가져올 수 있어요.");

@@ -31,6 +31,7 @@ const hands:Record<string,Tile[]>={
 const roles:RpgProfessionId[]=['swordsman','mage','cleric','rogue'];
 function fresh(role:RpgProfessionId='swordsman',item=false){
  const g=item?createHpItemGame('검증','',Date.now(),2,'toto',role,100):createRpgPhaseOneGame('검증','',Date.now(),role);
+ g.rpgRun!.combat!.immediateSkills=false;
  if(item)buyHpItemLoadout(g,[]);
  const run=g.rpgRun!;run.equipped=[];run.shield=0;run.hp=[100,100,100];run.coins=100;run.consumables=[];run.enemyConsumables={1:[],2:[]};run.combat!.professions=[role,'swordsman','mage'];
  g.turn=0;g.turnReadyAt=0;g.roundActions=3;g.completedBattles=1;g.lastBy=null;g.trick=[];g.tablePlay=null;
@@ -109,7 +110,8 @@ test('AI no longer selects manual skills and ignores injected foreign hands or h
 test('full legal deals for every profession finish with one settlement and unchanged HP between moves',()=>{
  for(const item of [false,true])for(const role of roles){
   const g=item?createHpItemGame('전체 진행','',Date.now(),2,'toto',role,100):createRpgPhaseOneGame('전체 진행','',Date.now(),role);
-  if(item)buyHpItemLoadout(g,[]);g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.players.forEach(p=>p.bot=true);const before=[...g.rpgRun!.hp];let steps=0;
+  g.rpgRun!.combat!.immediateSkills=false;
+ if(item)buyHpItemLoadout(g,[]);g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.players.forEach(p=>p.bot=true);const before=[...g.rpgRun!.hp];let steps=0;
   while(g.phase==='playing'&&steps++<600){g.turnReadyAt=0;botMove(g,Date.now());if(g.phase==='playing'){assert.deepEqual(g.rpgRun!.hp,before);assert.equal(g.rpgRun!.combat!.lastBattle,undefined);}}
   assert.equal(g.phase,'ended',`${item?'item':'RPG'} ${role} failed to finish in 600 moves`);assert.ok(g.result);assert.equal(g.rpgRun!.combat!.lastBattle!.roundSettlement,true);assert.equal(g.rpgRun!.combat!.pendingRound!.settled,true);assert.ok(g.rpgRun!.combat!.battles.length>0);assert.ok(g.players.some(p=>p.hand.length===0));
  }

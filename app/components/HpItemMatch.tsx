@@ -23,13 +23,13 @@ export function HpItemLobby({archive,start,resume,close,error,character,chooseCh
  const starter=RPG_SHOP_ITEMS,legacy=!!archive.active&&!archive.active.rpgRun?.combat?.itemBattle;
  return <div className="modal-shade" onClick={close}><section className="modal hp-item-lobby menu-surface menu-theme-items" role="dialog" aria-modal="true" aria-label="싱글플레이 아이템전" onClick={event=>event.stopPropagation()}>
   <button className="close" onClick={close} aria-label="아이템전 닫기">×</button><h2>아이템전</h2>
-  <p>포인트 상점 · 족보 자동 스킬 · 판 종료 일괄 정산</p>
+  <p>포인트 상점 · 직업 스킬 즉시 적용 · 패는 판 종료 정산</p>
   <p className="hp-random-opponents">세계의 주민 30명 중 상대 2명이 무작위로 찾아와요.<small>한 대전 동안 같은 상대와 겨루며, 새 대전을 시작하면 다시 만나요.</small></p>
   <details className="hp-item-rule-details"><summary>규칙 보기</summary><div className="hp-item-rules">
    <span>나와 AI 2명 · 시작 HP {NEW_ITEM_MATCH_HP} · 누군가 HP 0이면 대전 종료</span>
    <span>매 라운드 첫 결투 종료 후 사용 · 자기 차례 아이템 1개 · 판당 아이템 2개</span>
-   <span>족보 승리로 직업 효과 적립 · 한 명이 손패를 비우면 일괄 정산</span><span>싱글은 상대 각각 피해 1 · 페어 이상은 직업별 효과 적용</span>
-   <span>공격·회복·함정·아이템 피해는 판 종료에 동시 반영</span><span>시작 20P · 정상 판 점수는 돈으로 정산 · 부족한 1P당 HP −1</span>
+   <span>족보 승리로 직업 스킬 즉시 발동 · 기본 패 피해는 손패 소진 시 정산</span><span>싱글은 상대 각각 피해 1 · 페어 이상은 직업별 효과 적용</span>
+   <span>직업 공격·회복·함정·아이템 즉시 반영 · HP 0이면 탈락</span><span>시작 20P · 정상 판 점수는 돈으로 정산 · 부족한 1P당 HP −1</span>
    <span>첫판 20P로 선택 구매 · 자동 준비금 없음</span><span>주화는 판 종료 시 남은 패 차이 점수로 정산 · HP 피해 추가 보상 없음</span>
    <span>도적은 페어 이상 바닥패 확인 · 트리플 이상 함정 자동 설치</span><span>미사용 아이템 계속 보관 · 무작위 유물 3개</span>
   </div></details>

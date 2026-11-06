@@ -1,6 +1,7 @@
+import {resolveImmediateProfessionBattle,settleImmediateCardRound} from './profession-immediate-combat';
 import { combo, uid, type Game } from './game';
 import { hpLimit } from './hp-limit';
-import { hasRoundCombat, roundSkill } from './profession-round-rules';
+import { hasRoundCombat, hasImmediateSkills, roundSkill } from './profession-round-rules';
 import { newItemBattleState, scoutProfessionFloor, blockItemBattleDamage } from './item-battle-rules';
 import { itemBattleRelicWin } from './item-battle-relics';
 import { withRelicActivations } from './rpg-relic-feedback';
@@ -9,6 +10,9 @@ import type { HpBattleEvent } from './hp-item-battle';
 import type { ProfessionEffect } from './rpg-profession-combat';
 export type RoundCombatState = {
     round: number;
+    handFinished?: boolean;
+    immediateDamage?: number[];
+    immediateHealing?: number[];
     damage: number[];
     healing: number[];
     trapDamage: number[];
@@ -42,6 +46,7 @@ function randomChoice<T>(values: T[]): T | undefined { if (!values.length)
 function opponents(g: Game, actor: number) { return g.players.flatMap((_, seat) => seat !== actor && g.rpgRun!.hp[seat] > 0 ? [seat] : []); }
 /** Won tricks only; no HP mutation, popup, or added turn lock. */
 export function queueProfessionRoundBattle(g: Game, now = Date.now()): HpBattleEvent | null {
+    if(hasImmediateSkills(g))return resolveImmediateProfessionBattle(g,now);
     const run = g.rpgRun, c = run?.combat;
     if (!run || !c || !hasRoundCombat(g) || run.status !== 'playing' || c.round !== g.round || c.pendingRound?.settled || g.lastBy === null || !g.trick.length)
         return null;
@@ -100,6 +105,7 @@ export function queueProfessionRoundBattle(g: Game, now = Date.now()): HpBattleE
 export function settleProfessionRound(g: Game, now = Date.now()) {
     if (!hasRoundCombat(g) || g.phase !== 'ended' || g.winner === null)
         return;
+    if(hasImmediateSkills(g))return settleImmediateCardRound(g,now);
     const run = g.rpgRun!, c = run.combat!, s = roundCombatState(g);
     if (s.settled)
         return;
