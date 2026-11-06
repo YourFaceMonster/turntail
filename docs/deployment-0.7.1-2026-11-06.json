@@ -1,0 +1,73 @@
+{
+  "deployExitCode": 0,
+  "version": "0.7.1",
+  "previousPublicVersion": "0.7.0",
+  "publicImmediateSkillCode": true,
+  "matchedLocalAssets": 9,
+  "checkedAt": "2026-11-06T12:04:50.6391853Z",
+  "homepageStatus": 200,
+  "url": "https://turntail.yousexybaby.workers.dev",
+  "browserGameplayVerified": false,
+  "requestedDeploymentVersionId": "e8ffa6b9-7b98-4d7f-9d36-f228d70044c0",
+  "additionalPublicAssets": 0,
+  "sourceCommit": "320b7f8a035fb76866d6fd4acd8dd63e6a2a064b",
+  "files": [
+    {
+      "sha256": "939d0fabebb3b2f01753bb866b067d8d3384fb06da19f0e6557609d3b1a9f4f7",
+      "status": 200,
+      "matchesLocal": true,
+      "path": "/_next/static/chunks/framework-D_rUT4EX.js"
+    },
+    {
+      "sha256": "2c25e419e68a4837a9beee3c87db661127585522a8e4dead8d40cdb965ac65da",
+      "status": 200,
+      "matchesLocal": true,
+      "path": "/_next/static/chunks/index-D4JpfOcH.js"
+    },
+    {
+      "sha256": "b9b6efcfb84ab74d89ef2de38ad36f85b6b9c5f5c355c3aced7d81bf26d42a9a",
+      "status": 200,
+      "matchesLocal": true,
+      "path": "/_next/static/chunks/layout-segment-context-DP8o72Ne.js"
+    },
+    {
+      "sha256": "6a2d03fbe20a50a4f776e25cbec40c7daa9728a0762ae8007af1a38af20d0a59",
+      "status": 200,
+      "matchesLocal": true,
+      "path": "/_next/static/chunks/page-BCIpmiSp.js"
+    },
+    {
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "status": 200,
+      "matchesLocal": true,
+      "path": "/_next/static/chunks/rolldown-runtime-C60lm6uB.js"
+    },
+    {
+      "sha256": "38c5a105a3a20eb4f85febfe8aa3c4c365543bc00583b61787d3facf669ec602",
+      "status": 200,
+      "matchesLocal": true,
+      "path": "/_next/static/chunks/rpg-connection-scenes-BVM5TwGS.js"
+    },
+    {
+      "sha256": "aae4a9e5eaef72ef2fac1a53dbe1af147bc3b3ac6b3e1b64a1cb1b8ba66aaaf3",
+      "status": 200,
+      "matchesLocal": true,
+      "path": "/_next/static/css/index.DQAo-MUs.css"
+    },
+    {
+      "sha256": "523a2d494e35fbdb8aad57e34650defcc6eaff8de6f48c0e15766ba84d67008c",
+      "status": 200,
+      "matchesLocal": true,
+      "path": "/_next/static/css/page.qKz-35TA.css"
+    },
+    {
+      "sha256": "e24af15970434ec3748a0873a5338cb853a4c16a964a98f09c5591a73ae68fd5",
+      "status": 200,
+      "matchesLocal": true,
+      "path": "/_next/static/local-bot-worker-D3qDC2zo.js"
+    }
+  ],
+  "deployLog": "../../artifacts/deploy-0.7.1-2026-11-06.log",
+  "observedDeploymentVersionId": "dc23c0d3-effb-4c72-ac8b-5bb015363112",
+  "homepageVersion": "0.7.1"
+}
