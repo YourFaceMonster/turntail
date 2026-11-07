@@ -1,0 +1,224 @@
+{
+  "checkedAt": "2026-11-07T04:50:21.453Z",
+  "url": "https://turntail.yousexybaby.workers.dev",
+  "version": "0.7.2",
+  "homepageVersion": "0.7.2",
+  "homepageStatus": 200,
+  "homepageAssets": [
+    "/_next/static/css/index.IpvP4Qxt.css",
+    "/_next/static/css/page.qKz-35TA.css",
+    "/_next/static/chunks/index-BAtMSSQ2.js",
+    "/_next/static/chunks/rolldown-runtime-C60lm6uB.js",
+    "/_next/static/chunks/framework-D_rUT4EX.js",
+    "/_next/static/chunks/layout-segment-context-DoPVd9tX.js",
+    "/_next/static/chunks/page-XblL2AWG.js",
+    "/_next/static/chunks/rpg-connection-scenes-CdEjOEfp.js"
+  ],
+  "matchedLocalAssets": 17,
+  "files": [
+    {
+      "path": "/_next/static/00f5ec64-9ec8-473a-a74f-e0b3a82c63d1/_buildManifest.js",
+      "bytes": 159,
+      "sha256": "47f02b34be6dc481257b6efce4c19e19111f37ef5c437f8ffed44f0da97fa9bb",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "47f02b34be6dc481257b6efce4c19e19111f37ef5c437f8ffed44f0da97fa9bb",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/00f5ec64-9ec8-473a-a74f-e0b3a82c63d1/_ssgManifest.js",
+      "bytes": 76,
+      "sha256": "653f3e53e89b4f8548ff86c19e92bb3c6b84b6be7485a320b1e00893ed877479",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "653f3e53e89b4f8548ff86c19e92bb3c6b84b6be7485a320b1e00893ed877479",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/chunks/app-route-prefetch-policy-DreIZ7qT.js",
+      "bytes": 937,
+      "sha256": "7b522b8fb993a3e8b56214f095363edf5937c99999222a7c7d011bb600ee9747",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "7b522b8fb993a3e8b56214f095363edf5937c99999222a7c7d011bb600ee9747",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/chunks/framework-D_rUT4EX.js",
+      "bytes": 190152,
+      "sha256": "939d0fabebb3b2f01753bb866b067d8d3384fb06da19f0e6557609d3b1a9f4f7",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "939d0fabebb3b2f01753bb866b067d8d3384fb06da19f0e6557609d3b1a9f4f7",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/chunks/index-BAtMSSQ2.js",
+      "bytes": 194107,
+      "sha256": "f483b3f2530eb57fd7d2f7954ef3dc5ee7f5563b42666f50306ab53d4c19a8be",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "f483b3f2530eb57fd7d2f7954ef3dc5ee7f5563b42666f50306ab53d4c19a8be",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/chunks/layout-segment-context-DoPVd9tX.js",
+      "bytes": 494,
+      "sha256": "88014fb0ae11f8ebf3ad303a0bfa3764104aa31ecdb04ef72af8575cac98b0c5",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "88014fb0ae11f8ebf3ad303a0bfa3764104aa31ecdb04ef72af8575cac98b0c5",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/chunks/page-Dbd9BDtL.js",
+      "bytes": 176,
+      "sha256": "60c4b65081f484e9f1605f3adb98d13d9d2246a8db8df1981e2927c52b08177d",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "60c4b65081f484e9f1605f3adb98d13d9d2246a8db8df1981e2927c52b08177d",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/chunks/page-Q03gQakx.js",
+      "bytes": 1843,
+      "sha256": "48360a9e22df06aaa31e215631937ab753b286dfd1378ab3ee5deae43da8cb71",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "48360a9e22df06aaa31e215631937ab753b286dfd1378ab3ee5deae43da8cb71",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/chunks/page-XblL2AWG.js",
+      "bytes": 511279,
+      "sha256": "17f19b1d208e2e6b92afb98a76b551e165e08b1098a8ffff0ef93a568d9f8a2f",
+      "appVersion": true,
+      "rpgMarker": true,
+      "status": 200,
+      "publicSha256": "17f19b1d208e2e6b92afb98a76b551e165e08b1098a8ffff0ef93a568d9f8a2f",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/chunks/rolldown-runtime-C60lm6uB.js",
+      "bytes": 694,
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/chunks/rpg-connection-scenes-CdEjOEfp.js",
+      "bytes": 250464,
+      "sha256": "a33d9d2c8c1490f14b5d150fd61ecb25222b1edf9ed4b9d359e157513e17d1bf",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "a33d9d2c8c1490f14b5d150fd61ecb25222b1edf9ed4b9d359e157513e17d1bf",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/chunks/streamed-icons-B7zI55ff.js",
+      "bytes": 772,
+      "sha256": "7eb2a6b44b9c0faa7300c8dd36b0fae7a35d9f65e139dd9046b3df193aa83bc8",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "7eb2a6b44b9c0faa7300c8dd36b0fae7a35d9f65e139dd9046b3df193aa83bc8",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/css/index.IpvP4Qxt.css",
+      "bytes": 674641,
+      "sha256": "278afcc4f091148b5356464eb834cca1d888bc6ddec1e398f7a93768dac8f5b8",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "278afcc4f091148b5356464eb834cca1d888bc6ddec1e398f7a93768dac8f5b8",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/css/page.qKz-35TA.css",
+      "bytes": 125166,
+      "sha256": "523a2d494e35fbdb8aad57e34650defcc6eaff8de6f48c0e15766ba84d67008c",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "523a2d494e35fbdb8aad57e34650defcc6eaff8de6f48c0e15766ba84d67008c",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/css/page.SmT-LMGj.css",
+      "bytes": 2633,
+      "sha256": "b215bb0f19115fd9a9fb201ef9c2e9f709bd109ce18ad68c87df06f6c4415e1b",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "b215bb0f19115fd9a9fb201ef9c2e9f709bd109ce18ad68c87df06f6c4415e1b",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/local-bot-worker-DiFPVyb8.js",
+      "bytes": 132608,
+      "sha256": "195cbce9df154c43b73656611d9e70c3eb13f50eff1186eb1da38073de0df00b",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "195cbce9df154c43b73656611d9e70c3eb13f50eff1186eb1da38073de0df00b",
+      "matchesLocal": true
+    },
+    {
+      "path": "/_next/static/shuffle-worker-CvAa6Vmd.js",
+      "bytes": 3897,
+      "sha256": "1dc9ac7927503a6945c7ac0782b21c5bf3916e36f6bd803c2e40a619bbbaaba2",
+      "appVersion": false,
+      "rpgMarker": false,
+      "status": 200,
+      "publicSha256": "1dc9ac7927503a6945c7ac0782b21c5bf3916e36f6bd803c2e40a619bbbaaba2",
+      "matchesLocal": true
+    }
+  ],
+  "previousPublicVersion": "0.7.1",
+  "sourceCommit": "14c2c939aa500dc97e4db879e577d44260783d00",
+  "worker": "turntail",
+  "deploymentId": "ff93c9da-ebb7-4c88-9c0d-8b2c827e584c",
+  "deployedAt": "2026-11-07T04:50:06.199153Z",
+  "workerVersionId": "b004ddb5-a809-4f79-8853-e161324e9b41",
+  "trafficPercent": 100,
+  "previousWorkerVersionId": "4821424f-cc27-4f43-a615-07f2a01b0f20",
+  "deployExitCode": 0,
+  "buildExitCode": 0,
+  "buildStagesPassed": 5,
+  "typeCheckPassed": true,
+  "tests": {
+    "tests": 338,
+    "pass": 291,
+    "fail": 47
+  },
+  "newFailures": [],
+  "bombMarketStatus": 200,
+  "browserSmoke": {
+    "homeVersion": "0.7.2",
+    "rpgDeal": "2×18 + 24",
+    "floorStacks": 12,
+    "retiredSeatShown": true,
+    "oldRpgWalletVisible": false,
+    "settlementDialogs": 1,
+    "tiedSecondShown": true,
+    "sampleHp": "70 → 78",
+    "relicOffers": 2,
+    "previewOnly": true,
+    "screenshot": "../../artifacts/public-0.7.2-rpg-settlement.png"
+  },
+  "fullGameplayVerified": false,
+  "balanceRetuned": false
+}
