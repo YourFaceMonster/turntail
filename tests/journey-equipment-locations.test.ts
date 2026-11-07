@@ -1,6 +1,7 @@
+// Pre-rework journey save compatibility; current RPG rules: rpg-rework.test.tsx.
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {createRpgJourneyGame} from '../lib/rpg-game';
+import {createRpgJourneyGame} from './fixtures/legacy-rpg-journey';
 import {equipJourneyRelic} from '../lib/rpg-journey';
 
 test('equipment changes are permitted in every exploration location, including the pre-battle map, but never in duels',()=>{

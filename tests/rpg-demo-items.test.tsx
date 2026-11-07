@@ -1,9 +1,10 @@
+// Pre-rework journey save compatibility; current RPG rules: rpg-rework.test.tsx.
 import {settleProfessionRound} from '../lib/profession-round-combat';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {createElement as h} from 'react';
 import {renderToStaticMarkup as render} from 'react-dom/server';
-import {createRpgJourneyGame,createRpgGame,enterJourneyNode} from '../lib/rpg-game.ts';
+import {createRpgJourneyGame,createRpgGame,enterJourneyNode} from './fixtures/legacy-rpg-journey';
 import {RPG_CONSUMABLES,buyRpgItem,currentRpgShop,useRpgConsumable} from '../lib/rpg.ts';
 import {RPG_DEMO_PRICES,RPG_DEMO_RELICS} from '../lib/rpg-demo-catalog.ts';
 import {BLUE_GLASS_ID} from '../lib/blue-glass.ts';

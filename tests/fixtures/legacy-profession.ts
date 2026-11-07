@@ -10,4 +10,4 @@ export function legacyProfessionGame<T extends Game>(game:T):T{
 export function createLegacyHpItemGame(...args:Parameters<typeof createHpItemGame>){return legacyProfessionGame(createHpItemGame(...args));}
 export function createLegacyRpgGame(...args:Parameters<typeof createRpgGame>){return legacyProfessionGame(createRpgGame(...args));}
 export function createLegacyRpgPhaseOneGame(...args:Parameters<typeof createRpgPhaseOneGame>){return legacyProfessionGame(createRpgPhaseOneGame(...args));}
-export function startLegacyRpgRound(...args:Parameters<typeof startRpgRound>){startRpgRound(...args);legacyProfessionGame(args[0]);resetProfessionActiveEvents(args[0]);}
+export function startLegacyRpgRound(...args:Parameters<typeof startRpgRound>){if(args[0].rpgRun)args[0].rpgRun.pendingRework=false;startRpgRound(...args);legacyProfessionGame(args[0]);resetProfessionActiveEvents(args[0]);}

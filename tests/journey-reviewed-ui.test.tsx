@@ -1,8 +1,9 @@
+// Pre-rework journey save compatibility; current RPG rules: rpg-rework.test.tsx.
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {createElement as h} from 'react';
 import {renderToStaticMarkup as render} from 'react-dom/server';
-import {createRpgJourneyGame} from '../lib/rpg-game';
+import {createRpgJourneyGame} from './fixtures/legacy-rpg-journey';
 import {RpgPreviewSession} from '../lib/rpg-preview';
 import {view} from '../lib/game';
 import {JourneyMapView,RpgMiniResult} from '../app/components/RpgJourneyScene';

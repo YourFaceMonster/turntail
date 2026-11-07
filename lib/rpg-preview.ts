@@ -1,10 +1,15 @@
-import {settle,type Game} from './game.ts';
+import {settle,start,type Game} from './game.ts';
 import {startJourneyMini,activeJourneyMini,settleJourneyMini,nextJourneyMiniRound} from './rpg-journey';
 import {enterJourneyNode} from './rpg-game.ts';
 import {settleRpgPhaseOne,chooseRpgStageReward,reconcileRpgEliminations} from './rpg-phase-one.ts';
 
+function finishPreview(game:Game,failed=false){
+ if(!game.rpgRun?.rework){reconcileRpgEliminations(game);return;}
+ game.rpgRun.status='playing';game.rpgRun.hp=failed?[1,50,50]:[70,1,1];game.rpgRun.roundHealth={round:game.round,before:[...game.rpgRun.hp],damage:[0,0,0],healing:[0,0,0],moneyDamage:[0,0,0],coinsBefore:0};game.result=null;game.winner=failed?1:0;game.phase='ended';
+ game.players.forEach((p,seat)=>p.hand=failed?(seat===0?p.hand.slice(0,5):[]):seat===0?[]:p.hand.slice(0,4));settle(game);
+}
 export type RpgPreviewMode='screens'|'one-round';
-export type RpgPreviewScreen='prologue'|'map'|'tavern'|'battle-1'|'battle-2'|'battle-3'|'reward-1'|'reward-2'|'reward-3'|'failed'|'mini-round'|'mini-final';
+export type RpgPreviewScreen='prologue'|'map'|'duel-2'|'tavern'|'battle-1'|'battle-2'|'battle-3'|'reward-1'|'reward-2'|'reward-3'|'failed'|'mini-round'|'mini-final';
 /** Runtime-only owner. Never attach preview rules to a Game or serialize them. */
 export class RpgPreviewSession{
  readonly runId:string;
@@ -13,27 +18,28 @@ export class RpgPreviewSession{
  private initial:Game;
  constructor(game:Game,readonly mode:RpgPreviewMode){
   if(!game.rpgRun?.journey||!game.rpgRun.phaseOne||game.rpgTest||game.hpItemMode)throw Error('화면 테스트용 새 RPG가 필요해요.');
-  game.rpgRun.coins=1000;this.runId=game.rpgRun.id;this.gear=this.equipment(game);this.initial=structuredClone(game);
+  game.rpgRun.coins=game.rpgRun.rework?0:1000;this.runId=game.rpgRun.id;this.gear=this.equipment(game);this.initial=structuredClone(game);
  }
  owns(game:Game){return game.rpgRun?.id===this.runId&&!game.hpItemMode&&!game.rpgTest;}
  private equipment(game:Game){const run=game.rpgRun!;return {relics:[...run.relics],equipped:[...run.equipped],consumables:[...run.consumables]};}
  screen(game:Game,target:RpgPreviewScreen):Game{
   if(this.mode!=='screens'||!this.owns(game))throw Error('프롤로그·화면 테스트에서만 바로 이동할 수 있어요.');
-  if(!['prologue','map','tavern','battle-1','battle-2','battle-3','reward-1','reward-2','reward-3','failed','mini-round','mini-final'].includes(target))throw Error('확인할 화면을 선택해 주세요.');
+  if(!['prologue','map','duel-2','tavern','battle-1','battle-2','battle-3','reward-1','reward-2','reward-3','failed','mini-round','mini-final'].includes(target))throw Error('확인할 화면을 선택해 주세요.');
   const next=structuredClone(this.initial),stage=target.startsWith('battle-')?Number(target.slice(7)):target.startsWith('reward-')?Number(target.slice(7)):target==='failed'?1:2;
   // Disposable scene fixtures use the existing stage gates. No hand is played,
   // and no fabricated clear is written to the user's RPG archive.
   for(let prior=1;prior<stage;prior++){
    enterJourneyNode(next,`battle-${prior}` as 'battle-1'|'battle-2');
-   next.rpgRun!.hp=[100,0,0];reconcileRpgEliminations(next);
+   next.rpgRun!.hp=[100,0,0];finishPreview(next);
    next.rpgRun=chooseRpgStageReward(next.rpgRun!,'all',undefined,false,next.rpgRun!.phaseOne?.clear?.relicOffers?.[0]);
   }
-  if(target==='failed'){enterJourneyNode(next,'battle-1');next.rpgRun!.fate=1;next.rpgRun!.hp[0]=0;reconcileRpgEliminations(next);}
-  else if(target.startsWith('reward-')){enterJourneyNode(next,`battle-${stage}` as 'battle-1');next.rpgRun!.hp=[70,0,0];reconcileRpgEliminations(next);next.rpgRun!.journey!.seenScenes=[`ST${stage}_POST`];}
+  if(target==='failed'){enterJourneyNode(next,'battle-1');next.rpgRun!.fate=1;next.rpgRun!.hp[0]=0;finishPreview(next,true);}
+  else if(target.startsWith('reward-')){enterJourneyNode(next,`battle-${stage}` as 'battle-1');next.rpgRun!.hp=[70,0,0];finishPreview(next);next.rpgRun!.journey!.seenScenes=[`ST${stage}_POST`];}
   else if(target==='mini-round'||target==='mini-final'){enterJourneyNode(next,'tavern');startJourneyMini(next);const rounds=target==='mini-final'?3:1;for(let n=0;n<rounds;n++){const child=activeJourneyMini(next)!;child.players[0].hand=[];child.players[1].hand=child.players[1].hand.slice(0,3);child.players[2].hand=child.players[2].hand.slice(0,5);child.winner=0;child.phase='ended';settle(child);settleJourneyMini(next);if(n<rounds-1)nextJourneyMiniRound(next);}}
+  else if(target==='duel-2'){enterJourneyNode(next,'battle-2');next.rpgRun!.hp[1]=0;start(next);}
   else if(target==='tavern')enterJourneyNode(next,'tavern');
   else if(target.startsWith('battle-'))enterJourneyNode(next,target as 'battle-1'|'battle-2'|'battle-3');
-  next.rpgRun!.coins=1000;
+  next.rpgRun!.coins=next.rpgRun!.rework?0:1000;
   return next;
  }
  update(game:Game){
@@ -42,6 +48,13 @@ export class RpgPreviewSession{
   if(game.phase==='playing'){this.gear=this.equipment(game);return false;}
   if(this.mode!=='one-round'||run.journey?.location!=='battle'&&!run.journey?.retryStage||!game.result||this.handled.has(game.result.id)||run.status==='complete')return false;
   this.handled.add(game.result.id);
+  if(run.rework){
+   if(run.status!=='allocation'){
+    const counted=run.roundIds.includes(game.result.id);run.roundIds=run.roundIds.filter(id=>id!==game.result!.id);if(counted)run.rounds=Math.max(0,run.rounds-1);finishPreview(game);
+   }
+   game.rpgRun=chooseRpgStageReward(game.rpgRun!,'relic',undefined,false,game.rpgRun!.phaseOne!.clear!.relicOffers?.[0]);
+   game.log=['TEST · 한 판 완료 · 저장하지 않는 화면 검증',...game.log].slice(0,40);return true;
+  }
   if(run.status!=='allocation'){
    // Settlement may already have recorded a losing round and removed its gear.
    // Reuse the real clear/reward routines exactly once in this disposable run.

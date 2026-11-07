@@ -1,4 +1,5 @@
 'use client';
+import RpgReworkResult from './RpgReworkResult';
 import {storySceneKey,pendingStageStory} from '../../lib/rpg-story-cards.ts';
 import StoryCardCollection from './StoryCardCollection';
 import EffectText from './EffectText';
@@ -19,6 +20,7 @@ export function RpgStageResult({game,busy,choose,buy,next,newRun,exit,markSeen,p
  const [selectedRelic,setSelectedRelic]=useState(''),[replacement,setReplacement]=useState(''),[selectingRelic,setSelectingRelic]=useState(false),[storyDone,setStoryDone]=useState(false),[replaying,setReplaying]=useState(false);
  const relicOptions=clear?.relicOffers||[],needsRelicChoice=run.stage===2&&relicOptions.length>1;
  const failed=run.status==='game-over',complete=run.status==='complete',relic=gameRelic(needsRelicChoice?selectedRelic:clear?.relicId||''),full=!run.journey&&run.relics.length>=RPG_PHASE_ONE.relicLimit;
+ if(run.rework)return <RpgReworkResult game={game} busy={busy} choose={choose} next={next} newRun={newRun} exit={exit} markSeen={markSeen} equip={equip}/>;
  if(run.status==='playing')return <HpItemResult rpg game={game} busy={busy} next={next} restart={newRun} exit={exit}/>;
  return <><div className={`modal-shade result-shade stage-clear-shade ${failed?'is-failed':''}`}><img className="journey-result-backdrop" src={failed?'/ui/results/journey-failure-v1.png':'/ui/results/journey-rewards-v3.png'} alt="" aria-hidden="true"/><section className="modal rpg-result rpg-stage-result" role="dialog" aria-modal="true" aria-label="RPG 스테이지 결과">
   <header className="stage-clear-header"><span className="eyebrow">RPG · STAGE {run.stage}/3</span><h2>{failed?'여정 실패':complete?'노르문의 여정을 마쳤어요':`스테이지 ${run.stage} 클리어!`}</h2><p>{failed?'세 번의 운명이 모두 소진됐어요. 다음 여정에서 다시 만나요.':run.status==='allocation'?'승리 보상을 모두 받고 여정을 이어가세요.':'획득한 보상과 함께 다음 길로 나아가세요.'}</p></header>

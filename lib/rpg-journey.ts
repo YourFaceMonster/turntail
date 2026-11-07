@@ -1,3 +1,4 @@
+import {activateRpgRelics,rpgMaxHp} from './rpg-rework';
 import {restoreRetiredJourneyNodes} from './rpg-journey-legacy.ts';
 import {restoreDemoReward} from './rpg-demo-catalog.ts';
 import {restoreStoryCards,ST3_STORY_KEY} from './rpg-story-cards.ts';
@@ -67,18 +68,19 @@ export function journeyAfterReward(run:RpgRun):RpgRun{
 }
 export function assertJourneyTavern(run:RpgRun){if(!run.journey||run.journey.location!=='tavern'||run.status!=='ready')throw Error('주점에서 준비할 수 있어요.');}
 export function chooseVillageRequestReward(run:RpgRun,reward:unknown):RpgRun{
+ if(run.rework)reward='heal';
  assertJourneyTavern(run);
  if(reward!=='coins'&&reward!=='heal')throw Error('받을 보상을 선택해 주세요.');
  const j=run.journey!;
  if(j.villageRequestReward)throw Error('이미 주점의 부탁을 도왔어요.');
- if(reward==='heal'&&run.hp[0]>=100)throw Error('HP가 가득 찼어요.');
+ if(reward==='heal'&&run.hp[0]>=(run.rework?rpgMaxHp(run):100))throw Error('HP가 가득 찼어요.');
  const hp=[...run.hp];let coins=run.coins;
  if(reward==='coins')coins+=JOURNEY_TRIAL.villageRequestCoins;
- else hp[0]=Math.min(100,hp[0]+JOURNEY_TRIAL.villageRequestHeal);
+ else hp[0]=Math.min(run.rework?rpgMaxHp(run):100,hp[0]+JOURNEY_TRIAL.villageRequestHeal);
  return {...run,hp,coins,journey:{...j,villageRequestReward:reward},updatedAt:Date.now()};
 }
 export function assertJourneyPreparation(run:RpgRun){if(!run.journey||run.status!=='ready'||['battle','mini-game'].includes(run.journey.location))throw Error('전투 밖 준비 구간에서 사용할 수 있어요.');}
-export function assertJourneyShop(run:RpgRun){if(!run.journey||run.journey.location!=='map'||run.status!=='ready')throw Error('마을 지도의 잡화점에서 구매할 수 있어요.');}
+export function assertJourneyShop(run:RpgRun){if(run.rework)throw Error('새 RPG에서는 상점을 이용하지 않아요.');if(!run.journey||run.journey.location!=='map'||run.status!=='ready')throw Error('마을 지도의 잡화점에서 구매할 수 있어요.');}
 export function hearJourneyRumor(run:RpgRun):RpgRun{assertJourneyTavern(run);return {...run,journey:{...run.journey!,rumors:[...new Set([...run.journey!.rumors,JOURNEY_RUMOR.id])]},updatedAt:Date.now()};}
 export function startLetterQuest(run:RpgRun):RpgRun{
  assertJourneyTavern(run);const j=run.journey!;
@@ -88,14 +90,14 @@ export function startLetterQuest(run:RpgRun):RpgRun{
 export function returnLetterToMor(run:RpgRun):RpgRun{
  assertJourneyTavern(run);const j=run.journey!;
  if(j.letterQuest?.step!=='recovered')throw Error('도둑에게서 봉인 편지를 먼저 되찾아 주세요.');
- return {...run,coins:run.coins+LETTER_QUEST_COINS,journey:{...j,letterQuest:{step:'complete'},rumors:[...new Set([...j.rumors,JOURNEY_LETTER_RUMOR.id])]},updatedAt:Date.now()};
+ return {...run,coins:run.rework?0:run.coins+LETTER_QUEST_COINS,hp:run.rework?[Math.min(rpgMaxHp(run),run.hp[0]+5),...run.hp.slice(1)]:run.hp,journey:{...j,letterQuest:{step:'complete'},rumors:[...new Set([...j.rumors,JOURNEY_LETTER_RUMOR.id])]},updatedAt:Date.now()};
 }
 export function giveHerbToWayfarer(run:RpgRun):RpgRun{
  const j=run.journey;if(!j||j.location!=='wayfarer-stop'||run.status!=='ready')throw Error('길가의 여행자를 만났을 때 약초를 건넬 수 있어요.');
  if(j.wayfarerHerbGiven)throw Error('여행자에게 이미 약초를 건넸어요.');
- const index=run.consumables.indexOf('emergency-herb');if(index<0)throw Error('건넬 응급 약초가 없어요.');
- const consumables=[...run.consumables];consumables.splice(index,1);
- return {...run,consumables,coins:run.coins+8,journey:{...j,wayfarerHerbGiven:true,completedNodes:[...new Set<JourneyNode>([...j.completedNodes,'wayfarer-stop'])],rumors:[...new Set([...j.rumors,JOURNEY_WAYFARER_RUMOR.id])]},updatedAt:Date.now()};
+ const index=run.consumables.indexOf('emergency-herb');if(!run.rework&&index<0)throw Error('건넬 응급 약초가 없어요.');
+ const consumables=[...run.consumables];if(!run.rework)consumables.splice(index,1);
+ return {...run,consumables,coins:run.rework?0:run.coins+8,journey:{...j,wayfarerHerbGiven:true,completedNodes:[...new Set<JourneyNode>([...j.completedNodes,'wayfarer-stop'])],rumors:[...new Set([...j.rumors,JOURNEY_WAYFARER_RUMOR.id])]},updatedAt:Date.now()};
 }
 export function discoverWayfarerRelic(run:RpgRun):RpgRun{
  const j=run.journey;if(!j||j.location!=='watchtower'||!j.wayfarerHerbGiven||run.status!=='ready')throw Error('여행자의 단서를 따라 파수탑에 도착해야 해요.');
@@ -119,7 +121,7 @@ export function equipJourneyRelic(run:RpgRun,id:string,replace?:string):RpgRun{
  let equipped=run.equipped.filter(relic=>run.relics.includes(relic));
  if(equipped.includes(id)){equipped=equipped.filter(relic=>relic!==id);}
  else{if(equipped.length>=3){if(!replace||!equipped.includes(replace))throw Error('교체할 장착 유물을 선택해 주세요.');equipped=equipped.filter(relic=>relic!==replace);}equipped.push(id);}
- return {...run,equipped,updatedAt:Date.now()};
+ return activateRpgRelics({...run,equipped,updatedAt:Date.now()});
 }
 function createJourneyMini(game:Game,now:number,purpose:'tavern'|'letter'){
  const run=game.rpgRun!,j=run.journey!;
@@ -127,7 +129,7 @@ function createJourneyMini(game:Game,now:number,purpose:'tavern'|'letter'){
  if(!existing||existing.roundIds.length===JOURNEY_TRIAL.miniRounds){
   const human=player(game.players[0].name);human.avatar=game.players[0].avatar;
   const child=room('TAVERN-'+uid(),human,true,3),serin=player(purpose==='letter'?'편지 도둑':'세린',true),guest=player(purpose==='letter'?'골목 구경꾼':'여행자',true);serin.avatar=purpose==='letter'?'stage-portrait:16':'tavern-serin';guest.avatar='stage-portrait:5';
-  child.players.push(serin,guest);child.rpgMini={journeyId:run.id,roundIndex:1,totalRounds:3,reward:0,purpose};start(child,now);
+  child.players.push(serin,guest);child.rpgMini={storyOnly:!!run.rework,journeyId:run.id,roundIndex:1,totalRounds:3,reward:0,purpose};start(child,now);
   if(purpose==='letter')j.letterMini={game:child,roundIds:[],lastReward:0};else j.mini={game:child,roundIds:[],lastReward:0};
  }
  j.miniKind=purpose;j.location='mini-game';run.updatedAt=now;
@@ -158,7 +160,7 @@ export function settleJourneyMini(game:Game,now=Date.now()){
    run.updatedAt=now;return;
   }
   const rank=1+child.players.slice(1).filter(p=>(p.points||0)>(child.players[0].points||0)).length;
-  mini.lastReward=j.tavernRewardPaid?0:JOURNEY_TRIAL.miniRewards[rank-1];run.coins+=mini.lastReward;j.tavernRewardPaid=true;child.rpgMini!.reward=mini.lastReward;
+  mini.lastReward=run.rework?0:j.tavernRewardPaid?0:JOURNEY_TRIAL.miniRewards[rank-1];run.coins+=mini.lastReward;j.tavernRewardPaid=true;child.rpgMini!.reward=mini.lastReward;
  }
  run.updatedAt=now;
 }
@@ -177,7 +179,7 @@ export function validateJourneySave(game:Game){
  if(j.seenScenes!==undefined&&(!Array.isArray(j.seenScenes)||!j.seenScenes.every(id=>typeof id==='string'&&(/^ST[123]_POST$/.test(id)||id===ST3_STORY_KEY))))throw Error('이야기 감상 기록의 형식이 올바르지 않아요.');
  const invalid=()=>{throw Error('탐험 여정의 저장 형식이 올바르지 않거나 지원하지 않는 버전이에요. 기존 데이터는 보존했어요.');};
  if(!unique(run.relics)||!unique(run.equipped)||run.equipped.length>3||run.equipped.some(id=>!run.relics.includes(id))||!Array.isArray(run.consumables))invalid();
- if(j.livesVersion===undefined){if(run.fate===0&&!['game-over','complete','abandoned'].includes(run.status))run.fate=3;j.livesVersion=1;}if(j.livesVersion!==1||!Number.isInteger(run.fate)||run.fate<0||run.fate>3||j.retryStage!==undefined&&(!Number.isInteger(j.retryStage)||j.retryStage!==run.stage||j.location!=='map'||run.status!=='playing'))invalid();
+ if(j.livesVersion===undefined){if(!run.rework&&run.fate===0&&!['game-over','complete','abandoned'].includes(run.status))run.fate=3;j.livesVersion=1;}if(j.livesVersion!==1||!Number.isInteger(run.fate)||run.fate<0||run.fate>3||j.retryStage!==undefined&&(!Number.isInteger(j.retryStage)||j.retryStage!==run.stage||j.location!=='map'||run.status!=='playing'))invalid();
  if(!run.phaseOne||j.version!==1||!['map','tavern','market-alley','wayfarer-stop','watchtower','battle','mini-game'].includes(j.location)||!nodes.has(j.currentNode)||!unique(j.startedStages)||!j.startedStages.every(stage=>Number.isInteger(stage)&&stage>=1&&stage<=3)||!unique(j.completedNodes)||!j.completedNodes.every(node=>nodes.has(node))||!Array.isArray(j.rumors)||!j.rumors.every(id=>typeof id==='string')||typeof j.tavernRewardPaid!=='boolean'||j.wayfarerHerbGiven!==undefined&&typeof j.wayfarerHerbGiven!=='boolean'||j.watchtowerRelicFound!==undefined&&typeof j.watchtowerRelicFound!=='boolean'||j.watchtowerRelicClaimed!==undefined&&typeof j.watchtowerRelicClaimed!=='boolean'||j.watchtowerRelicClaimed&&!j.watchtowerRelicFound)invalid();
  if(j.location==='mini-game'&&(j.miniKind!==undefined&&!['tavern','letter'].includes(j.miniKind)||j.miniKind==='letter'&&!j.letterMini||j.miniKind!=='letter'&&!j.mini))invalid();
  if(j.letterQuest!==undefined&&(!['alley','recovered','complete','failed'].includes(j.letterQuest.step)||j.letterQuest.defeated!==undefined&&typeof j.letterQuest.defeated!=='boolean'))invalid();

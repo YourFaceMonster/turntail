@@ -1,5 +1,6 @@
+// Pre-rework journey save compatibility; current RPG rules: rpg-rework.test.tsx.
 import assert from 'node:assert/strict';
-import {createRpgJourneyGame,createRpgTestGame} from '../lib/rpg-game.ts';
+import {createRpgJourneyGame,createRpgTestGame} from './fixtures/legacy-rpg-journey';
 import {BLUE_GLASS_ID} from '../lib/blue-glass.ts';
 import {claimWatchtowerRelic,discoverWayfarerRelic,journeyNodeState,giveHerbToWayfarer,validateJourneySave,startLetterQuest,returnLetterToMor} from '../lib/rpg-journey.ts';
 import {useRpgTacticalItem} from '../lib/rpg-items.ts';

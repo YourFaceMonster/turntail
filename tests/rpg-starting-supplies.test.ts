@@ -1,6 +1,7 @@
+// Pre-rework journey save compatibility; current RPG rules: rpg-rework.test.tsx.
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {createRpgJourneyGame,createRpgPhaseOneGame,enterJourneyNode} from '../lib/rpg-game.ts';
+import {createRpgJourneyGame,createRpgPhaseOneGame,enterJourneyNode} from './fixtures/legacy-rpg-journey';
 import {RPG_DEMO_PRICES} from '../lib/rpg-demo-catalog.ts';
 import {saveRpgGame,readRpgArchive} from '../lib/rpg-storage.ts';
 import {reconcileRpgEliminations} from '../lib/rpg-phase-one.ts';

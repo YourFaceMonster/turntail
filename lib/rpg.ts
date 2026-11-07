@@ -1,3 +1,5 @@
+import type {RpgRework} from './rpg-rework';
+import {activateRpgRelics} from './rpg-rework';
 import {isRpgDemo,demoShop} from './rpg-demo-catalog.ts';
 import {emergencyHerbHealing} from './blue-glass.ts';
 import type {StoryCardId} from './rpg-story-cards.ts';
@@ -14,7 +16,7 @@ export type RpgStatus='playing'|'allocation'|'relic'|'ready'|'complete'|'game-ov
 export type RpgResult={id:string,at:number,players:{count:number,delta:number,total?:number}[]};
 export type RpgReward={stage:number,rank:number,counts:number[],hpAfterSettlement:number[],coins:number,points:number,nextStage:number,offers:string[],retry:boolean,special?:boolean,reason:'clear'|'fate'|'end'};
 export type RpgShop={area:number,stock:{id:string,kind:'relic'|'consumable',price:number,quantity:number}[]};
-export type RpgRun={storyCards?:StoryCardId[],roundHealth?:RpgRoundHealth,journey?:RpgJourneyState,phaseOne?:RpgPhaseOneState,maxHp?:number,combat?:RpgProfessionCombat,itemGuards?:Record<number,boolean>,tactics?:Record<number,RpgTacticalState>,enemyConsumables?:Record<number,string[]>,protectedCounts?:number[],lastItem?:RpgItemEvent,version:1,id:string,stage:number,status:RpgStatus,hp:number[],fate:number,coins:number,points:number,rounds:number,roundIds:string[],gloveRoundIds:string[],startedAt:number,updatedAt:number,reward:RpgReward|null,relics:string[],equipped:string[],consumables:string[],shops:RpgShop[],scaleUsed:number[],pendingSoup:boolean,pendingBandage:boolean,shield:number,bossCoinPaid:number[],crackedHeartUsed:number[],discovered:string[],unlocked:string[],relicActivations?:RpgRelicActivation[],lastExchange?:RpgExchangeEvent,tacticalRound?:number,tacticalUsed?:number,tacticalTurn?:number,tacticalPeeks?:{round:number,index:number,tile:{id:number,n:number,s:number}}[],tacticalPeek?:{round:number,index:number,tile:{id:number,n:number,s:number}}};
+export type RpgRun={pendingRework?:boolean,rework?:RpgRework,storyCards?:StoryCardId[],roundHealth?:RpgRoundHealth,journey?:RpgJourneyState,phaseOne?:RpgPhaseOneState,maxHp?:number,combat?:RpgProfessionCombat,itemGuards?:Record<number,boolean>,tactics?:Record<number,RpgTacticalState>,enemyConsumables?:Record<number,string[]>,protectedCounts?:number[],lastItem?:RpgItemEvent,version:1,id:string,stage:number,status:RpgStatus,hp:number[],fate:number,coins:number,points:number,rounds:number,roundIds:string[],gloveRoundIds:string[],startedAt:number,updatedAt:number,reward:RpgReward|null,relics:string[],equipped:string[],consumables:string[],shops:RpgShop[],scaleUsed:number[],pendingSoup:boolean,pendingBandage:boolean,shield:number,bossCoinPaid:number[],crackedHeartUsed:number[],discovered:string[],unlocked:string[],relicActivations?:RpgRelicActivation[],lastExchange?:RpgExchangeEvent,tacticalRound?:number,tacticalUsed?:number,tacticalTurn?:number,tacticalPeeks?:{round:number,index:number,tile:{id:number,n:number,s:number}}[],tacticalPeek?:{round:number,index:number,tile:{id:number,n:number,s:number}}};
 export const RPG_BOSSES=[3,6,9,10];
 export const RPG_TEST_ROUNDS=5;
 export const RPG_RELIC_REWARD_STAGES=[1,2,4,5,7,8];
@@ -55,7 +57,7 @@ function catalogShopStock(run:RpgRun,shop:RpgShop):RpgShop{
  const relics=RPG_MARKET_RELICS.map(item=>old.get(item.id)||{id:item.id,kind:'relic' as const,price:item.grade==='legendary'?230:item.grade==='rare'?150:90,quantity:item.id===BLUE_GLASS_ID&&!run.unlocked?.includes(BLUE_GLASS_ID)||run.relics.includes(item.id)||item.id==='second-heart'&&!run.unlocked?.includes('second-heart')||shop.area<4&&['mor-quill','twin-needle-compass','split-mirror'].includes(item.id)?0:1});
  return {...shop,stock:[...consumables,...relics]};
 }
-export function currentRpgShop(run:RpgRun){const shop=(run.shops||[]).find(item=>item.area===rpgArea(run.reward?.nextStage||run.stage));return shop?(isRpgDemo(run)?demoShop(run,catalogShopStock(run,shop)):catalogShopStock(run,shop)):undefined;}
+export function currentRpgShop(run:RpgRun){if(run.rework)return undefined;const shop=(run.shops||[]).find(item=>item.area===rpgArea(run.reward?.nextStage||run.stage));return shop?(isRpgDemo(run)?demoShop(run,catalogShopStock(run,shop)):catalogShopStock(run,shop)):undefined;}
 function makeShop(run:RpgRun,area:number,seed:string):RpgShop{
  void seed;
  const shop={area,stock:[] as RpgShop['stock']};
@@ -127,9 +129,9 @@ export function chooseRpgRelic(run:RpgRun,id:string|null,replace:string|null=nul
 export function equipRpgRelic(run:RpgRun,id:string,replace:string|null=null):RpgRun{
  if(run.status!=='ready')throw Error('유물은 전투 준비 중에만 바꿀 수 있어요.');
  if(!run.relics.includes(id))throw Error('보유하지 않은 유물이에요.');
- if(run.equipped.includes(id))return {...run,equipped:run.equipped.filter(item=>item!==id)};
+ if(run.equipped.includes(id))return activateRpgRelics({...run,equipped:run.equipped.filter(item=>item!==id)});
  if(run.equipped.length>=3&&(!replace||!run.equipped.includes(replace)))throw Error('장착 자리가 가득 찼어요. 교체할 유물을 고르세요.');
- return {...run,equipped:[...run.equipped.filter(item=>item!==replace),id]};
+ return activateRpgRelics({...run,equipped:[...run.equipped.filter(item=>item!==replace),id]});
 }
 export function advanceRpgStage(run:RpgRun):RpgRun{
  if(run.status!=='ready'||!run.reward)throw Error('보상 선택을 마친 뒤 다음 승부로 갈 수 있어요.');
@@ -137,6 +139,7 @@ export function advanceRpgStage(run:RpgRun):RpgRun{
  return {...run,stage,status:'playing',hp:[run.hp[0],100,100],shield:run.pendingBandage?15:0,pendingBandage:false,reward:null,updatedAt:Date.now()};
 }
 export function buyRpgItem(run:RpgRun,id:string):RpgRun{
+ if(run.rework)throw Error('새 RPG에서는 소모품·주화·상점을 사용하지 않아요.');
  if(id==='spark-dart')throw Error('바늘탄은 현재 상점에서 판매하지 않아요.');
  if(run.status!=='ready')throw Error('전투 준비 중에만 구매할 수 있어요.');
  const shop=currentRpgShop(run),entry=shop?.stock.find(item=>item.id===id);
@@ -148,18 +151,21 @@ export function buyRpgItem(run:RpgRun,id:string):RpgRun{
  return withRelicActivations({...run,coins:run.coins-price,relics:entry.kind==='relic'?[...run.relics,id]:run.relics,consumables:entry.kind==='consumable'?[...run.consumables,id]:run.consumables,discovered:entry.kind==='relic'?[...new Set([...run.discovered,id])]:run.discovered,scaleUsed:discounted?[...(run.scaleUsed||[]),shop.area]:run.scaleUsed||[],shops:(run.shops||[]).map(item=>item.area===shop.area?{...shop,stock:shop.stock.map(product=>product.id===id?{...product,quantity:product.kind==='consumable'?product.quantity:product.quantity-1}:product)}:item),updatedAt:Date.now()},discounted&&entry.price>price?[{relicId:'merchants-scales',message:`주화 ${entry.price-price} 절약`}]:[]);
 }
 export function sellRpgRelic(run:RpgRun,id:string):RpgRun{
+ if(run.rework)throw Error('새 RPG에서는 소모품·주화·상점을 사용하지 않아요.');
  if(run.status!=='ready'||!currentRpgShop(run))throw Error('상점이 열린 전투 준비 중에만 판매할 수 있어요.');
  if(!run.relics.includes(id))throw Error('보유하지 않은 유물이에요.');
  const grade=RPG_RELICS.find(item=>item.id===id)?.grade,price=grade==='legendary'?80:grade==='rare'?50:30;
  return {...run,coins:run.coins+price,relics:run.relics.filter(item=>item!==id),equipped:run.equipped.filter(item=>item!==id),updatedAt:Date.now()};
 }
 export function restRpg(run:RpgRun,kind:'light'|'deep'):RpgRun{
+ if(run.rework)throw Error('새 RPG에서는 소모품·주화·상점을 사용하지 않아요.');
  if(run.status!=='ready')throw Error('전투 준비 중에만 휴식할 수 있어요.');
  const price=kind==='light'?40:80,heal=kind==='light'?20:45;
  if(run.coins<price||run.hp[0]>=100)throw Error('주화가 부족하거나 HP가 이미 가득 찼어요.');
  return {...run,coins:run.coins-price,hp:[Math.min(100,run.hp[0]+heal),run.hp[1],run.hp[2]],updatedAt:Date.now()};
 }
 export function useRpgConsumable(run:RpgRun,id:string):RpgRun{
+ if(run.rework)throw Error('새 RPG에서는 소모품·주화·상점을 사용하지 않아요.');
  if(run.status!=='ready')throw Error('이 소모품은 전투 준비 중에 사용해 주세요.');
  if(!run.consumables.includes(id))throw Error('보유하지 않은 소모품이에요.');
  const herb=id==='emergency-herb'&&isRpgDemo(run);

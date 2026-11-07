@@ -42,3 +42,6 @@
  .stage-clear-shade .rpg-stage-rewards strong{font-size:13px}.stage-clear-shade .rpg-stage-rewards small{font-size:10px}
  .stage-clear-shade .rpg-stage-result>.text-btn{min-height:26px;padding:4px 8px;font-size:11px;margin-top:0}
 }
+
+/* RPG v2 intel never changes floor tile dimensions. */
+.rpg-scouted-lower{position:absolute;right:-8px;bottom:-5px;width:52%;height:54%;z-index:8;filter:drop-shadow(0 0 3px #76e4df);pointer-events:none}.rpg-scouted-lower .tile{width:100%;height:100%}.rpg-scout-feedback{position:absolute;left:50%;top:-20px;transform:translateX(-50%);color:#b8f2e7;z-index:10;white-space:nowrap;pointer-events:none}.journey-game-hud [hidden],.rpg-map-content [hidden]{display:none!important}

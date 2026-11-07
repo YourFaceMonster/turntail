@@ -1,8 +1,9 @@
+// Pre-rework journey save compatibility; current RPG rules: rpg-rework.test.tsx.
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {createElement as h} from 'react';
 import {renderToStaticMarkup as render} from 'react-dom/server';
-import {createRpgJourneyGame} from '../lib/rpg-game.ts';
+import {createRpgJourneyGame} from './fixtures/legacy-rpg-journey';
 import {buyRpgCart,quoteRpgCart} from '../lib/rpg-shop-cart.ts';
 import {QuestItemText} from '../app/components/DialogueText.tsx';
 const fresh=()=>{const run=createRpgJourneyGame('잡화점 검사').rpgRun!;run.journey=undefined;run.status='ready';run.coins=200;run.shops=[{area:1,stock:[{id:'emergency-herb',kind:'consumable',price:20,quantity:1},{id:'merchants-scales',kind:'relic',price:60,quantity:1},{id:'mor-quill',kind:'relic',price:20,quantity:1}]}];return run;};

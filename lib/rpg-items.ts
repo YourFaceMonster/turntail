@@ -1,3 +1,4 @@
+import {isRpgRework,pruneRpgIntel} from './rpg-rework';
 import {applyImmediateEffects} from './profession-immediate-combat';
 import {hasRoundCombat,hasImmediateSkills} from './profession-round-rules';
 import {queueRoundDamage,queueRoundHealing} from './profession-round-combat';
@@ -50,6 +51,13 @@ export function rpgInventory(run:RpgRun,who:number){return who===0?run.consumabl
 export function giveRpgEnemyItems(run:RpgRun,copies=1){run.enemyConsumables=Object.fromEntries([1,2].map(who=>[who,RPG_BASIC_ITEMS.flatMap(id=>Array(copies).fill(id))]));}
 /** Expose only the observer's private scouting/protection state. Inventory names/counts are public. */
 export function rpgTacticalView(run:RpgRun,me:number,round:number,game?:Game):RpgRun{
+ if(run.rework){
+  if(game)pruneRpgIntel(game);const own=(run.rework.intel[me]||[]).map(intel=>({...intel,tile:{...intel.tile}}));
+  return {...run,journey:run.journey?{...run.journey,letterQuest:letterQuestView(run.journey),rumors:me===0?run.journey.rumors:[],mini:undefined,letterMini:undefined,miniSummary:me===0&&run.journey.mini?{roundIndex:run.journey.mini.game.rpgMini!.roundIndex,finished:run.journey.mini.roundIds.length===3}:undefined}:undefined,
+   rework:{...run.rework,intel:{[me]:own},lastScout:run.rework.lastScout?.seat===me?run.rework.lastScout:undefined},
+   combat:undefined,tactics:undefined,enemyConsumables:undefined,consumables:[],tacticalPeeks:own.filter(intel=>!game||game.stacks[intel.index]?.[1]?.id===intel.tile.id)};
+ }
+
  const own=stateFor(run,me,round),exchange=run.lastExchange,actor=exchange?.actor??0;
  const visibleExchange=me!==0||!exchange?undefined:actor===0?exchange:exchange.target===0?{...exchange,actor:0,target:actor,outgoing:exchange.incoming,incoming:exchange.outgoing}:undefined;
  const visibleItem=run.lastItem?.kind==='seal'&&run.lastItem.actor!==me?undefined:run.lastItem;
@@ -93,6 +101,7 @@ function randomIndex(length:number){const value=new Uint32Array(1);crypto.getRan
 function takeRandom(hand:Tile[],count:number){const pool=[...hand],picked:Tile[]=[];for(let i=0;i<count;i++)picked.push(pool.splice(randomIndex(pool.length),1)[0]);return picked;}
 function record(g:Game,who:number,id:RpgTacticalItem,target:number,kind:RpgItemEvent['kind'],amount?:number){g.rpgRun!.lastItem={id:uid(),actor:who,target,itemId:id,kind,amount,at:Date.now()};if((kind==='damage'||kind==='heal')&&!hasRoundCombat(g)&&(!g.hpItemMode||isBattleItemMode(g))){const after=g.rpgRun!.hp[target];g.rpgRun!.lastItem.hpAfter=after;g.rpgRun!.lastItem.hpBefore=after+(kind==='damage'?1:-1)*(amount||0);if(!g.hpItemMode){const before=[...g.rpgRun!.hp];before[target]=g.rpgRun!.lastItem.hpBefore;recordRpgRoundHealth(g.rpgRun!,before);}}if(g.hpItemMatch)g.hpItemMatch.roundItems.push({actor:who,target,id,kind,amount});}
 export function useRpgTacticalItem(g:Game,id:RpgTacticalItem,target=-1,ids:number[]=[],who=0){
+ if(isRpgRework(g))throw Error('새 RPG에서는 전투 아이템을 사용하지 않아요.');
  const run=g.rpgRun;
  if(!g.practice||!run||run.status!=='playing'||g.phase!=='playing'||g.turn!==who||!g.players[who])throw Error('RPG 전술 아이템은 진행 중인 내 차례에만 사용할 수 있어요.');
  const inventory=rpgInventory(run,who);
@@ -166,6 +175,8 @@ function applyRpgEmberDamage(g:Game,who:number,target:number,now:number,id:RpgTa
 }
 export function resetRpgTactics(run:RpgRun){run.tactics={};run.tacticalPeeks=undefined;run.tacticalPeek=undefined;run.tacticalRound=undefined;run.tacticalUsed=0;run.tacticalTurn=undefined;run.protectedCounts=undefined;}
 export function scoutRpgBotDraw(g:Game,who:number,index:number){
+ if(isRpgRework(g)){const position=view(g,g.players[who].token),own=position.rpgRun!.rework!.intel[who]||[];return own.filter(intel=>position.stacks[intel.index]?.available&&g.stacks[intel.index]?.[1]?.id===intel.tile.id).sort((a,b)=>rank(b.tile)-rank(a.tile))[0]?.index??index;}
+
  const state=g.rpgRun&&stateFor(g.rpgRun,who,g.round),peek=state?.peek;
  const position=view(g,g.players[who].token),extra=position.rpgRun?.combat?.itemBattle,knownTrap=(at:number)=>!!extra?.trapIntel[who]?.some(intel=>intel.index===at&&intel.trapped);
  const preferred=peek?.round===g.round&&g.stacks[peek.index]?.[1]?.id===peek.tile.id&&position.stacks[peek.index]?.available?peek.index:index;
@@ -191,7 +202,7 @@ export function chooseRpgBotItem(position:ReturnType<typeof view>):RpgBotItemCho
  return null;
 }
 export function tryRpgBotItem(g:Game){
- const run=g.rpgRun,who=g.turn;if(!run||!g.players[who]?.bot||hpItemShopPending(g))return;
+ const run=g.rpgRun,who=g.turn;if(!run||isRpgRework(g)||!g.players[who]?.bot||hpItemShopPending(g))return;
  if(Date.now()<(g.turnReadyAt||0))return;
  if(!run.enemyConsumables?.[who]){run.enemyConsumables={...run.enemyConsumables,[who]:g.hpItemMode?[]:[...RPG_BASIC_ITEMS]};}
  const choice=chooseRpgBotItem(view(g,g.players[who].token));if(choice)useRpgTacticalItem(g,choice.id,choice.target??-1,choice.ids||[],who);

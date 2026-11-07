@@ -1,3 +1,4 @@
+import {chooseReworkReward} from './rpg-rework';
 import {isRpgDemo,demoRelicOffers,restoreDemoReward} from './rpg-demo-catalog.ts';
 import {storyCardsForRun} from './rpg-story-cards.ts';
 import {recordRpgRoundHealth} from './rpg-round-health';
@@ -19,7 +20,7 @@ export type RpgPhaseOneState={version:1,eliminated:number[],chargedBattles:strin
 export function isRpgPhaseOne(game:{hpItemMode?:boolean,rpgTest?:boolean,rpgRun?:{phaseOne?:RpgPhaseOneState}|null}){return !!game.rpgRun?.phaseOne&&!game.hpItemMode&&!game.rpgTest;}
 export function rpgAlive(game:Pick<Game,'rpgRun'|'hpItemMode'|'rpgTest'|'players'>,seat:number){return !isRpgPhaseOne(game)||!!game.players[seat]&&game.rpgRun!.hp[seat]>0;}
 export function nextRpgSeat(game:Pick<Game,'rpgRun'|'hpItemMode'|'rpgTest'|'players'>,seat:number){for(let step=1;step<=game.players.length;step++){const next=(seat+step)%game.players.length;if(rpgAlive(game,next))return next;}return 0;}
-export function rpgSynergies(run:Pick<RpgRun,'relics'|'phaseOne'|'journey'|'equipped'>){return run.phaseOne&&RPG_PHASE_ONE.synergy.requires.every(id=>(run.journey?run.equipped:run.relics).includes(id))?[RPG_PHASE_ONE.synergy]:[];}
+export function rpgSynergies(run:Pick<RpgRun,'relics'|'phaseOne'|'journey'|'equipped'|'rework'>){return !run.rework&&run.phaseOne&&RPG_PHASE_ONE.synergy.requires.every(id=>(run.journey?run.equipped:run.relics).includes(id))?[RPG_PHASE_ONE.synergy]:[];}
 export function initRpgPhaseOne(run:RpgRun){
  run.phaseOne={version:1,eliminated:[],chargedBattles:[],clearedStages:[],rewardHistory:[]};run.maxHp=RPG_PHASE_ONE.maxHp;
  run.hp=[RPG_PHASE_ONE.maxHp,...RPG_PHASE_ONE.enemyHp[0]];run.fate=0;
@@ -27,7 +28,7 @@ export function initRpgPhaseOne(run:RpgRun){
 }
 /** Stable seat IDs keep portraits, item ownership and animation anchors intact. */
 export function reconcileRpgEliminations(game:Game,now=Date.now()){
- if(!isRpgPhaseOne(game)||game.rpgRun!.status!=='playing')return false;
+ if(game.rpgRun?.rework||!isRpgPhaseOne(game)||game.rpgRun!.status!=='playing')return false;
  const run=game.rpgRun!,state=run.phaseOne!;
  run.hp=run.hp.map(hp=>Math.max(0,hp));
  for(let seat=0;seat<game.players.length;seat++)if(run.hp[seat]<=0&&!state.eliminated.includes(seat)){
@@ -71,6 +72,7 @@ export function settleRpgPhaseOne(run:RpgRun,result:RpgResult):RpgRun{
  return withRelicActivations({...base,...(run.journey?{storyCards:storyCardsForRun({...run,phaseOne:state})}:{}),phaseOne:state,hp:[hpBefore+baseHeal+relicHeal+synergyHeal,...run.hp.slice(1)],status:'allocation',reward:null},effects,result.at);
 }
 export function chooseRpgStageReward(run:RpgRun,choice:RpgStageReward,replace?:string,decline=false,selectedRelic?:string):RpgRun{
+ if(run.rework)return journeyAfterReward(chooseReworkReward(run,selectedRelic,decline));
  run=structuredClone(run);restoreDemoReward(run);
  const state=run.phaseOne,clear=state?.clear;
  if(!state||!clear||run.status!=='allocation'||clear.chosen)throw Error('선택할 스테이지 보상이 없어요.');

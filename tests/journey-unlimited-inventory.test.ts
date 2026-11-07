@@ -1,6 +1,7 @@
+// Pre-rework journey save compatibility; current RPG rules: rpg-rework.test.tsx.
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {createRpgJourneyGame} from '../lib/rpg-game';
+import {createRpgJourneyGame} from './fixtures/legacy-rpg-journey';
 import {buyRpgItem,currentRpgShop} from '../lib/rpg';
 import {chooseRpgStageReward} from '../lib/rpg-phase-one';
 import {equipJourneyRelic,discoverWayfarerRelic,validateJourneySave} from '../lib/rpg-journey';

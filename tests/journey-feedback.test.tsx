@@ -1,10 +1,11 @@
+// Pre-rework journey save compatibility; current RPG rules: rpg-rework.test.tsx.
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {createElement as h} from 'react';
 import {renderToStaticMarkup as render} from 'react-dom/server';
 import TurntaleWordmark from '../app/components/TurntaleWordmark';
 import {JourneyMapView,JourneyShopContent} from '../app/components/RpgJourneyScene';
-import {createRpgJourneyGame} from '../lib/rpg-game';
+import {createRpgJourneyGame} from './fixtures/legacy-rpg-journey';
 const noop=()=>{};
 test('multiple logo instances use independent clip paths even when another header is hidden',()=>{
  const html=render(h('div',null,h(TurntaleWordmark,{plain:true}),h(TurntaleWordmark,{plain:true})));
