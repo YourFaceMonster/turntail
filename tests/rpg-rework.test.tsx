@@ -23,11 +23,11 @@ function finish(game:Game,counts:number[],winner=counts.indexOf(0)){
  game.phase='ended';game.winner=winner;game.result=null;return settle(game);
 }
 const memory=()=>{const data=new Map<string,string>();return {getItem:(key:string)=>data.get(key)??null,setItem:(key:string,value:string)=>{data.set(key,value);}};};
-test('new RPG: 60 unique tiles, fixed 24 floor tiles, no combat or currency',()=>{
+test('new RPG: 60 unique tiles with 10+10+10+30 distribution, no combat or currency',()=>{
  for(let i=0;i<30;i++){
   const game=fresh(),tiles=[...game.players.flatMap(p=>p.hand),...game.stacks.flat().filter((t):t is Tile=>!!t)];
-  assert.deepEqual(game.players.map(p=>p.hand.length),[12,12,12]);assert.equal(tiles.length,60);assert.equal(new Set(tiles.map(t=>t.id)).size,60);
-  assert.equal(tiles.filter(t=>t.n===2).length,4);assert.equal(game.stacks.length,12);assert.equal(game.cols,4);assert.equal(game.rows,3);
+  assert.deepEqual(game.players.map(p=>p.hand.length),[10,10,10]);assert.equal(tiles.length,60);assert.equal(new Set(tiles.map(t=>t.id)).size,60);
+  assert.equal(tiles.filter(t=>t.n===2).length,4);assert.equal(game.stacks.length,15);assert.equal(game.cols,5);assert.equal(game.rows,3);
   assert.deepEqual(game.rpgRun!.hp,[100,25,30]);assert.deepEqual(game.rpgRun!.relics,['gamblers-gloves']);assert.deepEqual(game.rpgRun!.discovered,['gamblers-gloves']);assert.equal(game.rpgRun!.combat,undefined);assert.equal(game.rpgRun!.coins,0);assert.deepEqual(game.rpgRun!.consumables,[]);
  }
 });
@@ -44,10 +44,10 @@ test('settlement applies positive HP, clamps and is idempotent across save reloa
  const storage=memory();saveRpgGame(storage,game);const saved=readRpgArchive(storage).active!;settle(saved);assert.deepEqual(saved.rpgRun!.hp,[72,54,34]);
  game.rpgRun!.hp=[99,99,50];startRpgRound(game,100);finish(game,[0,4,8]);assert.deepEqual(game.rpgRun!.hp,[100,100,34]);
 });
-test('AI elimination occurs at settlement and next round deals 18+18+24 with stable seats',()=>{
+test('AI elimination occurs at settlement and next round deals 12+12+36 with stable seats',()=>{
  const game=fresh();game.rpgRun!.hp=[80,10,30];finish(game,[0,8,4]);
  assert.deepEqual(game.rpgRun!.hp,[92,0,34]);startRpgRound(game,100);
- assert.deepEqual(game.players.map(p=>p.hand.length),[18,0,18]);assert.equal(game.stacks.flat().filter(Boolean).length,24);assert.equal(game.cols,4);
+ assert.deepEqual(game.players.map(p=>p.hand.length),[12,0,12]);assert.equal(game.stacks.flat().filter(Boolean).length,36);assert.equal(game.cols,6);assert.equal(game.rows,3);
  assert.notEqual(game.turn,1);const ai=rpgTwinBotView(game,2);assert.equal(ai.players.length,2);assert.equal(ai.me,1);assert.equal(ai.capacity,2);
  const tiles=[...game.players.flatMap(p=>p.hand),...game.stacks.flat().filter(Boolean)];assert.equal(new Set(tiles.map(t=>t!.id)).size,60);
  game.players[0].hand=[tile(5),tile(9)];game.players[2].hand=[tile(6,1),tile(10,1)];game.turn=0;game.turnReadyAt=0;
@@ -76,7 +76,7 @@ test('overwritten hand does not scout; final hand skips scouting and grants next
  startRpgRound(final,0);assert.equal(final.rpgRun!.rework!.intel[0].length,3);assert.equal(final.rpgRun!.rework!.nextForesight,undefined);
 });
 test('private upper/lower intel, no repeats, pickup expiry, per-round reset and hourglass',()=>{
- const game=fresh();scoutRpgFloor(game,0,100);assert.equal(game.rpgRun!.rework!.intel[0].length,24);scoutRpgFloor(game,0,5);assert.equal(game.rpgRun!.rework!.intel[0].length,24);
+ const game=fresh();scoutRpgFloor(game,0,100);assert.equal(game.rpgRun!.rework!.intel[0].length,30);scoutRpgFloor(game,0,5);assert.equal(game.rpgRun!.rework!.intel[0].length,30);
  const other=view(game,game.players[1].token);assert.deepEqual(other.rpgRun!.rework!.intel,{1:[]});assert.ok(other.stacks.every(s=>!s.scoutedLower));assert.deepEqual(other.rpgRun!.tacticalPeeks,[]);
  const seen=game.rpgRun!.rework!.intel[0][0];game.stacks[seen.index]=game.stacks[seen.index].map(t=>t?.id===seen.tile.id?null:t);view(game,game.players[0].token);assert.ok(!game.rpgRun!.rework!.intel[0].some(i=>i.tile.id===seen.tile.id));
  game.rpgRun!.hp=[70,90,90];finish(game,[0,3,6]);game.rpgRun!.equipped=['stopped-hourglass','watchkeepers-blue-glass'];startRpgRound(game,0);assert.equal(game.rpgRun!.rework!.intel[0].length,6);
@@ -126,16 +126,34 @@ test('travel help/letter/blue glass preserve flags without items or currency',()
 test('legacy backup is exact; live round stays legacy and next deal migrates once',()=>{
  const old=createRpgPhaseOneGame('old','',0),storage=memory();const archive={version:1,active:old,records:[],discovered:['wind-sigil'],unlocked:[]};const raw=JSON.stringify(archive);storage.setItem(RPG_PHASE_ONE_STORAGE_KEY,raw);
  const loaded=readRpgArchive(storage).active!;assert.equal(storage.getItem(RPG_REWORK_BACKUP_KEY),null);saveRpgGame(storage,loaded);assert.equal(storage.getItem(RPG_REWORK_BACKUP_KEY),raw);assert.equal(loaded.rpgRun!.rework,undefined);assert.ok(loaded.rpgRun!.combat);
- loaded.phase='ended';loaded.rpgRun!.rounds=1;startRpgRound(loaded,0);assert.ok(loaded.rpgRun!.rework);assert.equal(loaded.rpgRun!.combat,undefined);assert.deepEqual(loaded.players.map(p=>p.hand.length),[12,12,12]);
+ loaded.phase='ended';loaded.rpgRun!.rounds=1;startRpgRound(loaded,0);assert.ok(loaded.rpgRun!.rework);assert.equal(loaded.rpgRun!.combat,undefined);assert.deepEqual(loaded.players.map(p=>p.hand.length),[10,10,10]);
  saveRpgGame(storage,loaded);const resumed=readRpgArchive(storage).active!;const hp=[...resumed.rpgRun!.hp];saveRpgGame(storage,resumed);assert.deepEqual(readRpgArchive(storage).active!.rpgRun!.hp,hp);assert.equal(storage.getItem(RPG_REWORK_BACKUP_KEY),raw);
+});
+test('an in-progress 0.7.2 deal survives reload and the following round restores the 0.7.1 distribution',()=>{
+ const game=fresh();
+ const oldFloor=game.stacks.splice(0,3);
+ game.cols=4;
+ for(const [seat,stack] of oldFloor.entries())game.players[seat].hand.push(...stack.filter((tile):tile is Tile=>!!tile));
+ const storage=memory();
+ saveRpgGame(storage,game);
+ const resumed=readRpgArchive(storage).active!;
+ assert.deepEqual(resumed.players.map(player=>player.hand),game.players.map(player=>player.hand));
+ assert.deepEqual(resumed.stacks,game.stacks);
+ assert.equal(resumed.cols,4);
+
+ finish(resumed,[0,4,8]);
+ startRpgRound(resumed,100);
+ assert.deepEqual(resumed.players.map(player=>player.hand.length),[10,10,10]);
+ assert.equal(resumed.stacks.length,15);
+ assert.equal(resumed.cols,5);
 });
 test('base distribution/settlement and independent item rules stay unchanged',()=>{
  const game=room('base',player('a'),true,3);game.players.push(player('b',true),player('c',true));start(game,0);assert.deepEqual(game.players.map(p=>p.hand.length),[10,10,10]);assert.equal(game.stacks.length,15);
  finish(game,[0,4,8]);assert.deepEqual(game.result!.players.map(p=>p.delta),[12,0,-12]);
  const item=createHpItemGame('item','',0,2,undefined,'swordsman');assert.equal(hpLimit(item.rpgRun),180);assert.ok(item.rpgRun!.combat);assert.equal(item.rpgRun!.rework,undefined);
 });
-test('18-card mobile layout changes only hand geometry and supports five-card choices',()=>{
- for(const [width,height,landscape] of [[390,650,false],[780,300,true]] as const){const spec={width,height,floorWidth:320,handWidth:350,handCount:12,cols:4,rows:3,players:3,landscape,rpg:true};const a=tileLayout(spec),b=tileLayout({...spec,handCount:18});assert.equal(a.floorHeight,b.floorHeight);assert.ok(b.width<=a.width);assert.equal(b.columns,9);}
+test('mobile layout on the restored six-column floor supports larger drawn hands and supports five-card choices',()=>{
+ for(const [width,height,landscape] of [[390,650,false],[780,300,true]] as const){const spec={width,height,floorWidth:320,handWidth:350,handCount:12,cols:6,rows:3,players:3,landscape,rpg:true};const a=tileLayout(spec),b=tileLayout({...spec,handCount:18});assert.equal(a.floorHeight,b.floorHeight);assert.ok(b.width<=a.width);assert.equal(b.columns,9);}
  const hand=Array.from({length:18},(_,i)=>tile(i%15+1,Math.floor(i/15)));assert.ok(legalOptions(hand,[]).some(o=>o.tiles.length===5));
 });
 test('new result/hub/help UI has HP settlement and no currency, class selection, or item requirement',()=>{
@@ -144,11 +162,11 @@ test('new result/hub/help UI has HP settlement and no currency, class selection,
  const hub=renderToStaticMarkup(<RpgHub active={game} records={[]} start={()=>{}} resume={()=>{}} testActive={null} testStart={()=>{}} testResume={()=>{}} close={()=>{}} error=""/>);assert.doesNotMatch(hub,/전투 직업 선택|주화/);
  const run=game.rpgRun!;run.status='ready';run.journey!.location='wayfarer-stop';const help=renderToStaticMarkup(<JourneyWayfarerStopView run={run} busy={false} error="" action={()=>{}} exit={()=>{}}/>);assert.match(help,/traveler-injured/);assert.doesNotMatch(help,/건넬 응급 약초/);
 });
-test('new preview screens use the new engine, including 18-card duel, zero-HP failure and ST3 rewards',()=>{
+test('new preview screens use the new engine, including the 12-card duel, zero-HP failure and ST3 rewards',()=>{
  const game=createRpgJourneyGame('preview'),preview=new RpgPreviewSession(game,'screens');
  for(const target of ['map','tavern','battle-1','battle-2','battle-3','duel-2','reward-1','reward-2','reward-3','failed','mini-round','mini-final'] as const){
   const screen=preview.screen(game,target);assert.equal(screen.rpgRun!.coins,0);assert.ok(screen.rpgRun!.rework);
-  if(target==='duel-2'){assert.deepEqual(screen.players.map(p=>p.hand.length),[18,0,18]);assert.equal(screen.stacks.length,12);}
+  if(target==='duel-2'){assert.deepEqual(screen.players.map(p=>p.hand.length),[12,0,12]);assert.equal(screen.stacks.length,18);assert.equal(screen.cols,6);}
   if(target==='failed')assert.equal(screen.rpgRun!.status,'game-over');
   if(target.startsWith('reward'))assert.equal(screen.rpgRun!.status,'allocation');
  }

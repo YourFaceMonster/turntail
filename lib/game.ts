@@ -121,9 +121,9 @@ export function start(g:Game,now=Date.now()){
  const dealSize=isRpgPhaseOne(g)?g.players.filter((_,seat)=>rpgAlive(g,seat)).length:capacity(g);
  const deck:Tile[]=[];for(let n=1;n<=15;n++)for(let s=0;s<4;s++)deck.push({id:(n-1)*4+s,n,s});
  for(let i=deck.length-1;i>0;i--){let x=new Uint32Array(1);crypto.getRandomValues(x);const j=x[0]%(i+1);[deck[i],deck[j]]=[deck[j],deck[i]];}
- for(const [seat,p] of g.players.entries()){p.hand=rpgAlive(g,seat)?sorted(deck.splice(0,isRpgRework(g)?(dealSize===2?18:12):startingHandSize(dealSize))):[];p.timeouts=0;}
+ for(const [seat,p] of g.players.entries()){p.hand=rpgAlive(g,seat)?sorted(deck.splice(0,startingHandSize(dealSize))):[];p.timeouts=0;}
  const stacks=deck.length/2;g.stacks=Array.from({length:stacks},()=>[deck.shift()!,deck.shift()!]);
- g.cols=isRpgRework(g)?4:dealSize===2?6:dealSize===4?4:5;g.rows=Math.ceil(stacks/g.cols);
+ g.cols=dealSize===2?6:dealSize===4?4:5;g.rows=Math.ceil(stacks/g.cols);
  g.opening=lowestHandLead(g.players);g.turn=g.opening.who;
  g.turnReadyAt=now+DEAL_REVIEW_MS;g.aiAssisted=!g.practice&&g.players.some(p=>p.replaced);g.rally=0;g.roundActions=0;g.completedBattles=0;g.playedTiles=[];g.publicDraws={};g.phase="playing";g.trick=[];g.tablePlay=null;g.lastBy=null;g.winner=null;g.result=null;g.round++;g.log=[`라운드 ${g.round} · 첫 선 ${g.players[g.turn].name} (${suits[g.opening.tile.s]} ${g.opening.tile.n})`];
  g.announcedCombos=[];g.revealedHands=[];g.lastEvent={id:uid(),type:"deal",who:g.turn,at:now};scheduleTurn(g,now);
