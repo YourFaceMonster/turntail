@@ -75,9 +75,9 @@ test('overwritten hand does not scout; final hand skips scouting and grants next
  const final=fresh();final.rpgRun!.hp=[60,60,60];final.players[0].hand=[tile(3),tile(3,1)];final.turn=0;act(final,0,'play',final.players[0].hand.map(t=>t.id));assert.deepEqual(final.rpgRun!.rework!.intel,{});assert.equal(final.rpgRun!.rework!.nextForesight,0);
  startRpgRound(final,0);assert.equal(final.rpgRun!.rework!.intel[0].length,3);assert.equal(final.rpgRun!.rework!.nextForesight,undefined);
 });
-test('private upper/lower intel, no repeats, pickup expiry, per-round reset and hourglass',()=>{
- const game=fresh();scoutRpgFloor(game,0,100);assert.equal(game.rpgRun!.rework!.intel[0].length,30);scoutRpgFloor(game,0,5);assert.equal(game.rpgRun!.rework!.intel[0].length,30);
- const other=view(game,game.players[1].token);assert.deepEqual(other.rpgRun!.rework!.intel,{1:[]});assert.ok(other.stacks.every(s=>!s.scoutedLower));assert.deepEqual(other.rpgRun!.tacticalPeeks,[]);
+test('private 2층-only intel, no repeats, pickup expiry, per-round reset and hourglass',()=>{
+ const game=fresh();scoutRpgFloor(game,0,100);assert.equal(game.rpgRun!.rework!.intel[0].length,15);assert.ok(game.rpgRun!.rework!.intel[0].every(i=>game.stacks[i.index][1]?.id===i.tile.id),'only face-down 2층 tiles are scouted');scoutRpgFloor(game,0,5);assert.equal(game.rpgRun!.rework!.intel[0].length,15);
+ const other=view(game,game.players[1].token);assert.deepEqual(other.rpgRun!.rework!.intel,{1:[]});assert.ok(other.stacks.every(s=>!('scoutedLower' in s)));assert.deepEqual(other.rpgRun!.tacticalPeeks,[]);
  const seen=game.rpgRun!.rework!.intel[0][0];game.stacks[seen.index]=game.stacks[seen.index].map(t=>t?.id===seen.tile.id?null:t);view(game,game.players[0].token);assert.ok(!game.rpgRun!.rework!.intel[0].some(i=>i.tile.id===seen.tile.id));
  game.rpgRun!.hp=[70,90,90];finish(game,[0,3,6]);game.rpgRun!.equipped=['stopped-hourglass','watchkeepers-blue-glass'];startRpgRound(game,0);assert.equal(game.rpgRun!.rework!.intel[0].length,6);
  game.rpgRun!.hp=[70,90,90];finish(game,[3,0,6]);startRpgRound(game,0);assert.equal(game.rpgRun!.rework!.intel[0].length,1);assert.equal(game.rpgRun!.rework!.intel[1].length,3);

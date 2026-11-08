@@ -43,5 +43,22 @@
  .stage-clear-shade .rpg-stage-result>.text-btn{min-height:26px;padding:4px 8px;font-size:11px;margin-top:0}
 }
 
-/* RPG v2 intel never changes floor tile dimensions. */
-.rpg-scouted-lower{position:absolute;right:-8px;bottom:-5px;width:52%;height:54%;z-index:8;filter:drop-shadow(0 0 3px #76e4df);pointer-events:none}.rpg-scouted-lower .tile{width:100%;height:100%}.rpg-scout-feedback{position:absolute;left:50%;top:-20px;transform:translateX(-50%);color:#b8f2e7;z-index:10;white-space:nowrap;pointer-events:none}.journey-game-hud [hidden],.rpg-map-content [hidden]{display:none!important}
+/* RPG v2 scouting shows only 2층 tiles in place (RpgScoutReveal); no extra lower-tile overlay. */
+.rpg-scout-feedback{position:absolute;left:50%;top:-20px;transform:translateX(-50%);color:#b8f2e7;z-index:10;white-space:nowrap;pointer-events:none}.journey-game-hud [hidden],.rpg-map-content [hidden]{display:none!important}
+
+.rpg-rework-result .rpg-relic-offers{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:8px 0 12px}.rpg-rework-result .rpg-relic-offers img{width:56px;height:56px}.rpg-rework-result .rpg-relic-offers button{border-radius:5px;min-height:112px}
+
+/* 0.7.4 RPG portrait: recent plays column left of the floor grid (last 3 plays of the round, passes excluded, kept across leads). */
+.turntale.active-table.rpg-journey-mode.portrait-table .floor-stage>.rpg-recent-plays{position:absolute;left:0;top:2px;height:calc(var(--recent-rows,3) * var(--floor-cell-h) + (var(--recent-rows,3) - 1) * 4px);width:calc(var(--floor-side-inset,56px) - 5px);z-index:3;display:flex;flex-direction:column;gap:2px;padding:3px 1px;border-radius:6px;background:#1b120ab8;border:1px solid #7e684266;pointer-events:none;overflow:hidden}
+.rpg-recent-plays .rpg-recent-title{flex:none;font-size:9px;line-height:1;font-weight:800;letter-spacing:.04em;color:#e9d7ad;text-align:center}
+.rpg-recent-plays ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;flex:1;min-height:0}
+.rpg-recent-plays li{flex:0 1 auto;min-height:0;display:flex;flex-direction:column;gap:1px;padding:1px 1px 2px;border-radius:4px;border:1px solid transparent;overflow:hidden}
+.rpg-recent-plays li.rpg-recent-latest{flex-shrink:0}.rpg-recent-plays li.rpg-recent-empty{flex:1 1 0;border:1px dashed #7e684240}
+.rpg-recent-plays li.rpg-recent-latest{border-color:var(--seat-ink);background:#2c1d10;box-shadow:0 0 6px color-mix(in srgb,var(--seat-ink) 55%,transparent)}
+.rpg-recent-plays li.rpg-recent-older{opacity:.62}.rpg-recent-plays li[data-age="2"]{opacity:.4}
+.rpg-recent-plays .rpg-recent-name{display:flex;align-items:center;gap:2px;flex:none;font-size:9px;line-height:1.1;font-weight:800;color:var(--seat-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rpg-recent-plays .rpg-recent-name i{font-style:normal;font-size:7px;flex:none}
+.rpg-recent-plays .rpg-recent-tiles{flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px}
+.rpg-recent-plays .rpg-recent-tile{display:grid;place-items:center;width:100%;min-width:0;height:14px;border-radius:3px;background:#f2e4c6;box-shadow:inset 0 0 0 1px #b9a37a;font-size:8.5px;letter-spacing:-.06em;font-weight:900;line-height:1}
+.rpg-recent-plays .rpg-recent-tile[data-suit="2"]{-webkit-text-stroke:.3px #8c3e08}
+.turntale.active-table:not(.portrait-table) .rpg-recent-plays{display:none}

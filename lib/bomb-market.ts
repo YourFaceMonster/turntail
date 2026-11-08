@@ -56,10 +56,13 @@ function deal(g:BombState,random:()=>number){
  const deck:Tile[]=Array.from({length:60},(_,id)=>({id,n:Math.floor(id/4)+1,s:id%4}));
  for(let i=59;i>0;i--){const j=Math.max(0,Math.min(i,Math.floor(random()*(i+1))));[deck[i],deck[j]]=[deck[j],deck[i]];}
  const handSize=g.players.length===4?BOMB_HAND_SIZE:15;g.players.forEach(p=>{p.hand=bombSorted(deck.splice(0,handSize));p.place=null;p.out=false;});g.market=bombSorted(deck);g.pot=0;g.discard=[];g.trick=[];g.lastBy=null;g.passed=[];g.reaction=null;g.round++;g.phase='playing';g.trickId++;g.transfers=[];g.roundStart=g.players.map(p=>p.score);
- g.turn=g.players.reduce((best,p,i)=>bombBeats([p.hand.at(-1)!],[g.players[best].hand.at(-1)!])?i:best,0);
+ // Lead: holder of black 3 (the weakest card). If it sits in the market, the holder of the weakest dealt card leads.
+ g.turn=g.players.reduce((best,p,i)=>bombBeats([g.players[best].hand[0]],[p.hand[0]])?i:best,0);
  g.log=[`${g.round}/5판 · ${g.players[g.turn].name}의 선`];
 }
 const eligible=(g:BombState,i:number)=>g.players[i].place===null&&!g.players[i].out;
+/** True when any participant still able to act holds a bomb that beats the current trick. */
+const bombPossible=(g:BombState)=>g.players.some((p,i)=>eligible(g,i)&&bombOptions(p.hand,g.trick,true).length>0);
 function log(g:BombState,message:string){g.log=[message,...g.log].slice(0,24);}
 function closeTrick(g:BombState){
  const last=g.lastBy!;g.discard.push(...g.trick);g.trick=[];g.lastBy=null;g.passed=[];g.reaction=null;g.trickId++;g.players.forEach(p=>p.out=false);
@@ -91,11 +94,15 @@ export function transitionBomb(state:BombState,who:number,action:BombAction,revi
   const tiles=action.ids.map(id=>p.hand.find(t=>t.id===id));if(tiles.some(t=>!t))throw Error('보유하지 않은 패예요.');
   const selected=tiles as Tile[],combo=bombCombo(selected);if(!combo||!bombBeats(selected,state.trick))throw Error('현재 족보를 이기는 조합을 선택해 주세요.');
   const interrupt=who!==state.turn;
+  if(state.reaction&&now>=state.reaction.deadline)throw Error('폭탄 반응 시간이 끝났어요.');
   if(state.reaction&&!combo.bomb)throw Error('폭탄 반응 중에는 폭탄만 제출할 수 있어요.');
   if(interrupt&&!combo.bomb)throw Error('차례 밖에는 폭탄만 제출할 수 있어요.');
   const g=structuredClone(state);g.discard.push(...g.trick);g.trick=bombSorted(selected);g.lastBy=who;g.passed=[];g.players[who].hand=g.players[who].hand.filter(t=>!action.ids.includes(t.id));if(interrupt)g.turn=who;g.revision++;
   g.reaction={id:g.revision,startedAt:now,deadline:now+BOMB_REACTION_MS};log(g,`${p.name} · ${combo.label} ${selected.length}장`);
-  if(!g.players[who].hand.length)finishPlayer(g,who);return g;
+  if(!g.players[who].hand.length)finishPlayer(g,who);
+  // No one can bomb: skip the 3s window and move on immediately.
+  if(g.phase==='playing'&&g.reaction&&!bombPossible(g)){g.reaction=null;advance(g,who);}
+  return g;
  }
  if(state.reaction)throw Error('폭탄 반응 중이에요.');if(who!==state.turn)throw Error('지금은 내 차례가 아니에요.');if(!state.trick.length)throw Error('선은 반드시 패를 제출해야 해요.');
  const g=structuredClone(state);

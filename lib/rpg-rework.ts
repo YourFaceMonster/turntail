@@ -67,8 +67,8 @@ export function pruneRpgIntel(game:Game){const state=game.rpgRun?.rework;if(!sta
 export function scoutRpgFloor(game:Game,seat:number,count:number,bonus=0){
  const state=game.rpgRun!.rework!;pruneRpgIntel(game);const own=state.intel[seat]??=[];
  const known=new Set(own.map(intel=>intel.tile.id));
- // Covered lower tiles and upper tiles are hidden; exposed lower tiles are already public.
- const pool=game.stacks.flatMap((stack,index)=>stack[1]?stack.flatMap(tile=>tile&&!known.has(tile.id)?[{round:game.round,index,tile:{...tile}}]:[]):[]);
+ // Scouting only sees through face-down 2층 (upper) tiles; covered 1층 tiles stay hidden and exposed ones are already public.
+ const pool=game.stacks.flatMap((stack,index)=>stack[1]&&!known.has(stack[1].id)?[{round:game.round,index,tile:{...stack[1]}}]:[]);
  let revealed=0;while(pool.length&&revealed<count){const random=new Uint32Array(1);crypto.getRandomValues(random);own.push(pool.splice(random[0]%pool.length,1)[0]);revealed++;}
  state.lastScout={seat,count:revealed,bonus:Math.min(bonus,revealed),round:game.round};return revealed;
 }
