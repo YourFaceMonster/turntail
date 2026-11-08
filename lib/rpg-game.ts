@@ -9,9 +9,12 @@ import {advanceRpgStage,newRpgRun,RPG_RELICS} from './rpg.ts';
 import {RPG_BASIC_ITEMS,RPG_SHOP_ITEMS,giveRpgEnemyItems} from './rpg-items.ts';
 import {stageOpponents} from './stage-theme.ts';
 import {RPG_TWINS} from './rpg-twins.ts';
+import {RPG_GUARDIANS,rpgStageCast} from './rpg-chapters.ts';
 
 function prepareEnemyItems(game:Game){if(game.rpgRun?.rework)return;if(isRpgPhaseOne(game))game.rpgRun!.enemyConsumables=Object.fromEntries([1,2].map(seat=>[seat,[...RPG_PHASE_ONE.enemyStartingItems]]));else giveRpgEnemyItems(game.rpgRun!,game.rpgTest?2:1);}
-function opponents(stage:number){
+function opponents(stage:number,journey=false){
+ if(journey&&stage===10)return RPG_GUARDIANS.map(person=>{const ai=player(person.name,true);ai.avatar=person.avatar;return ai;});
+ const cast=journey?rpgStageCast(stage):null;if(cast)return cast.map(person=>{const ai=player(person.name,true);ai.avatar=`stage-portrait:${person.portrait}`;return ai;});
  if([3,6,9,10].includes(stage))return RPG_TWINS.map(person=>{const ai=player(person.name,true);ai.avatar=person.avatar;return ai;});
  return stageOpponents(stage).map(person=>{const ai=player(person.name,true);ai.avatar=`stage-portrait:${person.portrait}`;return ai;});
 }
@@ -37,7 +40,7 @@ export function startRpgRound(game:Game,now=Date.now()){
  if(run.status==='ready'){
   if(run.pendingRework){enableRpgRework(run);run.pendingRework=false;}
   game.rpgRun=run.rework?advanceReworkStage(run):isRpgPhaseOne(game)?advanceRpgPhaseOne(run):advanceRpgStage(run);game.rpgRun.itemGuards={0:!!run.itemGuards?.[0]};
-  game.players=[game.players[0],...opponents(game.rpgRun.stage)];prepareEnemyItems(game);
+  game.players=[game.players[0],...opponents(game.rpgRun.stage,!!game.rpgRun.journey)];prepareEnemyItems(game);
  }else if(run.status!=='playing')throw Error('보상과 준비를 마친 뒤 다음 판을 시작해 주세요.');
  game.capacity=3;start(game,now);
 }

@@ -32,15 +32,15 @@ test('recent plays keep the newest three of the round across leads, passes exclu
 });
 
 test('recent plays column renders newest first with fixed empty slots',()=>{
- const html=renderToStaticMarkup(<RpgRecentPlays rows={3} names={['나','로웬','루미']} plays={[{id:'a',who:1,tiles:[tile(4)]},{id:'b',who:2,tiles:[tile(5,3),tile(5,1)]}]}/>);
+ const html=renderToStaticMarkup(<RpgRecentPlays names={['나','로웬','루미']} plays={[{id:'a',who:1,tiles:[tile(4)]},{id:'b',who:2,tiles:[tile(5,3),tile(5,1)]}]}/>);
  assert.equal((html.match(/<li/g)||[]).length,3,'three slots keep the grid still');
  assert.ok(html.indexOf('루미')<html.indexOf('로웬'),'newest first');
  assert.ok(html.includes('rpg-recent-latest')&&html.includes('●')&&html.includes('○'));
  assert.equal((html.match(/rpg-recent-empty/g)||[]).length,1);
  assert.ok(!html.includes('패스'));
- const empty=renderToStaticMarkup(<RpgRecentPlays rows={3} names={[]} plays={[]}/>);
+ const empty=renderToStaticMarkup(<RpgRecentPlays names={[]} plays={[]}/>);
  assert.equal((empty.match(/rpg-recent-empty/g)||[]).length,3,'a fresh lead shows empty slots, not a collapsed column');
  const page=readFileSync('app/page.tsx','utf8');
  assert.ok(page.includes('game.rpgRun&&!game.hpItemMode&&!landscapeTable&&<RpgRecentPlays'),'RPG portrait only');
- const css=readFileSync('app/rpg-phase-one.css','utf8');assert.ok(css.includes('.rpg-recent-tiles{flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))'),'three tiles per row');
+ const css=readFileSync('app/rpg-phase-one.css','utf8');assert.ok(css.includes('.rpg-recent-tiles{flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))'),'three tiles per row');assert.ok(css.includes('.rpg-recent-plays{position:absolute;left:-4px;top:0;width:59px;height:100%;max-height:236px;'),'mirrors the relic rail');assert.ok(css.includes('.floor-relic-dock{width:59px!important;right:-4px!important}'),'relic rail mirrored and kept inside the felt');
 });

@@ -102,7 +102,10 @@ export function settleReworkRound(run:RpgRun,result:RpgResultLike):RpgRun{
  if(seats.length===3&&result.players[0].place===2&&next.equipped.includes('second-ring'))heal(3);
  if(next.hp[0]>0&&next.hp[0]<=10&&next.equipped.includes('final-knot')&&!state.knotStages.includes(next.stage)){heal(5);state.knotStages.push(next.stage);}
  next.rounds++;next.roundIds.push(result.id);next.updatedAt=result.at;state.intel={};state.lastScout=undefined;
- const failed=next.hp[0]===0,cleared=next.hp.slice(1).every(hp=>hp===0);
+ // ST7 optional observation: finishing a round in second place unlocks one extra line.
+ if(next.stage===7&&next.journey&&result.players[0]?.place===2)next.journey={...next.journey,story:{runNumber:next.journey.story?.runNumber||1,quests:next.journey.story?.quests||{},secondPlaceSeen:true}};
+ // Any seat at 0 HP ends the stage: the player at 0 fails first, otherwise one fallen AI clears it (no 1v1 continuation).
+ const failed=next.hp[0]===0,cleared=next.hp.slice(1).some(hp=>hp===0);
  next.phaseOne!.eliminated=next.hp.flatMap((hp,i)=>hp===0?[i]:[]);
  if(failed){next.status='game-over';next.reward=null;state.nextForesight=undefined;}
  else if(cleared){
@@ -123,7 +126,8 @@ export function chooseReworkReward(run:RpgRun,id?:string,decline=false){
   else{next.relics=[...new Set([...next.relics,id])];if(next.equipped.length<3&&!next.equipped.includes(id))next.equipped.push(id);}
   next.discovered=[...new Set([...next.discovered,id])];}
  clear.chosen='relic';clear.declined=decline;next.phaseOne!.rewardHistory=[...(next.phaseOne!.rewardHistory||[]),{stage:next.stage,choice:'relic',...(id&&!decline?{relicId:id}:{}),declined:decline}];
- next.status=(next.stage===3&&!!next.journey)||next.stage===10?'complete':'ready';
+ // The journey now continues through ST10 (story bible v1.4); ST3 is no longer a demo ending.
+ next.status=next.stage===10?'complete':'ready';
  return activateRpgRelics(next);
 }
 export function advanceReworkStage(run:RpgRun){

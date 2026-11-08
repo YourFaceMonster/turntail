@@ -44,9 +44,10 @@ test('settlement applies positive HP, clamps and is idempotent across save reloa
  const storage=memory();saveRpgGame(storage,game);const saved=readRpgArchive(storage).active!;settle(saved);assert.deepEqual(saved.rpgRun!.hp,[72,54,34]);
  game.rpgRun!.hp=[99,99,50];startRpgRound(game,100);finish(game,[0,4,8]);assert.deepEqual(game.rpgRun!.hp,[100,100,34]);
 });
-test('AI elimination occurs at settlement and next round deals 12+12+36 with stable seats',()=>{
+test('one AI at 0 HP ends the stage at settlement; a legacy 1v1 save still deals 12+12+36 with stable seats',()=>{
  const game=fresh();game.rpgRun!.hp=[80,10,30];finish(game,[0,8,4]);
- assert.deepEqual(game.rpgRun!.hp,[92,0,34]);startRpgRound(game,100);
+ assert.deepEqual(game.rpgRun!.hp,[92,0,34]);assert.equal(game.rpgRun!.status,'allocation','no 1v1 continuation');
+ game.rpgRun!.status='playing';startRpgRound(game,100);
  assert.deepEqual(game.players.map(p=>p.hand.length),[12,0,12]);assert.equal(game.stacks.flat().filter(Boolean).length,36);assert.equal(game.cols,6);assert.equal(game.rows,3);
  assert.notEqual(game.turn,1);const ai=rpgTwinBotView(game,2);assert.equal(ai.players.length,2);assert.equal(ai.me,1);assert.equal(ai.capacity,2);
  const tiles=[...game.players.flatMap(p=>p.hand),...game.stacks.flat().filter(Boolean)];assert.equal(new Set(tiles.map(t=>t!.id)).size,60);
@@ -55,9 +56,9 @@ test('AI elimination occurs at settlement and next round deals 12+12+36 with sta
  const index=view(game,game.players[2].token).stacks.findIndex(s=>s.available);act(game,2,'draw',[],index);assert.equal(game.turn,0);assert.equal(game.trick.length,0);
  game.stacks=game.stacks.map(()=>[null,null]);act(game,0,'play',[tile(9).id]);assert.equal(game.phase,'ended');assert.equal(game.result!.players[1].place,0);assert.equal(game.result!.players[1].delta,0);
 });
-test('two-seat +7/-7, clear only after both AIs zero, player zero takes failure priority',()=>{
- const game=fresh();game.rpgRun!.hp=[70,0,10];start(game,0);finish(game,[0,0,7]);assert.deepEqual(game.rpgRun!.hp,[77,0,3]);
- startRpgRound(game,0);finish(game,[0,0,7]);assert.equal(game.rpgRun!.status,'allocation');assert.deepEqual(game.rpgRun!.hp,[84,0,0]);
+test('legacy two-seat +7/-7 settles and clears, player zero takes failure priority',()=>{
+ const game=fresh();game.rpgRun!.hp=[70,0,10];start(game,0);finish(game,[0,0,7]);assert.deepEqual(game.rpgRun!.hp,[77,0,3]);assert.equal(game.rpgRun!.status,'allocation');
+ const both=fresh();both.rpgRun!.hp=[4,30,4];finish(both,[8,0,8]);assert.equal(both.rpgRun!.hp[0],0);assert.equal(both.rpgRun!.hp[2],0);assert.equal(both.rpgRun!.status,'game-over','simultaneous zero is a failure');
  const failure=fresh();failure.rpgRun!.hp=[3,20,20];failure.rpgRun!.equipped=['final-knot'];finish(failure,[8,0,4]);
  assert.equal(failure.rpgRun!.hp[0],0);assert.equal(failure.rpgRun!.status,'game-over');assert.equal(failure.rpgRun!.fate,0);assert.equal(failure.rpgRun!.journey!.retryStage,undefined);
 });
@@ -105,13 +106,14 @@ test('rewards: 2/3 offers, mirror +1, stable compass preview, quest exclusion',(
  const exhausted=fresh().rpgRun!;exhausted.relics=['gamblers-gloves','cracked-heart','second-heart','recovery-lantern','stopped-hourglass','final-knot','second-ring','mor-quill','twin-needle-compass','split-mirror'];assert.deepEqual(reworkRewardOffers(exhausted),[]);
  const final=fresh().rpgRun!;final.stage=10;assert.deepEqual(reworkRewardOffers(final),[]);
 });
-test('ST1→ST2→ST3 demo rewards and ending preserve stories, no repeated claims',()=>{
+test('ST1→ST2→ST3 rewards preserve stories, no repeated claims, and the journey continues to ST4',()=>{
  const game=fresh();for(let stage=1;stage<=3;stage++){
   game.rpgRun!.hp=[70,1,1];finish(game,[0,3,3]);const run=game.rpgRun!,offers=run.phaseOne!.clear!.relicOffers!;assert.equal(offers.length,(stage===3?3:2)+(run.equipped.includes('split-mirror')?1:0));
   game.rpgRun=chooseRpgStageReward(run,'relic',undefined,false,offers[0]);assert.throws(()=>chooseRpgStageReward(game.rpgRun!,'relic',undefined,false,offers[0]));
   if(stage<3){assert.equal(game.rpgRun.status,'ready');enterJourneyNode(game,`battle-${stage+1}` as 'battle-2');assert.equal(game.rpgRun.stage,stage+1);assert.deepEqual(game.rpgRun.hp.slice(1),RPG_STAGE_HP[stage]);}
  }
- assert.equal(game.rpgRun!.status,'complete');assert.ok(game.rpgRun!.storyCards!.includes('iron-gate-two'));assert.equal(game.rpgRun!.stage,3);const storage=memory();saveRpgGame(storage,game);const archive=readRpgArchive(storage);assert.equal(archive.active,null);assert.equal(archive.lastCompleted!.rpgRun!.rework!.inherited,game.rpgRun!.rework!.inherited);assert.deepEqual(archive.lastCompleted!.rpgRun!.journey,JSON.parse(JSON.stringify(game.rpgRun!.journey)));
+ assert.equal(game.rpgRun!.status,'ready','ST3 is no longer a demo ending');assert.ok(game.rpgRun!.storyCards!.includes('iron-gate-two'));assert.equal(game.rpgRun!.stage,3);assert.equal(game.rpgRun!.journey!.location,'map');
+ const storage=memory();saveRpgGame(storage,game);const archive=readRpgArchive(storage);assert.equal(archive.active!.rpgRun!.rework!.inherited,game.rpgRun!.rework!.inherited);assert.equal(archive.lastCompleted,undefined);
 });
 test('future chapter transition resets HP/equipment, inherits one, retains permanent data',()=>{
  const game=fresh();let run=game.rpgRun!;run.journey=undefined;run.stage=3;game.rpgRun=run;run.hp=[70,1,1];finish(game,[0,3,3]);
@@ -162,11 +164,10 @@ test('new result/hub/help UI has HP settlement and no currency, class selection,
  const hub=renderToStaticMarkup(<RpgHub active={game} records={[]} start={()=>{}} resume={()=>{}} testActive={null} testStart={()=>{}} testResume={()=>{}} close={()=>{}} error=""/>);assert.doesNotMatch(hub,/전투 직업 선택|주화/);
  const run=game.rpgRun!;run.status='ready';run.journey!.location='wayfarer-stop';const help=renderToStaticMarkup(<JourneyWayfarerStopView run={run} busy={false} error="" action={()=>{}} exit={()=>{}}/>);assert.match(help,/traveler-injured/);assert.doesNotMatch(help,/건넬 응급 약초/);
 });
-test('new preview screens use the new engine, including the 12-card duel, zero-HP failure and ST3 rewards',()=>{
+test('new preview screens use the new engine, including zero-HP failure and ST3 rewards',()=>{
  const game=createRpgJourneyGame('preview'),preview=new RpgPreviewSession(game,'screens');
- for(const target of ['map','tavern','battle-1','battle-2','battle-3','duel-2','reward-1','reward-2','reward-3','failed','mini-round','mini-final'] as const){
+ for(const target of ['map','tavern','battle-1','battle-2','battle-3','reward-1','reward-2','reward-3','failed','mini-round','mini-final'] as const){
   const screen=preview.screen(game,target);assert.equal(screen.rpgRun!.coins,0);assert.ok(screen.rpgRun!.rework);
-  if(target==='duel-2'){assert.deepEqual(screen.players.map(p=>p.hand.length),[12,0,12]);assert.equal(screen.stacks.length,18);assert.equal(screen.cols,6);}
   if(target==='failed')assert.equal(screen.rpgRun!.status,'game-over');
   if(target.startsWith('reward'))assert.equal(screen.rpgRun!.status,'allocation');
  }

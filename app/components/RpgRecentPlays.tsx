@@ -6,9 +6,9 @@ import {TILE_INKS} from '../../lib/tile-palette';
 import {seatAccent} from '../../lib/seat-presentation';
 
 /** RPG portrait: this round's last plays (passes excluded), newest first. Empty slots keep the floor grid still. */
-export default function RpgRecentPlays({plays,names,rows,limit=3}:{plays:TablePlay[],names:string[],rows:number,limit?:number}){
+export default function RpgRecentPlays({plays,names,limit=3}:{plays:TablePlay[],names:string[],limit?:number}){
  const recent=plays.slice(-limit).reverse();
- return <aside className="rpg-recent-plays" aria-label="최근 낸 패" style={{'--recent-rows':rows} as CSSProperties}>
+ return <aside className="rpg-recent-plays" aria-label="최근 낸 패">
   <small className="rpg-recent-title">최근</small>
   <ol>{Array.from({length:limit},(_,i)=>{const play=recent[i];
    if(!play)return <li key={`empty-${i}`} className="rpg-recent-empty" aria-hidden="true"/>;

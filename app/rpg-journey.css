@@ -260,3 +260,9 @@
 @media(max-aspect-ratio:1/1){.journey-map-scene .rpg-map-node[data-node='letter-alley']{left:84%;top:58%}}
 
 @media(max-aspect-ratio:1/1){.journey-map-scene .rpg-map-node[data-node='wayfarer-stop']{left:20%;top:34%}}
+
+/* ST4~10 region maps: placeholder art until the generated region maps arrive (lib/rpg-chapters.ts art slots). */
+.journey-map-scene[data-region]:not([data-region='1']) .rpg-map-paint{background:linear-gradient(#101c2655,#13242133),var(--region-map-wide) center/cover;filter:saturate(.9)}
+@media(max-aspect-ratio:1/1){.journey-map-scene[data-region]:not([data-region='1']) .rpg-map-paint{background-image:linear-gradient(#101c2655,#13242133),var(--region-map-tall);background-position:center;background-size:cover}}
+.journey-map-scene[data-region]:not([data-region='1']) .map-snow-drift{display:none}
+.rpg-map-paths .map-route-region{display:block}

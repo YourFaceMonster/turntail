@@ -5,7 +5,7 @@ import {rpgMaxHp,reworkRelic} from '../../lib/rpg-rework';
 import type {RpgStageReward} from '../../lib/rpg-phase-one';
 import {relicImage} from '../../lib/item-battle-relics';
 import {pendingStageStory,storySceneKey} from '../../lib/rpg-story-cards';
-import {RPG_CONNECTION_SCENES} from '../../lib/rpg-connection-scenes';
+import {journeyScenes} from '../../lib/rpg-chapter-scenes';
 import {JourneyStoryChrome} from './RpgJourneyScene';
 import RpgPrologue from './RpgPrologue';
 import StoryCardCollection from './StoryCardCollection';
@@ -37,7 +37,7 @@ export default function RpgReworkResult({game,busy,choose,next,newRun,exit,markS
     <div className="compact-hp-breakdown"><p className="round-money-detail">남은 패 {row?.count}장 · <b className={delta>0?'hp-recovered':delta<0?'hp-lost':''}>{`패 정산 ${delta>0?'+':''}${delta} HP`}</b>{delta!==net&&<small> · 상한·유물 회복 반영</small>}</p>{run.hp[seat]===0&&<p>탈락 · 다음 판 분배 제외</p>}</div>
    </article>;
   })}</div>
-  {run.status==='playing'&&<><p>{run.hp.filter(hp=>hp>0).length===2?'다음 판은 손패 12장씩 · 바닥 36장으로 겨뤄요.':'다음 판은 손패 10장씩 · 바닥 30장으로 겨뤄요.'}</p><button className="primary full" disabled={busy} onClick={next}>다음 판 →</button></>}
+  {run.status==='playing'&&<><p>다음 판은 손패 10장씩 · 바닥 30장으로 겨뤄요. 누구든 HP가 0이 되면 스테이지가 끝나요.</p><button className="primary full" disabled={busy} onClick={next}>다음 판 →</button></>}
   {run.status==='allocation'&&<><h3>{[3,6,9].includes(run.stage)?'다음 챕터 시작 유물':'유물 보상'} · {offers.length}개 중 1개</h3><div className="rpg-relic-offers">{offers.map(id=>{const relic=reworkRelic(id)!;return <button key={id} className={selected===id?'chosen':''} disabled={busy} aria-pressed={selected===id} onClick={()=>setSelected(id)}><img src={relicImage(id)} alt=""/><strong>{relic.name}</strong><small>{relic.effect}</small></button>;})}</div><button className="primary full" disabled={busy||offers.length>0&&!offers.includes(selected)} onClick={()=>choose('relic',undefined,!offers.length,selected||undefined)}>{offers.length?'선택한 유물 받기':'보상 확인'}</button></>}
   <details className="result-details"><summary>남은 손패 보기</summary>{seats.map(seat=>{const player=game.players[seat];return <section className="result-hand-row" key={seat}><h3><SeatPortrait avatar={player.avatar} seat={seat}/>{player.name}<small>{player.count}장</small></h3><div>{player.hand?.length?player.hand.map(tile=><TileFace tile={tile} key={tile.id}/>):<small>{player.count?`남은 패 ${player.count}장`:'모두 냈어요.'}</small>}</div></section>;})}</details>
   {run.status==='ready'&&<button className="primary full" disabled={busy} onClick={next}>다음 스테이지 →</button>}
@@ -45,5 +45,5 @@ export default function RpgReworkResult({game,busy,choose,next,newRun,exit,markS
   {(failed||complete)&&<button className="primary full" disabled={busy} onClick={newRun}>새 여정 시작</button>}
   {clear&&!failed&&<button className="text-btn full" onClick={()=>setReplay(true)}>승리 이야기 다시 보기</button>}
   <button className="text-btn full" disabled={busy} onClick={exit}>저장하고 나가기</button>
- </section></div>{story&&<RpgPrologue cuts={RPG_CONNECTION_SCENES[String(run.stage)]?.after||[]} chrome={<JourneyStoryChrome run={run} busy={busy} error="" action={(action,extra)=>{if(action==='rpg-journey-equip')equip?.(String(extra?.id),extra?.replace as string|undefined);}} exit={exit} playerName={game.players[0].name}/>} label="스테이지 승리 후 장면" enter={()=>{if(replay)setReplay(false);else{setSeen(true);markSeen?.(storySceneKey(run.stage));}}}/>}</>;
+ </section></div>{story&&<RpgPrologue cuts={journeyScenes(run.stage,run).after} chrome={<JourneyStoryChrome run={run} busy={busy} error="" action={(action,extra)=>{if(action==='rpg-journey-equip')equip?.(String(extra?.id),extra?.replace as string|undefined);}} exit={exit} playerName={game.players[0].name}/>} label={run.stage===10?'여정의 끝':'스테이지 승리 후 장면'} enter={()=>{if(replay)setReplay(false);else{setSeen(true);markSeen?.(storySceneKey(run.stage));}}}/>}</>;
 }
