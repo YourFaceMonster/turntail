@@ -19,6 +19,21 @@ main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.
 .yacht-rolls i.is-left{background:#f0c96a;border-color:#f0c96a;box-shadow:0 0 6px #f0c96a88}
 .yacht-main .yacht-trick{min-height:0!important;height:auto!important;padding:2px 0!important}
 .yacht-main .yacht-trick .trick-label{justify-content:center}
+/* Portrait: the "여행자 · 굴림 n/3" line sat hidden under the felt yet kept a 34px row. The roll dots and the action
+   button already say the same, so drop the row and give its height to the dice stage. (Short landscape keeps it.) */
+@media not all and (max-height:520px) and (orientation:landscape){
+ main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.portrait-table .play-column{grid-template-rows:minmax(0,1fr) max-content!important}
+ main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.portrait-table .trick-area.yacht-trick{display:none!important}
+}
+/* Short portrait screens (phone browser with its address bar): slimmer score boxes so the dice stage gets the height */
+@media (max-height:700px) and (orientation:portrait){
+ .yacht-score-hand.yacht-score-hand{gap:4px;padding:2px 2px 4px}
+ .yacht-main .yacht-cat.yacht-cat{min-height:46px;padding:3px 2px;grid-template-rows:18px 1fr auto}
+ .yacht-main .yacht-cat-icon.yacht-cat-icon{width:18px;height:18px}
+ .yacht-main .yacht-cat-score.yacht-cat-score{font-size:18px}.yacht-main .yacht-cat.is-written .yacht-cat-score{font-size:16px}
+ .yacht-main .yacht-cat-hint.yacht-cat-hint{font-size:9px;line-height:1.1}
+ .yacht-main .yacht-cat.is-best::after{top:-7px;right:-3px;font-size:13px}
+}
 
 /* Stage sized by the free felt space (container units), keep shelf on top of the tray */
 .yacht-stage-box{flex:1 1 auto;min-height:0;display:grid;place-items:center;container-type:size}
@@ -26,7 +41,7 @@ main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.
 /* Keep shelf 4%~25% of the stage; held dice sit at 14.5% (die ≈ 13.8% tall → 7.6%~21.4%), clear of the label strip.
    The label has its own z-index (the shelf is not a stacking context), so a die can never cover it. */
 .yacht-keep{position:absolute;left:4%;right:4%;top:4%;height:21%;border-radius:12px;background:linear-gradient(#2a1c12d0,#160e08e0);border:3px solid #140b06;box-shadow:inset 0 3px 8px #0009,0 3px 0 #0006}
-.yacht-keep span{position:absolute;z-index:6;left:12px;top:-10px;padding:0 8px;border-radius:999px;background:#140b06;color:#f5dfbc;font-size:10px;line-height:18px;pointer-events:none}
+.yacht-keep span{position:absolute;z-index:6;left:50%;bottom:calc(100% - 1px);transform:translateX(-50%);white-space:nowrap;padding:0 8px;border-radius:999px;background:#140b06;color:#f5dfbc;font-size:10px;line-height:14px;pointer-events:none}
 .yacht-keep i{position:absolute;top:50%;width:15.5%;aspect-ratio:1;border-radius:10px;transform:translate(-50%,-50%);border:2px dashed #f0c96a40}
 .yacht-tray{position:absolute;left:4%;right:4%;top:27%;bottom:2%;border-radius:16px;background:linear-gradient(145deg,#3a2a1c,#120b06);border:4px solid #0a0603;box-shadow:0 10px 22px #000a,inset 0 2px 0 #ffffff1a;padding:4%}
 .yacht-tray::before,.yacht-tray::after{content:'';position:absolute;width:9px;height:9px;border-radius:50%;background:#c99a3b;box-shadow:0 0 0 2px #140b06;top:8px;left:8px}
@@ -106,21 +121,19 @@ main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.
 .yacht-cat.is-pick .yacht-cat-hint{color:#6b5236}
 .yacht-cat-score{font-size:24px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;min-height:1em}
 .yacht-cat-check{position:absolute;right:5px;top:3px;font-style:normal;font-size:11px;color:#1f6b45;font-weight:800}
-.yacht-cat.is-written{background:linear-gradient(#ddd3be,#cbbd9e);box-shadow:0 2px 0 #6b5236,0 3px 5px #0005}
+.yacht-cat.is-written{background:linear-gradient(#ddd3be,#cbbd9e);box-shadow:0 3px 0 #6b5236,0 5px 8px #0006}
 .yacht-cat.is-written .yacht-cat-score{color:#4a3826;font-size:21px}
-.yacht-cat.is-last{box-shadow:0 0 0 3px #f0c96a,0 3px 0 #6b5236;animation:yacht-written .5s ease-out}
-@keyframes yacht-written{0%{transform:scale(1.15)}100%{transform:none}}
-/* While I am choosing: unusable boxes sink back, usable ones lift and glow, the best one pulses */
+.yacht-cat.is-last{box-shadow:0 0 0 3px #f0c96a,0 3px 0 #6b5236,0 5px 8px #0006}
+/* While I am choosing: colour only, no lift, pulse or pop, so the row never looks like it changes size.
+   Unusable boxes dim, usable ones turn gold, the best one gets a steady green ring and a star. */
 .yacht-score-hand.is-picking .yacht-cat.is-written,.yacht-score-hand.is-picking .yacht-cat.is-blocked{opacity:.55;filter:saturate(.5)}
-.yacht-cat.is-pick{cursor:pointer;border-color:#b98a2e;background:linear-gradient(#fffbe9,#f6e3b0);transform:translateY(-4px);box-shadow:0 0 0 2px #f0c96a,0 7px 0 #6b5236,0 10px 14px #0007}
+.yacht-cat.is-pick{cursor:pointer;border-color:#b98a2e;background:linear-gradient(#fffbe9,#f6e3b0);box-shadow:0 0 0 2px #f0c96a,0 3px 0 #6b5236,0 5px 8px #0006}
 .yacht-cat.is-pick .yacht-cat-score{color:#1f6b45}
-.yacht-cat.is-pick:hover{transform:translateY(-6px)}
-.yacht-cat.is-best{border-color:#1f6b45;box-shadow:0 0 0 3px #4fbf7d,0 7px 0 #6b5236,0 0 18px #4fbf7d88;animation:yacht-best 1.2s ease-in-out infinite}
+.yacht-cat.is-pick:hover{background:linear-gradient(#fffef4,#fbecc4)}
+.yacht-cat.is-best{border-color:#1f6b45;box-shadow:0 0 0 3px #4fbf7d,0 3px 0 #6b5236,0 5px 8px #0006}
 .yacht-cat.is-best::after{content:'★';position:absolute;right:5px;top:2px;font-size:12px;color:#d59a12;text-shadow:0 1px 0 #fff}
-@keyframes yacht-best{50%{box-shadow:0 0 0 3px #7be0a3,0 7px 0 #6b5236,0 0 26px #4fbf7dcc}}
 .yacht-cat.is-zero{cursor:pointer}
 .yacht-cat.is-zero .yacht-cat-score{color:#a08d6c}
-.yacht-cat.is-zero:hover{transform:translateY(-2px)}
 .yacht-cat:focus-visible{outline:3px solid #f0c96a;outline-offset:2px}
 /* Haro's sheet (tap his seat) */
 .yacht-main .opponent{position:relative}
@@ -133,7 +146,7 @@ main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.
 .yacht-rival-sheet footer{margin-top:5px;color:#a9c2d6}
 /* Haro's combo log, in the empty space left of his seat */
 .yacht-main .opponents{gap:8px;align-items:stretch}
-.yacht-rival-log{flex:1 1 auto;min-width:0;max-width:300px;margin-right:auto;display:grid;align-content:center;gap:3px;padding:4px 8px;border-radius:12px;border:2px solid #f0c96a55;background:linear-gradient(#20150ddd,#120b06e6);color:#f5dfbc;box-shadow:0 4px 10px #0007;font-family:"Noto Sans KR",Arial,sans-serif}
+.yacht-rival-log{flex:1 1 auto;min-width:0;max-width:300px;justify-self:stretch;display:grid;align-content:center;gap:3px;padding:4px 8px;border-radius:12px;border:2px solid #f0c96a55;background:linear-gradient(#20150ddd,#120b06e6);color:#f5dfbc;box-shadow:0 4px 10px #0007;font-family:"Noto Sans KR",Arial,sans-serif}
 .yacht-rival-log header{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
 .yacht-rival-log header b{font-size:11px;color:#f0c96a;margin-right:2px}
 .yacht-rival-log header small{flex:none;font-size:10px;line-height:16px;color:#cdb98d}

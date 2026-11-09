@@ -82,7 +82,7 @@ const BOX_SHORT:Record<YachtCategory,string>={ones:'1',twos:'2',threes:'3',fours
 function RivalLog({match,aiTurn,cup,last}:{match:YachtMatch,aiTurn:boolean,cup:'idle'|'shaking'|'pouring',last:YachtMatch['last']}){
  const sheet=match.sheets[1],rolled=aiTurn&&match.rollsLeft<3&&cup==='idle',shape=rolled?yachtShape(match.dice):'';
  const box=(cat:YachtCategory)=>YACHT_UPPER.includes(cat)?`숫자 ${YACHT_LABELS[cat]}`:YACHT_LABELS[cat];
- const now=aiTurn?(cup!=='idle'?'컵을 흔드는 중…':rolled?(shape?`${YACHT_LABELS[shape]}!`:'족보 없음'):'차례 시작'):last?`방금 ${box(last.category)} ${last.score}점${last.bonus?` +${last.bonus}`:''}`:'아직 기록 없음';
+ const now=aiTurn?(cup!=='idle'?'흔드는 중':rolled?(shape?`${YACHT_LABELS[shape]}!`:'족보 없음'):'차례 시작'):last?`방금 ${box(last.category)} ${last.score}점${last.bonus?` +${last.bonus}`:''}`:'아직 기록 없음';
  return <aside className={`yacht-rival-log ${aiTurn?'is-turn':''} ${shape?'is-shape':''}`} aria-label="하로의 족보" aria-live="polite">
   <header><p className="yacht-rival-now"><b>하로</b> {now}</p>{aiTurn&&<small>굴림 {Math.max(0,3-match.rollsLeft)}/3</small>}</header>
   <ul>{YACHT_CATEGORIES.map(cat=>{const score=sheet[cat],isLast=!aiTurn&&last?.category===cat;
@@ -192,7 +192,7 @@ export default function YachtDiceTable({den,match,hp,equipped,busy,error,play,re
      <div className={`yacht-score-hand ${canPick?'is-picking':''}`} role="group" aria-label="점수 칸">{YACHT_CATEGORIES.map(tile)}</div>
      <div className="action-bar"><span className="action-context" role="status">{error}</span><div className="action-buttons">
       {match.status==='playing'&&(confirmForfeit?<button type="button" className="secondary" disabled={busy} onClick={()=>{setConfirmForfeit(false);play({kind:'forfeit'});}} onBlur={()=>setConfirmForfeit(false)}>{practice?'기권 확정':`기권 확정 · HP −${DICE_DEN_STAKE}`}</button>:<button type="button" className="secondary" disabled={busy||!myTurn} onClick={()=>setConfirmForfeit(true)}>기권</button>)}
-      <button type="button" className="primary" disabled={!canShake||cup!=='idle'} onClick={()=>{startShake();window.setTimeout(pour,MIN_SHAKE+200);}}><span className="play-action-label">{inCup?'컵 흔들어 굴리기':match.rollsLeft===0?'점수 칸을 고르세요':`다시 굴리기 · ${match.rollsLeft}회 남음`}</span></button>
+      <button type="button" className="primary" disabled={!canShake||cup!=='idle'} onClick={()=>{startShake();window.setTimeout(pour,MIN_SHAKE+200);}}><span className="play-action-label">{inCup?'컵 흔들어 굴리기':match.rollsLeft===0?'점수 칸을 고르세요':`다시 굴리기 (${match.rollsLeft}회)`}</span></button>
      </div></div>
     </section>
    </div>

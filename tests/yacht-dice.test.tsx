@@ -145,5 +145,5 @@ test('screen test shortcut and the table render without saving',()=>{
  // Fixed-score combos carry their score in the box hint.
  for(const hint of ['4연속 · 15점','5연속 · 30점','모두 같음 · 50점'])assert.ok(html.includes(hint),hint);
  // Shared in-game chrome: topbar, seat card, hand panel and action buttons.
- for(const cls of ['table-v211','topbar','seat-card','hand-panel','own-status-card','action-buttons'])assert.match(html,new RegExp(`class="[^"]*${cls}`));assert.match(html,/초이스에 21점 기록/);assert.match(html,/다시 굴리기 · 2회 남음/);
+ for(const cls of ['table-v211','topbar','seat-card','hand-panel','own-status-card','action-buttons'])assert.match(html,new RegExp(`class="[^"]*${cls}`));assert.match(html,/초이스에 21점 기록/);assert.match(html,/다시 굴리기 \(2회\)/);
 });
