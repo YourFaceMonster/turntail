@@ -35,3 +35,10 @@
 
 ## 배포
 배포 전 공개 사이트는 HTTP 200, 0.7.7이었다.
+
+GitHub `main` push(`6beb749..39f0cf9`) → Cloudflare Workers Builds 자동 배포.
+
+2026-11-09 공개 사이트 확인 결과
+- push 후 약 1분 반 만에 0.7.8로 바뀌었고, HTTP 200이다.
+- 배포된 JS·CSS에 `yacht-rival-log`, `mode-yacht`, `menu-yacht-die`, "연습판", "하로의 족보", "메뉴로 돌아가기", "5장 승리"가 들어 있다.
+- 공개 사이트에서 실제로 플레이하지는 않았다.
