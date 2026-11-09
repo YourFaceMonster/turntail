@@ -121,7 +121,10 @@ test('future chapter transition resets HP/equipment, inherits one, retains perma
  const permanent=[...run.discovered];run=advanceReworkStage(run);assert.equal(run.stage,4);assert.deepEqual(run.relics,[inherited]);assert.deepEqual(run.equipped,[inherited]);assert.equal(run.hp[0],rpgMaxHp(run));assert.ok(permanent.every(id=>run.discovered.includes(id)));assert.deepEqual(run.hp.slice(1),[40,45]);
 });
 test('travel help/letter/blue glass preserve flags without items or currency',()=>{
- let run=fresh().rpgRun!;run.status='ready';run.journey!.location='wayfarer-stop';run=giveHerbToWayfarer(run);assert.ok(run.journey!.wayfarerHerbGiven);assert.equal(run.coins,0);
+ let run=fresh().rpgRun!;run.status='ready';run.journey!.location='wayfarer-stop';
+ // New RPG: first aid shares HP 5 instead of an herb; it never takes the player to 0.
+ const weak=structuredClone(run);weak.hp=[5,...weak.hp.slice(1)];assert.throws(()=>giveHerbToWayfarer(weak),/HP/);
+ const hpBefore=run.hp[0];run=giveHerbToWayfarer(run);assert.ok(run.journey!.wayfarerHerbGiven);assert.equal(run.coins,0);assert.equal(run.hp[0],hpBefore-5);assert.throws(()=>giveHerbToWayfarer(run));
  run.journey!.location='watchtower';run=discoverWayfarerRelic(run);assert.ok(run.relics.includes('watchkeepers-blue-glass'));assert.ok(run.discovered.includes('watchkeepers-blue-glass'));assert.ok(run.journey!.watchtowerRelicClaimed);
  run.journey!.location='tavern';run.journey!.letterQuest={step:'recovered'};run.hp[0]=60;run=returnLetterToMor(run);assert.equal(run.hp[0],65);assert.equal(run.coins,0);assert.equal(run.journey!.letterQuest!.step,'complete');assert.throws(()=>returnLetterToMor(run));
 });

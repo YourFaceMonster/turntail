@@ -1,6 +1,6 @@
 /* Smaller result rows sit inside the painted frame; only its background fades. */
 body .battle-review-0641{padding:31px 29px 19px!important;background:rgba(8,27,20,.50)!important;isolation:isolate}
-body .battle-review-0641::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:url('/item-battle-v1/duel-panel-v1.png') center/100% 100% no-repeat;opacity:.82;pointer-events:none}
+body .battle-review-0641::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:url('/item-battle-v1/duel-panel-v1.webp') center/100% 100% no-repeat;opacity:.82;pointer-events:none}
 body .battle-review-0641 .battle-hp-row .rpg-hp-bar.has-identity{height:52px;min-height:52px;padding:5px 7px;grid-template-columns:minmax(0,1fr) auto;gap:5px}
 body .battle-review-0641 .hp-bar-identity{gap:5px;min-width:0}body .battle-review-0641 .hp-bar-identity>.portrait{width:29px!important;height:34px!important;flex:none}
 body .battle-review-0641 .hp-bar-identity strong{font-size:12px!important;line-height:1.15}body .battle-review-0641 .hp-bar-current .hp-value>b{font-size:22px!important}

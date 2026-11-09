@@ -31,5 +31,5 @@ test('discovery keeps the painting clear and defers detailed relic content to it
 test('new art is connected to the actual title, tower and strike consumers in both orientations',()=>{
  const village=prologueArt(FIRST_PROLOGUE.at(-1)!)!,tower=questArt('watchtower-arrival');
  for(const src of [...Object.values(village),...Object.values(tower)])assert.ok(existsSync('public'+src));assert.match(village.landscape,/normun-village-distant/);assert.match(tower.landscape,/wide-v4/);assert.match(tower.portrait,/portrait-v4/);
- const sword=render(h(SwordsmanSlash,{impact:true}));assert.ok(sword.includes('swordsman-sword-cutout-v1.png'));assert.ok(!sword.includes('class="blade-face"'));assert.ok(sword.includes('steel-impact-flare'));
+ const sword=render(h(SwordsmanSlash,{impact:true}));assert.ok(sword.includes('swordsman-sword-cutout-v1.webp'));assert.ok(!sword.includes('class="blade-face"'));assert.ok(sword.includes('steel-impact-flare'));
 });

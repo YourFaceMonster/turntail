@@ -5,100 +5,143 @@
     {
       "kind": "click",
       "variant": "ui_click-A",
-      "src": "/audio/sfx-261108/ui-click-A.wav",
-      "bytes": 10164,
-      "sha256": "e99638be35bf2e0e4320e01015aab9dfc4b1d14133007cd68853b07b32c4d16a"
+      "src": "/audio/sfx-261108/ui-click-A.mp3",
+      "bytes": 3135,
+      "sha256": "fb0fda3c0c6cf0bb3ec3498c77871df388724fb7deeb2ab9e21bf67e09f7ea26",
+      "masterSrc": "/audio/sfx-261108/ui-click-A.wav",
+      "masterBytes": 10164,
+      "masterSha256": "e99638be35bf2e0e4320e01015aab9dfc4b1d14133007cd68853b07b32c4d16a"
     },
     {
       "kind": "confirm",
       "variant": "ui_confirm-B",
-      "src": "/audio/sfx-261108/ui-confirm-B.wav",
-      "bytes": 115666,
-      "sha256": "46fcfa03bb5973a93e6c543c8f102f70705c784f6f91d9e43028bdec04f8e80f"
+      "src": "/audio/sfx-261108/ui-confirm-B.mp3",
+      "bytes": 27167,
+      "sha256": "67c8c216710a8997aacfb7816e7d49a3e995d7ed93410416deae6e87f62955af",
+      "masterSrc": "/audio/sfx-261108/ui-confirm-B.wav",
+      "masterBytes": 115666,
+      "masterSha256": "46fcfa03bb5973a93e6c543c8f102f70705c784f6f91d9e43028bdec04f8e80f"
     },
     {
       "kind": "back",
       "variant": "ui_back-B",
-      "src": "/audio/sfx-261108/ui-back-B.wav",
-      "bytes": 19408,
-      "sha256": "d3b05acd860d808ad3ff0b96486ac142534113308d49d3e0405fbc560b06912f"
+      "src": "/audio/sfx-261108/ui-back-B.mp3",
+      "bytes": 5225,
+      "sha256": "92ea26f661cd3d2e2d2b414faa733b317cca20186653e3aab47ded63ec22c949",
+      "masterSrc": "/audio/sfx-261108/ui-back-B.wav",
+      "masterBytes": 19408,
+      "masterSha256": "d3b05acd860d808ad3ff0b96486ac142534113308d49d3e0405fbc560b06912f"
     },
     {
       "kind": "dialogue",
       "variant": "dialogue_next-A",
-      "src": "/audio/sfx-261108/dialogue-next-A.wav",
-      "bytes": 11456,
-      "sha256": "0978f7cc1cb7df4926e85c8a1f49358b02c34025b10dbc9348598eccb445b2eb"
+      "src": "/audio/sfx-261108/dialogue-next-A.mp3",
+      "bytes": 3135,
+      "sha256": "210a192b21373435621e56423ee50730f0a6c3e4e9282e24ae8f7f412c5a4ab9",
+      "masterSrc": "/audio/sfx-261108/dialogue-next-A.wav",
+      "masterBytes": 11456,
+      "masterSha256": "0978f7cc1cb7df4926e85c8a1f49358b02c34025b10dbc9348598eccb445b2eb"
     },
     {
       "kind": "pass",
       "variant": "pass-B",
-      "src": "/audio/sfx-261108/pass-B.wav",
-      "bytes": 22970,
-      "sha256": "dcd40549e4a78925f45d50b94065e9bc09265b015b89730be686b4edf049a734"
+      "src": "/audio/sfx-261108/pass-B.mp3",
+      "bytes": 5747,
+      "sha256": "3009b2f0c5f40be1fdd806d8e4c3622333603f62bb60fc639e549673e913c293",
+      "masterSrc": "/audio/sfx-261108/pass-B.wav",
+      "masterBytes": 22970,
+      "masterSha256": "dcd40549e4a78925f45d50b94065e9bc09265b015b89730be686b4edf049a734"
     },
     {
       "kind": "hit",
       "variant": "hp_hit-A",
-      "src": "/audio/sfx-261108/hp-hit-A.wav",
-      "bytes": 30022,
-      "sha256": "d0503e771a872c459d1012ad9a2e43b2e8a7a046c36f71369c78e0547132b878"
+      "src": "/audio/sfx-261108/hp-hit-A.mp3",
+      "bytes": 7837,
+      "sha256": "1de318f805b02f4d5a9f38b71db0a8c5613a3566b9ea3480ed22926a51c24b43",
+      "masterSrc": "/audio/sfx-261108/hp-hit-A.wav",
+      "masterBytes": 30022,
+      "masterSha256": "d0503e771a872c459d1012ad9a2e43b2e8a7a046c36f71369c78e0547132b878"
     },
     {
       "kind": "heal",
       "variant": "hp_heal-A",
-      "src": "/audio/sfx-261108/hp-heal-A.wav",
-      "bytes": 180610,
-      "sha256": "83593ba55a382a61c37a10e1284a9551d713d88f6c33cb0426a0c9f1ca0c93d0"
+      "src": "/audio/sfx-261108/hp-heal-A.mp3",
+      "bytes": 41796,
+      "sha256": "e7478df31083bf73aaf84f7b2623e444c859bc064f2de8f06896c2008f005620",
+      "masterSrc": "/audio/sfx-261108/hp-heal-A.wav",
+      "masterBytes": 180610,
+      "masterSha256": "83593ba55a382a61c37a10e1284a9551d713d88f6c33cb0426a0c9f1ca0c93d0"
     },
     {
       "kind": "item",
       "variant": "item_use-B",
-      "src": "/audio/sfx-261108/item-use-B.wav",
-      "bytes": 100366,
-      "sha256": "4113e7d6bb4cff8672471b6435f7cf3fe7b46e71bb08f951dc2336612de1bed3"
+      "src": "/audio/sfx-261108/item-use-B.mp3",
+      "bytes": 23510,
+      "sha256": "3fc08744c7005dff761490301a9047988753f98d5ecd23edd1a12b1d31149f90",
+      "masterSrc": "/audio/sfx-261108/item-use-B.wav",
+      "masterBytes": 100366,
+      "masterSha256": "4113e7d6bb4cff8672471b6435f7cf3fe7b46e71bb08f951dc2336612de1bed3"
     },
     {
       "kind": "guard",
       "variant": "guard-B",
-      "src": "/audio/sfx-261108/guard-B.wav",
-      "bytes": 46104,
-      "sha256": "c55f7ca79991893f8862e0dffaa8361f6f4a1cb59f8b917766028245675de650"
+      "src": "/audio/sfx-261108/guard-B.mp3",
+      "bytes": 10971,
+      "sha256": "a851b0ffd827fee66ac90d7f73842bbe64a484ff859c8de36b3edf1be5e0913e",
+      "masterSrc": "/audio/sfx-261108/guard-B.wav",
+      "masterBytes": 46104,
+      "masterSha256": "c55f7ca79991893f8862e0dffaa8361f6f4a1cb59f8b917766028245675de650"
     },
     {
       "kind": "relic",
       "variant": "relic_get-A",
-      "src": "/audio/sfx-261108/relic-get-A.wav",
-      "bytes": 162130,
-      "sha256": "9eb7a3ba17d8daabc4df64d15da1ff14fc68ef35b064bd0ca34b0f0d63cbf3ce"
+      "src": "/audio/sfx-261108/relic-get-A.mp3",
+      "bytes": 37616,
+      "sha256": "f46de20a23819373818f8877d5c00b1faa674c91b2932f8276131fc8d61f34f3",
+      "masterSrc": "/audio/sfx-261108/relic-get-A.wav",
+      "masterBytes": 162130,
+      "masterSha256": "9eb7a3ba17d8daabc4df64d15da1ff14fc68ef35b064bd0ca34b0f0d63cbf3ce"
     },
     {
       "kind": "storyCard",
       "variant": "story_card_get-A",
-      "src": "/audio/sfx-261108/story-card-get-A.wav",
-      "bytes": 326368,
-      "sha256": "9837065339f3f7c9e8101f83ed1f1403bba6f3942f084f00e370ff33b6270e33"
+      "src": "/audio/sfx-261108/story-card-get-A.mp3",
+      "bytes": 74710,
+      "sha256": "8cd35a995b612949825bff70efd390bdc2732ce4e0d484e3478670a4d7440c86",
+      "masterSrc": "/audio/sfx-261108/story-card-get-A.wav",
+      "masterBytes": 326368,
+      "masterSha256": "9837065339f3f7c9e8101f83ed1f1403bba6f3942f084f00e370ff33b6270e33"
     },
     {
       "kind": "clear",
       "variant": "stage_clear-A",
-      "src": "/audio/sfx-261108/stage-clear-A.wav",
-      "bytes": 278920,
-      "sha256": "e58bcd89509e0d918aaa88d6af384c67bf2fbff3592538bda5df7e7b0495d2cd"
+      "src": "/audio/sfx-261108/stage-clear-A.mp3",
+      "bytes": 64261,
+      "sha256": "197e671bbf78b00b8a9a41e9acf66315c34be7e3c210e166d20c3147be837727",
+      "masterSrc": "/audio/sfx-261108/stage-clear-A.wav",
+      "masterBytes": 278920,
+      "masterSha256": "e58bcd89509e0d918aaa88d6af384c67bf2fbff3592538bda5df7e7b0495d2cd"
     },
     {
       "kind": "fail",
       "variant": "stage_fail-A",
-      "src": "/audio/sfx-261108/stage-fail-A.wav",
-      "bytes": 185936,
-      "sha256": "1056007c2e0e77456182fa9486c76ffcef29768c12136c7298df13f77bff8e5b"
+      "src": "/audio/sfx-261108/stage-fail-A.mp3",
+      "bytes": 42841,
+      "sha256": "c91a17de51f6151ab6cb8cd443dfe5ce077373f085257210e193ffa651ed332a",
+      "masterSrc": "/audio/sfx-261108/stage-fail-A.wav",
+      "masterBytes": 185936,
+      "masterSha256": "1056007c2e0e77456182fa9486c76ffcef29768c12136c7298df13f77bff8e5b"
     },
     {
       "kind": "step",
       "variant": "map_step2-B",
-      "src": "/audio/sfx-261108/map-step-B.wav",
-      "bytes": 30886,
-      "sha256": "c6e2fcc998a8abe6dc9ae5ed442ca2156f5cdc923d6e3e3fcaebe3b0d2b714f1"
+      "src": "/audio/sfx-261108/map-step-B.mp3",
+      "bytes": 7837,
+      "sha256": "d806558a6e33752744728db3a6a4c58cc9d749899c9575d4ebe7bf641128ed41",
+      "masterSrc": "/audio/sfx-261108/map-step-B.wav",
+      "masterBytes": 30886,
+      "masterSha256": "c6e2fcc998a8abe6dc9ae5ed442ca2156f5cdc923d6e3e3fcaebe3b0d2b714f1"
     }
-  ]
+  ],
+  "encoding": "2026-11-09: served as MP3 (LAME 160 kbps mono, quality 2) to cut download ~1.5MB -> ~340KB. Original WAV masters stay in public/audio/sfx-261108/ unchanged (masterSrc/masterSha256)."
 }

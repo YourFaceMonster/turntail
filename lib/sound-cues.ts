@@ -2,20 +2,20 @@ import {effectOutput} from './audio-mixer';
 
 /** 2026-11-08 user-picked original cues (docs/assets/sound-261108.json). Gain is the target peak. */
 export const CUE_ASSETS={
- click:{src:'/audio/sfx-261108/ui-click-A.wav',gain:.3},
- confirm:{src:'/audio/sfx-261108/ui-confirm-B.wav',gain:.38},
- back:{src:'/audio/sfx-261108/ui-back-B.wav',gain:.35},
- dialogue:{src:'/audio/sfx-261108/dialogue-next-A.wav',gain:.28},
- step:{src:'/audio/sfx-261108/map-step-B.wav',gain:.4},
- pass:{src:'/audio/sfx-261108/pass-B.wav',gain:.42},
- hit:{src:'/audio/sfx-261108/hp-hit-A.wav',gain:.62},
- heal:{src:'/audio/sfx-261108/hp-heal-A.wav',gain:.48},
- item:{src:'/audio/sfx-261108/item-use-B.wav',gain:.5},
- guard:{src:'/audio/sfx-261108/guard-B.wav',gain:.5},
- relic:{src:'/audio/sfx-261108/relic-get-A.wav',gain:.5},
- storyCard:{src:'/audio/sfx-261108/story-card-get-A.wav',gain:.55},
- clear:{src:'/audio/sfx-261108/stage-clear-A.wav',gain:.58},
- fail:{src:'/audio/sfx-261108/stage-fail-A.wav',gain:.52},
+ click:{src:'/audio/sfx-261108/ui-click-A.mp3',gain:.3},
+ confirm:{src:'/audio/sfx-261108/ui-confirm-B.mp3',gain:.38},
+ back:{src:'/audio/sfx-261108/ui-back-B.mp3',gain:.35},
+ dialogue:{src:'/audio/sfx-261108/dialogue-next-A.mp3',gain:.28},
+ step:{src:'/audio/sfx-261108/map-step-B.mp3',gain:.4},
+ pass:{src:'/audio/sfx-261108/pass-B.mp3',gain:.42},
+ hit:{src:'/audio/sfx-261108/hp-hit-A.mp3',gain:.62},
+ heal:{src:'/audio/sfx-261108/hp-heal-A.mp3',gain:.48},
+ item:{src:'/audio/sfx-261108/item-use-B.mp3',gain:.5},
+ guard:{src:'/audio/sfx-261108/guard-B.mp3',gain:.5},
+ relic:{src:'/audio/sfx-261108/relic-get-A.mp3',gain:.5},
+ storyCard:{src:'/audio/sfx-261108/story-card-get-A.mp3',gain:.55},
+ clear:{src:'/audio/sfx-261108/stage-clear-A.mp3',gain:.58},
+ fail:{src:'/audio/sfx-261108/stage-fail-A.mp3',gain:.52},
 } as const;
 export type CueKind=keyof typeof CUE_ASSETS;
 export function isCueKind(kind:string):kind is CueKind{return Object.prototype.hasOwnProperty.call(CUE_ASSETS,kind);}

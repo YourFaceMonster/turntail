@@ -7,9 +7,9 @@ import {chooseRpgStageReward} from '../lib/rpg-phase-one';
 import {journeyNodeState,returnJourneyMap,startDiceDuel,playDiceDen,validateJourneySave} from '../lib/rpg-journey';
 import {reworkRewardOffers,beginReworkRound,RPG_REWORK_RELICS} from '../lib/rpg-rework';
 import {DICE_DEN_STAKE,DICE_RELIC_ID} from '../lib/rpg-dice-den';
-import {YACHT_CATEGORIES,newYachtMatch,yachtScore,yachtTotal,yachtBonus,scoreYacht,rollYacht,toggleYachtHold,yachtAiStep,bestYachtHold,bestYachtBox,validYachtMatch,type YachtMatch} from '../lib/yacht-dice';
+import {YACHT_CATEGORIES,allowedCategories,seatTotal,newYachtMatch,yachtScore,yachtTotal,yachtBonus,scoreYacht,rollYacht,toggleYachtHold,yachtAiStep,bestYachtHold,bestYachtBox,validYachtMatch,type YachtMatch} from '../lib/yacht-dice';
 import {RpgPreviewSession} from '../lib/rpg-preview';
-import YachtDiceTable from '../app/components/YachtDiceTable';
+import YachtDiceTable,{flashFor} from '../app/components/YachtDiceTable';
 
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 function finish(game:Game,counts:number[]){game.players.forEach((p,i)=>p.hand=Array.from({length:counts[i]},(_,j)=>tile(j%15+1,i)));game.phase='ended';game.winner=counts.indexOf(0);game.result=null;return settle(game);}
@@ -46,6 +46,27 @@ test('turn flow: three rolls, holds survive rerolls, scoring passes the turn, 12
  let guard=0;while(m.status==='playing'&&guard++<500){if(m.turn===1)m=yachtAiStep(m,random);else{m=rollYacht(m,0,random);m=scoreYacht(m,0,YACHT_CATEGORIES.find(cat=>m.sheets[0][cat]===undefined)!);}}
  assert.equal(m.status,'ended');assert.ok(m.sheets.every(sheet=>Object.keys(sheet).length===12));assert.equal(m.round,12);
  assert.throws(()=>scoreYacht(m,0,'ones'));assert.ok(validYachtMatch(structuredClone(m)));
+});
+
+test('joker rule: +100 after a scored yacht, forced 1~6 box, then lower boxes in full',()=>{
+ const at=(sheet:Record<string,number>,dice:number[]):YachtMatch=>({...newYachtMatch(),rollsLeft:1,dice,sheets:[sheet,{}]});
+ // Yacht box 50, matching 4s box open → must use fours, +100.
+ let m=at({yacht:50},[4,4,4,4,4]);
+ assert.deepEqual(allowedCategories(m.sheets[0],m.dice),['fours']);assert.throws(()=>scoreYacht(m,0,'choice'),/조커/);
+ m=scoreYacht(m,0,'fours');assert.equal(m.sheets[0].fours,20);assert.deepEqual(m.yachtBonuses,[1,0]);assert.equal(m.last?.bonus,100);assert.equal(seatTotal(m,0),50+20+100);
+ // Fours filled → any open lower box, straights score in full.
+ m=at({yacht:50,fours:12},[4,4,4,4,4]);
+ assert.ok(!allowedCategories(m.sheets[0],m.dice).includes('ones'));
+ assert.equal(scoreYacht(m,0,'large-straight').sheets[0]['large-straight'],30);assert.equal(scoreYacht(m,0,'small-straight').sheets[0]['small-straight'],15);assert.equal(scoreYacht(m,0,'full-house').sheets[0]['full-house'],20);
+ // Yacht box scratched (0): joker placement still applies but no bonus.
+ m=scoreYacht(at({yacht:0},[2,2,2,2,2]),0,'twos');assert.deepEqual(m.yachtBonuses,[0,0]);assert.equal(m.last?.joker,true);
+ // Lower section full → any open 1~6 box, scoring 0 when it is not the face.
+ const lowerFull=Object.fromEntries(YACHT_CATEGORIES.slice(6).map(cat=>[cat,cat==='yacht'?50:10])) as Record<string,number>;lowerFull.sixes=18;
+ m=at(lowerFull,[6,6,6,6,6]);assert.deepEqual(allowedCategories(m.sheets[0],m.dice),['ones','twos','threes','fours','fives']);assert.equal(scoreYacht(m,0,'ones').sheets[0].ones,0);
+ // First yacht is not a joker.
+ assert.deepEqual(allowedCategories({},[3,3,3,3,3]),YACHT_CATEGORIES.slice());
+ // The AI follows the same rule.
+ const ai:YachtMatch={...newYachtMatch(),turn:1,rollsLeft:0,dice:[5,5,5,5,5],sheets:[{},{yacht:50}]};assert.equal(yachtAiStep(ai).sheets[1].fives,25);
 });
 
 test('the AI only uses the open table and makes sensible keeps',()=>{
@@ -105,12 +126,24 @@ test('ivory die: +2 HP at round start at 50 HP or less, never in stage reward of
  game.rpgRun!.equipped=[];game.rpgRun!.hp=[30,50,50];beginReworkRound(game);assert.equal(game.rpgRun!.hp[0],30,'only while equipped');
 });
 
+test('banners: combos, yacht, joker bonus and the 63 bonus; plain boxes stay quiet',()=>{
+ const rolled=(dice:number[],sheet:Record<string,number>={}):YachtMatch=>({...newYachtMatch(),rollsLeft:1,dice,sheets:[sheet,{}]});
+ let before=rolled([2,2,5,5,5]);assert.equal(flashFor(before,scoreYacht(before,0,'full-house'))?.tier,'combo');
+ assert.equal(flashFor(before,scoreYacht(before,0,'choice')),null);
+ before=rolled([6,6,6,6,6]);assert.equal(flashFor(before,scoreYacht(before,0,'yacht'))?.title,'요트!');
+ before=rolled([3,3,3,3,3],{yacht:50});assert.equal(flashFor(before,scoreYacht(before,0,'threes'))?.score,'+100');
+ before=rolled([6,6,6,6,1],{ones:3,twos:6,threes:9,fours:12,fives:15});assert.equal(flashFor(before,scoreYacht(before,0,'sixes'))?.tier,'bonus');
+ assert.equal(flashFor(null,before),null);
+});
+
 test('screen test shortcut and the table render without saving',()=>{
  const base=createRpgJourneyGame('화면','',0);const session=new RpgPreviewSession(base,'screens');const shot=session.screen(base,'dice-den');
  assert.equal(shot.rpgRun!.journey!.location,'dice-den');assert.equal(shot.rpgRun!.stage,4);
  const run=startDiceDuel(shot.rpgRun!),den=run.journey!.diceDen!;
  const html=renderToStaticMarkup(<YachtDiceTable den={den} match={rollYacht(den.match!,0,seq([6,6,6,2,1]))} hp={run.hp[0]} equipped={run.equipped} busy={false} playerName="방랑자" play={()=>{}} retry={()=>{}} leave={()=>{}}/>);
  assert.match(html,/요트다이스/);assert.match(html,/풀하우스/);
+ // Fixed-score combos carry their score in the box hint.
+ for(const hint of ['4연속 · 15점','5연속 · 30점','모두 같음 · 50점'])assert.ok(html.includes(hint),hint);
  // Shared in-game chrome: topbar, seat card, hand panel and action buttons.
  for(const cls of ['table-v211','topbar','seat-card','hand-panel','own-status-card','action-buttons'])assert.match(html,new RegExp(`class="[^"]*${cls}`));assert.match(html,/초이스에 21점 기록/);assert.match(html,/다시 굴리기 · 2회 남음/);
 });

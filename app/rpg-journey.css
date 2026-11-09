@@ -28,14 +28,14 @@
 
 .rpg-preview-tools select{flex-basis:100%;width:100%;min-height:36px;padding:6px 8px;background:#203439;color:#f4e5b9;border:1px solid #d9c38c77;border-radius:5px;font:11px system-ui,sans-serif}.rpg-preview-tools:has(select){flex-wrap:wrap}.rpg-preview-tools select:focus-visible{outline:2px solid #fff0b1;outline-offset:2px}
 
-.journey-tavern-room{background:linear-gradient(#140c0866,#140c0833),url('/prologue/tavern-interior-v2.png') center/cover no-repeat}.journey-hearth-glow{mix-blend-mode:screen}
+.journey-tavern-room{background:linear-gradient(#140c0866,#140c0833),url('/prologue/tavern-interior-v2.webp') center/cover no-repeat}.journey-hearth-glow{mix-blend-mode:screen}
 
-@media(max-aspect-ratio:1/1){.journey-tavern-room{background-image:linear-gradient(#140c0866,#140c0833),url('/prologue/tavern-interior-portrait-v1.png');background-position:center 44%}}
+@media(max-aspect-ratio:1/1){.journey-tavern-room{background-image:linear-gradient(#140c0866,#140c0833),url('/prologue/tavern-interior-portrait-v1.webp');background-position:center 44%}}
 
 /* Align the journey map with the approved prologue paintings and keep the route readable. */
-.journey-map-scene[data-stage='1'] .rpg-map-paint{background:linear-gradient(90deg,#101c2655,#13242122),url('/prologue/moon-gate-v1.png') center 56%/cover;filter:saturate(.85)}
-.journey-map-scene[data-stage='2'] .rpg-map-paint{background:linear-gradient(90deg,#101c2655,#13242122),url('/prologue/dawn-road-v1.png') center 58%/cover;filter:saturate(.85)}
-.journey-map-scene[data-stage='3'] .rpg-map-paint{background:linear-gradient(90deg,#101c2655,#13242122),url('/prologue/stone-revelation-landscape-v1.png') center 50%/cover;filter:saturate(.85)}
+.journey-map-scene[data-stage='1'] .rpg-map-paint{background:linear-gradient(90deg,#101c2655,#13242122),url('/prologue/moon-gate-v1.webp') center 56%/cover;filter:saturate(.85)}
+.journey-map-scene[data-stage='2'] .rpg-map-paint{background:linear-gradient(90deg,#101c2655,#13242122),url('/prologue/dawn-road-v1.webp') center 58%/cover;filter:saturate(.85)}
+.journey-map-scene[data-stage='3'] .rpg-map-paint{background:linear-gradient(90deg,#101c2655,#13242122),url('/prologue/stone-revelation-landscape-v1.webp') center 50%/cover;filter:saturate(.85)}
 .journey-map-scene .rpg-map-paths path{stroke:#ffe2a5;stroke-width:1;stroke-dasharray:none;filter:drop-shadow(0 1px 3px #07100c)}
 .journey-tavern-scene .journey-tavern-panel-shade{position:absolute;inset:auto 12px 12px;z-index:8;display:block;background:transparent;padding:0;pointer-events:none}
 .journey-tavern-scene .journey-tavern-panel-shade .journey-tavern-panel{width:min(520px,100%);max-height:min(55dvh,440px);margin-inline:auto;padding:20px 24px;background:linear-gradient(150deg,#382c23f2,#14251ff5);box-shadow:0 5px 24px #000b;border-color:#d4b47a;pointer-events:auto}
@@ -43,10 +43,10 @@
 @media(max-width:600px){.journey-tavern-scene .journey-tavern-panel-shade{inset:auto 7px 7px}.journey-tavern-scene .journey-tavern-panel-shade .journey-tavern-panel{max-height:58dvh;padding:18px 16px}}
 
 /* Painted scene geometry: markers use the same uncropped composition at every width. */
-.journey-map-scene[data-stage] .rpg-map-paint{background:linear-gradient(#101c2622,#13242122),url('/prologue/iron-gate-village-map-wide-v3.png') center/100% 100%;filter:none}
+.journey-map-scene[data-stage] .rpg-map-paint{background:linear-gradient(#101c2622,#13242122),url('/prologue/iron-gate-village-map-wide-v3.webp') center/100% 100%;filter:none}
 .journey-map-scene .rpg-node-map{height:auto;aspect-ratio:16/9;min-height:0}
 .journey-story-review{display:flex;justify-content:flex-end;align-items:center;gap:10px;font-size:12px;margin:0 0 12px}.journey-story-review select{padding:7px;border:1px solid #b49b61;background:#17252d;color:#f0e3c7;border-radius:6px}
-.journey-tavern-scene .journey-tavern-room{min-height:0;aspect-ratio:16/9;background:url('/prologue/tavern-landscape-v6.png') center/100% 100% no-repeat}
+.journey-tavern-scene .journey-tavern-room{min-height:0;aspect-ratio:16/9;background:url('/prologue/tavern-landscape-v6.webp') center/100% 100% no-repeat}
 .journey-tavern-room .tavern-person,.journey-tavern-room .tavern-object{background:none;border:0;box-shadow:none;min-width:60px;min-height:44px;width:22%;height:48%;justify-content:flex-end;padding:3px;gap:2px;outline-offset:0}
 .journey-tavern-room .journey-person-portrait,.journey-tavern-room .tavern-bag img,.journey-tavern-room .tavern-fire>span{display:none}
 .journey-tavern-room :is(.tavern-person,.tavern-object) strong{padding:3px 8px;background:#15201bd9;border:1px solid #d9bb7e88;border-radius:5px;font-size:12px}
@@ -74,7 +74,7 @@
 @keyframes tavern-breathe{from{opacity:.3;transform:scale(.99)}to{opacity:.75;transform:scale(1.025)}}
 .rpg-hub-main>picture{min-width:0;display:block}.rpg-hub-main>picture img{width:100%;height:100%;object-fit:cover;border:1px solid #ad946c;border-radius:10px}
 @media(max-aspect-ratio:1/1){
- .journey-tavern-scene .journey-tavern-room{aspect-ratio:9/16;background-image:url('/prologue/tavern-portrait-v7.png')}
+ .journey-tavern-scene .journey-tavern-room{aspect-ratio:9/16;background-image:url('/prologue/tavern-portrait-v7.webp')}
  .journey-tavern-room .tavern-serin{left:22%;top:46%;width:38%;height:34%}
  .journey-tavern-room .tavern-mor{left:53%;top:27%;width:37%;height:26%}
  .journey-tavern-room .tavern-pio{left:79%;top:52%;width:37%;height:36%}
@@ -101,7 +101,7 @@
 .journey-tavern-room .tavern-person::after{content:'대화';position:absolute;right:4px;top:5px;border:1px solid #e4c581aa;border-radius:12px;padding:3px 7px;background:#18241ed9;font-size:10px;color:#ffe9b8}
 .journey-tavern-room .tavern-person:hover,.journey-tavern-room .tavern-person:focus-visible{border-color:#fff0b1;outline:2px solid #fff0b1;outline-offset:3px;background:#edc66c12;animation:none}
 .journey-tavern-room .tavern-object,.journey-tavern-room .tavern-door{z-index:4}.journey-tavern-room .tavern-object{border:1px dashed #e4c58199;border-radius:12px}.journey-tavern-room .tavern-invitation{z-index:4}
-.journey-tavern-room{--tavern-art:url('/prologue/tavern-landscape-v6.png')}
+.journey-tavern-room{--tavern-art:url('/prologue/tavern-landscape-v6.webp')}
 .tavern-moving-person{position:absolute;inset:0;z-index:1;pointer-events:none;background:var(--tavern-art) center/100% 100% no-repeat;animation:tavern-person-idle 6s ease-in-out infinite alternate}
 .moving-serin{clip-path:polygon(17% 55%,20% 44%,25% 31%,29% 30%,34% 38%,37% 54%);transform-origin:27% 54%}
 .moving-mor{clip-path:polygon(40% 40%,41% 30%,45% 22%,48% 22%,52% 29%,54% 40%);transform-origin:47% 40%;animation-delay:-2s;animation-duration:7s}
@@ -114,7 +114,7 @@
 @keyframes tavern-flame-dance{0%,100%{opacity:.38;transform:scale(.85,1.02)}32%{opacity:.75;transform:scale(1.08,.92)}65%{opacity:.52;transform:scale(.94,1.12)}}
 @keyframes tavern-shadow-sway{from{opacity:.38;transform:translateX(-1px)}to{opacity:.73;transform:translateX(2px)}}
 @media(max-aspect-ratio:1/1){
- .journey-tavern-room{--tavern-art:url('/prologue/tavern-portrait-v7.png')}
+ .journey-tavern-room{--tavern-art:url('/prologue/tavern-portrait-v7.webp')}
  .journey-tavern-room .tavern-fire{left:9%;top:73%;width:17%;height:19%}
  .journey-tavern-room .journey-hearth-glow{left:-10%;top:56%;width:46%;height:35%}
  .moving-serin{clip-path:polygon(0 45%,2% 36%,13% 29%,23% 28%,30% 32%,34% 43%,41% 47%);transform-origin:22% 47%}
@@ -139,7 +139,7 @@
 @media(max-aspect-ratio:1/1){
  .journey-tavern-scene .journey-tavern-stage .journey-tavern-room{width:min(100cqw,calc(100cqh * 9 / 16));height:min(100cqh,calc(100cqw * 16 / 9));aspect-ratio:9/16}
  .journey-map-scroll{overflow-x:hidden}.journey-map-scroll .rpg-node-map{width:100%;min-width:0;aspect-ratio:9/16}
- .journey-map-scene[data-stage] .rpg-map-paint{background-image:linear-gradient(#101c2622,#13242122),url('/prologue/iron-gate-village-map-portrait-v3.png')}
+ .journey-map-scene[data-stage] .rpg-map-paint{background-image:linear-gradient(#101c2622,#13242122),url('/prologue/iron-gate-village-map-portrait-v3.webp')}
  .map-route-landscape{display:none}.map-route-portrait{display:block}
  .rpg-map-node[data-node='battle-1']{left:50%;top:58%}.rpg-map-node[data-node='tavern']{left:72%;top:40%}.rpg-map-node[data-node='battle-2']{left:52%;top:44%}
  .rpg-map-node[data-node='battle-3']{left:56%;top:20%}

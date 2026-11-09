@@ -23,7 +23,7 @@ test('thief introduction and replay show the spinning letter for every narrator 
   for(const page of pages)assert.equal(element.props.paintings[Math.min(page.sourceIndex,1)],page.sourceIndex===0?'alley-thief-spin':'alley-thief');
  }
  assert.ok(render(live).includes('data-painting="alley-thief-spin"'));
- assert.ok(render(replay).includes('alley-thief-spin-wide-v2.png'));
+ assert.ok(render(replay).includes('alley-thief-spin-wide-v2.webp'));
 });
 test('traveler before and after states use their revised responsive artwork without changing quest state',()=>{
  const game=createRpgJourneyGame('여행자 확인'),run=game.rpgRun!;
@@ -46,7 +46,7 @@ test('market-alley pin and path move together and map/ending share the responsiv
  assert.ok(html.includes('M69 37L82 49')&&html.includes('M78 46L84 58'));
  const art=RPG_CONNECTION_SCENES[3].after.at(-1)!.art!;
  for(const orientation of ['wide','portrait']){
-  const src=`/prologue/iron-gate-village-map-${orientation}-v3.png`;
+  const src=`/prologue/iron-gate-village-map-${orientation}-v3.webp`;
   assert.ok(css.includes(src)&&Object.values(art).includes(src));
   assert.ok(existsSync('public'+src));
  }

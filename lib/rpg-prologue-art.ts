@@ -1,7 +1,7 @@
 import {STORY_CARD_ART} from './rpg-story-card-art.ts';
 import type {PrologueCut} from './rpg-prologue.ts';
 
-const frame=(landscape:string,portrait:string)=>({landscape:`/prologue/${landscape}.png`,portrait:`/prologue/${portrait}.png`});
+const frame=(landscape:string,portrait:string)=>({landscape:`/prologue/${landscape}.webp`,portrait:`/prologue/${portrait}.webp`});
 export const PROLOGUE_ART={
  snow:frame('snow-traveler-v1','snow-traveler-portrait-v1'),
  inn:frame('snow-inn-v3','snow-inn-portrait-v1'),

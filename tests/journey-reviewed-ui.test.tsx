@@ -42,7 +42,7 @@ test('fate always has three gem slots inside the HP block and depleted slots sta
  for(let fate=0;fate<=3;fate++){
   game.rpgRun!.fate=fate;
   const html=render(h(JourneyMapView,{run:game.rpgRun!,busy:false,error:'',action:noop,exit:noop}));
-  assert.equal((html.match(/src="\/ui\/fate-gem-v1.png"/g)||[]).length,3);
+  assert.equal((html.match(/src="\/ui\/fate-gem-v1.webp"/g)||[]).length,3);
   assert.equal((html.match(/class="is-active"/g)||[]).length,fate);
   assert.equal((html.match(/class="is-spent"/g)||[]).length,3-fate);
   assert.ok(html.indexOf('journey-hp-block')<html.indexOf('journey-fate-gems'));

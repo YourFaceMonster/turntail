@@ -12,9 +12,9 @@ import {CoinArtwork} from './FloorCoins';
 import './tutorial-0647.css';
 
 const roles=[
- {id:'swordsman',name:'검사',image:'swordsman-strike-v1.png',detail:'족보 승리마다 무작위 상대 한 명에게 즉시 공격해요.'},
- {id:'mage',name:'마법사',image:'mage-fireball-v1.png',detail:'검사보다 낮은 피해를 다른 상대 각각에게 즉시 줘요.'},
- {id:'cleric',name:'성직자',image:'cleric-heal-v1.png',detail:'자신의 HP를 회복해요. 최대 HP를 넘어서 회복하지 않아요.'},
+ {id:'swordsman',name:'검사',image:'swordsman-strike-v1.webp',detail:'족보 승리마다 무작위 상대 한 명에게 즉시 공격해요.'},
+ {id:'mage',name:'마법사',image:'mage-fireball-v1.webp',detail:'검사보다 낮은 피해를 다른 상대 각각에게 즉시 줘요.'},
+ {id:'cleric',name:'성직자',image:'cleric-heal-v1.webp',detail:'자신의 HP를 회복해요. 최대 HP를 넘어서 회복하지 않아요.'},
  {id:'rogue',name:'도적',image:null,detail:'페어 이상 승리마다 바닥패를 확인하고, 트리플 이상이면 함정을 자동 설치해요. 남은 함정은 개당 피해 1로 정산해요.'},
 ] as const;
 const itemLessons=[{title:'HP로 이어지는 아이템전',text:`나와 AI 2명이 HP ${NEW_ITEM_MATCH_HP}으로 시작해요. 손패를 먼저 비우면 한 판 승리, 누군가 HP가 0이 되면 대전이 끝나요.`},{title:'위층 아래 숨은 주화',text:'위층을 걷어내기 전에는 아래층 주화를 볼 수 없어요. 위층 패를 눌러 숨은 주화를 찾아보세요.'},{title:'족보 승리로 자동 스킬',text:'게이지와 수동 스킬 없이 족보 승리로 스킬이 즉시 적용돼요. HP 0이면 탈락하고, 한 명이 손패를 모두 비우면 기본 패 피해만 마지막에 정산해요.'},{title:'상점과 유물 활용하기',text:'첫 결투에는 소비 아이템을 사용할 수 없어요. 결투가 끝난 뒤 자기 차례에 아이템을 쓰고, 유물은 적힌 조건을 달성하면 자동으로 발동해요.'}];

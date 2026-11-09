@@ -10,6 +10,7 @@ import {saveRpgGame,readRpgArchive} from '../lib/rpg-storage.ts';
 import {prologueAmbience} from '../lib/rpg-prologue-audio.ts';
 import {prologueArt,prologueArtSources} from '../lib/rpg-prologue-art.ts';
 import {readFileSync} from 'node:fs';
+import {imageSize} from './helpers/image-size';
 
 test('approved nineteen-board prologue keeps read time and second-run prerequisites',()=>{
  assert.ok(FIRST_PROLOGUE.reduce((n,c)=>n+c.duration,0)>68000);
@@ -49,8 +50,7 @@ test('every visible story beat has finished landscape and portrait paintings, in
   const art=prologueArt(cut);if(!art){assert.equal(cut.scene,'dark');continue;}
   assert.ok(html.includes(art.landscape));assert.ok(html.includes(art.portrait));
   for(const [orientation,src] of Object.entries(art)){
-   const png=readFileSync(new URL(`../public${src}`,import.meta.url));assert.equal(png.toString('ascii',1,4),'PNG');
-   const width=png.readUInt32BE(16),height=png.readUInt32BE(20);assert.ok(orientation==='portrait'?height>width:width>height,`${src}: incorrect orientation`);
+   const {format,width,height}=imageSize(readFileSync(new URL(`../public${src}`,import.meta.url)));assert.equal(format,'webp');assert.ok(orientation==='portrait'?height>width:width>height,`${src}: incorrect orientation`);
   }
   assert.ok(!html.includes('prologue-hand'),'finished paintings replace temporary prop geometry');
  }

@@ -10,7 +10,7 @@
 .turntale.table-v211.active-table .trick-current.battle-victory-glow .tile{outline:2px solid #ffe29b!important;box-shadow:0 0 10px #ffd15cc9,0 0 24px #ffc94b66!important;animation:winning-tile-glow 1s ease-in-out infinite!important}
 .trick-victory-caption{padding:2px 8px;border-radius:6px;border:1px solid #ffdd83;background:#2c2114ed;color:#ffe8a3;font-weight:950;white-space:nowrap;text-shadow:0 1px 2px #000}
 @keyframes winning-tile-glow{50%{box-shadow:0 0 17px #ffdf80,0 0 30px #ffc94b88}}
-body .battle-review-0641{background:#0b2017 url('/item-battle-v1/duel-panel-v1.png') center/100% 100% no-repeat!important;border:0!important;border-radius:16px;padding:28px 19px 19px!important;box-shadow:0 7px 30px #0009}
+body .battle-review-0641{background:#0b2017 url('/item-battle-v1/duel-panel-v1.webp') center/100% 100% no-repeat!important;border:0!important;border-radius:16px;padding:28px 19px 19px!important;box-shadow:0 7px 30px #0009}
 body .battle-review-0641 .duel-ordinal{font-size:12px!important;color:#efcf8f!important;margin:0 0 12px;text-align:center;letter-spacing:1px}
 .duel-winner{margin-bottom:8px}.duel-winner .rpg-hp-bar{box-shadow:0 0 0 1px #ffe1a1,0 0 13px #e8c56c40}.duel-winner .hp-bar-identity strong{font-size:15px!important;color:#fff1bd!important}
 .duel-losers{gap:7px}.duel-loser-row .rpg-hp-bar{opacity:.95}

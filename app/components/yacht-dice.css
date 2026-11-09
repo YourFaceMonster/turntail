@@ -45,16 +45,32 @@ main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.
 .yacht-die-face i.pip{background:#2a1d12;box-shadow:inset 0 2px 2px #000c}
 .yacht-die-face i.is-ace{width:96%;background:#b3201b;box-shadow:inset 0 2px 3px #4a0606}
 .yacht-die.is-gathered{left:var(--cup-x);top:var(--cup-y);opacity:0;transform:translate(-50%,-50%) rotate(var(--spin)) scale(.4);pointer-events:none;transition-duration:.25s}
-/* backwards fill: once landed, normal styles take over so keep/gather transitions still run */
-.yacht-die.is-thrown:not(.is-gathered){animation:yacht-throw .78s cubic-bezier(.18,.7,.32,1) backwards;animation-delay:calc(var(--n) * 45ms)}
-.yacht-die.is-thrown:not(.is-gathered) .yacht-die-face{animation:yacht-tumble .78s steps(6,end) backwards;animation-delay:calc(var(--n) * 45ms)}
+/* backwards fill: once landed, normal styles take over so keep/gather transitions still run.
+   Only the whole die moves and turns; the pips never squash, blur or shift inside the face. */
+.yacht-die.is-thrown:not(.is-gathered){animation:yacht-throw .72s cubic-bezier(.2,.75,.3,1) backwards;animation-delay:calc(var(--n) * 45ms)}
 @keyframes yacht-throw{
- 0%{left:var(--cup-x);top:var(--cup-y);opacity:0;transform:translate(-50%,-50%) rotate(var(--spin)) scale(.45)}
- 12%{opacity:1}
- 55%{transform:translate(-50%,-50%) rotate(calc(var(--rot) + 40deg)) scale(1.12)}
- 78%{left:var(--x);top:var(--y);transform:translate(-50%,-50%) rotate(calc(var(--rot) - 8deg)) scale(.96)}
+ 0%{left:var(--cup-x);top:var(--cup-y);opacity:0;transform:translate(-50%,-50%) rotate(var(--spin)) scale(.5)}
+ 15%{opacity:1}
+ 70%{left:var(--x);top:var(--y);transform:translate(-50%,-50%) rotate(calc(var(--rot) + 10deg)) scale(1.06)}
  100%{left:var(--x);top:var(--y);opacity:1;transform:translate(-50%,-50%) rotate(var(--rot)) scale(1)}}
-@keyframes yacht-tumble{0%{filter:blur(2px);transform:scaleY(.6)}60%{filter:blur(1px);transform:scaleX(.8)}100%{filter:none;transform:none}}
+.yacht-die-face{backface-visibility:hidden;transform:translateZ(0)}
+/* Five of a kind on the felt: dice glow gold */
+.yacht-stage.is-yacht .yacht-die{border-color:#b98a2e;box-shadow:inset -3px -4px 0 #00000022,0 0 0 3px #f0c96a,0 0 18px #f0c96acc,0 6px 8px #0008;animation:yacht-gold .9s ease-in-out infinite alternate}
+@keyframes yacht-gold{to{box-shadow:inset -3px -4px 0 #00000022,0 0 0 4px #ffe08a,0 0 28px #ffd56bee,0 6px 8px #0008}}
+/* Combo banner over the tray */
+.yacht-flash{position:absolute;left:50%;top:58%;z-index:7;display:grid;justify-items:center;gap:0;padding:10px 26px 12px;border-radius:16px;border:3px solid #2b1d12;background:linear-gradient(#fff4d6,#f0d38c);color:#3b2a1a;box-shadow:0 0 0 3px #f0c96a88,0 14px 26px #000a;pointer-events:none;transform:translate(-50%,-50%);animation:yacht-flash-in 1.5s cubic-bezier(.2,1.4,.4,1) both;white-space:nowrap}
+.yacht-flash small{font-size:12px;color:#6b5236;font-weight:700}
+.yacht-flash strong{font-size:clamp(20px,5cqw,30px);line-height:1.1;letter-spacing:-.02em}
+.yacht-flash b{font-size:clamp(16px,3.6cqw,22px);color:#1f6b45}
+.yacht-flash.is-yacht{background:linear-gradient(#fff7da,#ffd567 60%,#e9a92c);animation-duration:2s}
+.yacht-flash.is-yacht strong{font-size:clamp(28px,8cqw,44px);color:#8f1d1d;text-shadow:0 2px 0 #fff8}
+.yacht-flash.is-yacht::before{content:'';position:absolute;inset:-40%;z-index:-1;border-radius:50%;background:radial-gradient(#ffe7a066,transparent 65%);animation:yacht-burst 2s ease-out both}
+.yacht-flash.is-bonus b{color:#b98a2e}
+.yacht-flash.is-rival{background:linear-gradient(#e8edf2,#c7d2dc);border-color:#1d2a36}
+.yacht-flash.is-rival b{color:#1d4f7a}
+@keyframes yacht-flash-in{0%{opacity:0;transform:translate(-50%,-40%) scale(.6)}14%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}24%{transform:translate(-50%,-50%) scale(1)}82%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-62%) scale(.96)}}
+@keyframes yacht-burst{0%{transform:scale(.3);opacity:0}30%{opacity:1}100%{transform:scale(1.3);opacity:0}}
+.lead-lock-label.is-joker{color:#ffe08a!important;font-weight:700}
 
 /* Dice cup */
 .yacht-cup{position:absolute;z-index:5;width:22%;aspect-ratio:120/130;padding:0;border:0;background:none;transform:translate(-50%,-62%);cursor:grab;touch-action:none;-webkit-tap-highlight-color:transparent;min-height:0!important}
@@ -73,24 +89,46 @@ main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.
 .yacht-main .yacht-hand{display:flex;flex-direction:column;gap:5px}
 .yacht-bonus{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15;color:#f3e1bd;font-size:12px}
 .yacht-bonus small{color:#cdb98d;font-size:10px}
-.yacht-score-hand{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;padding:2px 2px 4px}
-.yacht-cat{position:relative;display:grid;grid-template-rows:auto 1fr auto;justify-items:center;align-items:center;min-height:62px;padding:4px 2px 3px;border:2px solid #5a4630;border-radius:9px;background:linear-gradient(#f4ecda,#e2d4b6);color:#3b2a1a;box-shadow:0 3px 0 #6b5236,0 5px 8px #0006;font-family:"Noto Sans KR",Arial,sans-serif;transition:transform .15s,box-shadow .15s,filter .15s}
+/* Upper row (1~6) shows a die face; lower row (combos) has a warmer red-gold rim so the two read as separate groups. */
+.yacht-score-hand{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;padding:4px 2px 6px}
+.yacht-cat{position:relative;display:grid;grid-template-rows:26px 1fr;justify-items:center;align-items:center;min-height:70px;padding:6px 2px 5px;border:2px solid #5a4630;border-radius:10px;background:linear-gradient(#f7f0e0,#e4d6b8);color:#3b2a1a;box-shadow:0 3px 0 #6b5236,0 5px 8px #0006;font-family:"Noto Sans KR",Arial,sans-serif;transition:transform .15s,box-shadow .15s,filter .15s,opacity .15s}
+.yacht-cat.is-lower{border-color:#7a3a22;background:linear-gradient(#fbefe0,#ecd2b2);box-shadow:0 3px 0 #7a3a22,0 5px 8px #0006}
 .yacht-cat:disabled{opacity:1!important;cursor:default}
-.yacht-cat-label{font-size:11px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;color:#6b5236;max-width:100%;overflow:hidden}
-.yacht-cat-label .is-short{display:none}
-.yacht-cat-score{font-size:20px;line-height:1.05;font-variant-numeric:tabular-nums;min-height:1.05em}
-.yacht-cat-rival{font-size:10px;color:#7d6345;white-space:nowrap}
-.yacht-cat-rival.is-last{color:#b3201b;font-weight:700}
-.yacht-cat.is-written{background:linear-gradient(#d9cfba,#c8b998);filter:saturate(.7);box-shadow:0 2px 0 #6b5236,0 3px 5px #0005}
-.yacht-cat.is-written .yacht-cat-score{color:#3b2a1a}
-.yacht-cat.is-last{box-shadow:0 0 0 3px #d9b979,0 3px 0 #6b5236}
-.yacht-cat.is-pick{cursor:pointer;border-color:#b98a2e;background:linear-gradient(#fff6dd,#f1dfb2);transform:translateY(-3px);box-shadow:0 0 0 2px #d9b979aa,0 6px 0 #6b5236,0 9px 12px #0007}
+.yacht-cat-icon{display:grid;place-items:center;width:24px;height:24px;border:2px solid #3b2a1a;border-radius:6px;background:#fffaf0}
+.yacht-cat-icon .yacht-die-face{width:78%;height:78%}
+.yacht-cat-icon .yacht-die-face i.pip{box-shadow:none}
+.yacht-cat-label{font-size:12px;font-weight:800;letter-spacing:-.03em;white-space:nowrap;color:#7a3a22;max-width:100%;overflow:hidden}
+.yacht-cat-label .is-short,.yacht-cat-hint .is-short{display:none}
+.yacht-cat{grid-template-rows:26px 1fr auto}
+.yacht-cat-hint{font-size:10.5px;line-height:1.2;font-weight:600;color:#8a5a3c;white-space:nowrap;max-width:100%;overflow:hidden;letter-spacing:-.02em}
+.yacht-cat.is-pick .yacht-cat-hint{color:#6b5236}
+.yacht-cat-score{font-size:24px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;min-height:1em}
+.yacht-cat-check{position:absolute;right:5px;top:3px;font-style:normal;font-size:11px;color:#1f6b45;font-weight:800}
+.yacht-cat.is-written{background:linear-gradient(#ddd3be,#cbbd9e);box-shadow:0 2px 0 #6b5236,0 3px 5px #0005}
+.yacht-cat.is-written .yacht-cat-score{color:#4a3826;font-size:21px}
+.yacht-cat.is-last{box-shadow:0 0 0 3px #f0c96a,0 3px 0 #6b5236;animation:yacht-written .5s ease-out}
+@keyframes yacht-written{0%{transform:scale(1.15)}100%{transform:none}}
+/* While I am choosing: unusable boxes sink back, usable ones lift and glow, the best one pulses */
+.yacht-score-hand.is-picking .yacht-cat.is-written,.yacht-score-hand.is-picking .yacht-cat.is-blocked{opacity:.55;filter:saturate(.5)}
+.yacht-cat.is-pick{cursor:pointer;border-color:#b98a2e;background:linear-gradient(#fffbe9,#f6e3b0);transform:translateY(-4px);box-shadow:0 0 0 2px #f0c96a,0 7px 0 #6b5236,0 10px 14px #0007}
 .yacht-cat.is-pick .yacht-cat-score{color:#1f6b45}
-.yacht-cat.is-pick:hover{transform:translateY(-5px)}
+.yacht-cat.is-pick:hover{transform:translateY(-6px)}
+.yacht-cat.is-best{border-color:#1f6b45;box-shadow:0 0 0 3px #4fbf7d,0 7px 0 #6b5236,0 0 18px #4fbf7d88;animation:yacht-best 1.2s ease-in-out infinite}
+.yacht-cat.is-best::after{content:'★';position:absolute;right:5px;top:2px;font-size:12px;color:#d59a12;text-shadow:0 1px 0 #fff}
+@keyframes yacht-best{50%{box-shadow:0 0 0 3px #7be0a3,0 7px 0 #6b5236,0 0 26px #4fbf7dcc}}
 .yacht-cat.is-zero{cursor:pointer}
 .yacht-cat.is-zero .yacht-cat-score{color:#a08d6c}
 .yacht-cat.is-zero:hover{transform:translateY(-2px)}
 .yacht-cat:focus-visible{outline:3px solid #f0c96a;outline-offset:2px}
+/* Haro's sheet (tap his seat) */
+.yacht-main .opponent{position:relative}
+.yacht-rival-sheet{position:absolute;right:0;top:calc(100% + 6px);z-index:30;width:min(240px,70vw);padding:8px 10px 10px;border-radius:12px;border:2px solid #8de2ff88;background:#14202cf2;color:#e8f2fa;box-shadow:0 12px 24px #000b;font-size:12px}
+.yacht-rival-sheet header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.yacht-rival-sheet header button{min-height:0;padding:0 6px;border:0;background:none;color:inherit;font-size:16px}
+.yacht-rival-sheet ol{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;margin:0;padding:0;list-style:none}
+.yacht-rival-sheet li{display:flex;justify-content:space-between;border-bottom:1px solid #ffffff14}
+.yacht-rival-sheet li.is-last b{color:#ffd56b}
+.yacht-rival-sheet footer{margin-top:5px;color:#a9c2d6}
 
 /* Result modal extras (panel itself is the shared journey result) */
 main.yacht-main.yacht-main .yacht-result.yacht-result .result-standings.result-standings>div{grid-template-columns:minmax(0,1fr) auto!important}
@@ -103,8 +141,10 @@ main.yacht-main.yacht-main .yacht-result.yacht-result .result-player-name{white-
 
 @media (max-width:520px){
  .yacht-score-hand{gap:4px}
- .yacht-cat{min-height:54px;border-radius:7px}
- .yacht-cat-label{font-size:10px}.yacht-cat-score{font-size:17px}.yacht-cat-rival{font-size:9px}
+ .yacht-cat{min-height:58px;border-radius:8px;grid-template-rows:22px 1fr auto}
+ .yacht-cat-hint{font-size:9.5px}.yacht-cat-hint .is-full{display:none}.yacht-cat-hint .is-short{display:inline}
+ .yacht-cat-icon{width:20px;height:20px}
+ .yacht-cat-label{font-size:11px}.yacht-cat-score{font-size:20px}.yacht-cat.is-written .yacht-cat-score{font-size:18px}
  .yacht-cat-label .is-full{display:none}.yacht-cat-label .is-short{display:inline}
 }
 /* Short landscape phones: score boxes beside the tray */
@@ -114,7 +154,8 @@ main.yacht-main.yacht-main .yacht-result.yacht-result .result-player-name{white-
  main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.portrait-table .trick-area.yacht-trick{grid-column:2!important;grid-row:1!important;align-self:start}
  main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.portrait-table .hand-panel.yacht-hand{grid-column:2!important;grid-row:2!important}
  .yacht-main .opponents{min-height:0!important}
- .yacht-cat{min-height:42px;padding:2px}.yacht-cat-score{font-size:15px}.yacht-cat-rival{font-size:9px}
+ .yacht-cat{min-height:46px;padding:2px;grid-template-rows:20px 1fr auto}
+ .yacht-cat-hint{font-size:9px}.yacht-cat-hint .is-full{display:none}.yacht-cat-hint .is-short{display:inline}.yacht-cat-icon{width:18px;height:18px}.yacht-cat-score{font-size:17px}.yacht-cat.is-written .yacht-cat-score{font-size:15px}
  .yacht-cat-label .is-full{display:none}.yacht-cat-label .is-short{display:inline}
 }
-@media (prefers-reduced-motion:reduce){.yacht-die.is-thrown,.yacht-die.is-thrown .yacht-die-face,.yacht-cup-art.is-shaking,.yacht-cup.is-ready .yacht-cup-art.is-idle,.yacht-cup.is-ready::after{animation:none}.yacht-die{transition:none}}
+@media (prefers-reduced-motion:reduce){.yacht-die.is-thrown,.yacht-cup-art.is-shaking,.yacht-cup.is-ready .yacht-cup-art.is-idle,.yacht-cup.is-ready::after,.yacht-cat.is-best,.yacht-cat.is-last,.yacht-stage.is-yacht .yacht-die{animation:none}.yacht-flash,.yacht-flash::before{animation:none}.yacht-die{transition:none}}

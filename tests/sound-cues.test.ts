@@ -9,9 +9,15 @@ test('picked cue files match the recorded manifest',()=>{
  const manifest=JSON.parse(readFileSync('docs/assets/sound-261108.json','utf8'));
  assert.deepEqual(Object.entries(CUE_ASSETS).map(([kind,a])=>`${kind}:${a.src}`).sort(),manifest.files.map((f:{kind:string,src:string})=>`${f.kind}:${f.src}`).sort());
  for(const file of manifest.files){
+  // Served file: compressed MP3 (ID3 tag or MPEG frame sync).
   const bytes=readFileSync(`public${file.src}`);
   assert.equal(bytes.length,file.bytes);assert.equal(createHash('sha256').update(bytes).digest('hex'),file.sha256);
-  assert.equal(bytes.subarray(0,4).toString(),'RIFF');
+  assert.ok(file.src.endsWith('.mp3')&&(bytes.subarray(0,3).toString()==='ID3'||bytes[0]===0xff&&(bytes[1]&0xe0)===0xe0),file.src);
+  // The user-picked WAV master is kept byte-for-byte.
+  const master=readFileSync(`public${file.masterSrc}`);
+  assert.equal(master.length,file.masterBytes);assert.equal(createHash('sha256').update(master).digest('hex'),file.masterSha256);
+  assert.equal(master.subarray(0,4).toString(),'RIFF');
+  assert.ok(bytes.length<master.length/2,`${file.src} is compressed`);
  }
 });
 

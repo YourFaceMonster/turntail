@@ -18,7 +18,7 @@
 
 /* Compact shop rows share the existing item-match market painting. */
 body>.journey-popup-shade>.journey-popup{background:linear-gradient(135deg,#17171be8,#29221de8)!important;border-color:#b99a6088;backdrop-filter:blur(5px)}
-body>.journey-popup-shade>.journey-popup:has(.village-market){width:min(780px,calc(100vw - 20px));background:linear-gradient(#181719a6,#181719ed 45%),url('/ui/market-interior-v1.png') center top/cover!important}
+body>.journey-popup-shade>.journey-popup:has(.village-market){width:min(780px,calc(100vw - 20px));background:linear-gradient(#181719a6,#181719ed 45%),url('/ui/market-interior-v1.webp') center top/cover!important}
 .journey-popup .village-market-layout{grid-template-columns:1fr}.journey-popup .village-market-bag{display:none}
 .journey-popup .village-market-grid{grid-template-columns:minmax(0,1fr)!important;gap:5px}
 .journey-popup .village-product.compact-product{display:grid;grid-template-columns:minmax(0,1fr) 68px 56px;align-items:stretch;min-height:48px;border:1px solid #c5ab7155;border-radius:5px;background:#29251ee6}

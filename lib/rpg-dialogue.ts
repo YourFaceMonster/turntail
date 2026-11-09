@@ -9,7 +9,12 @@ export const QUEST_DIALOGUE={
  morFailed:['그랬군. 약속한 승부라면 어쩔 수 없지.','애써 줘서 고맙네. 편지는 내가 다른 길로 알아보겠네.','자네는 가던 길을 계속 가게.'],
  thief:['골목 끝, 낯선 남자가 봉인된 편지를 손가락 사이에서 빙글빙글 돌리고 있다.','어이, 이걸 찾으러 왔나?','그냥 돌려주면 재미없잖아.','세 판이다. 총점 단독 1등이면 편지를 돌려주지.','2등이나 공동 1등이면 다시 도전해도 좋아.','하지만 3등이면 끝이야. 편지는 내가 갖는다.'],
  travelerHelped:['정말 고마워. 이 다리로는 마을까지 돌아갈 자신도 없었거든.','참, 성벽 안쪽 파수탑에서 이상한 푸른 빛을 봤어. 혹시 도움이 될까?'],
+ /** New RPG (no consumables): the wayfarer is treated by sharing the player's own HP. */
+ travelerInjured:['수레 옆에 주저앉은 여행자가 피 묻은 다리를 감싸 쥐고 있다.','눈길에서 미끄러졌는데… 피가 멈추질 않아. 이대로는 일어설 수가 없어.'],
+ travelerTreated:['망토 자락을 찢어 상처를 동여매고, 남은 기운을 나눠 그를 일으켜 세웠다.','정말 고마워. 네 기운까지 나눠 주다니… 이 은혜는 꼭 갚을게.','참, 성벽 안쪽 파수탑에서 이상한 푸른 빛을 봤어. 혹시 도움이 될까?'],
 };
+/** HP the player gives up to treat the wayfarer in the new RPG. */
+export const WAYFARER_AID_HP=5;
 export const PIO_DIALOGUE=['어서 와! 새 얼굴이네? 앉아, 앉아. 추운 날엔 따뜻한 게 최고지.','모르? 말수는 적어도 믿을 만한 사람이야. 과거 얘기는 좀 싫어하지만.','세린이랑 승부할 거면 조심해. 저 사람, 지면 웃는 얼굴이 더 무섭거든.','광장 옆 잡화점에 들러 봐. 난 오늘 장사 생각은 접었어.'];
 export const SERIN_INVITATION='한 판 할래?\n세 판이면 네 실력 정도는 알 수 있겠지.';
 export const THIEF_RESULTS={win:'쳇, 가져가. 약속은 약속이니까. …다음엔 안 져.',second:'아깝네. 한 번 더 해볼 텐가?',third:'꼴찌로군. 기회는 끝이야. 이 편지는 내가 갖겠어.'};

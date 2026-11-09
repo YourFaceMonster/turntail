@@ -2,7 +2,7 @@ import {activateRpgRelics,rpgMaxHp} from './rpg-rework';
 import {restoreRetiredJourneyNodes} from './rpg-journey-legacy.ts';
 import {restoreDemoReward} from './rpg-demo-catalog.ts';
 import {restoreStoryCards,ST3_STORY_KEY} from './rpg-story-cards.ts';
-import {LETTER_QUEST_COINS,letterDuelOutcome} from './rpg-dialogue.ts';
+import {LETTER_QUEST_COINS,WAYFARER_AID_HP,letterDuelOutcome} from './rpg-dialogue.ts';
 import {BLUE_GLASS_ID} from './blue-glass.ts';
 import {DICE_DEN_STAGES,DICE_DEN_STAKE,DICE_RELIC_ID} from './rpg-dice-den.ts';
 import {newYachtMatch,rollYacht,scoreYacht,toggleYachtHold,validYachtMatch,yachtAiStep,yachtOutcome,cryptoDie,type DiceRandom,type YachtMatch} from './yacht-dice.ts';
@@ -163,8 +163,11 @@ export function giveHerbToWayfarer(run:RpgRun):RpgRun{
  const j=run.journey;if(!j||j.location!=='wayfarer-stop'||run.status!=='ready')throw Error('길가의 여행자를 만났을 때 약초를 건넬 수 있어요.');
  if(j.wayfarerHerbGiven)throw Error('여행자에게 이미 약초를 건넸어요.');
  const index=run.consumables.indexOf('emergency-herb');if(!run.rework&&index<0)throw Error('건넬 응급 약초가 없어요.');
+ // New RPG has no consumables: first aid costs the player's own HP instead (never down to 0).
+ if(run.rework&&run.hp[0]<=WAYFARER_AID_HP)throw Error(`응급처치에 나눌 HP가 부족해요. HP ${WAYFARER_AID_HP+1} 이상 필요해요.`);
  const consumables=[...run.consumables];if(!run.rework)consumables.splice(index,1);
- return {...run,consumables,coins:run.rework?0:run.coins+8,journey:{...j,wayfarerHerbGiven:true,completedNodes:[...new Set<JourneyNode>([...j.completedNodes,'wayfarer-stop'])],rumors:[...new Set([...j.rumors,JOURNEY_WAYFARER_RUMOR.id])]},updatedAt:Date.now()};
+ const hp=run.rework?[run.hp[0]-WAYFARER_AID_HP,...run.hp.slice(1)]:run.hp;
+ return {...run,hp,consumables,coins:run.rework?0:run.coins+8,journey:{...j,wayfarerHerbGiven:true,completedNodes:[...new Set<JourneyNode>([...j.completedNodes,'wayfarer-stop'])],rumors:[...new Set([...j.rumors,JOURNEY_WAYFARER_RUMOR.id])]},updatedAt:Date.now()};
 }
 export function discoverWayfarerRelic(run:RpgRun):RpgRun{
  const j=run.journey;if(!j||j.location!=='watchtower'||!j.wayfarerHerbGiven||run.status!=='ready')throw Error('여행자의 단서를 따라 파수탑에 도착해야 해요.');

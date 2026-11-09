@@ -70,7 +70,7 @@ export function storyState(run:Pick<RpgRun,'journey'>):StoryQuestState{return ru
  */
 const FINAL=(key:string)=>({landscape:`/story/${key}-wide-v1.png`,portrait:`/story/${key}-portrait-v1.png`});
 const ENV=(stage:number)=>({landscape:`/environments/stage-${stage}-055.webp`,portrait:`/environments/stage-${stage}-055.webp`});
-const TAVERN={landscape:'/prologue/tavern-interior-v2.png',portrait:'/prologue/tavern-interior-portrait-v1.png'};
+const TAVERN={landscape:'/prologue/tavern-interior-v2.webp',portrait:'/prologue/tavern-interior-portrait-v1.webp'};
 export const CHAPTER_ART_SLOTS:Record<string,{placeholder:{landscape:string,portrait:string},note:string}>={
  'region-2-map':{placeholder:ENV(5),note:'성화의 영역 지도 (ST4 폭포 · ST5 구름다리 · ST6 회랑)'},
  'region-3-map':{placeholder:ENV(8),note:'열쇠의 영역 지도 (ST7 고목 · ST8 성소 · ST9 제단)'},

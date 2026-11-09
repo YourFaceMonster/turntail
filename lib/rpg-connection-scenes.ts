@@ -11,8 +11,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "line": "멈춰라. 낯선 얼굴이군.",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "18% 55%",
     "speaker": "로웬"
@@ -25,8 +25,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "로웬",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "18% 55%"
    },
@@ -38,8 +38,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "로웬",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "18% 55%"
    },
@@ -51,8 +51,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "로웬",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "18% 55%"
    }
@@ -66,8 +66,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "로웬",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "18% 55%"
    },
@@ -79,8 +79,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "로웬",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "18% 55%"
    },
@@ -91,8 +91,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "line": "굳게 닫혔던 관문이 천천히 열렸다.",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "18% 55%"
    }
@@ -107,8 +107,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "line": "야, 밀라! 저 사람 아니야? 로웬을 이겼다는 사람!",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "50% 62%",
     "speaker": "포코"
@@ -121,8 +121,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "밀라",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "50% 62%"
    },
@@ -134,8 +134,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "포코",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "50% 62%"
    },
@@ -147,8 +147,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "밀라",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "50% 62%"
    }
@@ -162,8 +162,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "포코",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "50% 62%"
    },
@@ -175,8 +175,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "밀라",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "50% 62%"
    },
@@ -188,8 +188,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "포코",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "50% 62%"
    },
@@ -201,8 +201,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "밀라",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "50% 62%"
    }
@@ -217,8 +217,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "line": "형, 또 왔어. 이번엔 꽤 멀리 온 사람인데?",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "88% 30%",
     "speaker": "둘째"
@@ -231,8 +231,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "첫째",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "88% 30%"
    },
@@ -244,8 +244,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "둘째",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "88% 30%"
    },
@@ -257,8 +257,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "첫째",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "88% 30%"
    },
@@ -270,8 +270,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "둘째",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "88% 30%"
    }
@@ -285,8 +285,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "둘째",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "88% 30%"
    },
@@ -298,8 +298,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "첫째",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "88% 30%"
    },
@@ -310,8 +310,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "line": "늘 그렇게 말하더라. 이번에도.",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "88% 30%",
     "speaker": "둘째"
@@ -323,8 +323,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "line": "길은 열어 주겠다. 하지만 명심해라.",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "88% 30%",
     "speaker": "첫째"
@@ -336,8 +336,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "line": "모든 승부가 이기는 것으로 끝나지는 않는다.",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "88% 30%",
     "speaker": "첫째"
@@ -349,8 +349,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "line": "철문의 영역 너머, 구름에 둘러싸인 다음 길이 모습을 드러냈다.",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "88% 30%"
    },
@@ -361,8 +361,8 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "line": "새로운 영역을 향해, 다시 한 걸음을 내디뎠다.",
     "audio": "quiet",
     "art": {
-     "landscape": "/prologue/moon-castle-map-v3.png",
-     "portrait": "/prologue/moon-castle-map-v3.png"
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
     },
     "focus": "88% 30%"
    }
@@ -374,7 +374,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
 RPG_CONNECTION_SCENES[3].after=[...RPG_CONNECTION_SCENES[3].after.slice(0,5),...DEMO_ENDING];
 
 // Reviewed distinct before/after paintings and dedicated portrait art.
-const sceneFrame=(wide:string,tall:string)=>({landscape:'/prologue/'+wide+'.png',portrait:'/prologue/'+tall+'.png'});
+const sceneFrame=(wide:string,tall:string)=>({landscape:'/prologue/'+wide+'.webp',portrait:'/prologue/'+tall+'.webp'});
 const ironFrame=(wide:string,tall:string)=>sceneFrame(wide+'-iron-v1',tall+'-iron-v1');
 for(const [stage,sequence] of Object.entries(RPG_CONNECTION_SCENES)){
  for(const [phase,cuts] of Object.entries(sequence)){

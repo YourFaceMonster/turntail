@@ -26,8 +26,8 @@ test('scene groups partition the full reel without dropping any expanded narrati
  assert.equal(index,RPG_STORY_REEL.length);assert.equal(duration,RPG_STORY_REEL.reduce((n,c)=>n+c.duration,0));
 });
 test('short connections preload only their own paintings in the requested orientation',()=>{
- assert.deepEqual(prologueSceneSources(RPG_CONNECTION_SCENES[3].before,true),['/prologue/twins-before-portrait-r61-iron-v1.png','/prologue/twins-reply-portrait-v1-iron-v1.png']);
- assert.deepEqual(prologueSceneSources(RPG_CONNECTION_SCENES[3].after,false),['/prologue/twins-after-r61-iron-v1.png','/prologue/twins-after-reply-wide-v1-iron-v1.png','/prologue/st3-keepsake-handoff-wide-v1.png','/story-cards/iron-gate-two-front-v1.png','/story-cards/iron-gate-two-back-v1.png','/prologue/st3-keepsake-compare-wide-v1.png','/prologue/st3-record-wide-v1.png','/prologue/iron-gate-village-map-wide-v3.png']);
+ assert.deepEqual(prologueSceneSources(RPG_CONNECTION_SCENES[3].before,true),['/prologue/twins-before-portrait-r61-iron-v1.webp','/prologue/twins-reply-portrait-v1-iron-v1.webp']);
+ assert.deepEqual(prologueSceneSources(RPG_CONNECTION_SCENES[3].after,false),['/prologue/twins-after-r61-iron-v1.webp','/prologue/twins-after-reply-wide-v1-iron-v1.webp','/prologue/st3-keepsake-handoff-wide-v1.webp','/story-cards/iron-gate-two-front-v1.webp','/story-cards/iron-gate-two-back-v1.webp','/prologue/st3-keepsake-compare-wide-v1.webp','/prologue/st3-record-wide-v1.webp','/prologue/iron-gate-village-map-wide-v3.webp']);
  assert.deepEqual(prologueSceneSources([FIRST_PROLOGUE[0]],true),[]);
 });
 test('dialogue pose drawings change while the camera group stays mounted and both drawings preload',()=>{
@@ -47,5 +47,5 @@ test('picture transitions distinguish dialogue, pose, quest progress and actual 
  assert.equal(storyPictureTransition(FIRST_PROLOGUE.find(c=>c.id==='P04')!,FIRST_PROLOGUE.find(c=>c.storyboard==='P05')!),'overlap');
  assert.equal(storyPictureTransition(FIRST_PROLOGUE.find(c=>c.id==='P06b')!,FIRST_PROLOGUE.find(c=>c.id==='P07')!),'fade');
  const tower={...gate,id:'quest-파수탑',scene:'stone' as const,location:undefined};
- assert.equal(storyPictureTransition(tower,{...tower,art:{landscape:'/discovered.png',portrait:'/discovered-tall.png'}}),'overlap');
+ assert.equal(storyPictureTransition(tower,{...tower,art:{landscape:'/discovered.webp',portrait:'/discovered-tall.webp'}}),'overlap');
 });
