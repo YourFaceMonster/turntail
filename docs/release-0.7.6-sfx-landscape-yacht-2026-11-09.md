@@ -48,4 +48,10 @@
   - 멀티플레이 가로 화면
 
 ## 배포
-GitHub `main` push → Cloudflare Workers Builds 자동 배포. 공개 사이트 확인 결과는 README에 기록한다.
+GitHub `main` push(`338e89f..73fd2d8`) → Cloudflare Workers Builds 자동 배포.
+
+2026-11-09 공개 사이트(`turntail.yousexybaby.workers.dev`) 확인 결과
+- push 뒤 약 2분 30초 만에 0.7.6으로 바뀌었다. HTTP 200.
+- 배포된 JS·CSS 8개에 `yacht-main`, `haro-ivory-die`, `sfx-261108`, 가로 배치 코드가 들어 있다.
+- `/audio/sfx-261108/ui-click-A.wav`와 `/rpg-items-v1/relics/haro-ivory-die-v1.svg`가 200으로 받아진다.
+- 공개 사이트에서 실제로 플레이하지는 않았다.
