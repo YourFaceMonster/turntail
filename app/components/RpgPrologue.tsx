@@ -5,6 +5,7 @@ import {SuitEmblem} from './TileFace';
 import {useEffect,useRef,useState,type CSSProperties} from 'react';
 import {createPortal} from 'react-dom';
 import DialogueText from './DialogueText';
+import {cue} from '../../lib/sound-cues';
 import {FIRST_PROLOGUE,PrologueClock,type PrologueCut} from '../../lib/rpg-prologue';
 import {prologueAmbience} from '../../lib/rpg-prologue-audio';
 import {prologueArt,prologueSceneSources,prologueSceneGroup,storyPictureKey,storyPictureTransition} from '../../lib/rpg-prologue-art';
@@ -67,7 +68,7 @@ export default function RpgPrologue({enter,context,music=true,sound=true,musicVo
   return()=>{disposed=true;cancelAnimationFrame(frame);document.body.style.setProperty('overflow',previousOverflow,previousPriority);orientation.removeEventListener('change',loadArt);document.removeEventListener('visibilitychange',visibility);window.removeEventListener('pagehide',hide);window.removeEventListener('pageshow',visibility);if(previous instanceof HTMLElement&&previous.isConnected)previous.focus({preventScroll:true});};
  },[cuts]);
  useEffect(()=>{if(!artReady||!visible||!context||context.state!=='running')return;return prologueAmbience(context,cut,music,musicVolume,sound);},[context,cut,visible,artReady,music,musicVolume,sound]);
- function advance(){if(!artReady)return;const now=performance.now();if(now-lastTap.current<350)return;lastTap.current=now;clock.current!.next();setIndex(clock.current!.index);}
+ function advance(){if(!artReady)return;const now=performance.now();if(now-lastTap.current<350)return;lastTap.current=now;cue('dialogue');clock.current!.next();setIndex(clock.current!.index);}
  if(typeof document==='undefined')return null;
  return createPortal(<section ref={root} tabIndex={-1} className={`rpg-prologue ${closing?'is-story-closing':''}`} role="dialog" aria-modal="true" aria-label={label} data-cut={cut.id} data-storyboard={cut.storyboard} data-paused={!visible} onKeyDown={event=>{event.stopPropagation();if(event.key==='Escape'){event.preventDefault();clock.current!.complete();}if(event.target===event.currentTarget&&(event.key===' '||event.key==='Enter')){event.preventDefault();advance();}if(event.key==='Tab'){event.preventDefault();root.current?.querySelector<HTMLButtonElement>('.prologue-skip')?.focus();}}}>
   {chrome}

@@ -80,6 +80,7 @@ export const CHAPTER_ART_SLOTS:Record<string,{placeholder:{landscape:string,port
   [`st${stage}-after`,{placeholder:ENV(stage),note:`ST${stage} ${JOURNEY_STAGE_NAMES[stage]} · 승리 후`}],
  ])),
  ...Object.fromEntries(STORY_QUESTS.map(quest=>[quest.id,{placeholder:ENV(quest.stage),note:`서브퀘스트 · ${quest.name} (${quest.speaker})`}])),
+ 'dice-den':{placeholder:ENV(4),note:'서브퀘스트 · 안개 나루 주사위판 (폭포 아래 나룻배 창고, 노름꾼 하로와 요트다이스)'},
  'st6-flame-two':{placeholder:ENV(6),note:'ST6 받침대 위 성화 2 발견'},
  'st9-key-two':{placeholder:ENV(9),note:'ST9 그을린 받침대 속 비밀의 열쇠 2'},
  'ending-thrones':{placeholder:ENV(10),note:'ST10 비어 있는 두 왕좌'},

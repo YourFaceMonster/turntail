@@ -202,7 +202,8 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
  scheduleTurn(g,now);
 }
 /** Recent plays shown beside the RPG floor: the last three plays of this round (판), passes excluded. Kept across lead (선) changes; cleared only when a new round is dealt. */
-export const RECENT_TRICK_PLAYS=3;
+/** Three shown slots plus the play still on the table, which the column leaves out. */
+export const RECENT_TRICK_PLAYS=4;
 export function view(g:Game,token:string){
  const me=g.players.findIndex(p=>p.token===token);if(me<0)throw Error("입장 정보가 없어요. 방 코드로 다시 입장해 주세요.");
  const event=g.lastEvent;const lastEvent=event?.type==="draw"&&event.concealed&&event.who!==me?{...event,tiles:undefined}:event;

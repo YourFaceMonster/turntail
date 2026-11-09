@@ -102,11 +102,25 @@ function earlyVariant(stage:number,phase:'before'|'after',base:readonly Prologue
  const lines=add.beats.map((beat,index)=>({...template,id:`ST${stage}_POST_R2_${index+1}`,speaker:beat.speaker,line:beat.line,duration:storyReadingDuration(beat.line),poseArt:undefined,keepsakeFace:undefined}));
  return [...base.slice(0,add.at),...lines,...base.slice(add.at)];
 }
-export function journeyScenes(stage:number,run:RpgRun):{before:readonly PrologueCut[],after:readonly PrologueCut[]}{
+type Scenes={before:readonly PrologueCut[],after:readonly PrologueCut[]};
+/**
+ * Scene lists must keep their identity between renders: the cutscene player restarts (and reloads
+ * its art) whenever it receives a new array. Cache by every input that can change the lines.
+ */
+const sceneCache=new Map<string,Scenes>(),reelCache=new Map<string,readonly PrologueCut[]>();
+function sceneKey(stage:number,run:RpgRun){const c=context(run),story=storyState(run);return `${stage}|${c.second?2:1}|${c.secondPlace?1:0}|${c.letterReturned?1:0}|${Object.entries(story.quests).sort().map(([id,choice])=>`${id}:${choice}`).join(',')}`;}
+export function journeyScenes(stage:number,run:RpgRun):Scenes{
+ const key=sceneKey(stage,run),hit=sceneCache.get(key);if(hit)return hit;
+ const built=buildScenes(stage,run);sceneCache.set(key,built);return built;
+}
+function buildScenes(stage:number,run:RpgRun):Scenes{
  if(stage<=3){const base=RPG_CONNECTION_SCENES[String(stage)];if(!base)return {before:[],after:[]};return {before:base.before,after:earlyVariant(stage,'after',base.after,run)};}
  const script=SCRIPTS[stage];if(!script)return {before:[],after:[]};
  const c=context(run);
  return {before:cuts(stage,'before',script.before(c),`st${stage}-before`),after:cuts(stage,stage===10?'ending':'after',script.after(c),`st${stage}-after`)};
 }
 /** Full story reel for the replay menu: every scene the run has reached. */
-export function journeyStoryReel(run:RpgRun,upTo:number){return [1,2,3,4,5,6,7,8,9,10].filter(stage=>stage<=upTo).flatMap(stage=>{const s=journeyScenes(stage,run);return [...s.before,...s.after];});}
+export function journeyStoryReel(run:RpgRun,upTo:number):readonly PrologueCut[]{
+ const key=`${upTo}|${sceneKey(0,run)}`,hit=reelCache.get(key);if(hit)return hit;
+ const reel=[1,2,3,4,5,6,7,8,9,10].filter(stage=>stage<=upTo).flatMap(stage=>{const s=journeyScenes(stage,run);return [...s.before,...s.after];});reelCache.set(key,reel);return reel;
+}

@@ -1,0 +1,104 @@
+{
+  "date": "2026-11-08",
+  "source": "Original procedural synthesis (scripts/generate-sfx-261108.py, numpy only); variants picked by the user; map step re-made (scripts/generate-sfx-261108-map-steps.py)",
+  "files": [
+    {
+      "kind": "click",
+      "variant": "ui_click-A",
+      "src": "/audio/sfx-261108/ui-click-A.wav",
+      "bytes": 10164,
+      "sha256": "e99638be35bf2e0e4320e01015aab9dfc4b1d14133007cd68853b07b32c4d16a"
+    },
+    {
+      "kind": "confirm",
+      "variant": "ui_confirm-B",
+      "src": "/audio/sfx-261108/ui-confirm-B.wav",
+      "bytes": 115666,
+      "sha256": "46fcfa03bb5973a93e6c543c8f102f70705c784f6f91d9e43028bdec04f8e80f"
+    },
+    {
+      "kind": "back",
+      "variant": "ui_back-B",
+      "src": "/audio/sfx-261108/ui-back-B.wav",
+      "bytes": 19408,
+      "sha256": "d3b05acd860d808ad3ff0b96486ac142534113308d49d3e0405fbc560b06912f"
+    },
+    {
+      "kind": "dialogue",
+      "variant": "dialogue_next-A",
+      "src": "/audio/sfx-261108/dialogue-next-A.wav",
+      "bytes": 11456,
+      "sha256": "0978f7cc1cb7df4926e85c8a1f49358b02c34025b10dbc9348598eccb445b2eb"
+    },
+    {
+      "kind": "pass",
+      "variant": "pass-B",
+      "src": "/audio/sfx-261108/pass-B.wav",
+      "bytes": 22970,
+      "sha256": "dcd40549e4a78925f45d50b94065e9bc09265b015b89730be686b4edf049a734"
+    },
+    {
+      "kind": "hit",
+      "variant": "hp_hit-A",
+      "src": "/audio/sfx-261108/hp-hit-A.wav",
+      "bytes": 30022,
+      "sha256": "d0503e771a872c459d1012ad9a2e43b2e8a7a046c36f71369c78e0547132b878"
+    },
+    {
+      "kind": "heal",
+      "variant": "hp_heal-A",
+      "src": "/audio/sfx-261108/hp-heal-A.wav",
+      "bytes": 180610,
+      "sha256": "83593ba55a382a61c37a10e1284a9551d713d88f6c33cb0426a0c9f1ca0c93d0"
+    },
+    {
+      "kind": "item",
+      "variant": "item_use-B",
+      "src": "/audio/sfx-261108/item-use-B.wav",
+      "bytes": 100366,
+      "sha256": "4113e7d6bb4cff8672471b6435f7cf3fe7b46e71bb08f951dc2336612de1bed3"
+    },
+    {
+      "kind": "guard",
+      "variant": "guard-B",
+      "src": "/audio/sfx-261108/guard-B.wav",
+      "bytes": 46104,
+      "sha256": "c55f7ca79991893f8862e0dffaa8361f6f4a1cb59f8b917766028245675de650"
+    },
+    {
+      "kind": "relic",
+      "variant": "relic_get-A",
+      "src": "/audio/sfx-261108/relic-get-A.wav",
+      "bytes": 162130,
+      "sha256": "9eb7a3ba17d8daabc4df64d15da1ff14fc68ef35b064bd0ca34b0f0d63cbf3ce"
+    },
+    {
+      "kind": "storyCard",
+      "variant": "story_card_get-A",
+      "src": "/audio/sfx-261108/story-card-get-A.wav",
+      "bytes": 326368,
+      "sha256": "9837065339f3f7c9e8101f83ed1f1403bba6f3942f084f00e370ff33b6270e33"
+    },
+    {
+      "kind": "clear",
+      "variant": "stage_clear-A",
+      "src": "/audio/sfx-261108/stage-clear-A.wav",
+      "bytes": 278920,
+      "sha256": "e58bcd89509e0d918aaa88d6af384c67bf2fbff3592538bda5df7e7b0495d2cd"
+    },
+    {
+      "kind": "fail",
+      "variant": "stage_fail-A",
+      "src": "/audio/sfx-261108/stage-fail-A.wav",
+      "bytes": 185936,
+      "sha256": "1056007c2e0e77456182fa9486c76ffcef29768c12136c7298df13f77bff8e5b"
+    },
+    {
+      "kind": "step",
+      "variant": "map_step2-B",
+      "src": "/audio/sfx-261108/map-step-B.wav",
+      "bytes": 30886,
+      "sha256": "c6e2fcc998a8abe6dc9ae5ed442ca2156f5cdc923d6e3e3fcaebe3b0d2b714f1"
+    }
+  ]
+}

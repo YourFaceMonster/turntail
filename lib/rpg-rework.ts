@@ -1,6 +1,10 @@
 import {storyCardsForRun} from './rpg-story-cards';
 import type {Game,Tile,RoundResult} from './game';
 import type {RpgRun} from './rpg';
+import {DICE_RELIC,DICE_RELIC_HEAL} from './rpg-dice-den';
+import {withRelicActivations} from './rpg-relic-feedback';
+/** Quest-only relics never appear in stage reward offers. */
+const QUEST_RELICS=['watchkeepers-blue-glass',DICE_RELIC.id];
 
 /** RPG only. Shared item-match catalogues and the global HP limit remain intact. */
 export const RPG_REWORK_RELICS=[
@@ -15,6 +19,7 @@ export const RPG_REWORK_RELICS=[
  ['mor-quill','모르의 깃펜','주점에서 추가 소문 확인'],
  ['twin-needle-compass','쌍침 나침반','다음 유물 선택 보상 미리 보기'],
  ['split-mirror','갈라진 거울','유물 보상 후보 +1개'],
+ [DICE_RELIC.id,DICE_RELIC.name,DICE_RELIC.effect],
 ].map(([id,name,effect])=>({id,name,effect,grade:'common'}));
 export function reworkRelic(id:string){return RPG_REWORK_RELICS.find(relic=>relic.id===id);}
 export const RPG_STAGE_HP=[[25,30],[35,40],[50,55],[40,45],[50,55],[60,65],[50,55],[60,65],[70,75],[85,90]];
@@ -75,6 +80,10 @@ export function scoutRpgFloor(game:Game,seat:number,count:number,bonus=0){
 export function beginReworkRound(game:Game){
  if(!isRpgRework(game))return;const run=game.rpgRun!,state=run.rework!;
  state.intel={};state.resolvedTricks=[];state.lastScout=undefined;state.settledSeats=undefined;
+ if(run.equipped.includes(DICE_RELIC.id)&&run.hp[0]>0&&run.hp[0]<=DICE_RELIC_HEAL.threshold){
+  const before=run.hp[0];run.hp=[Math.min(rpgMaxHp(run),before+DICE_RELIC_HEAL.amount),...run.hp.slice(1)];
+  if(run.hp[0]>before)run.relicActivations=withRelicActivations(run,[{relicId:DICE_RELIC.id,message:`HP +${run.hp[0]-before}`}]).relicActivations;
+ }
  run.roundHealth={round:game.round,before:[...run.hp],damage:run.hp.map(()=>0),healing:run.hp.map(()=>0),moneyDamage:run.hp.map(()=>0),coinsBefore:0};
  if(state.nextForesight!==undefined&&run.hp[state.nextForesight]>0)scoutRpgFloor(game,state.nextForesight,3+(state.nextForesight===0&&run.equipped.includes('stopped-hourglass')?2:0));
  state.nextForesight=undefined;
@@ -89,7 +98,7 @@ export function resolveRpgScout(game:Game){
 export function reworkRewardOffers(run:RpgRun,stage=run.stage){
  const state=run.rework!;if(state.rewardOffers[stage])return state.rewardOffers[stage];
  const boss=[3,6,9].includes(stage),count=(boss?3:2)+(run.equipped.includes('split-mirror')?1:0);
- const pool=RPG_REWORK_RELICS.filter(r=>r.id!=='watchkeepers-blue-glass'&&(boss||!run.relics.includes(r.id))).map(r=>r.id);
+ const pool=RPG_REWORK_RELICS.filter(r=>!QUEST_RELICS.includes(r.id)&&(boss||!run.relics.includes(r.id))).map(r=>r.id);
  let seed=2166136261;for(const char of `${run.id}:${stage}`)seed=Math.imul(seed^char.charCodeAt(0),16777619)>>>0;
  const picked:string[]=[];while(pool.length&&picked.length<count){picked.push(pool.splice(seed%pool.length,1)[0]);seed=Math.imul(seed^picked.length,16777619)>>>0;}
  return state.rewardOffers[stage]=stage===10?[]:picked;

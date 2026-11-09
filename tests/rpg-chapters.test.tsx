@@ -97,6 +97,11 @@ test('every TEST screen shortcut opens, including ST4~10, quests, region maps an
   if(id==='prologue-2')assert.equal(j.story!.runNumber,2);
  }
 });
+test('scene lists keep their identity across renders so the cutscene player never restarts',()=>{
+ const game=createRpgJourneyGame('검증','',0),run=game.rpgRun!;
+ for(let stage=1;stage<=10;stage++){assert.equal(journeyScenes(stage,run),journeyScenes(stage,structuredClone(run)),`ST${stage} cached`);assert.equal(journeyScenes(stage,run).before,journeyScenes(stage,run).before);}
+ const changed=structuredClone(run);setJourneyRunNumber(changed,2);assert.notEqual(journeyScenes(1,changed),journeyScenes(1,run),'a different run variant gets its own list');
+});
 test('saves reject corrupt story data and the map only shows the current region',()=>{
  const {game}=playJourney();const bad=structuredClone(game) as Game;bad.rpgRun!.journey!.story={runNumber:1,quests:{'quest-4':'maybe' as never}};
  assert.throws(()=>validateJourneySave(bad));

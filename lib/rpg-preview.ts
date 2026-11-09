@@ -12,7 +12,7 @@ function finishPreview(game:Game,failed=false){
 }
 export type RpgPreviewMode='screens'|'one-round';
 type StageNo=1|2|3|4|5|6|7|8|9|10;
-export type RpgPreviewScreen='prologue'|'prologue-2'|'map'|'map-2'|'map-3'|'map-4'|'tavern'|`battle-${StageNo}`|`reward-${Exclude<StageNo,10>}`|'quest-4'|'quest-5'|'quest-6'|'quest-8'|'quest-9'|'ending-1'|'ending-2'|'failed'|'mini-round'|'mini-final';
+export type RpgPreviewScreen='prologue'|'prologue-2'|'map'|'map-2'|'map-3'|'map-4'|'tavern'|`battle-${StageNo}`|`reward-${Exclude<StageNo,10>}`|'quest-4'|'quest-5'|'quest-6'|'quest-8'|'quest-9'|'dice-den'|'ending-1'|'ending-2'|'failed'|'mini-round'|'mini-final';
 const STAGES=[1,2,3,4,5,6,7,8,9,10] as const;
 /** Every screen shortcut, in menu order (ST1~10 battles, rewards, quests, region maps and both endings). */
 export const RPG_PREVIEW_SCREENS:readonly {id:RpgPreviewScreen,label:string}[]=[
@@ -21,6 +21,7 @@ export const RPG_PREVIEW_SCREENS:readonly {id:RpgPreviewScreen,label:string}[]=[
  {id:'prologue',label:'프롤로그 다시 보기'},{id:'prologue-2',label:'2회차 프롤로그'},
  ...STAGES.map(stage=>({id:`battle-${stage}` as RpgPreviewScreen,label:`ST${stage} 전투 화면`})),
  ...STORY_QUESTS.map(quest=>({id:quest.id as RpgPreviewScreen,label:`ST${quest.stage} 서브퀘스트 · ${quest.name}`})),
+ {id:'dice-den',label:'ST5~6 서브퀘스트 · 안개 나루 주사위판'},
  ...STAGES.filter(stage=>stage<10).map(stage=>({id:`reward-${stage}` as RpgPreviewScreen,label:`ST${stage} 클리어·보상`})),
  {id:'ending-1',label:'ST10 클리어 · 정상 엔딩'},{id:'ending-2',label:'ST10 클리어 · 2회차 진엔딩'},
  {id:'mini-round',label:'세린 · 이번 판 결과'},{id:'mini-final',label:'세린 · 3판 최종 결과'},{id:'failed',label:'여정 실패'},
@@ -42,7 +43,7 @@ export class RpgPreviewSession{
   if(this.mode!=='screens'||!this.owns(game))throw Error('프롤로그·화면 테스트에서만 바로 이동할 수 있어요.');
   if(!isRpgPreviewScreen(target))throw Error('확인할 화면을 선택해 주세요.');
   const quest=STORY_QUESTS.find(q=>q.id===target),region=/^map-(\d)$/.exec(target)?.[1];
-  const stage=target.startsWith('battle-')||target.startsWith('reward-')?Number(target.split('-')[1]):target.startsWith('ending-')?10:quest?quest.stage:region?JOURNEY_REGIONS[Number(region) as JourneyRegion].stages[0]:target==='failed'?1:2;
+  const stage=target.startsWith('battle-')||target.startsWith('reward-')?Number(target.split('-')[1]):target.startsWith('ending-')?10:quest?quest.stage:target==='dice-den'?5:region?JOURNEY_REGIONS[Number(region) as JourneyRegion].stages[0]:target==='failed'?1:2;
   const next=structuredClone(this.initial);
   if(target==='ending-2'||target==='prologue-2')setJourneyRunNumber(next.rpgRun!,2);
   if(target==='prologue-2')return next;
@@ -58,6 +59,7 @@ export class RpgPreviewSession{
   // Endings: clearing ST10 plays the ending on the result screen (first or second traveller).
   else if(target.startsWith('ending-')){enterJourneyNode(next,'battle-10');next.rpgRun!.hp=[70,0,0];finishPreview(next);}
   else if(quest)enterJourneyNode(next,quest.id);
+  else if(target==='dice-den')enterJourneyNode(next,'dice-den');
   else if(region){if(next.rpgRun!.journey!.location!=='map')returnJourneyMap(next);}
   else if(target==='mini-round'||target==='mini-final'){enterJourneyNode(next,'tavern');startJourneyMini(next);const rounds=target==='mini-final'?3:1;for(let n=0;n<rounds;n++){const child=activeJourneyMini(next)!;child.players[0].hand=[];child.players[1].hand=child.players[1].hand.slice(0,3);child.players[2].hand=child.players[2].hand.slice(0,5);child.winner=0;child.phase='ended';settle(child);settleJourneyMini(next);if(n<rounds-1)nextJourneyMiniRound(next);}}
 
