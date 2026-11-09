@@ -51,4 +51,11 @@
   - 여행자 "도운 뒤" 그림은 예전 동전 보상 버전 그대로다.
 
 ## 배포
-GitHub `main` push → Cloudflare Workers Builds 자동 배포. 공개 사이트 확인 결과는 README에 기록한다.
+GitHub `main` push(`b572183..d3e646e`) → Cloudflare Workers Builds 자동 배포.
+
+2026-11-09 공개 사이트 확인 결과
+- push 뒤 약 2분 만에 0.7.7로 바뀌었다. HTTP 200.
+- 배포된 JS·CSS에 `is-joker`, `yacht-flash`, `travelerTreated`, 최근 패 가운데 정렬 CSS, MP3·WebP 경로가 들어 있다.
+- `/prologue`·`/quests`의 PNG 참조는 0이다.
+- `ui-click-A.mp3`, `tavern-interior-v2.webp`, `coin-gold-v1.webp`, `haro-ivory-die-v1.svg`가 200으로 받아진다.
+- 공개 사이트에서 실제로 플레이하지는 않았다.
