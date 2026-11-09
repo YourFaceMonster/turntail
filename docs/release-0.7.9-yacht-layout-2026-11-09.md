@@ -24,3 +24,10 @@
 
 ## 배포
 배포 전 공개 사이트는 HTTP 200, 0.7.8이었다.
+
+GitHub `main` push(`00916e4..374aae6`) → Cloudflare Workers Builds 자동 배포.
+
+2026-11-09 공개 사이트 확인 결과
+- push 후 약 1분 반 만에 0.7.9로 바뀌었고, HTTP 200이다.
+- 배포된 JS·CSS에 "흔드는 중", "다시 굴리기 (n회)", `max-height:700px` 짧은 화면 규칙, `justify-self:stretch`가 들어 있다.
+- 공개 사이트에서 실제로 플레이하지는 않았다.
