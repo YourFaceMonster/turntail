@@ -3,7 +3,7 @@
 .yacht-main{position:fixed!important;inset:0;z-index:1500;overflow:hidden}
 /* The shared table sizes its grid rows for floor/played/hand tiles; the dice table needs tray / caption / score boxes. */
 /* Selector prefix repeats .yacht-main to outrank the global `.turntale.table-v211.active-table.rpg-mode.portrait-table …` rules. */
-main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.portrait-table{top:0!important;height:100dvh!important;min-height:0!important;max-height:100dvh!important}
+main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.portrait-table{z-index:1500!important;background:radial-gradient(ellipse at 50% 0%,#3a2617,#140c07 70%)!important;top:0!important;height:100dvh!important;min-height:0!important;max-height:100dvh!important}
 main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.portrait-table .game-layout{grid-template-columns:minmax(0,1fr)!important;flex:1 1 auto!important;min-height:0!important;height:auto!important}
 main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.portrait-table .play-column{height:100%!important;min-height:0!important}
 main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.portrait-table .play-column{grid-template-rows:minmax(0,1fr) 34px max-content!important}
@@ -23,10 +23,12 @@ main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.
 /* Stage sized by the free felt space (container units), keep shelf on top of the tray */
 .yacht-stage-box{flex:1 1 auto;min-height:0;display:grid;place-items:center;container-type:size}
 .yacht-stage{position:relative;width:min(100cqw,95cqh,560px);aspect-ratio:1/1.05;touch-action:none;user-select:none}
-.yacht-keep{position:absolute;left:4%;right:4%;top:2%;height:18%;border-radius:12px;background:linear-gradient(#2a1c12d0,#160e08e0);border:3px solid #140b06;box-shadow:inset 0 3px 8px #0009,0 3px 0 #0006}
-.yacht-keep span{position:absolute;left:12px;top:-10px;padding:0 8px;border-radius:999px;background:#140b06;color:#f5dfbc;font-size:10px;line-height:18px}
+/* Keep shelf 4%~25% of the stage; held dice sit at 14.5% (die ≈ 13.8% tall → 7.6%~21.4%), clear of the label strip.
+   The label has its own z-index (the shelf is not a stacking context), so a die can never cover it. */
+.yacht-keep{position:absolute;left:4%;right:4%;top:4%;height:21%;border-radius:12px;background:linear-gradient(#2a1c12d0,#160e08e0);border:3px solid #140b06;box-shadow:inset 0 3px 8px #0009,0 3px 0 #0006}
+.yacht-keep span{position:absolute;z-index:6;left:12px;top:-10px;padding:0 8px;border-radius:999px;background:#140b06;color:#f5dfbc;font-size:10px;line-height:18px;pointer-events:none}
 .yacht-keep i{position:absolute;top:50%;width:15.5%;aspect-ratio:1;border-radius:10px;transform:translate(-50%,-50%);border:2px dashed #f0c96a40}
-.yacht-tray{position:absolute;left:4%;right:4%;top:24%;bottom:2%;border-radius:16px;background:linear-gradient(145deg,#3a2a1c,#120b06);border:4px solid #0a0603;box-shadow:0 10px 22px #000a,inset 0 2px 0 #ffffff1a;padding:4%}
+.yacht-tray{position:absolute;left:4%;right:4%;top:27%;bottom:2%;border-radius:16px;background:linear-gradient(145deg,#3a2a1c,#120b06);border:4px solid #0a0603;box-shadow:0 10px 22px #000a,inset 0 2px 0 #ffffff1a;padding:4%}
 .yacht-tray::before,.yacht-tray::after{content:'';position:absolute;width:9px;height:9px;border-radius:50%;background:#c99a3b;box-shadow:0 0 0 2px #140b06;top:8px;left:8px}
 .yacht-tray::after{left:auto;right:8px}
 .yacht-felt{width:100%;height:100%;border-radius:9px;background:radial-gradient(ellipse at 45% 40%,#b42a24,#84191a 70%,#5a1010);box-shadow:inset 0 6px 18px #000b,inset 0 0 0 3px #00000044;position:relative;overflow:hidden}
@@ -129,6 +131,28 @@ main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.
 .yacht-rival-sheet li{display:flex;justify-content:space-between;border-bottom:1px solid #ffffff14}
 .yacht-rival-sheet li.is-last b{color:#ffd56b}
 .yacht-rival-sheet footer{margin-top:5px;color:#a9c2d6}
+/* Haro's combo log, in the empty space left of his seat */
+.yacht-main .opponents{gap:8px;align-items:stretch}
+.yacht-rival-log{flex:1 1 auto;min-width:0;max-width:300px;margin-right:auto;display:grid;align-content:center;gap:3px;padding:4px 8px;border-radius:12px;border:2px solid #f0c96a55;background:linear-gradient(#20150ddd,#120b06e6);color:#f5dfbc;box-shadow:0 4px 10px #0007;font-family:"Noto Sans KR",Arial,sans-serif}
+.yacht-rival-log header{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.yacht-rival-log header b{font-size:11px;color:#f0c96a;margin-right:2px}
+.yacht-rival-log header small{flex:none;font-size:10px;line-height:16px;color:#cdb98d}
+.yacht-rival-now{min-width:0;margin:0;font-size:12.5px;font-weight:800;line-height:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.yacht-rival-log.is-turn{border-color:#8de2ffaa}
+.yacht-rival-log.is-shape .yacht-rival-now{color:#ffe08a;transform-origin:left center;animation:yacht-rival-pop .45s cubic-bezier(.2,1.4,.4,1)}
+@keyframes yacht-rival-pop{0%{transform:scale(.8);opacity:.3}100%{transform:none;opacity:1}}
+.yacht-rival-log ul{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:2px;margin:0;padding:0;list-style:none}
+/* All 12 of Haro's boxes, 6 × 2 like my own score row: name over score.
+   Success (score > 0) lights up, a scratched box (0) turns red and is struck, an open box stays dim. */
+.yacht-rival-log li{display:grid;justify-items:center;padding:0;border-radius:5px;background:#ffffff0d;border:1px solid #ffffff1a;line-height:1;white-space:nowrap;overflow:hidden}
+.yacht-rival-log li span{font-size:9px;line-height:10px;color:#a99677}
+.yacht-rival-log li b{font-size:11.5px;line-height:12px;font-weight:800;font-variant-numeric:tabular-nums;color:#6f6250}
+.yacht-rival-log li.is-lower{border-color:#d07a5a33}
+.yacht-rival-log li.is-made{background:#f0c96a;border-color:#ffe08a}
+.yacht-rival-log li.is-made span{color:#5a3c1c}.yacht-rival-log li.is-made b{color:#2b1d12}
+.yacht-rival-log li.is-zero{background:#7a1f1a66;border-color:#c0504066}
+.yacht-rival-log li.is-zero span{color:#d9a294}.yacht-rival-log li.is-zero b{color:#ffb4a4;text-decoration:line-through}
+.yacht-rival-log li.is-last{box-shadow:0 0 0 2px #8de2ff;animation:yacht-written .5s ease-out}
 
 /* Result modal extras (panel itself is the shared journey result) */
 main.yacht-main.yacht-main .yacht-result.yacht-result .result-standings.result-standings>div{grid-template-columns:minmax(0,1fr) auto!important}
@@ -158,4 +182,4 @@ main.yacht-main.yacht-main .yacht-result.yacht-result .result-player-name{white-
  .yacht-cat-hint{font-size:9px}.yacht-cat-hint .is-full{display:none}.yacht-cat-hint .is-short{display:inline}.yacht-cat-icon{width:18px;height:18px}.yacht-cat-score{font-size:17px}.yacht-cat.is-written .yacht-cat-score{font-size:15px}
  .yacht-cat-label .is-full{display:none}.yacht-cat-label .is-short{display:inline}
 }
-@media (prefers-reduced-motion:reduce){.yacht-die.is-thrown,.yacht-cup-art.is-shaking,.yacht-cup.is-ready .yacht-cup-art.is-idle,.yacht-cup.is-ready::after,.yacht-cat.is-best,.yacht-cat.is-last,.yacht-stage.is-yacht .yacht-die{animation:none}.yacht-flash,.yacht-flash::before{animation:none}.yacht-die{transition:none}}
+@media (prefers-reduced-motion:reduce){.yacht-rival-log.is-shape .yacht-rival-now,.yacht-die.is-thrown,.yacht-cup-art.is-shaking,.yacht-cup.is-ready .yacht-cup-art.is-idle,.yacht-cup.is-ready::after,.yacht-cat.is-best,.yacht-cat.is-last,.yacht-stage.is-yacht .yacht-die{animation:none}.yacht-flash,.yacht-flash::before{animation:none}.yacht-die{transition:none}}

@@ -5,7 +5,7 @@ import {syncPersonalScores} from '../../lib/score-sync';
 import type {Leaderboard} from '../../lib/leaderboard';
 const signed=(n:number)=>`${n>0?'+':''}${n}`;
 const date=(at:number)=>new Date(at).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
-export default function HighScores({close,personal,profileToken,name,openHistory,openItems,initialMode='single',initialSize=3}:{close:()=>void,personal:HighScore[],profileToken:string,name:string,openHistory:()=>void,openItems:()=>void,initialMode?:'single'|'multi',initialSize?:number}){
+export default function HighScores({close,personal,profileToken,name,openHistory,openItems,initialMode='single',initialSize=3}:{close:()=>void,personal:HighScore[],profileToken:string,name:string,openHistory:()=>void,openItems?:()=>void,initialMode?:'single'|'multi',initialSize?:number}){
  const [scope,setScope]=useState<'global'|'personal'>('global'),[mode,setMode]=useState<'single'|'multi'>(initialMode),[size,setSize]=useState(initialSize),[page,setPage]=useState(0);
  const kind='single' as const;
  const [board,setBoard]=useState<Leaderboard|null>(null),[busy,setBusy]=useState(true),[error,setError]=useState(''),[refresh,setRefresh]=useState(0);
@@ -37,6 +37,6 @@ export default function HighScores({close,personal,profileToken,name,openHistory
    <button className="text-btn" disabled={busy} onClick={()=>setRefresh(x=>x+1)}>↻ 전체 순위 새로고침</button>
   </>}</div>
   <p className="score-note">{scope==='global'?'부문별 상위 10개만 저장 · 순위 밖 기록은 보관하지 않아요':'이 브라우저에 저장된 개인 역대 TOP 10'}<br/>일반 대전 단판 기록 · 높은 점수순 · 동점은 먼저 달성한 순서 · 무효 판 제외</p>
-  <button className="secondary full" onClick={openItems}>아이템전 · 별도 기록 보기 →</button><button className="text-btn" onClick={openHistory}>일반 대전·친구 누적 전적 보기 →</button>
+  {openItems&&<button className="secondary full" onClick={openItems}>아이템전 · 별도 기록 보기 →</button>}<button className="text-btn" onClick={openHistory}>일반 대전·친구 누적 전적 보기 →</button>
  </section></div>;
 }

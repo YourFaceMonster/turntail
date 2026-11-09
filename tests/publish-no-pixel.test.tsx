@@ -9,8 +9,8 @@ import Back from '../app/components/TileBack';
 import {StageVisuals} from '../app/components/StageVisuals';
 
 test('publication contains classic/Bomb/items/RPG menu without a pixel route or public assets',()=>{
- const menu=renderToStaticMarkup(h(SinglePlayerMenu,{normal:()=>{},items:()=>{},rpg:()=>{},close:()=>{}}));
- for(const text of ['일반모드','폭탄시장전','아이템전','RPG 모드','/bomb-market'])assert.ok(menu.includes(text));
+ const menu=renderToStaticMarkup(h(SinglePlayerMenu,{normal:()=>{},yacht:()=>{},rpg:()=>{},close:()=>{}}));
+ for(const text of ['일반모드','폭탄시장전','요트다이스','RPG 모드','/bomb-market'])assert.ok(menu.includes(text));
  assert.ok(!menu.includes('픽셀'));assert.ok(!menu.includes('/classic-pixel'));
  for(const path of ['app/classic-pixel','public/pixel-classic','app/classic-pixel-menu.css'])assert.equal(existsSync(new URL('../'+path,import.meta.url)),false);
  for(const path of ['app/page.tsx','app/layout.tsx','app/components/TileFace.tsx','app/components/TileBack.tsx','app/components/MonsterPortrait.tsx','app/components/EntranceEnvironment.tsx','app/components/TableMaterialGrain.tsx'])assert.doesNotMatch(readFileSync(new URL('../'+path,import.meta.url),'utf8'),/ClassicPixel|classic-pixel|pixel-classic|classicEditionStorage/);

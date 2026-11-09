@@ -2,7 +2,7 @@
 import {useEffect,useRef,useState,type CSSProperties,type ReactNode} from 'react';
 import {Settings2} from 'lucide-react';
 import './yacht-dice.css';
-import {YACHT_CATEGORIES,YACHT_LABELS,YACHT_HINTS,YACHT_UPPER,YACHT_BONUS,YACHT_JOKER_BONUS,upperSubtotal,yachtBonus,seatTotal,boxScore,allowedCategories,yachtJoker,yachtJokerBonus,isYachtRoll,yachtAiPlan,openCategories,type YachtMatch,type YachtCategory} from '../../lib/yacht-dice';
+import {YACHT_CATEGORIES,YACHT_LABELS,YACHT_HINTS,YACHT_UPPER,YACHT_BONUS,YACHT_JOKER_BONUS,upperSubtotal,yachtBonus,seatTotal,boxScore,allowedCategories,yachtJoker,yachtJokerBonus,isYachtRoll,yachtAiPlan,openCategories,yachtShape,type YachtMatch,type YachtCategory} from '../../lib/yacht-dice';
 import {DICE_DEN_DIALOGUE,DICE_DEN_STAKE,DICE_NPC,DICE_RELIC} from '../../lib/rpg-dice-den';
 import {relicImage} from '../../lib/item-battle-relics';
 import {cue} from '../../lib/sound-cues';
@@ -22,8 +22,14 @@ import RpgCastPortrait from './RpgCastPortrait';
 /** Temporary portrait for Haro until his own art exists (an RPG-unused stage portrait). */
 export const HARO_PORTRAIT=26;
 const PIPS:Record<number,number[]>={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
-const KEEP_X=[16,33,50,67,84],KEEP_Y=11,CUP={x:89,y:90};
-const CELLS=[[27,44],[50,42],[73,45],[25,64],[50,63],[74,65],[30,83],[53,83]];// bottom-right stays clear for the cup
+const KEEP_X=[16,33,50,67,84],KEEP_Y=14.5,CUP={x:89,y:90};
+/** Landing cells, ≥ 26 apart; with the small jitter below every pair stays ≥ DIE_GAP. Bottom-right stays clear for the cup. */
+const CELLS=[[20,38],[50,38],[80,38],[20,63],[50,63],[80,63],[24,88],[53,88]];
+const JITTER={x:1.8,y:1.2};
+/** Die width is 14.5% of the stage; its circumscribed circle is ~10.3% → centres ≥ 21.5 apart never overlap at any tilt.
+ *  y is a % of the stage height (1.05 × width), so it is scaled before measuring. */
+export const DIE_GAP=21.5;
+export const STAGE_RATIO=1.05;
 const MIN_SHAKE=420;
 /** Narrow screens: long names shorten; the full name stays in the tooltip and aria label. */
 const SHORT:Partial<Record<YachtCategory,string>>={'small-straight':'스몰','large-straight':'라지','four-kind':'포카','full-house':'풀하우스'};
@@ -31,9 +37,9 @@ const SHORT:Partial<Record<YachtCategory,string>>={'small-straight':'스몰','la
 const TILE_HINT:Partial<Record<YachtCategory,readonly [string,string]>>={choice:['5개 합','5개 합'],'four-kind':['같은 눈 4개','4개 같음'],'full-house':['3개+2개','3+2'],'small-straight':['4연속 · 15점','15점'],'large-straight':['5연속 · 30점','30점'],yacht:['모두 같음 · 50점','50점']};
 const COMBOS:readonly YachtCategory[]=['four-kind','full-house','small-straight','large-straight','yacht'];
 function seeded(seed:string){let h=2166136261;for(const c of seed)h=Math.imul(h^c.charCodeAt(0),16777619)>>>0;return ()=>{h=Math.imul(h^h>>>15,2246822507)>>>0;h=Math.imul(h^h>>>13,3266489909)>>>0;h^=h>>>16;return (h>>>0)/4294967296;};}
-/** Stable scatter for one roll: a shuffled grid with jitter and a tilt per die. */
-function scatter(stamp:string){const r=seeded(stamp),cells=[...CELLS];for(let i=cells.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[cells[i],cells[j]]=[cells[j],cells[i]];}
- return cells.slice(0,5).map(([x,y])=>({x:x+(r()-.5)*12,y:y+(r()-.5)*8,rot:Math.round((r()-.5)*70),spin:Math.round(360+r()*540)*(r()<.5?-1:1)}));}
+/** Stable scatter for one roll: a shuffled grid with a little jitter and tilt per die, never overlapping. */
+export function scatter(stamp:string){const r=seeded(stamp),cells=[...CELLS];for(let i=cells.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[cells[i],cells[j]]=[cells[j],cells[i]];}
+ return cells.slice(0,5).map(([x,y])=>({x:x+(r()*2-1)*JITTER.x,y:y+(r()*2-1)*JITTER.y,rot:Math.round((r()-.5)*44),spin:Math.round(360+r()*540)*(r()<.5?-1:1)}));}
 function haroLine(last:YachtMatch['last']){if(!last||last.seat!==1)return '';const {category,score}=last;
  if(last.bonus)return '요트 보너스다! 오늘 운이 좋은데.';
  if(category==='yacht'&&score)return '요트다! 안개도 이건 못 가리지.';if(!score)return `${YACHT_LABELS[category]}은 버리지. 아깝지만.`;
@@ -66,8 +72,25 @@ function DiceCup({state}:{state:'idle'|'shaking'|'pouring'}){
 }
 
 type Props={den:DiceDenState,match:YachtMatch,hp:number,equipped:readonly string[],busy:boolean,error?:string,play:(action:DiceAction)=>void,retry:()=>void,leave:()=>void,
- playerName?:string,playerAvatar?:ReactNode,settings?:()=>void,exit?:()=>void};
-export default function YachtDiceTable({den,match,hp,equipped,busy,error,play,retry,leave,playerName='여행자',playerAvatar,settings,exit}:Props){
+ playerName?:string,playerAvatar?:ReactNode,settings?:()=>void,exit?:()=>void,
+ /** Single-play menu table: no HP stake, no relic; retry starts a fresh game and leave returns to the menu. */
+ practice?:boolean};
+const PRACTICE_LINES:Record<string,string>={win:'하로가 웃으며 주사위를 건넨다. "한 판 더 하겠나?"',lose:'하로가 컵을 툭 내려놓는다. "운은 돌고 도는 거야."',draw:'점수가 똑같다. 하로가 어깨를 으쓱한다.',forfeit:'판을 접었다. 하로가 주사위를 주워 담는다.'};
+const BOX_SHORT:Record<YachtCategory,string>={ones:'1',twos:'2',threes:'3',fours:'4',fives:'5',sixes:'6',choice:'초이',
+ 'four-kind':'포카','full-house':'풀하','small-straight':'스몰','large-straight':'라지',yacht:'요트'};
+/** Left of Haro's seat: what his dice show now / what he just wrote, and all 12 of his boxes like my own score row. */
+function RivalLog({match,aiTurn,cup,last}:{match:YachtMatch,aiTurn:boolean,cup:'idle'|'shaking'|'pouring',last:YachtMatch['last']}){
+ const sheet=match.sheets[1],rolled=aiTurn&&match.rollsLeft<3&&cup==='idle',shape=rolled?yachtShape(match.dice):'';
+ const box=(cat:YachtCategory)=>YACHT_UPPER.includes(cat)?`숫자 ${YACHT_LABELS[cat]}`:YACHT_LABELS[cat];
+ const now=aiTurn?(cup!=='idle'?'컵을 흔드는 중…':rolled?(shape?`${YACHT_LABELS[shape]}!`:'족보 없음'):'차례 시작'):last?`방금 ${box(last.category)} ${last.score}점${last.bonus?` +${last.bonus}`:''}`:'아직 기록 없음';
+ return <aside className={`yacht-rival-log ${aiTurn?'is-turn':''} ${shape?'is-shape':''}`} aria-label="하로의 족보" aria-live="polite">
+  <header><p className="yacht-rival-now"><b>하로</b> {now}</p>{aiTurn&&<small>굴림 {Math.max(0,3-match.rollsLeft)}/3</small>}</header>
+  <ul>{YACHT_CATEGORIES.map(cat=>{const score=sheet[cat],isLast=!aiTurn&&last?.category===cat;
+   return <li key={cat} className={`${YACHT_UPPER.includes(cat)?'is-upper':'is-lower'} ${score===undefined?'':score?'is-made':'is-zero'} ${isLast?'is-last':''}`} title={`${YACHT_LABELS[cat]}: ${score===undefined?'빈칸':score?`${score}점 성공`:'0점 (버림)'}`}>
+    <span>{BOX_SHORT[cat]}</span><b>{score===undefined?'·':score}</b></li>;})}</ul>
+ </aside>;
+}
+export default function YachtDiceTable({den,match,hp,equipped,busy,error,play,retry,leave,playerName='여행자',playerAvatar,settings,exit,practice=false}:Props){
  const playRef=useRef(play);playRef.current=play;
  const stamp=`${match.round}-${match.turn}-${match.rollsLeft}`,positions=scatter(stamp);
  const [rolled,setRolled]=useState({stamp:'',set:[] as number[]}),[confirmForfeit,setConfirmForfeit]=useState(false),[sheetOpen,setSheetOpen]=useState(false);
@@ -103,6 +126,8 @@ export default function YachtDiceTable({den,match,hp,equipped,busy,error,play,re
   return()=>timers.forEach(clearTimeout);},[aiTurn,busy,match]);
 
  const last=match.last,mine=seatTotal(match,0),theirs=seatTotal(match,1),own=match.sheets[0];
+ const haroLast=useRef<YachtMatch['last']>(undefined);
+ if(last?.seat===1)haroLast.current=last;else if(!Object.keys(match.sheets[1]).length)haroLast.current=undefined;
  const joker=canPick&&yachtJoker(own,match.dice),allowed=canPick?allowedCategories(own,match.dice):[];
  const previews=new Map(allowed.map(cat=>[cat,boxScore(own,cat,match.dice)] as const)),bestPreview=Math.max(0,...previews.values());
  const status=match.status==='ended'?'승부 종료':myTurn?(inCup?'내 차례 · 컵을 흔들어 굴리세요':match.rollsLeft===0?'내 차례 · 점수 칸을 고르세요':'내 차례 · 남길 주사위 고르기'):'하로의 차례';
@@ -125,13 +150,13 @@ export default function YachtDiceTable({den,match,hp,equipped,busy,error,play,re
    <a className="brand" href="/" onClick={event=>{event.preventDefault();exit?.();}}><TurntaleWordmark className="ingame-wordmark" plain/></a>
    <span className="ingame-table-theme" title="안개 나루 · 상아 주사위"><strong>안개 나루</strong><small>상아 주사위</small></span>
    <strong className="ingame-round" aria-label={`주사위 승부 ${Math.min(match.round,12)}라운드 / 12`}>주사위 {Math.min(match.round,12)}/12</strong>
-   <div className="top-actions">{settings&&<button className="display-trigger settings-trigger" aria-label="게임 설정" onClick={settings}><Settings2/></button>}{exit&&<button className="text-btn" onClick={exit}>저장·나가기</button>}<span className="alpha">{APP_VERSION}</span></div>
+   <div className="top-actions">{settings&&<button className="display-trigger settings-trigger" aria-label="게임 설정" onClick={settings}><Settings2/></button>}{exit&&<button className="text-btn" onClick={exit}>{practice?'나가기':'저장·나가기'}</button>}<span className="alpha">{APP_VERSION}</span></div>
   </header>
   <section className="game-layout">
    <div className="play-column">
     <TableSurface stage={5}/>
     <section className="felt yacht-felt-area">
-     <div className="opponents"><div data-seat="1" className={`opponent persona-amber ${aiTurn?'is-turn':''}`}>
+     <div className="opponents"><RivalLog match={match} aiTurn={aiTurn} cup={cup} last={haroLast.current}/><div data-seat="1" className={`opponent persona-amber ${aiTurn?'is-turn':''}`}>
       <div className="seat-card" role="button" tabIndex={0} aria-expanded={sheetOpen} aria-label={`하로 ${theirs}점 · 점수표 보기`} onClick={()=>setSheetOpen(open=>!open)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();setSheetOpen(open=>!open);}}}><RpgCastPortrait index={HARO_PORTRAIT}/>
        <div className="op-info"><strong className="opponent-name" title={DICE_NPC}><span className="opponent-character-name">하로</span><small className="opponent-ai-label">AI</small></strong><span className="seat-hp-label">{theirs}점</span></div>
        <span className="rpg-seat-count" aria-label={`하로 남은 칸 ${openCategories(match.sheets[1]).length}개`}><b>{openCategories(match.sheets[1]).length}</b></span>
@@ -141,7 +166,7 @@ export default function YachtDiceTable({den,match,hp,equipped,busy,error,play,re
        <ol>{YACHT_CATEGORIES.map(cat=><li key={cat} className={last?.seat===1&&last.category===cat?'is-last':''}><span>{YACHT_LABELS[cat]}</span><b>{match.sheets[1][cat]??'·'}</b></li>)}</ol>
        <footer>보너스 {upperSubtotal(match.sheets[1])}/{YACHT_BONUS.threshold}{yachtBonus(match.sheets[1])?' ✓':''}{match.yachtBonuses?.[1]?` · 요트 보너스 ×${match.yachtBonuses[1]}`:''}</footer></div>}
      </div></div>
-     <div className="table-heading"><span className="table-lead-hint"><em className={`lead-lock-label ${joker?'is-joker':''}`}>{hint||`판돈 HP ${DICE_DEN_STAKE} · 비기면 반환`}</em></span>
+     <div className="table-heading"><span className="table-lead-hint"><em className={`lead-lock-label ${joker?'is-joker':''}`}>{hint||(practice?'연습판 · 판돈 없음':`판돈 HP ${DICE_DEN_STAKE} · 비기면 반환`)}</em></span>
       <span className="yacht-rolls" aria-label={`남은 굴림 ${rolls}회`}>굴림 {[0,1,2].map(i=><i key={i} className={i<rolls?'is-left':''}/>)}</span></div>
      <div className="yacht-stage-box"><div className={`yacht-stage ${aiTurn?'is-ai':''} ${rolledYacht&&cup==='idle'?'is-yacht':''}`} role="group" aria-label="주사위 트레이">
       <div className="yacht-keep" aria-hidden="true"><span>남길 주사위</span>{KEEP_X.map(x=><i key={x} style={{left:`${(x-4)/.92}%`}}/>)}</div>
@@ -161,31 +186,36 @@ export default function YachtDiceTable({den,match,hp,equipped,busy,error,play,re
     <section className="hand-panel panel yacht-hand">
      <div className="hand-heading">
       <div><span className={`turn-dot ${myTurn?'on':''}`}/><strong>{status}</strong></div>
-      <button type="button" className="own-status-card persona-coral" aria-label={`${playerName} ${mine}점`}><span className="own-status-fill" aria-hidden="true"/>{playerAvatar||<span className="avatar portrait persona-coral">🦊</span>}<span className="own-status-info"><strong>{playerName}</strong><small className="own-hp-line">{mine}점 · HP {hp}</small></span></button>
+      <button type="button" className="own-status-card persona-coral" aria-label={`${playerName} ${mine}점`}><span className="own-status-fill" aria-hidden="true"/>{playerAvatar||<span className="avatar portrait persona-coral">🦊</span>}<span className="own-status-info"><strong>{playerName}</strong><small className="own-hp-line">{practice?`${mine}점`:`${mine}점 · HP ${hp}`}</small></span></button>
       <div className="hand-tools yacht-bonus" aria-label="숫자 보너스 진행"><span>보너스 {upperSubtotal(own)}/{YACHT_BONUS.threshold}{yachtBonus(own)?' ✓':''}</span>{!!match.yachtBonuses?.[0]&&<small>요트 보너스 ×{match.yachtBonuses[0]}</small>}</div>
      </div>
      <div className={`yacht-score-hand ${canPick?'is-picking':''}`} role="group" aria-label="점수 칸">{YACHT_CATEGORIES.map(tile)}</div>
      <div className="action-bar"><span className="action-context" role="status">{error}</span><div className="action-buttons">
-      {match.status==='playing'&&(confirmForfeit?<button type="button" className="secondary" disabled={busy} onClick={()=>{setConfirmForfeit(false);play({kind:'forfeit'});}} onBlur={()=>setConfirmForfeit(false)}>기권 확정 · HP −{DICE_DEN_STAKE}</button>:<button type="button" className="secondary" disabled={busy||!myTurn} onClick={()=>setConfirmForfeit(true)}>기권</button>)}
+      {match.status==='playing'&&(confirmForfeit?<button type="button" className="secondary" disabled={busy} onClick={()=>{setConfirmForfeit(false);play({kind:'forfeit'});}} onBlur={()=>setConfirmForfeit(false)}>{practice?'기권 확정':`기권 확정 · HP −${DICE_DEN_STAKE}`}</button>:<button type="button" className="secondary" disabled={busy||!myTurn} onClick={()=>setConfirmForfeit(true)}>기권</button>)}
       <button type="button" className="primary" disabled={!canShake||cup!=='idle'} onClick={()=>{startShake();window.setTimeout(pour,MIN_SHAKE+200);}}><span className="play-action-label">{inCup?'컵 흔들어 굴리기':match.rollsLeft===0?'점수 칸을 고르세요':`다시 굴리기 · ${match.rollsLeft}회 남음`}</span></button>
      </div></div>
     </section>
    </div>
   </section>
   {ended&&<div className="modal-shade result-shade journey-match-result-shade"><section className="modal rpg-result journey-mini-result-panel yacht-result" role="dialog" aria-modal="true" aria-label="주사위 승부 결과">
-   <span className="eyebrow">DICE TABLE · {result==='win'?'승리':result==='draw'?'무승부':result==='forfeit'?'기권':'패배'}</span>
+   <span className="eyebrow">{practice?'YACHT DICE':'DICE TABLE'} ·{result==='win'?'승리':result==='draw'?'무승부':result==='forfeit'?'기권':'패배'}</span>
    <h2>{result==='win'?'하로를 이겼어요':result==='draw'?'비겼어요':'하로가 이겼어요'}</h2>
    <div className="journey-mini-standings"><div className="results result-standings single-rank-standings">
     <div className="result-head"><span>순위 · 이름</span><span>점수</span></div>
     {[{name:playerName,score:mine,me:true},{name:'하로',score:theirs,me:false}].sort((a,b)=>b.score-a.score||(a.me?-1:1)).map((row,index)=><div key={row.name} className={index===0&&mine!==theirs?'winner-row':''}>
      <strong className="result-player-name"><small>{mine===theirs?'공동':`${index+1}등`}</small><span>{row.name}</span></strong><span>{row.score}점</span></div>)}
    </div></div>
-   {outcomeLines.map(line=><p key={line}>{line}</p>)}
+   {(practice?[PRACTICE_LINES[result!]]:outcomeLines).map(line=><p key={line}>{line}</p>)}
+   {practice?<>
+    <button type="button" className="primary full" disabled={busy} onClick={retry}>한 판 더 →</button>
+    <button type="button" className="secondary full" disabled={busy} onClick={leave}>메뉴로 돌아가기</button>
+   </>:<>
    {result==='win'&&<div className="yacht-relic"><img src={relicImage(DICE_RELIC.id)} alt=""/><span><b>{DICE_RELIC.name}</b><small>{DICE_RELIC.effect}</small><small>{equipped.includes(DICE_RELIC.id)?'획득 · 자동 장착됨':'획득 · 여행 가방에서 장착하세요'}</small></span></div>}
    {(result==='lose'||result==='forfeit')&&<p className="yacht-loss">판돈 HP −{DICE_DEN_STAKE} · 현재 HP {hp}</p>}
    {result!=='win'&&<button type="button" className="primary full" disabled={busy||hp<=DICE_DEN_STAKE} onClick={retry}>다시 도전 · 판돈 HP {DICE_DEN_STAKE} →</button>}
    <button type="button" className={`${result==='win'?'primary':'secondary'} full`} disabled={busy} onClick={leave}>지도로 돌아가기</button>
    {result!=='win'&&hp<=DICE_DEN_STAKE&&<p className="yacht-error">{DICE_DEN_DIALOGUE.lowHp}</p>}
+   </>}
   </section></div>}
  </main>;
 }

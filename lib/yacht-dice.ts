@@ -32,6 +32,9 @@ export function yachtScore(category:YachtCategory,dice:readonly number[]):number
  }
  return 0;
 }
+/** The strongest named combo the dice show right now (yacht > large > small > full house > four of a kind), or '' if none. */
+export const YACHT_SHAPES:readonly YachtCategory[]=['yacht','large-straight','small-straight','full-house','four-kind'];
+export function yachtShape(dice:readonly number[]):YachtCategory|''{return YACHT_SHAPES.find(cat=>yachtScore(cat,dice)>0)||'';}
 export function upperSubtotal(sheet:YachtSheet){return YACHT_UPPER.reduce((sum,cat)=>sum+(sheet[cat]||0),0);}
 export function yachtBonus(sheet:YachtSheet){return upperSubtotal(sheet)>=YACHT_BONUS.threshold?YACHT_BONUS.points:0;}
 export function yachtTotal(sheet:YachtSheet,jokerBonuses=0){return YACHT_CATEGORIES.reduce((sum,cat)=>sum+(sheet[cat]||0),0)+yachtBonus(sheet)+jokerBonuses*YACHT_JOKER_BONUS;}

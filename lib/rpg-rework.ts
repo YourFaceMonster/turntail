@@ -22,6 +22,21 @@ export const RPG_REWORK_RELICS=[
  [DICE_RELIC.id,DICE_RELIC.name,DICE_RELIC.effect],
 ].map(([id,name,effect])=>({id,name,effect,grade:'common'}));
 export function reworkRelic(id:string){return RPG_REWORK_RELICS.find(relic=>relic.id===id);}
+/** Two-line rail summary (when / what) for the narrow equipped-relic rail; the full effect stays in the tap tooltip. */
+export const RPG_REWORK_RELIC_SHORT:Record<string,{label:string,bonus:string}>={
+ 'gamblers-gloves':{label:'5장 승리',bonus:'정찰 +1'},
+ 'cracked-heart':{label:'최대 HP',bonus:'+20'},
+ 'second-heart':{label:'최대 HP',bonus:'+10'},
+ 'recovery-lantern':{label:'클리어',bonus:'HP +5'},
+ 'watchkeepers-blue-glass':{label:'판 시작',bonus:'투시 1장'},
+ 'stopped-hourglass':{label:'선견지명',bonus:'정찰 +2'},
+ 'final-knot':{label:'HP 10↓',bonus:'HP +5'},
+ 'second-ring':{label:'2등',bonus:'HP +3'},
+ 'mor-quill':{label:'주점',bonus:'소문 +1'},
+ 'twin-needle-compass':{label:'보상',bonus:'미리 보기'},
+ 'split-mirror':{label:'보상',bonus:'후보 +1'},
+ [DICE_RELIC.id]:{label:'HP 50↓',bonus:'HP +2'},
+};
 export const RPG_STAGE_HP=[[25,30],[35,40],[50,55],[40,45],[50,55],[60,65],[50,55],[60,65],[70,75],[85,90]];
 export type FloorIntel={round:number,index:number,tile:Tile};
 export type RpgRework={version:2,chapter:number,activated:string[],knotStages:number[],nextForesight?:number,

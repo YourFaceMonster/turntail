@@ -177,7 +177,7 @@ test('new preview screens use the new engine, including zero-HP failure and ST3 
 });
 test('new relic tray describes scouting and HP, preserving the legacy catalogue separately',()=>{
  const run=fresh().rpgRun!;run.equipped=['gamblers-gloves','cracked-heart'];
- const html=renderToStaticMarkup(<RpgEquippedRelics run={run}/>);assert.match(html,/정찰 \+1장/);assert.match(html,/최대 HP \+20/);assert.doesNotMatch(html,/포인트|피해 8 감소/);
+ const html=renderToStaticMarkup(<RpgEquippedRelics run={run}/>);assert.match(html,/정찰 \+1/);assert.match(html,/최대 HP[\s\S]*\+20/);assert.doesNotMatch(html,/포인트|피해 8 감소/);
 });
 test('migration from completed old stage keeps player HP and uses the next stage trial HP',()=>{
  const game=createRpgPhaseOneGame('old'),run=game.rpgRun!;run.pendingRework=true;run.status='ready';run.hp=[60,0,0];run.phaseOne!.clear={stage:1,hpBefore:60,baseHeal:0,relicHeal:0,synergyHeal:0,relicId:'recovery-lantern',chosen:'all'};game.phase='ended';

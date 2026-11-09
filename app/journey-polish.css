@@ -108,3 +108,11 @@ body>.journey-popup-shade>.journey-popup:has(.village-market){background:radial-
 .journey-tavern-room .tavern-board:focus-visible strong{text-shadow:0 0 10px #ffe2a4}
 @media(max-aspect-ratio:1/1){.journey-tavern-room .tavern-board{left:21%;top:20%;width:20%;height:12%;min-width:0;min-height:28px}}
 @media(max-width:700px){.village-market-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.village-market-layout{grid-template-columns:1fr}.village-market-bag{border:0;border-top:1px solid #d0b47744;padding:12px 0 0}}
+
+/* 2026-11-09 Yacht Dice card (took the item-battle slot in the single-play menu) */
+.single-mode-cards .mode-yacht{background:linear-gradient(145deg,#5a1c1a,#1f120b)!important;border-color:#d9b979!important}
+.single-mode-cards .mode-yacht .menu-mode-scene.is-yacht{display:flex!important;gap:6px;align-items:center;justify-content:flex-start;background:none!important}
+.menu-yacht-die{display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);width:30px;height:30px;padding:4px;box-sizing:border-box;border:2px solid #3b2a1a;border-radius:7px;background:radial-gradient(circle at 32% 28%,#fffaf0,#e9dcc0);box-shadow:0 3px 0 #0006}
+.menu-yacht-die:nth-child(1){transform:rotate(-12deg)}.menu-yacht-die:nth-child(3){transform:rotate(9deg)}
+.menu-yacht-die i{display:block;margin:auto;width:70%;aspect-ratio:1;border-radius:50%}
+.menu-yacht-die i.is-pip{background:#2a1d12}.menu-yacht-die i.is-ace{width:100%;background:#b3201b}
