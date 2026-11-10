@@ -6,6 +6,9 @@ import {view,settle,type Game} from '../lib/game.ts';
 import {startRpgRound} from '../lib/rpg-game.ts';
 import {itemScenePoints,itemSceneTiming,itemProjectileFrames,itemTurnReadyAt} from '../lib/rpg-item-motion.ts';
 import {exchangePickerPlacement} from '../lib/rpg-exchange-motion.ts';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: hp-item-0610',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 const fresh=()=>{const game=createHpItemGame('20P 테스트','',Date.now(),2);delete game.hpItemRules;delete game.hpItemMatch!.skills;game.rpgRun!.consumables=[];game.rpgRun!.enemyConsumables={1:[],2:[]};game.rpgRun!.equipped=[];game.turnReadyAt=0;return game;};
 const ended=(game:Game)=>{game.phase='ended';game.winner=0;game.players[0].hand=[];game.players[1].hand=game.players[1].hand.slice(0,3);game.players[2].hand=game.players[2].hand.slice(0,5);settle(game);};
 const empty=fresh();assert.deepEqual(empty.hpItemMatch!.points,[20,20,20]);assert.ok(hpItemShopPending(empty));buyHpItemLoadout(empty,[]);assert.equal(empty.hpItemMatch!.points[0],20);assert.equal(empty.rpgRun!.consumables.length,0);assert.equal(hpItemShopPending(empty),false);assert.throws(()=>buyHpItemLoadout(empty,[]),'a shop cannot charge twice');
@@ -29,4 +32,5 @@ for(const [actor,target] of [[0,1],[1,0],[1,2]])for(const kind of ['damage','blo
  const bomb=itemSceneTiming({kind,actor,target,itemId:'ember-bomb'}),dart=itemSceneTiming({kind,actor,target,itemId:'spark-dart'});
  assert.deepEqual(dart,bomb,'dart and bomb share the full throw, shield contact and turn unlock timeline');
  for(const itemId of ['ember-bomb','spark-dart'] as const)assert.equal(itemTurnReadyAt({id:'throw',kind,actor,target,itemId,at:100}),100+bomb.duration+bomb.gap);
+}
 }

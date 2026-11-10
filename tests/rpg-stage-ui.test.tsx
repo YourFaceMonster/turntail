@@ -6,6 +6,9 @@ import {reconcileRpgEliminations,chooseRpgStageReward} from '../lib/rpg-phase-on
 import {view} from '../lib/game.ts';
 import {RpgStageResult} from '../app/components/RpgStageResult.tsx';
 import {RpgProfessionPicker} from '../app/components/RpgProfessions.tsx';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: rpg-stage-ui',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 const game=createRpgPhaseOneGame('UI검증','',0,'swordsman'),noop=()=>{};
 const render=()=>renderToStaticMarkup(h(RpgStageResult,{game:view(game,game.players[0].token),busy:false,choose:noop,buy:noop,next:noop,newRun:noop,exit:noop}));
 const roundResult=render();assert.ok(roundResult.includes('compact-item-result'));assert.ok(roundResult.includes('이번 판 정산'));assert.ok(roundResult.includes('hp-settlement'));assert.ok(roundResult.includes('보유 주화'));assert.ok(!roundResult.includes('다음 카드 판을 준비하세요'));
@@ -16,3 +19,4 @@ game.rpgRun.stage=3;game.rpgRun.status='complete';const complete=render();assert
 game.rpgRun.status='game-over';const failed=render();assert.ok(failed.includes('여정 실패'));assert.ok(failed.includes('1스테이지부터 새 여정'));
 const rogue=renderToStaticMarkup(h(RpgProfessionPicker,{selected:'rogue',choose:noop,rpgPhase:true})).replace(/<[^>]*>/g,'');assert.ok(rogue.includes('싱글 바닥 1장 투시'));assert.ok(rogue.includes('결투 3회마다 +1'));assert.ok(!rogue.includes('싱글 상대 패 1장 확인'));
 console.log('PASS: three exclusive rewards, heal and money copy, gated advance/shop, phase-one completion/failure and RPG-specific profession/gauge descriptions. DOM rendering only, not a mobile screenshot test.');
+}

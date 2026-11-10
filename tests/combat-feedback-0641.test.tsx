@@ -13,6 +13,9 @@ import {TRAP_TURN_READY_MS,TRAP_PRESENTATION_MS} from '../lib/pickup-presentatio
 import {itemScenePoints} from '../lib/rpg-item-motion.ts';
 import {BattleEffectText} from '../app/components/HpBattleReview';
 import {RpgHpBar} from '../app/components/RpgHpBar';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: combat-feedback-0641',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 function fresh(){const g=createHpItemGame('검증','',Date.now(),2,'toto','mage',100);buyHpItemLoadout(g,[]);g.turn=0;g.turnReadyAt=0;g.completedBattles=1;g.roundActions=6;g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.rpgRun!.combat!.actives!.gauge=[0,0,0];g.rpgRun!.combat!.professions=['mage','swordsman','mage'];g.floorCoins!.randomTileId=null;return g;}
 const mage=fresh();mage.trick=Array.from({length:5},(_,id)=>({id,n:7,s:id%4}));mage.rpgRun!.combat!.activeUsed[0]=true;
 for(let i=0;i<3;i++){const effect=resolveProfessionWin(mage,0,'포카드',Date.now());assert.equal(effect.damage,10);assert.ok(effect.effects.some(e=>e.trait==='5장 족보 강화'));}
@@ -29,3 +32,4 @@ const hp=renderToStaticMarkup(<RpgHpBar hp={10} persistentChange identity={<stro
 for(const seat of [0,1,2]){assert.equal(hpItemDisplayHp(final,seat,false),final.hpItemMatch!.lastBattle!.hpAfter[seat]);assert.equal(hpItemDisplayHp(final,seat,true),final.rpgRun!.hp[seat]);}
 console.log('PASS: repeated mage combos, AI affordable purchases/no free inventory, label and item action ordering, trap quiet beat, reviewed final winner, phone-facing explosion, signed colored effects and persistent HP delta.');
 console.log(JSON.stringify({aiPurchaseAudit:audit}));
+}

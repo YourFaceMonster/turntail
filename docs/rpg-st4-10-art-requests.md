@@ -14,10 +14,10 @@
 
 ## 넣는 방법
 
-1. 그림을 아래 "파일" 이름으로 `public/` 아래에 저장한다.
-   - 장면: `/story/{키}-wide-v1.png`, `/story/{키}-portrait-v1.png`
-2. `lib/rpg-chapters.ts`의 `CHAPTER_ART_READY`에 해당 키를 추가한다. 그러면 임시 그림 대신 새 그림이 나온다.
-3. 이야기 패는 `/story-cards/{id}-front-v1.png`·`-back-v1.png`로 저장하고, `lib/rpg-story-card-art.ts`의 임시 경로를 바꾼다.
+1. 생성한 PNG 원본을 아래 이름으로 `public/` 아래에 저장하고, 같은 이름의 WebP를 함께 만든다. 2026-11-09부터 앱은 WebP만 참조하고, PNG는 원본으로 보존한다.
+   - 장면: `/story/{키}-wide-v1.png`·`.webp`, `/story/{키}-portrait-v1.png`·`.webp`
+2. `lib/rpg-chapters.ts`의 `CHAPTER_ART_READY`에 해당 키를 추가한다. 그러면 임시 그림 대신 새 WebP 그림이 나온다(2026-11-10부터 최종 경로가 `.webp`).
+3. 이야기 패는 `/story-cards/{id}-front-v1.png`·`-back-v1.png`와 같은 이름의 `.webp`로 저장하고, `lib/rpg-story-card-art.ts`의 임시 경로를 `.webp`로 바꾼다.
 
 ## 지역 지도 (3쌍)
 
@@ -36,7 +36,7 @@
 | `st4-before` / `st4-after` | 물안개 폭포 물가의 돌 테이블 / 젖은 기록에 겹친 왕관 흔적 | 수리(수달 낚시꾼), 네아(왜가리 전령) |
 | `st5-before` / `st5-after` | 흔들리는 구름다리 한가운데 쉼터, 한쪽 매듭만 닳음 / 다리 건너 회랑이 보임 | 타래(다람쥐 수선공), 하온(고글 쓴 길잡이) |
 | `st6-before` / `st6-after` | 보랏빛 깃발의 무너진 회랑 / 승부 후 회랑 | 카르덴(움직이는 투구), 세라(깃발지기), 태엽(올빼미 기록관) |
-| `st7-before` / `st7-after` | 달빛 고목 아래 기록 테이블 / 2등 이름만 남은 승부 기록 | 루엔(사슴 학자), 시온(달등지기) |
+| `st7-before` / `st7-after` | 달빛 고목 아래 기록 테이블 / 2등 자리에 이름 없이 왕관 표식만 남은 승부 기록 | 루엔(사슴 학자), 시온(달등지기) |
 | `st8-before` / `st8-after` | 호박빛 별빛 성소 / 오래된 편지와 봉인 | 엘라(성소 기록자), 아스텔(별자리 관측자) |
 | `st9-before` / `st9-after` | 검은 흑요석 잿불 제단 / 승부 후 제단 | 재온(잿불지기), 오닉(흑요석 세공사) |
 | `st10-before` / `st10-after` | 붉은 세계수 아래 원탁, 같은 외형의 두 수호자 / 승부 후 | 두 수호자(같은 외형, 왕 본인 아님) |
@@ -62,7 +62,7 @@
 | `st9-key-two` | 그을린 받침대 속 비밀의 열쇠 2 |
 | `ending-thrones` | 붉은 세계수 아래 비어 있는 두 왕좌 |
 | `ending-kings` | 두 왕의 마지막 순간: 철문 앞의 형, 성화 앞의 아우 (얼굴은 흐리게) |
-| `ending-handoff` | 노르문 주점, 첫 방랑자가 새 방랑자에게 왕관 2를 건넴 |
+| `ending-handoff` | 노르문 주점, 여정을 마친 방랑자(플레이어)가 새 방랑자에게 왕관 2를 건넴. 프롤로그 P05~P12의 사내와 같은 구도 |
 | `true-ending-record` | 낡은 테이블 위 최초의 승부사의 기록 |
 | `true-ending-village` | 노르문 주점에서 새 방랑자가 패를 펼치며 이야기를 들려줌 |
 

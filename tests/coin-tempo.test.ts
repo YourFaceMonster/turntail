@@ -6,6 +6,9 @@ import {buyHpItemLoadout} from '../lib/hp-item-shop.ts';
 import {placeFloorTrap} from '../lib/item-battle-rules.ts';
 import {COIN_PRESENTATION_MS,COIN_AFTER_PICKUP_MS,COIN_TURN_READY_MS} from '../lib/pickup-presentation.ts';
 import {HP_BATTLE_WIN_DELAY_MS,HP_BATTLE_REVIEW_MS} from '../lib/hp-item-battle.ts';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: coin-tempo',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 function fresh(closing=false){const g=createHpItemGame('주화 템포','',Date.now(),2,'toto','rogue',100);buyHpItemLoadout(g,[]);g.rpgRun!.combat!.actives!.gauge=g.players.map(()=>4);g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.rpgRun!.combat!.professions=['rogue','swordsman','mage'];g.rpgRun!.hp=[90,90,90];g.completedBattles=1;g.turn=0;g.turnReadyAt=0;g.lastBy=closing?1:2;const tile=g.players[g.lastBy].hand.pop()!;g.trick=[tile];g.playedTiles=[tile];g.tablePlay={id:'tempo-trick',who:g.lastBy,tiles:[tile]};g.floorCoins!.randomTileId=g.stacks[0][1]!.id;return g;}
 const now=Date.now(),ordinary=fresh();act(ordinary,0,'draw',[],0,now);const coin=ordinary.floorCoins!.events[0];
 assert.equal(COIN_TURN_READY_MS,COIN_PRESENTATION_MS+COIN_AFTER_PICKUP_MS);assert.ok(COIN_AFTER_PICKUP_MS>=1200);assert.equal(ordinary.turnReadyAt,coin.at+COIN_TURN_READY_MS);assert.throws(()=>assertTurnReady(ordinary,coin.at+COIN_PRESENTATION_MS+COIN_AFTER_PICKUP_MS-1));assert.doesNotThrow(()=>assertTurnReady(ordinary,coin.at+COIN_TURN_READY_MS));
@@ -17,3 +20,4 @@ closing.turn=0;closing.turnReadyAt=0;closing.lastBy=1;const tile=closing.players
 // A fatal trap on the same coin still allows the complete pickup before final results.
 const fatal=fresh();fatal.rpgRun!.combat!.professions[1]='rogue';fatal.turn=1;placeFloorTrap(fatal,1,0,now);fatal.turn=0;fatal.rpgRun!.hp[0]=3;act(fatal,0,'draw',[],0,now);assert.equal(fatal.phase,'ended');assert.ok(fatal.turnReadyAt!>=fatal.floorCoins!.events[0].at+COIN_TURN_READY_MS);assert.equal(fatal.hpItemMatch!.report!.floorCoinMoney![0],1);
 console.log('PASS: coin credit/banner followed by a quiet beat, AI/action lock, delayed fight winner/damage and final report, no delay from stale coin history, rewards retained on lethal trap.');
+}

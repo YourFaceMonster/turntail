@@ -8,6 +8,9 @@ import {StageVisuals} from '../app/components/StageVisuals';
 import {RPG_PROFESSIONS} from '../lib/rpg-professions';
 import {createHpItemGame} from '../lib/hp-item-mode';
 import {view} from '../lib/game';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: character-visuals-0635',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 const text=(html:string)=>html.replace(/<[^>]*>/g,'');
 for(const profession of RPG_PROFESSIONS){
  const game=createHpItemGame('나','',Date.now(),2,'toto',profession.id,100),snapshot=view(game,game.players[0].token);
@@ -47,3 +50,4 @@ for(let stage=0;stage<=10;stage++)for(let s=0;s<4;s++)for(let n=1;n<=15;n++){
  if(n===2&&!stage)assert.ok(html.includes(`data-motif="${s}:2"`),'approved suit-specific two emblems remain');
 }
 console.log('PASS: compact item/legacy descriptions, isolated effect emphasis, mirrored opponent labels, and all 60 centered tile faces across eleven materials.');
+}

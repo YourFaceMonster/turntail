@@ -13,7 +13,8 @@ function score(counts:number[]){const g=make(counts.length);g.players.forEach((p
 assert.deepEqual(score([0,4,7]),[11,-1,-10]);assert.deepEqual(score([0,5]),[5,-5]);assert.deepEqual(score([0,2,5,8]),[15,7,-5,-17]);assert.deepEqual(score([0,4,4]),[8,-4,-4]);
 const stressRounds=Number(process.env.BOT_STRESS_ROUNDS||3);
 for(const n of [2,3,4])for(let round=0;round<stressRounds;round++){
- const g=make(n);g.players[0].bot=true;let moves=0;while(g.phase==='playing'&&moves++<1200)botMove(g);assert.equal(g.phase,'ended');assert.equal(g.players[g.winner!].hand.length,0);assert.equal(g.result!.players.reduce((a,p)=>a+p.delta,0),0);
+ // Bots wait out each play/draw review, so drive a virtual clock past turnReadyAt instead of real time.
+ const g=make(n);g.players[0].bot=true;let moves=0,now=Date.now();while(g.phase==='playing'&&moves++<1200){now=Math.max(now+1,g.turnReadyAt||0);botMove(g,now);}assert.equal(g.phase,'ended');assert.equal(g.players[g.winner!].hand.length,0);assert.equal(g.result!.players.reduce((a,p)=>a+p.delta,0),0);
  const count=g.players.reduce((a,p)=>a+(p.games||0),0);assert.equal(count,n);start(g);assert.equal(g.result,null);assert.ok(g.players.every(p=>p.games===1));
 }
 // An older stored 3-player room keeps working without new optional fields.

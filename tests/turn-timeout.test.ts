@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import {room,player,start,act,advanceRoom,scheduleTurn,view,hostSeat,TURN_MS,FINAL_TURN_MS,PLAY_REVIEW_MS,DEAL_REVIEW_MS,DRAW_TRAVEL_MS,type Game} from '../lib/game.ts';
+import {room,player,start,act,advanceRoom,scheduleTurn,view,hostSeat,TURN_MS,FINAL_TURN_MS,DEAL_REVIEW_MS,DRAW_TRAVEL_MS,type Game} from '../lib/game.ts';
 const create=(n=3)=>{const g=room('ABCDEF',player('방장'),false,n);for(let i=1;i<n;i++)g.players.push(player(`친구${i}`));start(g,1000);return g;};
-for(const n of [2,3,4]){const g=create(n);assert.equal(g.players.length,n);assert.equal(g.turnDeadline,1000+DEAL_REVIEW_MS+TURN_MS);assert.equal(advanceRoom(g,33999),false);assert.equal(advanceRoom(g,34000),true);assert.equal(g.players.reduce((s,p)=>s+(p.timeouts||0),0),1);const event=g.lastEvent?.id;assert.equal(advanceRoom(g,34000),false);assert.equal(g.lastEvent?.id,event,'poll twice must not advance twice');assert.ok(g.turnDeadline!>=34000+PLAY_REVIEW_MS+TURN_MS);}
+for(const n of [2,3,4]){const g=create(n);assert.equal(g.players.length,n);assert.equal(g.turnDeadline,1000+DEAL_REVIEW_MS+TURN_MS);assert.equal(advanceRoom(g,33999),false);assert.equal(advanceRoom(g,34000),true);assert.equal(g.players.reduce((s,p)=>s+(p.timeouts||0),0),1);const event=g.lastEvent?.id;assert.equal(advanceRoom(g,34000),false);assert.equal(g.lastEvent?.id,event,'poll twice must not advance twice');assert.ok(g.turnReadyAt!>34000,'the timed-out move still gets its review');assert.equal(g.turnDeadline,g.turnReadyAt!+TURN_MS,'the next clock starts only after that review');}
 let g=create();const idle=g.turn;g.players[idle].hand=[3,6,8,10,13,2].map((n,i)=>({id:(n-1)*4+i%4,n,s:i%4}));
 for(let misses=0;misses<3;misses++){
  g.turn=idle;g.trick=[];g.lastBy=null;g.turnReadyAt=0;scheduleTurn(g,100000+misses*100000);

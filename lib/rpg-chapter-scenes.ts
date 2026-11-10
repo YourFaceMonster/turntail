@@ -10,7 +10,8 @@ import type {RpgRun} from './rpg.ts';
 type Beat={line:string,speaker?:string,art?:string};
 const N=(line:string,art?:string):Beat=>({line,art});
 const S=(speaker:string,line:string,art?:string):Beat=>({speaker,line,art});
-type Ctx={second:boolean,read:(id:string)=>boolean,secondPlace:boolean,letterReturned:boolean};
+/** visited: the stage's side quest was opened (read or skip), so its NPC must not repeat the quest's opening line. */
+type Ctx={second:boolean,read:(id:string)=>boolean,visited:(id:string)=>boolean,secondPlace:boolean,letterReturned:boolean};
 
 function cuts(stage:number,phase:'before'|'after'|'ending',beats:readonly (Beat|false|undefined)[],defaultArt:string):PrologueCut[]{
  return beats.filter((beat):beat is Beat=>!!beat).map((beat,index)=>({
@@ -22,27 +23,27 @@ function cuts(stage:number,phase:'before'|'after'|'ending',beats:readonly (Beat|
 
 const SCRIPTS:Record<number,{before:(c:Ctx)=>(Beat|false)[],after:(c:Ctx)=>(Beat|false)[]}>={
  4:{
-  before:()=>[N('철문을 벗어난 길은 구름 아래로 쏟아지는 폭포에 닿았다.'),S('네아','물길에서 건진 낡은 기록이 있어. 글은 다 번졌지만 문양만 남았지.'),S('수리','떠내려오는 것들은 대개 어디선가 흘려보낸 거야. 거슬러 올라가 봐.'),S('수리','그 전에 한 판 어때? 물가에선 기다리는 것도 실력이거든.')],
+  before:c=>[N('철문을 벗어난 길은 구름 아래로 쏟아지는 폭포에 닿았다.'),c.visited('quest-4')?S('네아','아까 그 기록 말이야. 글은 번졌어도 문양만은 또렷하더라.'):S('네아','물길에서 건진 낡은 기록이 있어. 글은 다 번졌지만 문양만 남았지.'),S('수리','떠내려오는 것들은 대개 어디선가 흘려보낸 거야. 거슬러 올라가 봐.'),S('수리','그 전에 한 판 어때? 물가에선 기다리는 것도 실력이거든.')],
   after:c=>[N('젖은 기록의 표면에 겹친 왕관 흔적이 희미하게 남아 있었다.'),S('방랑자','주점에서 받은 패의 문양과… 같아.'),c.read('quest-4')&&S('방랑자','“둘이… 한 문을…”. 둘이라니, 누구와 누구일까.'),S('네아','마지막 줄은 읽을 수 없네. 하지만 이 기록이 끝나는 곳은 위쪽 다리야.'),S('방랑자','첫 패를 얻은 뒤로, 우연이라고 넘길 일이 많아졌군.'),c.second&&N('기록의 여백에, 누군가 같은 문양을 따라 그린 흔적이 있었다.')],
  },
  5:{
-  before:()=>[N('바람이 다리를 흔들었다. 다리의 한쪽 매듭이 닳아 있었다.'),S('타래','날마다 고치는데도 이쪽만 먼저 끊어져.'),S('하온','그런데 다른 쪽이 매번 버텨 줘. 왜 그런지는 아무도 모르지.'),S('하온','건너기 전에 한 판 하자. 흔들리는 데서 하는 승부도 재밌거든.')],
+  before:c=>[N('바람이 다리를 흔들었다. 다리의 한쪽 매듭이 닳아 있었다.'),c.read('quest-5')?S('타래','같이 엮은 매듭, 오늘은 좀 버텨 주려나.'):c.visited('quest-5')?S('타래','봤지? 이쪽 매듭은 오늘도 먼저 끊어질 것 같아.'):S('타래','날마다 고치는데도 이쪽만 먼저 끊어져.'),S('하온','그런데 다른 쪽이 매번 버텨 줘. 왜 그런지는 아무도 모르지.'),S('하온','건너기 전에 한 판 하자. 흔들리는 데서 하는 승부도 재밌거든.')],
   after:c=>[S('하온','예전에는 이 다리를 두 사람이 지켰대. 먼저 길을 여는 사람과, 뒤에 남아 기다리는 사람.'),S('방랑자','나중에 남은 사람이… 더 힘들었겠군.'),c.second&&S('타래','전에 왔던 여행자도 매듭 고치는 걸 도와줬어. 너랑 비슷한 패를 갖고 있었지.'),N('다리 건너편, 무너진 기둥 사이로 오래된 회랑이 보였다.')],
  },
  6:{
-  before:()=>[S('카르덴','규칙은 단순하다. 마지막까지 지켜내라.'),S('세라','누가 내렸는지 기억 못 하는 명령인데도, 우리는 지키고 있지.'),S('태엽','이름 필드: 손상. 수행할 의무: 정상.'),S('카르덴','테이블에 앉아라. 예법대로 겨룬다.')],
+  before:c=>[S('카르덴','규칙은 단순하다. 마지막까지 지켜내라.'),S('세라','누가 내렸는지 기억 못 하는 명령인데도, 우리는 지키고 있지.'),c.read('quest-6')?S('태엽','방문자 기록: 장부 열람 완료. 수행할 의무: 정상.'):c.visited('quest-6')?S('태엽','방문자 기록: 재방문. 수행할 의무: 정상.'):S('태엽','이름 필드: 손상. 수행할 의무: 정상.'),S('카르덴','테이블에 앉아라. 예법대로 겨룬다.')],
   after:c=>[S('카르덴','그분은 이기지 못했다. 하지만 마지막까지 자리를 떠나지 않았다.'),S('방랑자','누구를 지키고 있었던 거죠?'),S('카르덴','기억나지 않는다. 다만 불꽃이 꺼지지 않아야 한다는 것만은 안다.'),c.read('quest-6')&&S('방랑자','“뒤에 남은 자에게 맡긴다.” 장부의 그 문장이군.'),N('오래된 받침대에 성화 문양과 숫자 2가 새겨진 패가 놓여 있었다.','st6-flame-two'),N('패를 뒤집자 꺼지지 않은 두 겹의 불꽃이 새겨져 있었다.','st6-flame-two'),N('왕관, 철문, 그리고 성화. 테두리도 새김도 꼭 같았다.','st6-flame-two'),c.second&&S('태엽','기록 추가 발견: “첫 번째 승부사, 이곳을 방문.” 이후 기록: 손상.'),N('회랑 끝, 달빛이 고목 위로 길을 비추고 있었다.')],
  },
  7:{
-  before:()=>[S('루엔','승자의 이름을 적는 것은 쉬워. 하지만 패한 사람의 선택을 기록하기란 어렵지.'),S('시온','이상한 기록이 하나 있어. 승부에서 두 번째를 한 사람의 이름만 남아 있거든.'),N('기록의 2등 자리 옆에는 이름 없이 왕관 표식과 빛바랜 문장만 남아 있었다.'),S('루엔','자, 한 판 하세. 자네가 어느 자리에 앉게 될지 보지.')],
+  before:()=>[S('루엔','승자의 이름을 적는 것은 쉬워. 하지만 패한 사람의 선택을 기록하기란 어렵지.'),S('시온','이상한 기록이 하나 있어. 승부에서 두 번째를 한 사람의 자리만 남아 있거든. 이름도 없이.'),N('기록의 2등 자리 옆에는 이름 없이 왕관 표식과 빛바랜 문장만 남아 있었다.'),S('루엔','자, 한 판 하세. 자네가 어느 자리에 앉게 될지 보지.')],
   after:c=>[S('루엔','모두가 첫 번째만 기억하려 할 때, 누군가는 두 번째를 기록했네.'),S('방랑자','왜 두 번째였을까요?'),S('루엔','그 답을 안다면, 이 기록이 왜 남았는지도 알겠지.'),c.secondPlace&&S('루엔','자네도 두 번째 자리에 앉아 봤군. 그 자리에서만 보이는 것이 있지.'),c.second&&N('기록 끝의 주석: “최초”란 놀이를 처음 만든 이가 아니라, 규칙에 뜻을 남긴 이를 부르는 말이다.'),N('고목 너머, 별빛이 모이는 성소가 보였다.')],
  },
  8:{
-  before:()=>[S('엘라','사람의 이름은 잊혀도, 누군가 걸었던 길은 남는 법이란다.'),S('아스텔','몇 년 전에도 같은 무늬를 가진 여행자가 있었어.'),S('아스텔','그 사람도 여기서 한 판 하고 갔지. 너도 그럴 거지?')],
+  before:c=>[c.read('quest-8')?S('엘라','그 편지를 읽었구나. 이름은 없어도, 길은 그렇게 남는 법이란다.'):c.visited('quest-8')?S('엘라','봉인한 편지는 내가 잘 맡아 두마. 언젠가 주인이 찾아오겠지.'):S('엘라','사람의 이름은 잊혀도, 누군가 걸었던 길은 남는 법이란다.'),S('아스텔','몇 년 전에도 같은 무늬를 가진 여행자가 있었어.'),S('아스텔','그 사람도 여기서 한 판 하고 갔지. 너도 그럴 거지?')],
   after:c=>[c.letterReturned?S('방랑자','이 봉인… 모르가 돌려받은 편지의 인장과 모양이 같다.'):S('엘라','노르문에서도 비슷한 봉인을 쓴 기록이 있구나.'),S('엘라','이 사람은 마지막 왕좌 앞에 섰다가 돌아왔다는 기록이 없단다.'),S('방랑자','끝에 무엇이 있었던 걸까요?'),c.read('quest-8')&&S('방랑자','편지에 적힌 그 여행자… 끝까지 갔던 걸까.'),c.second&&S('엘라','그 기록을 남긴 사람은, 지금 네 손에 있는 왕관 2를 가진 사람이란다.'),N('성소 아래, 검은 잿불이 타오르는 제단으로 길이 이어졌다.')],
  },
  9:{
-  before:()=>[S('재온','첫 번째가 문을 닫았다는 말은 들었지. 하지만 불이 왜 꺼지지 않는지는 아무도 몰라.'),S('오닉','이 제단의 돌은 두 개의 문양이 맞물릴 때만 온전한 무늬가 돼.'),S('재온','패를 내라. 불씨는 승부 끝에 답을 보여 주곤 하지.')],
+  before:c=>[c.read('quest-9')?S('재온','흔적은 봤겠지. 맞물린 무늬가 무슨 뜻인지는 아직 몰라도.'):c.visited('quest-9')?S('재온','바로 승부를 원한다고 했지. 좋아, 이야기는 끝나고 해도 늦지 않아.'):S('재온','첫 번째가 문을 닫았다는 말은 들었지. 하지만 불이 왜 꺼지지 않는지는 아무도 몰라.'),S('오닉','이 제단의 돌은 두 개의 문양이 맞물릴 때만 온전한 무늬가 돼.'),S('재온','패를 내라. 불씨는 승부 끝에 답을 보여 주곤 하지.')],
   after:c=>[S('재온','첫 번째 왕은 철문을 닫았어.'),S('재온','두 번째 왕은 그 문이 다시 열리지 않도록 자신을 남겼지.'),S('방랑자','그래서 이름까지 남지 않은 건가요?'),S('재온','모른다. 다만 누군가 두 사람을 잊지 않으려 했다는 흔적은 있어.'),c.read('quest-9')&&S('오닉','자네가 본 그 무늬, 맞물린 두 문양 말이야. 그게 이 제단의 전부지.'),N('검게 그을린 받침대 안에서 비밀의 열쇠 2가 드러났다.','st9-key-two'),N('뒷면에는 하나로 포개지는 두 열쇠가 새겨져 있었다.','st9-key-two'),c.second&&S('재온','숫자 2를 가장 높이 친 사람이 있었다더군. 이유는… 이제 알 것 같지 않나?'),N('네 장의 패가 가리키는 곳, 붉은 세계수가 구름 위로 솟아 있었다.')],
  },
  10:{
@@ -77,9 +78,9 @@ const SCRIPTS:Record<number,{before:(c:Ctx)=>(Beat|false)[],after:(c:Ctx)=>(Beat
    S('방랑자','누군가는… 알고 있어야 해.','ending-thrones'),
    N('방랑자는 세 증표를 각자의 장소에 되돌리고, 왕관 2만 지닌 채 노르문으로 돌아갔다.','ending-handoff'),
    N('처음 패를 건네받았던 주점에서, 새로운 길손을 만났다.','ending-handoff'),
-   S('첫 번째 방랑자','오래된 물건이지.','ending-handoff'),
+   S('방랑자','오래된 물건이오.','ending-handoff'),
    S('새 방랑자','문양이 독특하군요.','ending-handoff'),
-   S('첫 번째 방랑자','마음에 들면 가져가시오.','ending-handoff'),
+   S('방랑자','마음에 들면 가져가시오.','ending-handoff'),
    N('이야기를 전하는 길은 아직 끝나지 않았다.','ending-handoff'),
   ],
  },
@@ -87,7 +88,7 @@ const SCRIPTS:Record<number,{before:(c:Ctx)=>(Beat|false)[],after:(c:Ctx)=>(Beat
 
 function context(run:RpgRun):Ctx{
  const story=storyState(run);
- return {second:story.runNumber>=2,read:id=>story.quests[id as keyof typeof story.quests]==='read',secondPlace:!!story.secondPlaceSeen,letterReturned:run.journey?.letterQuest?.step==='complete'};
+ return {second:story.runNumber>=2,read:id=>story.quests[id as keyof typeof story.quests]==='read',visited:id=>story.quests[id as keyof typeof story.quests]!==undefined,secondPlace:!!story.secondPlaceSeen,letterReturned:run.journey?.letterQuest?.step==='complete'};
 }
 /** Second-journey variant lines for the approved ST1~3 scenes (appended, never replacing). */
 function earlyVariant(stage:number,phase:'before'|'after',base:readonly PrologueCut[],run:RpgRun):readonly PrologueCut[]{

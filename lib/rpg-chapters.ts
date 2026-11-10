@@ -67,8 +67,9 @@ export function storyState(run:Pick<RpgRun,'journey'>):StoryQuestState{return ru
 /**
  * Art slots. Each key has a final responsive pair (to be generated in the approved cartoon tone)
  * and a placeholder from existing assets. Add a key to READY once its final files exist.
+ * The app references WebP only; keep the generated PNG beside it in public/story as the original.
  */
-const FINAL=(key:string)=>({landscape:`/story/${key}-wide-v1.png`,portrait:`/story/${key}-portrait-v1.png`});
+const FINAL=(key:string)=>({landscape:`/story/${key}-wide-v1.webp`,portrait:`/story/${key}-portrait-v1.webp`});
 const ENV=(stage:number)=>({landscape:`/environments/stage-${stage}-055.webp`,portrait:`/environments/stage-${stage}-055.webp`});
 const TAVERN={landscape:'/prologue/tavern-interior-v2.webp',portrait:'/prologue/tavern-interior-portrait-v1.webp'};
 export const CHAPTER_ART_SLOTS:Record<string,{placeholder:{landscape:string,portrait:string},note:string}>={
@@ -85,7 +86,7 @@ export const CHAPTER_ART_SLOTS:Record<string,{placeholder:{landscape:string,port
  'st9-key-two':{placeholder:ENV(9),note:'ST9 그을린 받침대 속 비밀의 열쇠 2'},
  'ending-thrones':{placeholder:ENV(10),note:'ST10 비어 있는 두 왕좌'},
  'ending-kings':{placeholder:ENV(10),note:'두 왕의 마지막 순간 (철문 앞의 형 · 성화 앞의 아우)'},
- 'ending-handoff':{placeholder:TAVERN,note:'노르문 주점 · 첫 방랑자가 새 방랑자에게 왕관 2를 건넴'},
+ 'ending-handoff':{placeholder:TAVERN,note:'노르문 주점 · 여정을 마친 방랑자가 새 방랑자에게 왕관 2를 건넴'},
  'true-ending-record':{placeholder:ENV(10),note:'진엔딩 · 낡은 테이블 위 최초의 승부사의 기록'},
  'true-ending-village':{placeholder:TAVERN,note:'진엔딩 · 노르문 주점에서 이야기를 전하는 새 방랑자'},
 };

@@ -13,6 +13,9 @@ import TileFace from '../app/components/TileFace';
 import {StageVisuals} from '../app/components/StageVisuals';
 import {ProfessionGauge,MageSpellImpact,SwordsmanSlash} from '../app/components/ProfessionActives';
 import {HpItemResult} from '../app/components/HpItemMatch';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: interaction-polish-0650',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 
 // Every stage/material and special motif keeps suit identity when disabled.
 for(let stage=0;stage<=10;stage++)for(let suit=0;suit<4;suit++)for(const n of [2,7,15]){
@@ -46,3 +49,4 @@ g.turn=0;g.turnReadyAt=0;g.completedBattles=1;g.players[1].hand=g.players[1].han
 const p=view(g,g.players[0].token),decision=analyzeItemBattleTurn(p);
 assert.ok(decision.action.type==='item'&&decision.action.id==='whisper-eye',JSON.stringify(decision));
 console.log('PASS: 132 muted suit/material renders; gross HP totals including recovery/legacy reports; all full profession gauges; result summary, steel slash and firewall art; existing eye AI use near opponent finish.');
+}

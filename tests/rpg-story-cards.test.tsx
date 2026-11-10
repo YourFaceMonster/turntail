@@ -15,7 +15,8 @@ const normalize=(s:string)=>s.replace(/\s/g,'');
 function memory(){const data=new Map<string,string>();return {data,getItem:(key:string)=>data.get(key)??null,setItem:(key:string,value:string)=>{data.set(key,value);}};}
 function through(stage:number){const game=createRpgJourneyGame('이야기 검사');for(let n=1;n<=stage;n++){enterJourneyNode(game,`battle-${n}` as 'battle-1');game.rpgRun!.hp=[60,0,0];reconcileRpgEliminations(game);if(n<stage)game.rpgRun=chooseRpgStageReward(game.rpgRun!,'all',undefined,false,game.rpgRun!.phaseOne?.clear?.relicOffers?.[0]);}return game;}
 test('all nineteen shortened boards retain their words, order and speakers through sentence pagination',()=>{
- const approved=readFileSync('docs/prologue-moderate-2026-11-06.md','utf8');
+ // 2026-11-10 approved revision (docs/dialogue-revision-2026-11-10.md) applied on top of the preserved 11-06 record.
+ const approved=readFileSync('docs/prologue-moderate-2026-11-06.md','utf8').replace('그렇군요. 특이한 패네요.','누군가 일부러 새긴 것 같군요.');
  const boards=[...approved.matchAll(/### (P\d+)\.[^\n]*\n([\s\S]*?)(?=\n### P|\n---)/g)];assert.equal(boards.length,19);
  for(const [,id,body] of boards){const raw=body.split('**연출**')[0].replace(/\*\*[^*]+\*\*/g,'');const board=PROLOGUE_STORYBOARD.find(b=>b.id===id)!;assert.equal(normalize(board.parts.map(p=>p.line).join('')),normalize(raw),id);
   assert.equal(normalize(FIRST_PROLOGUE.filter(c=>c.storyboard===id).map(c=>c.line).join('')),normalize(raw),id+' pagination');

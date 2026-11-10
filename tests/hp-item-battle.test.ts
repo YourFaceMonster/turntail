@@ -9,6 +9,9 @@ import {useRpgTacticalItem,rpgItemAvailability,RPG_BASIC_ITEMS} from '../lib/rpg
 import {startRpgRound} from '../lib/rpg-game.ts';
 import {runLocalBot} from '../lib/local-bot.ts';
 import {HpItemResult,HpItemShop} from '../app/components/HpItemMatch.tsx';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: hp-item-battle',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 const t=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 const fresh=()=>{const g=createHpItemGame('나','',Date.now(),2);g.hpItemRules=3;g.rpgRun!.consumables=[...RPG_BASIC_ITEMS,'whisper-eye','spark-dart'].flatMap(id=>[id,id]);g.rpgRun!.enemyConsumables={1:[...g.rpgRun!.consumables],2:[...g.rpgRun!.consumables]};g.rpgRun!.equipped=[];g.turn=0;g.trick=[];g.lastBy=null;g.tablePlay=null;g.roundActions=0;g.turnReadyAt=0;g.stacks=Array.from({length:15},()=>[null,null]);g.players[0].hand=[t(3),t(4)];g.players[1].hand=[t(5,1)];g.players[2].hand=[t(6,2)];return g;};
 const closeByDrawing=(g:Game)=>{g.stacks[0]=[null,t(12,3)];g.stacks[1]=[null,t(13,3)];act(g,0,'play',[g.players[0].hand[0].id]);act(g,1,'draw',[],0);act(g,2,'draw',[],1);};
@@ -36,3 +39,4 @@ const shopMarkup=renderToStaticMarkup(createElement(HpItemShop,{game:view(debt,d
 console.log('PASS: mode-2 battle damage, immediate items, final-card/AI interruption, no-pay endings, wallet shortages, shop ordering, save isolation and result UI');
 
 const oldMode1=fresh();oldMode1.hpItemVariant=1;oldMode1.hpItemRules=2;saveHpItemGame(storage,oldMode1);const oldMode1Restored=readHpItemArchive(storage,1).active!;assert.ok(isBattleItemMode(oldMode1Restored));assert.equal(oldMode1Restored.hpItemVariant,1);assert.equal(oldMode1Restored.hpItemRules,2,'previous mode-1 trials retain their original rule version');
+}

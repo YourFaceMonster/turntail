@@ -12,6 +12,9 @@ import {announcedPlayDuration,comboCaptionDuration,QUICK_PLAY_MS} from '../lib/p
 import {DuelResultBody} from '../app/components/HpBattleReview';
 import {RpgHpBar} from '../app/components/RpgHpBar';
 import {SwordsmanSlash} from '../app/components/ProfessionActives';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: duel-polish-0642',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 function fresh(){const g=createHpItemGame('검증','',1000,2,'toto','swordsman',100);buyHpItemLoadout(g,[]);g.turn=0;g.turnReadyAt=0;g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.floorCoins!.randomTileId=null;return g;}
 const wallet=fresh();wallet.hpItemMatch!.points=[31,4,0];wallet.round=3;beginHpItemRound(wallet);assert.deepEqual(wallet.hpItemMatch!.points,[31,4,0]);assert.equal(HP_ITEM_ROUND_ALLOWANCE,0);
@@ -49,3 +52,4 @@ const follow=fresh();follow.players[0].hand=[tile(3),tile(3,1),tile(9)];follow.t
 const final=fresh();final.players[0].hand=[tile(7)];final.trick=[];final.lastBy=null;act(final,0,'play',[tile(7).id],-1,20000);assert.equal(final.phase,'ended');assert.deepEqual(final.hpItemMatch!.lastBattle!.winningTiles,[tile(7)]);
 console.log('PASS: winner-first ordinal layout, retained public winning tiles, no round allowance, all-round item lock, pinned HP changes, faster small captions and legal multi-card AI without hidden information.');
 console.log(JSON.stringify({decisions}));
+}

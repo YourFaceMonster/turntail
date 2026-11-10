@@ -8,6 +8,9 @@ import {saveRpgGame,RPG_STORAGE_KEY} from '../lib/rpg-storage.ts';
 import {RPG_TEST_STORAGE_KEY} from '../lib/rpg-test-storage.ts';
 import {canSkipEntrance,type EntrancePhase} from '../lib/atmosphere.ts';
 import {runLocalBot} from '../lib/local-bot.ts';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: hp-item-mode',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 const fresh=()=>{const g=createHpItemGame('정식 아이템전');delete g.hpItemRules;g.rpgRun!.consumables=RPG_BASIC_ITEMS.flatMap(id=>[id,id]);g.rpgRun!.enemyConsumables={1:RPG_BASIC_ITEMS.flatMap(id=>[id,id]),2:RPG_BASIC_ITEMS.flatMap(id=>[id,id])};g.turn=0;g.trick=[];g.completedBattles=1;g.roundActions=g.players.length;g.rpgRun!.equipped=[];return g;};
 const g=fresh();assert.equal(g.hpItemMode,true);assert.equal(g.rpgTest,undefined);assert.equal(view(g,g.players[0].token).hpItemMode,true);
 assert.equal(g.rpgRun!.consumables.length,10);for(const id of RPG_BASIC_ITEMS)assert.equal(g.rpgRun!.consumables.filter(held=>held===id).length,2);
@@ -32,3 +35,4 @@ const fail={...storage,setItem(){throw Error('quota');}},beforeFailure=memory.ge
 for(const phase of ['menu-out','room-hold','prepare','game-in','idle'] as EntrancePhase[])assert.equal(canSkipEntrance(phase),false,'preparation cannot be skipped before the actual deal is ready');
 for(const phase of ['shuffle','deal','approach','focus','rise','opponent-out','settle'] as EntrancePhase[]){assert.equal(canSkipEntrance(phase),true);assert.equal(canSkipEntrance(phase,true),false);}
 console.log('PASS: HP item mode, deferred HP and card-round endings, AI/fallback, isolated saves and records');
+}

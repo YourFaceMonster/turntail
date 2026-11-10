@@ -12,6 +12,9 @@ import {COIN_EVENT_GAP_MS,COIN_TURN_READY_MS,COIN_PRESENTATION_MS} from '../lib/
 import {CoinArtwork,CoinNoticeBody} from '../app/components/FloorCoins';
 import {RpgProfessionStatus} from '../app/components/RpgProfessions';
 import {RpgEquippedRelics} from '../app/components/RpgEquippedRelics';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: feedback-polish-0645',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 function fresh(){const g=createHpItemGame('검증','',Date.now(),2,'toto','mage');buyHpItemLoadout(g,[]);g.turn=0;g.turnReadyAt=0;g.completedBattles=1;g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.rpgRun!.equipped=['warrior-crest'];return g;}
 const four=[tile(7),tile(7,1),tile(7,2),tile(7,3),tile(9)],triple=four.slice(0,3);
@@ -34,3 +37,4 @@ const coins=fresh();coins.floorCoins!.randomTileId=coins.stacks[0][1]!.id;coins.
 const lock=structuredClone(coins);lock.practice=false;lock.players[lock.turn].bot=true;assert.equal(advanceRoom(lock,first.at+COIN_PRESENTATION_MS+100),false);
 coins.turn=1;coins.turnReadyAt=0;coins.lastBy=0;act(coins,1,'draw',[],0,first.at+COIN_TURN_READY_MS);const last=coins.floorCoins!.events[1];assert.equal(last.amount,5);assert.equal(last.layer,1);assert.ok(last.at>=first.at+COIN_TURN_READY_MS);assert.ok(coins.turnReadyAt!>=last.at+COIN_TURN_READY_MS);
 console.log('PASS: mage five-card +4 is separate from triple-only relic; source-specific serial coin presentation, late-render hold, fallback art, next-turn lock and readable relic bonus.');
+}

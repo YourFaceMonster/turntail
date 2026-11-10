@@ -5,7 +5,8 @@ import {fileURLToPath} from 'node:url';
 import ts from 'typescript';
 registerHooks({
  resolve(specifier,context,next){
-  if(specifier.startsWith('.')&&context.parentURL&&!/\.[a-z]+$/i.test(specifier)){
+  // Project sources only: packages (e.g. next/link.js → require('./dist/client/link')) resolve themselves.
+  if(specifier.startsWith('.')&&context.parentURL&&!context.parentURL.includes('/node_modules/')&&!/\.[a-z]+$/i.test(specifier)){
    for(const ext of ['.ts','.tsx','.js']){const url=new URL(specifier+ext,context.parentURL);if(existsSync(url))return next(url.href,context);}
   }
   return next(specifier,context);
@@ -13,7 +14,7 @@ registerHooks({
  load(url,context,next){
   if(url.endsWith('.css'))return {format:'module',source:'export {};',shortCircuit:true};
   if(url.startsWith('file:')&&/\.tsx?$/.test(url)&&!url.includes('/node_modules/')){
-   return {format:'module',source:ts.transpileModule(readFileSync(fileURLToPath(url),'utf8'),{fileName:fileURLToPath(url),compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText,shortCircuit:true};
+   return {format:'module',source:ts.transpileModule(readFileSync(fileURLToPath(url),'utf8'),{fileName:fileURLToPath(url),compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX,inlineSourceMap:true,inlineSources:true}}).outputText,shortCircuit:true};
   }
   return next(url,context);
  }

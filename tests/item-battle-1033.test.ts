@@ -10,6 +10,9 @@ import {useRpgTacticalItem,rpgItemAvailability,scoutRpgBotDraw} from '../lib/rpg
 import {applyPioneerDeal,itemBattleState,placeFloorTrap,tryBotFloorTrap} from '../lib/item-battle-rules.ts';
 import {ITEM_BATTLE_RELICS,ITEM_BATTLE_RELIC_POOL,itemBattleRelicWin} from '../lib/item-battle-relics.ts';
 import type {RpgProfessionId} from '../lib/rpg-professions.ts';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: item-battle-1033',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 
 const t=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 const pair=[t(7),t(7,3)],triple=[...pair,t(7,1)],full=[...triple,t(8),t(8,1)],four=[...triple,t(7,2),t(8)],flush=[t(3,3),t(5,3),t(7,3),t(9,3),t(11,3)];
@@ -52,3 +55,4 @@ const pioneer=fresh();pioneer.rpgRun!.equipped=['pioneers-eye'];itemBattleState(
 const sequence=pioneer.rpgRun!.relicActivations!.at(-1)!.seq;pioneer.phase='ended';startRpgRound(pioneer);assert.equal(pioneer.round,2);assert.equal(pioneer.rpgRun!.relicActivations!.at(-1)!.seq,sequence,'second round does not reapply pioneer');assert.equal(itemBattleState(pioneer)!.pioneerApplied,true);assert.ok(itemBattleState(pioneer)!.trapUsed.every(value=>!value));
 const mem=new Map<string,string>(),storage={getItem:(key:string)=>mem.get(key)||null,setItem:(key:string,value:string)=>{mem.set(key,value);}};saveHpItemGame(storage,lens);assert.deepEqual(readHpItemArchive(storage,2).active!.rpgRun!.combat!.itemBattle,JSON.parse(JSON.stringify(itemBattleState(lens))));
 console.log('PASS: seven additive relics, curated pool, stacked/capped winner effects, all class traits, private floor scouting/traps/lens, bot visibility, lethal pickup, one-time first deal, round reset and saved-state compatibility.');
+}

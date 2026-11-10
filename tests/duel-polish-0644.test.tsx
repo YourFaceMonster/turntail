@@ -13,6 +13,9 @@ import {PROFESSION_ACTIVES} from '../lib/profession-actives';
 import {CoinNoticeBody} from '../app/components/FloorCoins';
 import {MageSpellImpact} from '../app/components/ProfessionActives';
 import {RpgHpBar} from '../app/components/RpgHpBar';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: duel-polish-0644',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 const values=new Map<string,string>(),storage={getItem:(key:string)=>values.get(key)||null,setItem:(key:string,value:string)=>{values.set(key,value);}};
 const g=createHpItemGame('검증','',1000,2,'toto','swordsman');buyHpItemLoadout(g,[]);
@@ -50,3 +53,4 @@ const hidden=structuredClone(publicPosition);hidden.rpgRun!.equipped=['sun-sigil
 assert.deepEqual(analyzeItemBattleTurn(hidden,{auxiliary:false}),expected,'unrevealed opponent equipment and hands do not affect planning');
 const forgotten=structuredClone(publicPosition);forgotten.hpItemMatch!.publicRelicIntel={};assert.notEqual(analyzeItemBattleTurn(forgotten,{auxiliary:false}).score,expected.score,'observed public relic affects expected incoming damage');
 console.log('PASS: stable random visual stages, old-save migration, combined coin rewards, mage tiers without new levels, HP number anchor, public-only relic memory and fair AI forecasts.');
+}

@@ -92,6 +92,15 @@ export function rpgOverflowSettlement(hp:number[],max:number[],delta:number[],co
  }
  return {hp:after,dealt,taken};
 }
+/**
+ * "If the round ended now": per-seat HP change from public hand counts only (no hidden tiles),
+ * using the same pairwise settlement and overflow rule as the real round end. Relic heals are not included.
+ */
+export function rpgSettlementPreview(run:Pick<RpgRun,'hp'|'equipped'>,counts:readonly number[]){
+ const seats=counts.flatMap((_,i)=>run.hp[i]>0?[i]:[]),list=[...counts],{delta,transfers}=rpgHandSettlement(list,seats);
+ const result=rpgOverflowSettlement(run.hp,run.hp.map((_,i)=>rpgMaxHp(run as RpgRun,i)),delta,list,transfers,seats);
+ return run.hp.map((hp,i)=>seats.includes(i)?result.hp[i]-hp:0);
+}
 /** Only called with a legal submitted hand; avoids importing the shared engine at runtime. */
 export function scoutCount(tiles:Tile[]){
  if(tiles.length!==5)return tiles.length===3?2:tiles.length===2?1:0;

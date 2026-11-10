@@ -8,6 +8,9 @@ import {HP_BATTLE_REVIEW_MS,resolveHpItemBattle} from '../lib/hp-item-battle.ts'
 import {hpSkillAvailability} from '../lib/hp-item-skills.ts';
 import {itemSceneTiming,itemScenePoints,itemProjectileFrames,dartFacingFrames} from '../lib/rpg-item-motion.ts';
 import {HpItemResult} from '../app/components/HpItemMatch.tsx';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: combat-feedback',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 const now=Date.now(),g=createHpItemGame('나','',now,2);
@@ -65,3 +68,4 @@ for(const targetLeft of [20,280]){
  for(let i=12;i<67;i++){const angle=(frame:Keyframe)=>Number(String(frame.transform).match(/rotate\(([-.\d]+)deg/)![1]);assert.ok(Math.abs(angle(precise[i])-angle(precise[i-1]))<45,'a leftward apex cannot cause a spurious full rotation');}
 }
 console.log('PASS: impact delay, result identity, ward contact, readable swap recoil, tangent-aligned dart and continuous apex rotation');
+}

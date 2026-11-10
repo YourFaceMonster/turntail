@@ -70,6 +70,17 @@ test('optional quests record a choice only, close when skipped, and change scene
  const ending=lines(journeyScenes(10,run).after);
  assert.match(ending,/다리의 매듭이 떠올랐다/);assert.match(ending,/편지의 여행자도/);assert.match(ending,/마음에 들면 가져가시오\./);assert.doesNotMatch(ending,/두 왕이 있었어/);
  assert.equal(journeyNodeState(run,'quest-9'),'closed','skipped quests never block the ending');
+ // A visited quest's NPC follows up instead of repeating the quest's opening line before the battle.
+ const before=(stage:number)=>lines(journeyScenes(stage,run).before);
+ assert.doesNotMatch(before(4),/물길에서 건진 낡은 기록이 있어/);assert.match(before(4),/아까 그 기록 말이야/);
+ assert.doesNotMatch(before(5),/날마다 고치는데도/);assert.match(before(5),/같이 엮은 매듭/);
+ assert.doesNotMatch(before(6),/이름 필드: 손상/);assert.match(before(6),/재방문/);
+ assert.doesNotMatch(before(8),/사람의 이름은 잊혀도/);assert.match(before(8),/그 편지를 읽었구나/);
+ const fresh=createRpgJourneyGame('검증','',0).rpgRun!;
+ assert.match(lines(journeyScenes(4,fresh).before),/물길에서 건진 낡은 기록이 있어/);assert.match(lines(journeyScenes(9,fresh).before),/첫 번째가 문을 닫았다는/);
+ // ST7 no longer contradicts its narration; the ending hand-off speaks like the prologue.
+ assert.match(lines(journeyScenes(7,fresh).before),/자리만 남아 있거든\. 이름도 없이\./);
+ assert.match(ending,/오래된 물건이오\./);assert.doesNotMatch(ending,/첫 번째 방랑자/);
 });
 test('second-journey variants, ST7 second place and the true ending script',()=>{
  const game=createRpgJourneyGame('검증','',0),run=game.rpgRun!;setJourneyRunNumber(run,2);

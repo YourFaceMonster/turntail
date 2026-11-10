@@ -25,7 +25,7 @@ export function StageMaterial({stage,id,seed=0}:{stage:number,id:string,seed?:nu
  </g><rect width="100" height="132" fill={`url(#${id}-micrograin)`}/><TileWear seed={seed+stage*7} dark={dark}/><rect x="1" y="1" width="98" height="130" rx="9" fill={`url(#${id}-glint)`} stroke={dark?'#15121db3':'#60462a88'} strokeWidth="2.2"/></>;
 }
 export function StageMotif(props:{stage:number,s:number,outline?:{color:string,width:number}}){return <RegionalSuit {...props}/>;}
-export const BACK_PALETTES=[['#172c49','#ffe5ae'],['#986b3b','#fff0bd'],['#15392c','#c6f4d2'],['#122d53','#bceeff'],['#3b2c1b','#f5dfb1'],['#18202d','#f0d19b'],['#192341','#e0f6ff'],['#42220d','#ffe5a1'],['#221929','#ffc7c4'],['#360f1b','#ffe09b']];
+export const BACK_PALETTES=[['#172c49','#ffe5ae'],['#5a391c','#fff0bd'],['#15392c','#c6f4d2'],['#122d53','#bceeff'],['#3b2c1b','#f5dfb1'],['#18202d','#f0d19b'],['#192341','#e0f6ff'],['#42220d','#ffe5a1'],['#221929','#ffc7c4'],['#360f1b','#ffe09b']];
 const BACK_MOTIFS=[
  'M29 100V51Q50 22 71 51V100M34 100V54Q50 31 66 54V100M24 101H76M50 36L53 26L56 36L66 39L56 42L53 52L50 42L40 39ZM38 74H62M50 62V85',
  'M50 32C70 55 39 56 65 77Q80 99 51 105Q21 100 31 77Q42 63 39 51Q51 59 50 32ZM39 99L62 105M30 109L72 97M28 97L70 109',

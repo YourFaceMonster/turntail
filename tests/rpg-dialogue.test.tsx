@@ -52,8 +52,8 @@ test('legacy losses derive failure or encouragement without exposing nested oppo
 });
 test('dialogue preserves prologue opening, follow-up prologue, speaker order and next-region narration',()=>{
  assert.deepEqual(FIRST_PROLOGUE.slice(0,3).map(c=>c.line.replace(/\n/g,' ')),['패 한 장으로 시작된 여행도 있었다.','북쪽 고갯길을 지나던 방랑자는 노르문 마을로 향하고 있었다.','눈은 거세졌고, 날은 저물었다.']);
- assert.ok(FIRST_PROLOGUE.some(c=>c.storyboard==='P11'&&c.line==='이 표식은… 처음 보는군요.'));assert.ok(FIRST_PROLOGUE.some(c=>c.storyboard==='P16'&&c.line.replace(/\n/g,' ').includes('어젯밤 그 패에 있던 표식')));assert.equal(SECOND_PROLOGUE[0].line,'오래된 물건이지.');
+ assert.ok(FIRST_PROLOGUE.some(c=>c.storyboard==='P11'&&c.line==='이 표식은… 처음 보는군요.'));assert.ok(FIRST_PROLOGUE.some(c=>c.storyboard==='P16'&&c.line.replace(/\n/g,' ').includes('어젯밤 그 패에 있던 표식')));assert.equal(SECOND_PROLOGUE[0].line,'오래된 물건이오.');
  assert.deepEqual(RPG_CONNECTION_SCENES[2].before.map(c=>c.speaker),['포코','밀라','포코','밀라']);assert.deepEqual(RPG_CONNECTION_SCENES[3].after.slice(0,5).map(c=>c.speaker),['둘째','첫째','둘째','첫째','첫째']);
- assert.match(RPG_CONNECTION_SCENES[3].after.map(c=>c.line).join(''),/노르문에서 시작된 물음/);assert.match(RPG_CONNECTION_SCENES[3].after.at(-1)!.art!.landscape,/iron-gate-village-map/);
+ assert.match(RPG_CONNECTION_SCENES[3].after.map(c=>c.line).join(''),/성채 너머 물안개 폭포로 향했다/);assert.match(RPG_CONNECTION_SCENES[3].after.at(-1)!.art!.landscape,/iron-gate-village-map/);
  assert.ok(PIO_DIALOGUE.some(line=>line.includes('광장 옆 잡화점')));assert.deepEqual(morDialogue(),QUEST_DIALOGUE.morOffer);assert.deepEqual(morDialogue({step:'alley'}),QUEST_DIALOGUE.morDirections);
 });

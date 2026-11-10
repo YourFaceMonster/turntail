@@ -15,7 +15,7 @@ export const PROLOGUE_STORYBOARD:readonly Storyboard[]=[
  {id:'P09',scene:'table',audio:'tile',parts:[{speaker:'상대',poseArt:speaking,line:'제법이군. 약속대로, 이 패는 자네 것이오.'}]},
  {id:'P10',scene:'card',audio:'tile',parts:[{line:'앞면에는 붉은 숫자 2가 새겨져 있었다.\n승부를 아는 이에게는 익숙한, 가장 강한 패였다.'}]},
  {id:'P11',scene:'card',back:true,audio:'quiet',parts:[{line:'뒷면에는 두 왕관이 겹친 문양이 새겨져 있었다.'},{speaker:'방랑자',line:'이 표식은… 처음 보는군요.'}]},
- {id:'P12',scene:'card',back:true,audio:'hearth',parts:[{speaker:'상대',line:'나도 오래전에 누군가에게 받은 것이오.\n어디서 만들어졌는지는 모르오.'},{speaker:'방랑자',line:'그렇군요. 특이한 패네요.'}]},
+ {id:'P12',scene:'card',back:true,audio:'hearth',parts:[{speaker:'상대',line:'나도 오래전에 누군가에게 받은 것이오.\n어디서 만들어졌는지는 모르오.'},{speaker:'방랑자',line:'누군가 일부러 새긴 것 같군요.'}]},
  {id:'P13',scene:'room',audio:'hearth',parts:[{line:'방랑자는 패를 챙겼다. 조금 특이한 기념품이 생긴 셈이었다.'}]},
  {id:'P14',scene:'road',audio:'wind',parts:[{line:'다음 날 아침, 눈은 그쳐 있었다.\n방랑자는 다시 노르문으로 향했다.'}]},
  {id:'P15',scene:'stone',audio:'quiet',art:{landscape:'/prologue/stone-arrival-wide-v1.webp',portrait:'/prologue/stone-arrival-portrait-v1.webp'},parts:[{line:'마을 근처의 오래된 돌기둥에서 낯익은 문양을 발견했다.'}]},
@@ -36,7 +36,7 @@ export const FIRST_PROLOGUE:readonly PrologueCut[]=PROLOGUE_STORYBOARD.flatMap(b
 // Reserved for the real normal-ending flag and matching handoff art. The current
 // stage-three trial completion is NOT a normal ending and must never select this.
 export const SECOND_PROLOGUE:readonly PrologueCut[]=[
- {id:'R01',scene:'table',duration:6000,line:'오래된 물건이지.',speaker:'첫 번째 방랑자',audio:'hearth'},
+ {id:'R01',scene:'table',duration:6000,line:'오래된 물건이오.',speaker:'첫 번째 방랑자',audio:'hearth'},
  {id:'R02a',scene:'card',duration:5000,line:'문양이 독특하군요.',speaker:'새 방랑자',back:true,audio:'tile'},
  {id:'R02b',scene:'card',duration:5000,line:'마음에 들면 가져가시오.',speaker:'첫 번째 방랑자',back:true,audio:'hearth'},
  {id:'R03',scene:'road',duration:7000,line:'길을 떠난 사람은,\n이전과 다른 방랑자였다.',audio:'wind'},

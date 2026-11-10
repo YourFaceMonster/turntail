@@ -9,6 +9,9 @@ import {itemScenePoints,itemProjectileFrames,itemSceneTiming} from '../lib/rpg-i
 import {tileLayout} from '../lib/layout.ts';
 import {view} from '../lib/game.ts';
 import {HpItemShop} from '../app/components/HpItemShop';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: item-shop-0630',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 const g=createHpItemGame('나','',Date.now(),2,undefined,'mage',100);
 g.hpItemMatch!.points=[100,100,100];g.rpgRun!.consumables=Array(20).fill('ward-seal');
 const before=JSON.stringify(g);assert.throws(()=>buyHpItemLoadout(g,['ember-bomb','ember-bomb']),/1개씩/);assert.equal(JSON.stringify(g),before);
@@ -29,3 +32,4 @@ for(const [width,height] of [[372,633],[824,323]]){
 }
 const markup=renderToStaticMarkup(h(HpItemShop,{game:view(g,g.players[0].token),busy:false,error:'',buy:()=>{},exit:()=>{}}));assert.equal((markup.match(/data-shop-card=/g)||[]).length,6);assert.ok(!markup.includes('바늘탄'));assert.ok(markup.includes('×20')&&markup.includes('수량 제한 없음'));assert.ok(markup.includes('두 번 누르면 구매 목록'));
 console.log('PASS: atomic unique purchase, unlimited retained stock, exact damage/healing presentation, all seat-to-seat flight bounds, shield contact and stable board reservation.');
+}

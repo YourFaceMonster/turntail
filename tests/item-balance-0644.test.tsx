@@ -11,6 +11,9 @@ import {resolveHpItemBattle} from '../lib/hp-item-battle';
 import {view,type Tile} from '../lib/game';
 import {DuelResultBody} from '../app/components/HpBattleReview';
 import {RpgHpBar} from '../app/components/RpgHpBar';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: item-balance-0644',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 function fresh(role:'swordsman'|'mage'|'cleric'='swordsman'){
  const g=createHpItemGame('밸런스','',Date.now(),2,'toto',role);buyHpItemLoadout(g,[]);g.turn=0;g.turnReadyAt=0;g.completedBattles=1;g.roundActions=6;g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};return g;
@@ -32,3 +35,4 @@ assert.ok(renderToStaticMarkup(<DuelResultBody event={event} players={view(fight
 const html=renderToStaticMarkup(<RpgHpBar hp={174} maxHp={180} identity={<b>검증</b>}/>);assert.ok(html.includes('aria-valuemax="180"'));assert.ok(html.includes('/180'));assert.ok(html.includes('96.666'));
 fight.phase='ended';fight.result=null;startRpgRound(fight);assert.equal(hpLimit(fight.rpgRun),180);assert.equal(fight.rpgRun!.hp[0],180);
 console.log('PASS: new item matches start at 180 HP; old saves and RPG retain 100; healing, skills, battles, display and next-round persistence use the saved maximum.');
+}

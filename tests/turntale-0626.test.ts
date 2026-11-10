@@ -5,6 +5,9 @@ import {buyHpItemLoadout} from '../lib/hp-item-shop.ts';
 import {resolveHpItemBattle} from '../lib/hp-item-battle.ts';
 import {rpgItemAvailability,rpgItemsUnlocked,useRpgTacticalItem} from '../lib/rpg-items.ts';
 import {useHpSkill} from '../lib/hp-item-skills.ts';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: turntale-0626',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 const t=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 function fresh(cart:string[]=[]){const g=createHpItemGame('나','',Date.now(),2);buyHpItemLoadout(g,cart);g.turn=0;g.turnReadyAt=0;g.rpgRun!.equipped=[];g.stacks=Array.from({length:15},()=>[null,null]);g.stacks[0]=[t(9,3),null];g.trick=[];g.lastBy=null;return g;}
 function singleStart(g:Game){g.players[0].hand=[t(3),t(6),t(10)];g.players[1].hand=[t(4),t(11)];g.players[2].hand=[t(12),t(13)];act(g,0,'play',[t(3).id]);act(g,1,'play',[t(4).id]);}
@@ -27,3 +30,4 @@ const lots=createHpItemGame('나','',Date.now(),2);lots.hpItemMatch!.points=[200
 const partial=fresh();singleStart(partial);const memory=new Map<string,string>(),storage={getItem:(key:string)=>memory.get(key)||null,setItem:(key:string,value:string)=>{memory.set(key,value);}};saveHpItemGame(storage,partial);const restored=readHpItemArchive(storage,2).active!;assert.deepEqual(restored.hpItemMatch!.battleTiles,[1,1,0]);singleFinish(restored);assert.equal(restored.hpItemMatch!.lastBattle?.damage,2);
 const old=fresh();delete old.hpItemMatch!.battleTiles;old.lastBy=0;old.trick=[t(6)];old.tablePlay={id:'old-mid-fight',who:0,tiles:old.trick};old.log=['나 · 싱글 1개 제출',`${old.players[1].name} · 싱글 1개 제출`,'나 · 싱글 1개 제출','나이 선을 잡았습니다.'];assert.equal(resolveHpItemBattle(old)!.damage,2,'an older mid-fight save recovers available public submissions');
 console.log('PASS: single/pair cumulative damage, reset/final fight, skills, first-match-only lock, target-only eye, unlimited stock and mid-fight saves');
+}

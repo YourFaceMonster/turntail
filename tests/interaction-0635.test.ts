@@ -25,5 +25,5 @@ values.set('jangseong-session',JSON.stringify({code:'ONLINE',token:'test-token'}
 const source={left:50,top:30,width:100,height:60},target={left:100,top:600,width:160,height:80};
 const center=itemScenePoints(390,844,source,target,source),edge=itemScenePoints(390,844,source,target,source,{impact:'lower-edge'});assert.equal(center.to.y,640);assert.equal(edge.to.y,678);assert.equal(edge.to.x,center.to.x);assert.deepEqual(edge.blockHit,edge.to);
 const summary=hpBattleSummary({id:'short',round:1,actor:0,label:'페어',damage:2,playedCount:2,hpBefore:[90,90,90],hpAfter:[90,87,88],at:0,relicDamage:1,blockedDamage:[0,0,1]},[{name:'나',count:4},{name:'모루',count:5},{name:'네아',count:6}]);
-assert.equal(summary.rows.find(row=>row.seat===1)?.note,'추가 피해 +1');assert.ok(!summary.rows.some(row=>/기본|→/.test(row.note)));
+assert.equal(summary.rows.find(row=>row.seat===1)?.note,'추가 피해 −1','damage taken is shown as a loss, like 싸움 피해 −N');assert.ok(!summary.rows.some(row=>/기본|→/.test(row.note)));
 console.log('PASS: selected-save deletion, archive/unlock preservation, stale-save safety, partial-failure rollback, lower-edge bomb coordinates and concise damage notes');

@@ -9,6 +9,9 @@ import {itemUsageLine} from '../lib/hp-item-summary.ts';
 import {itemSceneTiming,itemProjectileFrames,itemScenePoints} from '../lib/rpg-item-motion.ts';
 import {HpItemResult,HpItemShop} from '../app/components/HpItemMatch.tsx';
 import RpgScoutReveal from '../app/components/RpgScoutReveal.tsx';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: items-0611',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 const fresh=()=>{const g=createHpItemGame('나','',Date.now(),2);delete g.hpItemRules;delete g.hpItemMatch!.skills;g.rpgRun!.consumables=[];g.rpgRun!.enemyConsumables={1:[],2:[]};g.turn=0;g.rpgRun!.equipped=[];buyHpItemLoadout(g,[]);g.roundActions=3;g.completedBattles=1;g.turnReadyAt=0;return g;};
 const lens=fresh();lens.trick=[tile(15,3)];lens.lastBy=2;lens.rpgRun!.consumables=['scout-lens','scout-lens'];const indexes=view(lens,lens.players[0].token).stacks.flatMap((stack,index)=>stack.available&&stack.upper?[index]:[]).slice(0,2);assert.equal(indexes.length,2);
@@ -28,3 +31,4 @@ const shopGame=fresh(),shopMarkup=renderToStaticMarkup(createElement(HpItemShop,
 const result=fresh();result.phase='ended';result.hpItemMatch!.report={round:1,hpBefore:[100,100,100],hpAfter:[100,100,100],earned:[0,0,0],items:[{actor:1,target:0,id:'ember-bomb',kind:'blocked'},{actor:0,target:0,id:'ward-seal',kind:'seal'}]};const resultMarkup=renderToStaticMarkup(createElement(HpItemResult,{game:view(result,result.players[0].token),busy:false,next:()=>{},restart:()=>{},exit:()=>{}}));assert.equal((resultMarkup.match(/<details/g)||[]).length,2);assert.ok(!resultMarkup.includes('<details open'));assert.ok(resultMarkup.includes('수호의 봉인에 막힘'));assert.ok(resultMarkup.includes('남은 손패 보기'));
 const memory=new Map<string,string>(),storage={getItem:(key:string)=>memory.get(key)??null,setItem:(key:string,value:string)=>{memory.set(key,value);}};saveHpItemGame(storage,enemyLens);assert.equal(readHpItemArchive(storage,2).active!.rpgRun!.tactics![1].peeks?.length,1);
 console.log('PASS: private persistent scouting, random hand intel, protected 1/2 exchange, failed consumption, small attack, grouped collapsed results and image-card shop');
+}

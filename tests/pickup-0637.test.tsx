@@ -10,6 +10,9 @@ import {useRpgTacticalItem} from '../lib/rpg-items.ts';
 import {startRpgRound} from '../lib/rpg-game.ts';
 import {COIN_DISCOVERY_MS,COIN_PRESENTATION_MS,AMBUSH_PRESENTATION_MS,TRAP_IMPACT_MS} from '../lib/pickup-presentation.ts';
 import {HpRoundBreakdown} from '../app/components/HpRoundBreakdown.tsx';
+import {test as retiredTest} from 'node:test';
+// Retired 2026-11-10: hidden item battle / job system, delete together with that code (user decision 2026-11-10). Run with RUN_RETIRED_TESTS=1 to execute.
+if(!process.env.RUN_RETIRED_TESTS){retiredTest('retired: pickup-0637',{skip:'hidden item battle / job system, delete together with that code (user decision 2026-11-10)'},()=>{});}else{
 function fresh(){const g=createHpItemGame('회수 검증','',Date.now(),2,'toto','rogue',100);buyHpItemLoadout(g,[]);g.rpgRun!.combat!.actives!.gauge=g.players.map(()=>4);g.rpgRun!.equipped=[];g.rpgRun!.consumables=[];g.rpgRun!.combat!.professions[1]='swordsman';g.rpgRun!.combat!.professions[2]='mage';g.rpgRun!.hp=[90,90,90];g.floorCoins!.randomTileId=null;g.completedBattles=1;ready(g);return g;}
 function ready(g:Game,who=0){g.turn=who;g.turnReadyAt=0;g.lastBy=(who+2)%3;if(!g.trick.length){const tile=g.players[g.lastBy].hand.pop()!;g.trick=[tile];g.playedTiles=[...(g.playedTiles||[]),tile];}}
 function scout(g:Game,who=0){g.rpgRun!.combat!.professions[who]='rogue';scoutProfessionFloor(g,who,99);}
@@ -34,3 +37,4 @@ assert.deepEqual(lethal.rpgRun!.hp,[0,0,89]);assert.equal(lethal.phase,'ended');
 const html=renderToStaticMarkup(<HpRoundBreakdown game={view(lethal,lethal.players[0].token)} seat={0} before={3}/>),moneyRow=html.match(/<p class="round-money-detail">([\s\S]*?)<\/p>/)![1];assert.ok(moneyRow.includes('바닥 주화'));assert.equal((html.match(/바닥 주화/g)||[]).length,1);
 const values=new Map<string,string>(),storage={getItem:(key:string)=>values.get(key)||null,setItem:(key:string,value:string)=>{values.set(key,value);}};saveHpItemGame(storage,g);assert.deepEqual(readHpItemArchive(storage,2).active!.rpgRun!.combat!.itemBattle!.ambushEvents,JSON.parse(JSON.stringify(itemBattleState(g)!.ambushEvents)));g.phase='ended';startRpgRound(g);assert.equal(itemBattleState(g)!.lastAmbush,undefined);assert.deepEqual(itemBattleState(g)!.ambushEvents,[]);assert.equal(g.floorCoins!.lastDiscovery,undefined);
 console.log('PASS: profession-only own pickup, each opponent1, consumed scout, item/old-save/non-rogue exclusions, lens rescan, defense, private tile and wallet, quiet lower-floor reveal and paced collection locks, simultaneous lethal ambush/trap/coin reporting, second money row, save and round reset.');
+}

@@ -23,6 +23,6 @@ for(let stage=1;stage<=10;stage++){
 }
 assert.equal(backgrounds.size,10);assert.equal(surfaces.size,10);
 const global=renderToStaticMarkup(<HighScores close={noop} personal={[]} profileToken="test" name="test" openHistory={noop} openItems={noop}/>);assert.ok(global.includes('highscore-modal')&&global.includes('score-results'),'ranking content keeps a dedicated stable region');
-const basic=renderToStaticMarkup(<TileFace tile={{id:25,n:7,s:2}}/>),regional=renderToStaticMarkup(<StageVisuals stage={1}><TileFace tile={{id:25,n:7,s:2}}/></StageVisuals>);assert.ok(basic.includes('classic-tile-ornament')&&basic.includes('#ee8b23')&&basic.includes('#8c3e08'));assert.ok(!regional.includes('classic-tile-ornament'));
+const basic=renderToStaticMarkup(<TileFace tile={{id:25,n:7,s:2}}/>),regional=renderToStaticMarkup(<StageVisuals stage={1}><TileFace tile={{id:25,n:7,s:2}}/></StageVisuals>);assert.ok(basic.includes('classic-tile-ornament')&&basic.includes('#ee8b23')&&basic.includes('#8c3e08'));assert.ok(regional.includes('classic-tile-ornament'),'stage materials share the classic suit ornament since 2026-10-27');
 const collection=renderToStaticMarkup(<TableCollection selected={0} unlocked={[0]} choose={noop}/>);assert.equal((collection.match(/class="collection-set /g)||[]).length,1);assert.equal((collection.match(/disabled=""/g)||[]).length,0);
 console.log('PASS: 0.5.5 version alignment, restored flat resting/moving faces, separate native-size/vector floors, 10 destination palettes and a stable ranking content region.');
