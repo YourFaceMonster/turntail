@@ -42,7 +42,21 @@ test('settlement applies positive HP, clamps and is idempotent across save reloa
  assert.deepEqual(result.players.map(p=>p.delta),[12,4,-16]);assert.deepEqual(game.rpgRun!.hp,[72,54,34]);
  settle(game);assert.deepEqual(game.rpgRun!.hp,[72,54,34]);
  const storage=memory();saveRpgGame(storage,game);const saved=readRpgArchive(storage).active!;settle(saved);assert.deepEqual(saved.rpgRun!.hp,[72,54,34]);
- game.rpgRun!.hp=[99,99,50];startRpgRound(game,100);finish(game,[0,4,8]);assert.deepEqual(game.rpgRun!.hp,[100,100,34]);
+ game.rpgRun!.hp=[99,99,50];startRpgRound(game,100);finish(game,[0,4,8]);assert.deepEqual(game.rpgRun!.hp,[100,99,27],'overflow 11 returns 4+7 to the payers');
+ assert.deepEqual(game.rpgRun!.rework!.overflow,{dealt:[11,0,0],taken:[0,4,7]});
+});
+test('overflowed HP returns as damage split by what each payer gave, for every seat',()=>{
+ // Player 95/100 gets +10 (6 from AI1, 4 from AI2): overflow 5 → 3 and 2.
+ const game=fresh();game.rpgRun!.hp=[95,50,50];finish(game,[0,6,4]);
+ assert.deepEqual(game.rpgRun!.hp,[100,35,50]);assert.deepEqual(game.rpgRun!.rework!.overflow,{dealt:[5,0,0],taken:[0,3,2]});
+ // No overflow: no record and the old formula is untouched.
+ const plain=fresh();plain.rpgRun!.hp=[60,50,50];finish(plain,[0,6,4]);assert.equal(plain.rpgRun!.rework!.overflow,undefined);assert.deepEqual(plain.rpgRun!.hp,[70,38,52]);
+ // AI winner at the cap hits the player and the other AI alike.
+ const ai=fresh();ai.rpgRun!.hp=[80,98,50];finish(ai,[5,0,5]);
+ assert.deepEqual(ai.rpgRun!.hp,[71,100,41]);assert.deepEqual(ai.rpgRun!.rework!.overflow,{dealt:[0,8,0],taken:[4,0,4]});
+ // A payer that itself overflows passes its own excess down the line after taking its share.
+ const chain=fresh();chain.rpgRun!.hp=[100,100,40];finish(chain,[0,2,6]);
+ assert.deepEqual(chain.rpgRun!.hp,[100,100,20]);assert.deepEqual(chain.rpgRun!.rework!.overflow,{dealt:[8,2,0],taken:[0,2,8]});
 });
 test('one AI at 0 HP ends the stage at settlement; a legacy 1v1 save still deals 12+12+36 with stable seats',()=>{
  const game=fresh();game.rpgRun!.hp=[80,10,30];finish(game,[0,8,4]);
@@ -94,8 +108,8 @@ test('heart first activation, unequip/re-equip and delayed equip cannot farm HP'
 });
 test('final knot once per stage, ring only 3 seats, no resurrection',()=>{
  const game=fresh();game.rpgRun!.hp=[6,90,90];game.rpgRun!.equipped=['final-knot'];finish(game,[5,0,5]);assert.equal(game.rpgRun!.hp[0],6);
- startRpgRound(game,0);finish(game,[1,0,2]);assert.equal(game.rpgRun!.hp[0],7);assert.deepEqual(game.rpgRun!.rework!.knotStages,[1]);
- const ring=fresh();ring.rpgRun!.hp=[60,90,90];ring.rpgRun!.equipped=['second-ring'];finish(ring,[4,0,8]);assert.equal(ring.rpgRun!.hp[0],67);
+ startRpgRound(game,0);finish(game,[1,0,2]);assert.equal(game.rpgRun!.hp[0],6,'+1 hand, −1 from the capped AI overflow, knot already spent');assert.deepEqual(game.rpgRun!.rework!.knotStages,[1]);
+ const ring=fresh();ring.rpgRun!.hp=[60,90,90];ring.rpgRun!.equipped=['second-ring'];finish(ring,[4,0,8]);assert.equal(ring.rpgRun!.hp[0],66,'+4 hand, −1 AI overflow, +3 ring');
  ring.rpgRun!.hp=[60,0,90];startRpgRound(ring,0);finish(ring,[7,0,0],2);assert.equal(ring.rpgRun!.hp[0],53);
 });
 test('rewards: 2/3 offers, mirror +1, stable compass preview, quest exclusion',()=>{

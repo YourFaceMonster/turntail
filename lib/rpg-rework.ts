@@ -41,7 +41,7 @@ export const RPG_STAGE_HP=[[25,30],[35,40],[50,55],[40,45],[50,55],[60,65],[50,5
 export type FloorIntel={round:number,index:number,tile:Tile};
 export type RpgRework={version:2,chapter:number,activated:string[],knotStages:number[],nextForesight?:number,
  intel:Record<number,FloorIntel[]>,resolvedTricks:string[],rewardOffers:Record<number,string[]>,
- lastScout?:{seat:number,count:number,bonus:number,round:number},settledSeats?:number[],inherited?:string};
+ lastScout?:{seat:number,count:number,bonus:number,round:number},settledSeats?:number[],overflow?:{dealt:number[],taken:number[]},inherited?:string};
 export function isRpgRework(game:{hpItemMode?:boolean,rpgTest?:boolean,rpgRun?:{rework?:RpgRework}|null}){return !!game.rpgRun?.rework&&!game.hpItemMode&&!game.rpgTest;}
 export function rpgMaxHp(run:RpgRun,seat=0){return seat===0?100+(run.equipped.includes('cracked-heart')?20:0)+(run.equipped.includes('second-heart')?10:0):100;}
 export function activateRpgRelics(run:RpgRun):RpgRun{
@@ -76,6 +76,22 @@ export function rpgHandSettlement(counts:number[],seats:number[]){
   const from=counts[a]>counts[b]?a:b,to=from===a?b:a,points=counts[from];delta[from]-=points;delta[to]+=points;transfers.push({from,to,points});
  }return {delta,transfers};
 }
+/** HP gained past the cap returns as damage to the seats that paid it, split by what each paid (largest remainder). */
+export function rpgOverflowSettlement(hp:number[],max:number[],delta:number[],counts:number[],transfers:RoundResult['transfers'],seats:number[]){
+ const after=[...hp],dealt=hp.map(()=>0),taken=hp.map(()=>0);
+ // Payers always hold more tiles than the payee, so fewest-tiles-first sees every overflow hit before it settles itself.
+ for(const seat of [...seats].sort((a,b)=>counts[a]-counts[b]||a-b)){
+  const raw=hp[seat]+delta[seat]-taken[seat],overflow=Math.max(0,raw-max[seat]);
+  after[seat]=Math.min(max[seat],Math.max(0,raw));
+  const payers=transfers.filter(t=>t.to===seat&&t.points>0&&seats.includes(t.from)),total=payers.reduce((sum,t)=>sum+t.points,0);
+  if(!overflow||!total)continue;
+  const shares=payers.map(t=>({seat:t.from,points:t.points,share:Math.floor(overflow*t.points/total),rest:overflow*t.points%total}));
+  let left=overflow-shares.reduce((sum,s)=>sum+s.share,0);
+  for(const s of [...shares].sort((a,b)=>b.rest-a.rest||b.points-a.points||a.seat-b.seat)){if(!left)break;s.share++;left--;}
+  for(const s of shares){taken[s.seat]+=s.share;dealt[seat]+=s.share;}
+ }
+ return {hp:after,dealt,taken};
+}
 /** Only called with a legal submitted hand; avoids importing the shared engine at runtime. */
 export function scoutCount(tiles:Tile[]){
  if(tiles.length!==5)return tiles.length===3?2:tiles.length===2?1:0;
@@ -94,7 +110,7 @@ export function scoutRpgFloor(game:Game,seat:number,count:number,bonus=0){
 }
 export function beginReworkRound(game:Game){
  if(!isRpgRework(game))return;const run=game.rpgRun!,state=run.rework!;
- state.intel={};state.resolvedTricks=[];state.lastScout=undefined;state.settledSeats=undefined;
+ state.intel={};state.resolvedTricks=[];state.lastScout=undefined;state.settledSeats=undefined;state.overflow=undefined;
  if(run.equipped.includes(DICE_RELIC.id)&&run.hp[0]>0&&run.hp[0]<=DICE_RELIC_HEAL.threshold){
   const before=run.hp[0];run.hp=[Math.min(rpgMaxHp(run),before+DICE_RELIC_HEAL.amount),...run.hp.slice(1)];
   if(run.hp[0]>before)run.relicActivations=withRelicActivations(run,[{relicId:DICE_RELIC.id,message:`HP +${run.hp[0]-before}`}]).relicActivations;
@@ -121,7 +137,9 @@ export function reworkRewardOffers(run:RpgRun,stage=run.stage){
 export function settleReworkRound(run:RpgRun,result:RpgResultLike):RpgRun{
  if(run.status!=='playing'||run.roundIds.includes(result.id))return run;
  const next=structuredClone(run),state=next.rework!,seats=result.players.flatMap((p,i)=>p.place>0?[i]:[]);state.settledSeats=seats;
- next.hp=next.hp.map((hp,i)=>seats.includes(i)?Math.min(rpgMaxHp(next,i),Math.max(0,hp+result.players[i].delta)):hp);
+ const counts=result.players.map(p=>p.count),transfers=result.transfers??rpgHandSettlement(counts,seats).transfers;
+ const overflow=rpgOverflowSettlement(next.hp,next.hp.map((_,i)=>rpgMaxHp(next,i)),result.players.map(p=>p.delta),counts,transfers,seats);
+ next.hp=overflow.hp;state.overflow=overflow.dealt.some(Boolean)?{dealt:overflow.dealt,taken:overflow.taken}:undefined;
  const heal=(amount:number)=>{if(next.hp[0]>0)next.hp[0]=Math.min(rpgMaxHp(next),next.hp[0]+amount);};
  if(seats.length===3&&result.players[0].place===2&&next.equipped.includes('second-ring'))heal(3);
  if(next.hp[0]>0&&next.hp[0]<=10&&next.equipped.includes('final-knot')&&!state.knotStages.includes(next.stage)){heal(5);state.knotStages.push(next.stage);}
@@ -141,7 +159,7 @@ export function settleReworkRound(run:RpgRun,result:RpgResultLike):RpgRun{
  const before=run.roundHealth?.before||run.hp;next.roundHealth={round:result.round,before:[...before],damage:next.hp.map((hp,i)=>Math.max(0,before[i]-hp)),healing:next.hp.map((hp,i)=>Math.max(0,hp-before[i])),moneyDamage:next.hp.map(()=>0),coinsBefore:0};
  return next;
 }
-type RpgResultLike=Pick<RoundResult,'id'|'round'|'at'|'players'>;
+type RpgResultLike=Pick<RoundResult,'id'|'round'|'at'|'players'>&{transfers?:RoundResult['transfers']};
 export function chooseReworkReward(run:RpgRun,id?:string,decline=false){
  const next=structuredClone(run),clear=next.phaseOne?.clear;
  if(next.status!=='allocation'||!clear||clear.chosen)throw Error('선택할 유물 보상이 없어요.');

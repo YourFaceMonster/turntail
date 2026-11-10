@@ -20,7 +20,7 @@ export default function RpgReworkResult({game,busy,choose,next,newRun,exit,markS
  next:()=>void,newRun:()=>void,exit:()=>void,markSeen?:(id:string)=>void,equip?:(id:string,replace?:string)=>void,playerAvatar?:ReactNode}){
  const run=game.rpgRun!,clear=run.phaseOne?.clear,report=run.roundHealth;
  const [selected,setSelected]=useState(''),[seen,setSeen]=useState(false),[replay,setReplay]=useState(false);
- const seats=run.rework!.settledSeats||game.result?.players.flatMap((p,i)=>p.place>0?[i]:[])||[];
+ const overflow=run.rework!.overflow,seats=run.rework!.settledSeats||game.result?.players.flatMap((p,i)=>p.place>0?[i]:[])||[];
  const failed=run.status==='game-over',complete=run.status==='complete',offers=clear?.relicOffers||[];
  const story=replay||!seen&&pendingStageStory(run);
  const [reveal,setReveal]=useState(false);useEffect(()=>{const timer=setTimeout(()=>setReveal(true),120);return()=>clearTimeout(timer);},[]);
@@ -41,7 +41,7 @@ export default function RpgReworkResult({game,busy,choose,next,newRun,exit,markS
     <RpgHpBar maxHp={rpgMaxHp(run,seat)} hp={reveal?run.hp[seat]:before} owner={player.name}
      summary={<span className="round-hp-totals" aria-label={`이번 판 손실 ${report?.damage[seat]||0}, 획득 ${report?.healing[seat]||0}, 최종 ${netText}`}><span className="hp-lost">손실 −{report?.damage[seat]||0}</span><span className="hp-recovered">획득 +{report?.healing[seat]||0}</span><b className={`hp-net ${net<0?'is-loss':net>0?'is-gain':'is-even'}`}>최종 {netText}</b></span>}
      identity={<><SeatPortrait avatar={player.avatar} seat={seat}/><strong>{player.name}<small>{tied?'공동 ':''}{row?.place}등</small></strong></>}/>
-    <div className="compact-hp-breakdown"><p className="round-money-detail">남은 패 {row?.count}장 · <b className={delta>0?'hp-recovered':delta<0?'hp-lost':''}>{`패 정산 ${delta>0?'+':''}${delta} HP`}</b>{delta!==net&&<small> · 상한·유물 회복 반영</small>}</p>{run.hp[seat]===0&&<p>탈락 · 다음 판 분배 제외</p>}</div>
+    <div className="compact-hp-breakdown"><p className="round-money-detail">남은 패 {row?.count}장 · <b className={delta>0?'hp-recovered':delta<0?'hp-lost':''}>{`패 정산 ${delta>0?'+':''}${delta} HP`}</b>{delta!==net&&<small> · 상한·유물 회복 반영</small>}</p>{overflow?.dealt[seat]?<p className="round-money-detail">넘친 회복 → <b className="hp-lost">상대 피해 {overflow.dealt[seat]}</b></p>:null}{overflow?.taken[seat]?<p className="round-money-detail"><b className="hp-lost">넘친 회복 피해 −{overflow.taken[seat]}</b></p>:null}{run.hp[seat]===0&&<p>탈락 · 다음 판 분배 제외</p>}</div>
    </article>;
   })}</div>
   {run.status==='playing'&&<><p>다음 판은 손패 10장씩 · 바닥 30장으로 겨뤄요. 누구든 HP가 0이 되면 스테이지가 끝나요.</p><button className="primary full" disabled={busy} onClick={()=>{cue('confirm');next();}}>다음 판 →</button></>}
