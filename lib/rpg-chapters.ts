@@ -71,7 +71,9 @@ export function storyState(run:Pick<RpgRun,'journey'>):StoryQuestState{return ru
  * and a placeholder from existing assets. Add a key to READY once its final files exist.
  * The app references WebP only; keep the generated PNG beside it in public/story as the original.
  */
-const FINAL=(key:string)=>({landscape:`/story/${key}-wide-v1.webp`,portrait:`/story/${key}-portrait-v1.webp`});
+/** Region maps were redrawn at 1024×1600 (v2) to fill the space between the map HUD and dock on phones. */
+const ART_VERSION:Record<string,number>={'region-2-map':2,'region-3-map':2,'region-4-map':2};
+const FINAL=(key:string)=>({landscape:`/story/${key}-wide-v1.webp`,portrait:`/story/${key}-portrait-v${ART_VERSION[key]||1}.webp`});
 const ENV=(stage:number)=>({landscape:`/environments/stage-${stage}-055.webp`,portrait:`/environments/stage-${stage}-055.webp`});
 const TAVERN={landscape:'/prologue/tavern-interior-v2.webp',portrait:'/prologue/tavern-interior-portrait-v1.webp'};
 export const CHAPTER_ART_SLOTS:Record<string,{placeholder:{landscape:string,portrait:string},note:string}>={

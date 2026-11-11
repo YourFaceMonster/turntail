@@ -56,6 +56,11 @@ test('API: daily board, first table is ranked, later ones are practice, finished
  board=await post({action:'dailyBoard',profileToken:me});
  assert.equal(board.attempt,'done');assert.equal(board.rows.length,1);assert.equal(board.rows[0].score,7);assert.equal(board.rows[0].isMe,true);assert.equal(board.mine.rank,1);
  assert.ok(!JSON.stringify(board).includes(key),'device keys stay private');
+ // A lost round records its minus score too, ranked below the plus score.
+ const friendKey=await deviceKeyFor(friend),friendRev=(sqlite.prepare('SELECT revision FROM rooms WHERE code=?').get(other.game.code) as any).revision;
+ assert.equal((await dailyFinishStatement(db as any,friendKey,dailyDate(),other.game.code,-5,false,Date.now(),friendRev).run()).meta.changes,1);
+ board=await post({action:'dailyBoard',profileToken:friend});
+ assert.equal(board.total,2);assert.deepEqual(board.rows.map((r:any)=>r.score),[7,-5]);assert.equal(board.mine.score,-5);assert.equal(board.mine.rank,2);assert.equal(board.mine.win,false);
 });
 
 test('relic activation counts: each activation once per run, cursors kept small', () => {

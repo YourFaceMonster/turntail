@@ -25,7 +25,7 @@ export function readRpgArchive(storage:StoragePort):RpgArchive{
 /** Which traveller starts the next journey: 2 once the normal ending was seen. */
 export function nextJourneyRunNumber(archive:Pick<RpgArchive,'storyProgress'>){return archive.storyProgress?.normalEnding?2:1;}
 export function saveRpgGame(storage:StoragePort,game:Game,replace=false):RpgArchive{
- const run=game.rpgRun;if(!run||game.hpItemMode)throw Error('RPG 여정 데이터가 없어요.');
+ const run=game.rpgRun;if(!run||game.hpItemMode)throw Error('스토리 여정 데이터가 없어요.');
  validateJourneySave(game);
  const old=readRpgArchive(storage);
  if(old.active&&!old.active.rpgRun?.rework&&!storage.getItem(RPG_REWORK_BACKUP_KEY)){
@@ -34,7 +34,7 @@ export function saveRpgGame(storage:StoragePort,game:Game,replace=false):RpgArch
  }
  const records=old.records.filter(row=>row.id!==run.id);
  if(old.active?.rpgRun?.id!==run.id&&old.active){
-  if(!replace)throw Error('저장된 RPG 여정이 있어요. 새 여정으로 교체할지 선택해 주세요.');
+  if(!replace)throw Error('저장된 스토리 여정이 있어요. 새 여정으로 교체할지 선택해 주세요.');
   const prior=old.active.rpgRun!;records.push({id:prior.id,name:old.active.players[0].name,stage:prior.stage,status:'abandoned',rounds:prior.rounds,startedAt:prior.startedAt,updatedAt:run.startedAt});
  }
  records.push({id:run.id,name:game.players[0].name,stage:run.stage,status:run.status,rounds:run.rounds,startedAt:run.startedAt,updatedAt:run.updatedAt});
@@ -42,6 +42,6 @@ export function saveRpgGame(storage:StoragePort,game:Game,replace=false):RpgArch
  const ended=!!run.rework&&!!run.journey&&run.status==='complete'&&run.stage===10,second=(run.journey?.story?.runNumber||1)>=2;
  const storyProgress={...(old.storyProgress||{}),...(ended?{normalEnding:true,...(second?{trueEnding:true}:{})}:{})};
  const saved:RpgArchive={...(Object.keys(storyProgress).length?{storyProgress}:{}),...(run.rework&&run.status==='complete'?{lastCompleted:structuredClone(game)}:old.lastCompleted?{lastCompleted:old.lastCompleted}:{}),storyCards:[...new Set([...(old.storyCards||[]),...(run.storyCards||[])])],rumors:[...new Set([...(old.rumors||[]),...(run.journey?.rumors||[])])],version:1,active:['playing','allocation','relic','ready'].includes(run.status)?game:null,records,discovered:[...new Set([...(old.discovered||[]),...run.discovered])],unlocked:[...new Set([...(old.unlocked||[]),...(run.unlocked||[])])]};
- try{storage.setItem(run.phaseOne?RPG_PHASE_ONE_STORAGE_KEY:RPG_STORAGE_KEY,JSON.stringify(saved));}catch{throw Error('RPG 여정을 저장하지 못해 이번 행동을 적용하지 않았어요.');}
+ try{storage.setItem(run.phaseOne?RPG_PHASE_ONE_STORAGE_KEY:RPG_STORAGE_KEY,JSON.stringify(saved));}catch{throw Error('스토리 여정을 저장하지 못해 이번 행동을 적용하지 않았어요.');}
  return saved;
 }

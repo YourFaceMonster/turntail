@@ -31,8 +31,8 @@ export default function RpgReworkResult({game,busy,choose,next,newRun,exit,markS
   else if(complete||run.status==='allocation'||run.status==='ready'){cueOnce(key,'clear');if(run.status==='allocation'&&[3,6,9].includes(run.stage))cueOnce(`${key}:card`,'storyCard',1.4);}
   else if(mine<0)cueOnce(key,'hit');else if(mine>0)cueOnce(key,'heal');
  },[]);
- return <><div className="modal-shade result-shade"><section className="modal hp-item-result compact-item-result rpg-rework-result" role="dialog" aria-modal="true" aria-label="RPG 판 정산">
-  <header className="settlement-header"><span className="eyebrow">RPG · STAGE {run.stage} · {game.round}판</span><h2>이번 판 정산</h2>
+ return <><div className="modal-shade result-shade"><section className="modal hp-item-result compact-item-result rpg-rework-result" role="dialog" aria-modal="true" aria-label="스토리 판 정산">
+  <header className="settlement-header"><span className="eyebrow">STORY · STAGE {run.stage} · {game.round}판</span><h2>이번 판 정산</h2>
   <p>{failed?'HP가 0이 되어 여정이 끝났어요.':complete?'노르문의 여정을 마쳤어요.':run.status==='allocation'?`스테이지 ${run.stage} 클리어!`:'남은 패수로 HP를 정산했어요.'}</p></header>
   <div className="hp-settlement">{seats.slice().sort((a,b)=>(game.result?.players[a].place||0)-(game.result?.players[b].place||0)).map(seat=>{
    const player=game.players[seat],row=game.result?.players[seat],before=report?.before[seat]??run.hp[seat],delta=row?.delta||0,theme=seatPanelTheme(seat);

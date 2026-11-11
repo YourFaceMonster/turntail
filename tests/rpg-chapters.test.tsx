@@ -129,11 +129,11 @@ test('saves reject corrupt story data and the map only shows the current region'
   const art=chapterArt(key);
   // 2026-11-11 user choice: until wide paintings exist, wide screens show the new portrait painting framed.
   assert.equal(art.landscape,art.portrait,'wide screens use the portrait painting (framed) until the wide painting arrives');
-  assert.equal(art.portrait,`/story/${key}-portrait-v1.webp`);
+  assert.equal(art.portrait,`/story/${key}-portrait-v${/^region-[234]-map$/.test(key)?2:1}.webp`);
   assert.ok(existsSync(new URL(`../public${art.portrait}`,import.meta.url)),key);
  }
- assert.match(html,/--map-portrait-x:78%;--map-portrait-y:84%/,'the dice den follows the boathouse in the portrait map');
- assert.match(html,/class="map-route-portrait" d="M69 60L60 62L43 60L29 54L13 48L6 43L15 39L30 42L49 40L64 43L78 41L89 38L88 33L81 29L79 27L88 24L82 22L68 19L65 16L61 14"/);
+ assert.match(html,/--map-portrait-x:78%;--map-portrait-y:83%/,'the dice den follows the boathouse in the portrait map');
+ assert.match(html,/class="map-route-portrait" d="M67 59L55 62L40 61L28 55L16 48L8 44L17 41L30 43L48 42L64 41L82 37L80 30L77 25L71 21L64 18L60 14"/);
  for(const id of ['sacred-flame-two','secret-key-two'] as const){
   for(const side of ['front','back'] as const){
    assert.equal(STORY_CARD_ART[id][side],`/story-cards/${id}-${side}-v1.webp`);

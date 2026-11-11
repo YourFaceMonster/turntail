@@ -68,7 +68,7 @@ export function rpgRanks(hp:number[],counts:number[]){return hp.map((value,i)=>1
 function offers(run:RpgRun,seed:string,count:number,grade?:string){let hash=2166136261;for(const c of seed)hash=Math.imul(hash^c.charCodeAt(0),16777619)>>>0;const pool=RPG_RELICS.filter(r=>(r.id!==BLUE_GLASS_ID||run.unlocked?.includes(BLUE_GLASS_ID))&&(r.id!=='second-heart'||run.unlocked?.includes('second-heart'))&&(run.stage>3||!['mor-quill','twin-needle-compass','split-mirror'].includes(r.id))&&!run.relics.includes(r.id)&&(!grade||r.grade===grade));const chosen:string[]=[];while(pool.length&&chosen.length<count){const index=hash%pool.length;chosen.push(pool.splice(index,1)[0].id);hash=Math.imul(hash^chosen.length,16777619)>>>0;}return chosen;}
 export function settleRpgRound(run:RpgRun,result:RpgResult,winner:number,testMode=false,hpItemMode=false):RpgRun{
  if(run.status!=='playing'||run.roundIds.includes(result.id))return run;
- if(result.players.length!==3)throw Error('RPG 여정은 나와 AI 2명의 3인전이에요.');
+ if(result.players.length!==3)throw Error('스토리 여정은 나와 AI 2명의 3인전이에요.');
  const hp=[...run.hp],counts=result.players.map(p=>p.count),effects:RpgRelicEffect[]=[];let points=run.points,shield=run.shield||0;
  result.players.forEach((p,i)=>{
   if(p.delta>=0){if(i===0)points+=p.delta;return;}

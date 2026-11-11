@@ -270,13 +270,18 @@
 .journey-map-scene[data-region]:not([data-region='1']) .rpg-node-map{box-shadow:0 0 0 1px #d9b97933,0 18px 50px #000a}
 @media all{
  .journey-map-scene[data-region]:not([data-region='1']) .rpg-node-map{
-  width:min(100cqw,calc(100cqh * 941 / 1672));
-  height:min(100cqh,calc(100cqw * 1672 / 941));
-  aspect-ratio:941/1672;
+  width:min(100cqw,calc(100cqh * 1024 / 1600));
+  height:min(100cqh,calc(100cqw * 1600 / 1024));
+  aspect-ratio:1024/1600;
  }
  .journey-map-scene[data-region]:not([data-region='1']) .rpg-map-content{top:0;height:100%}
  .journey-map-scene[data-region]:not([data-region='1']) .rpg-map-node[data-node]{left:var(--map-portrait-x);top:var(--map-portrait-y);width:82px}
  /* Fit the whole painting between the HUD and the dock; the bands left over show the same painting blurred and dimmed. */
  .journey-map-scene[data-region]:not([data-region='1']) .journey-map-scroll{top:var(--journey-hud-h,98px);bottom:var(--journey-dock-h,56px);height:auto}
  .journey-map-scene[data-region]:not([data-region='1']) .journey-exploration-layout::before{content:'';position:absolute;inset:-24px;background:var(--region-map-tall) center/cover no-repeat;filter:blur(14px) brightness(.45) saturate(.9);transform:scale(1.06);pointer-events:none}
+}
+/* Portrait phones (user request 2026-11-11): the 1024×1600 (v2) map fills the whole space between the HUD and the dock,
+   full width, no scrolling. Phones of other shapes crop a few percent from the edges (places sit inside 10~90% / 7~93%). */
+@media(max-aspect-ratio:1/1){
+ .journey-map-scene[data-region]:not([data-region='1']) .journey-map-scroll .rpg-node-map{width:max(100cqw,calc(100cqh * 1024 / 1600));height:max(100cqh,calc(100cqw * 1600 / 1024));box-shadow:none}
 }

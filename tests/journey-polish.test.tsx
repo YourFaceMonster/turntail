@@ -30,5 +30,5 @@ test('tavern retains accessible character actions without the repeated conversat
 });
 test('single menu exposes three match choices and a separate RPG entry',()=>{
  const markup=renderToStaticMarkup(h(SinglePlayerMenu,{normal:noop,yacht:noop,rpg:noop,close:noop}));
- for(const name of ['일반모드','요트다이스','폭탄시장전','RPG 모드'])assert.ok(markup.includes(`aria-label="${name}"`));
+ for(const name of ['일반모드','요트다이스','폭탄시장전','스토리모드'])assert.ok(markup.includes(`aria-label="${name}"`));
 });

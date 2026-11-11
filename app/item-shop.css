@@ -1,7 +1,8 @@
 .market-shop-shade{background:radial-gradient(ellipse at 50% 25%,#1b302ba8,#040b0ce8)!important;backdrop-filter:blur(5px)}
 .turntale .single-mode-menu{text-align:center}
-.turntale .single-mode-menu .single-mode-cards>button{align-items:center!important;text-align:center!important}
-.turntale .single-mode-menu .single-mode-cards>button>*{text-align:center!important}
+.turntale .single-mode-menu .single-mode-cards>:is(button,a){align-items:center!important;text-align:center!important}
+.turntale .single-mode-menu .single-mode-cards>:is(button,a)>*{text-align:center!important}
+.turntale .single-mode-menu .single-mode-cards>a{text-decoration:none;cursor:pointer}
 .turntale.table-v211.active-table.rpg-mode.portrait-table .play-column{grid-template-rows:minmax(0,1fr) calc(var(--played-card-height) + var(--trick-chrome,32px) + 2px) calc(var(--hand-space-h)*2 + var(--hand-chrome,122px))!important}
 .rpg-status-popover-layer .modal.rpg-status-panel{background:#14271f!important;background-image:none!important;border:1px solid #bca76e!important;box-shadow:0 10px 32px #000a!important;color:#f3e7ca;backdrop-filter:none!important;max-height:calc(100dvh - 28px);overflow-y:auto}
 .rpg-status-popover-layer .rpg-status-panel p,.rpg-status-popover-layer .rpg-status-panel small{color:#d2d9c9}

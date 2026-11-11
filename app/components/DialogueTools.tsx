@@ -19,8 +19,8 @@ export function DialogueTools({auto,setAuto,lines,onOpenChange,className=''}:{au
  const toggle=(value:boolean)=>{setOpen(value);onOpenChange?.(value);};
  return <>
   <div className={`dialogue-tools ${className}`} onClick={event=>event.stopPropagation()} onKeyDown={event=>event.stopPropagation()}>
-   <button type="button" aria-pressed={auto} onClick={()=>setAuto(!auto)} title={auto?'자동 넘김 끄기':'자동 넘김 켜기'}>{auto?'자동 ▶':'자동 ■'}</button>
-   <button type="button" onClick={()=>toggle(true)} disabled={!lines.length}>지난 대사</button>
+   <button type="button" aria-pressed={auto} onClick={()=>setAuto(!auto)} title={auto?'자동 넘김 끄기':'자동 넘김 켜기'}><span aria-hidden="true">{auto?'❚❚':'▶'}</span>{auto?'자동 중':'자동'}</button>
+   <button type="button" onClick={()=>toggle(true)} disabled={!lines.length}><span aria-hidden="true">☰</span>지난 대사</button>
   </div>
   {open&&<DialogueBacklog lines={lines} close={()=>toggle(false)}/>}
  </>;

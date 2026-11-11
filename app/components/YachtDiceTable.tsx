@@ -118,12 +118,17 @@ export default function YachtDiceTable({den,match,hp,equipped,busy,error,play,re
  const pour=()=>{setCup('pouring');pendingThrow.current=true;haptic(DICE_HAPTICS.pour);window.setTimeout(()=>playRef.current({kind:'roll'}),260);};
  const startShake=()=>{if(!canShake||cup==='shaking')return;shakeStart.current=Date.now();setCup('shaking');};
  const releaseShake=()=>{if(!myTurn||cup!=='shaking'||pendingThrow.current)return;pendingThrow.current=true;const wait=Math.max(0,MIN_SHAKE-(Date.now()-shakeStart.current));window.setTimeout(()=>{pendingThrow.current=false;pour();},wait);};
+ // A tap on the table during Haro's turn skips the rest of his shake/keep animation for that turn.
+ const [skipAi,setSkipAi]=useState(false);
+ useEffect(()=>{if(!aiTurn)setSkipAi(false);},[aiTurn]);
  // The AI shows its keep, shakes, then the step runs (same deterministic plan as the rules).
- useEffect(()=>{if(!aiTurn||busy)return;const plan=yachtAiPlan(match),timers:number[]=[];
+ useEffect(()=>{if(!aiTurn||busy)return;const timers:number[]=[];
+  if(skipAi){timers.push(window.setTimeout(()=>playRef.current({kind:'ai'}),80));return()=>timers.forEach(clearTimeout);}
+  const plan=yachtAiPlan(match);
   if(plan.type==='score')timers.push(window.setTimeout(()=>playRef.current({kind:'ai'}),1100));
   else{const first=match.rollsLeft===3;if(!first)timers.push(window.setTimeout(()=>{setAiHeld(plan.held);cue('click');},550));
    timers.push(window.setTimeout(()=>setCup('shaking'),first?350:1150),window.setTimeout(()=>setCup('pouring'),first?1150:1950),window.setTimeout(()=>playRef.current({kind:'ai'}),first?1400:2200));}
-  return()=>timers.forEach(clearTimeout);},[aiTurn,busy,match]);
+  return()=>timers.forEach(clearTimeout);},[aiTurn,busy,match,skipAi]);
 
  const last=match.last,mine=seatTotal(match,0),theirs=seatTotal(match,1),own=match.sheets[0];
  const haroLast=useRef<YachtMatch['last']>(undefined);
@@ -131,7 +136,7 @@ export default function YachtDiceTable({den,match,hp,equipped,busy,error,play,re
  const joker=canPick&&yachtJoker(own,match.dice),allowed=canPick?allowedCategories(own,match.dice):[];
  const previews=new Map(allowed.map(cat=>[cat,boxScore(own,cat,match.dice)] as const)),bestPreview=Math.max(0,...previews.values());
  const status=match.status==='ended'?'승부 종료':myTurn?(inCup?'내 차례 · 컵을 흔들어 굴리세요':match.rollsLeft===0?'내 차례 · 점수 칸을 고르세요':'내 차례 · 남길 주사위 고르기'):'하로의 차례';
- const hint=joker?`조커! ${yachtJokerBonus(own,match.dice)?`요트 보너스 +${YACHT_JOKER_BONUS} · `:''}${allowed.length===1?`${YACHT_LABELS[allowed[0]]} 칸에 적어야 해요`:'정해진 칸에 적어요'}`:myTurn&&!inCup&&match.rollsLeft>0?'주사위를 누르면 위 칸에 남겨요':myTurn&&inCup?'컵을 누르고 있으면 흔들고, 놓으면 굴러요':aiTurn?(cup==='shaking'?'하로가 컵을 흔드는 중…':'하로가 고민하는 중'):'';
+ const hint=joker?`조커! ${yachtJokerBonus(own,match.dice)?`요트 보너스 +${YACHT_JOKER_BONUS} · `:''}${allowed.length===1?`${YACHT_LABELS[allowed[0]]} 칸에 적어야 해요`:'정해진 칸에 적어요'}`:myTurn&&!inCup&&match.rollsLeft>0?'주사위를 누르면 위 칸에 남겨요':myTurn&&inCup?'컵을 누르고 있으면 흔들고, 놓으면 굴러요':aiTurn?(skipAi?'하로의 차례를 빠르게 넘기는 중':`${cup==='shaking'?'하로가 컵을 흔드는 중…':'하로가 고민하는 중'} · 판을 누르면 건너뛰기`):'';
  // Like the card table's lead label: who acts now, or what was just written.
  const leadLine=match.status!=='playing'?'✦ 승부 종료':last&&inCup?`✦ ${last.seat===0?playerName:'하로'} · ${YACHT_LABELS[last.category]} ${last.score}점${last.bonus?` · 보너스 +${last.bonus}`:''}`:`✦ ${myTurn?playerName:'하로'} · ${inCup?'컵을 흔들 차례':`굴림 ${3-match.rollsLeft}/3`}`;
  const result=den.result,ended=match.status==='ended'&&!!result,banter=aiTurn||last?.seat===1?haroLine(last):'';
@@ -155,7 +160,7 @@ export default function YachtDiceTable({den,match,hp,equipped,busy,error,play,re
   <section className="game-layout">
    <div className="play-column">
     <TableSurface stage={5}/>
-    <section className="felt yacht-felt-area">
+    <section className="felt yacht-felt-area" onPointerDown={aiTurn&&!skipAi?event=>{if(!(event.target as HTMLElement).closest?.('.seat-card,.yacht-rival-sheet')){setSkipAi(true);setAiHeld(null);setCup('idle');}}:undefined}>
      <div className="opponents"><RivalLog match={match} aiTurn={aiTurn} cup={cup} last={haroLast.current}/><div data-seat="1" className={`opponent persona-amber ${aiTurn?'is-turn':''}`}>
       <div className="seat-card" role="button" tabIndex={0} aria-expanded={sheetOpen} aria-label={`하로 ${theirs}점 · 점수표 보기`} onClick={()=>setSheetOpen(open=>!open)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();setSheetOpen(open=>!open);}}}><RpgCastPortrait index={HARO_PORTRAIT}/>
        <div className="op-info"><strong className="opponent-name" title={DICE_NPC}><span className="opponent-character-name">하로</span><small className="opponent-ai-label">AI</small></strong><span className="seat-hp-label">{theirs}점</span></div>

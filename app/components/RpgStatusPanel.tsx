@@ -24,7 +24,7 @@ export function RpgStatusPanel({game,seat,close}:{game:View,seat:number,close:()
  useEffect(()=>{const outside=(event:PointerEvent)=>{if(!panelRef.current?.contains(event.target as Node))close();};const escape=(event:KeyboardEvent)=>{if(event.key==='Escape')close();};document.addEventListener('pointerdown',outside);document.addEventListener('keydown',escape);return()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',escape);};},[close]);
  if(!run||typeof document==='undefined')return null;
  const mine=seat===game.me,player=game.players[seat];
- return createPortal(<div className="rpg-status-popover-layer"><section ref={panelRef} className={`modal rpg-status-panel ${mine?'is-own':'is-opponent'}`} style={position||{visibility:'hidden'}} role="dialog" aria-label={`${player.name} ${game.hpItemMode?"아이템전":"RPG"} 상태`}>
+ return createPortal(<div className="rpg-status-popover-layer"><section ref={panelRef} className={`modal rpg-status-panel ${mine?'is-own':'is-opponent'}`} style={position||{visibility:'hidden'}} role="dialog" aria-label={`${player.name} ${game.hpItemMode?"아이템전":"스토리"} 상태`}>
   <header className="rpg-status-heading"><h2>{player.name}</h2><span className="rpg-status-hp">HP <b>{run.hp[seat]}</b><small>/{run.rework?rpgMaxHp(run,seat):hpLimit(run)}</small></span><button className="close" aria-label="상태창 닫기" onClick={close}>×</button></header>
   <RpgProfessionStatus game={game} seat={seat} detail/>
  </section></div>,document.body);

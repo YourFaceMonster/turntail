@@ -1,0 +1,28 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-11",
+  "request": "docs/codex-art-request-2026-11-11-region-maps-9x14.md",
+  "images": [
+    {
+      "region": 2,
+      "prompt": "Use case: illustration-story. Redraw the reference region 2 map as a 1024x1600 portrait image, shorter and more vertically compact than original. Keep same identifiable buildings, winding stone stair trail, rope bridge, waterfall, colors and readable indigo night mood. Hand-drawn 2D cartoon fantasy game illustration, expressive irregular ink outlines, simplified cel-shaded forms with two or three clear shading values, restrained rough painted texture, muted indigo, slate blue, charcoal and moss palette with small warm amber light accents. No photorealism, glossy 3D, bloom, smooth airbrush. High three-quarter bird's-eye game map of floating sky islands above clouds. Recompose, reducing empty sky and bottom clouds. Precise landmark centers (x percent from left,y percent from top): waterfall-side blue stone table on landing (69,60); drying soaked blank papers on left river rocks (14,61); wooden rest platform with table at midpoint of long rope-and-plank bridge (49,40); thick rope knot anchor post at right bridge end (86,33); ruined stone colonnade with faded purple banners (61,14); small ruined stone archive room (15,18); old timber boathouse and boat in mist (78,84). One continuous unmistakable climb from waterfall landing along left stair trail across bridge then up right stair trail to colonnade; short side paths connect archive, drying papers and boathouse. All landmarks and paths within 10-90% across,7-93% down. Edge fillers only crop-safe rocks clouds trees. NO SNOW anywhere, no people, no text, letters, runes, numbers, labels, map markers or watermarks. Preserve original architecture and strong black contour style. Full bleed single image, not a collage.",
+      "reference": "public/story/region-2-map-portrait-v1.png",
+      "png": "public/story/region-2-map-portrait-v2.png",
+      "webp": "public/story/region-2-map-portrait-v2.webp"
+    },
+    {
+      "region": 3,
+      "prompt": "Use case: illustration-story. Redraw attached region 3 map into a compact 1024x1600 portrait fantasy game map. Match existing architecture and hand-inked 2D cartoon style, blue-violet night colors and amber fire accents. Expressive irregular black ink outlines, simplified cel shading with 2 or 3 values, restrained rough painted texture, no photorealism or glossy 3D. High three-quarter bird's-eye view of floating rocky islands among clouds. IMPORTANT CHANGE: completely remove ALL SNOW, white snow caps and wintry covering from trees, roofs, ground, stairs and distant peaks. Replace snow with exposed slate stone and dark moss; silver ancient tree bark remains naturally silver. Keep the same places but reduce empty sky and bottom clouds, recompose in shorter vertical format. Landmark centers as percentage coordinates from upper left: gigantic ancient silver-barked tree with hanging blue lanterns and hollow doorway (50,84); small white-stone letter archive with arched door (85,54); white-pillared sanctuary surrounded by golden-leaved trees and glowing brazier (59,32); small ruined stone ring with faint embers, last spark side location (15,21); dark ash altar with fiery brazier and upright dark stone shards on upper peak (56,11). Clear continuous stone path tree -> sanctuary -> upper altar, with short side paths to letter archive and left ruined ember circle. Keep architecture recognizable and centers exact; all important places/path within x10-90%, y7-93%; border only crop-safe clouds rocks or trees. No text, letters, numbers, runes, signatures, watermark, map labels or markers, no people, absolutely no snow. Full bleed single image.",
+      "reference": "public/story/region-3-map-portrait-v1.png",
+      "png": "public/story/region-3-map-portrait-v2.png",
+      "webp": "public/story/region-3-map-portrait-v2.webp"
+    },
+    {
+      "region": 4,
+      "prompt": "Use case: illustration-story. Redraw attached region 4 map as a shorter, compact 1024x1600 portrait fantasy game map. Keep the gigantic red-leaved world tree, circular stone plaza with round table and stone chairs, braziers, winding stair approach, floating rocky island, architecture, readable indigo night and rich red foliage of reference. Recompose vertically: reduce empty sky and bottom clouds, make main destination center at exactly (50% across,44% down), measured at the circular meeting plaza/table in front of tree. Tree foliage above and twisting roots below, keep huge recognizable silhouette. Continuous clearly drawn winding stone stair trail climbs from bottom center up to meeting plaza. All important destination objects inside x10-90%,y7-93%; border only safely cropped red foliage rocks and clouds. IMPORTANT remove ALL SNOW from steps, ground, roots and background mountains: exposed slate-blue stone, charcoal rock and muted moss instead. Hand-drawn 2D cartoon fantasy game illustration, expressive irregular black ink outlines, simple cel-shaded forms with 2 or 3 values, restrained rough painted texture, small warm amber fire accents. Keep material and night brightness of reference. No photorealism, glossy 3D, smooth airbrush, bloom or extra buildings. No people, text, letters, numbers, runes, signatures, watermarks, labels, markers, or snow. Single full bleed picture.",
+      "reference": "public/story/region-4-map-portrait-v1.png",
+      "png": "public/story/region-4-map-portrait-v2.png",
+      "webp": "public/story/region-4-map-portrait-v2.webp"
+    }
+  ]
+}

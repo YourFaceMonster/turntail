@@ -146,6 +146,10 @@ main.yacht-main.yacht-main.yacht-main.table-v211.turntale.active-table.rpg-mode.
 .yacht-rival-sheet footer{margin-top:5px;color:#a9c2d6}
 /* Haro's combo log, in the empty space left of his seat */
 .yacht-main .opponents{gap:8px;align-items:stretch}
+/* The story den renders in its own overlay outside the page that sets --opponent-count; without it the seat grid
+   collapsed to one content-sized column (log stacked over Haro and resizing with its text). Fix it to the practice layout. */
+.yacht-main{--opponent-count:2}
+.yacht-rival-log header{min-height:16px}
 .yacht-rival-log{flex:1 1 auto;min-width:0;max-width:300px;justify-self:stretch;display:grid;align-content:center;gap:3px;padding:4px 8px;border-radius:12px;border:2px solid #f0c96a55;background:linear-gradient(#20150ddd,#120b06e6);color:#f5dfbc;box-shadow:0 4px 10px #0007;font-family:"Noto Sans KR",Arial,sans-serif}
 .yacht-rival-log header{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
 .yacht-rival-log header b{font-size:11px;color:#f0c96a;margin-right:2px}

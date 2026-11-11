@@ -115,7 +115,7 @@ export function start(g:Game,now=Date.now()){
  if(g.rpgRun?.pendingRework&&!g.hpItemMode&&!g.rpgTest&&g.rpgRun.status==='playing'){enableRpgRework(g.rpgRun);g.rpgRun.pendingRework=false;}
  if(isBattleItemMode(g)&&hpItemShopPending(g))throw Error("판 결과의 상점에서 구매하거나 구매 없이 다음 판을 시작해 주세요.");
  if(g.stageRun&&g.stageRun.status!=="playing")throw Error("판 결과에서 다음 스테이지를 선택해 주세요.");
- if(g.rpgRun&&g.rpgRun.status!=="playing")throw Error("RPG 여정의 보상을 먼저 선택해 주세요.");
+ if(g.rpgRun&&g.rpgRun.status!=="playing")throw Error("스토리 여정의 보상을 먼저 선택해 주세요.");
  if(g.challenge?.complete)throw Error("10판 도전이 끝났어요. 새 도전을 시작해 주세요.");
  if(g.daily&&g.round>=1)throw Error("오늘의 판은 한 판만 할 수 있어요. 내일 새 판이 열려요.");
  if(g.matchWinner!==null&&g.matchWinner!==undefined)throw Error("목표 점수에 도달해 매치가 끝났어요. 새 매치를 시작해 주세요.");
@@ -160,7 +160,7 @@ export function settle(g:Game):RoundResult{
 export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now=Date.now(),automatic=false){
  if(hpItemShopPending(g))throw Error("이번 판의 상점 준비를 마쳐 주세요. 구매 없이 시작할 수도 있어요.");
  if(g.stageRun&&g.stageRun.status!=="playing")throw Error("이번 도전의 판 결과를 먼저 확인해 주세요.");
- if(g.rpgRun&&g.rpgRun.status!=="playing")throw Error("RPG 여정의 판 결과를 먼저 확인해 주세요.");
+ if(g.rpgRun&&g.rpgRun.status!=="playing")throw Error("스토리 여정의 판 결과를 먼저 확인해 주세요.");
  if(g.phase!=="playing"||g.turn!==who)throw Error("지금은 내 차례가 아니에요.");const p=g.players[who];
  if(!rpgAlive(g,who))throw Error('퇴장한 참가자는 행동할 수 없어요.');
  if(p.replaced&&!automatic)throw Error("시간 초과로 AI가 대신 진행 중이에요. 새 방에서 다시 참여해 주세요.");

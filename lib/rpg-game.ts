@@ -35,7 +35,7 @@ export function createRpgTestGame(name:string,avatar='',now=Date.now()):Game{
  return game;
 }
 export function startRpgRound(game:Game,now=Date.now()){
- const run=game.rpgRun;if(!run||!game.practice||game.phase!=='ended')throw Error('RPG 여정의 판 결과를 먼저 확인해 주세요.');
+ const run=game.rpgRun;if(!run||!game.practice||game.phase!=='ended')throw Error('스토리 여정의 판 결과를 먼저 확인해 주세요.');
  if(run.journey&&run.journey.location!=='battle')throw Error('지도에서 다음 승부를 선택해 주세요.');
  if(game.hpItemMode&&run.status!=='playing')throw Error('아이템전이 종료됐어요. 새 대전을 시작해 주세요.');
  if(run.status==='ready'){
@@ -46,7 +46,7 @@ export function startRpgRound(game:Game,now=Date.now()){
  game.capacity=3;start(game,now);
 }
 export function abandonRpgGame(game:Game,now=Date.now()){
- if(!game.rpgRun||['complete','game-over','abandoned'].includes(game.rpgRun.status))throw Error('진행 중인 RPG 여정이 없어요.');
+ if(!game.rpgRun||['complete','game-over','abandoned'].includes(game.rpgRun.status))throw Error('진행 중인 스토리 여정이 없어요.');
  game.rpgRun={...game.rpgRun,status:'abandoned',updatedAt:now};game.phase='ended';game.turnDeadline=0;
 }
 

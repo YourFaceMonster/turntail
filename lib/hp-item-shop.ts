@@ -72,8 +72,11 @@ export function beginHpItemRound(game:Game){
 export function hpItemEffectiveHp(game:Pick<Game,'hpItemMode'|'hpItemMatch'|'rpgRun'>,seat:number){return Math.max(0,Math.min(hpLimit(game.rpgRun),(game.rpgRun?.hp[seat]||0)+(hasRoundCombat(game)&&!hasImmediateSkills(game)&&!game.rpgRun?.combat?.pendingRound?.settled?(game.rpgRun?.combat?.pendingRound?.healing[seat]||0)-(game.rpgRun?.combat?.pendingRound?.damage[seat]||0):0)+(game.hpItemMode?game.hpItemMatch?.pendingItemDelta?.[seat]||0:0)));}
 /** Apply queued HP once, immediately before the card settlement. */
 export function applyPendingHpItems(game:Game){if(!game.hpItemMode||!game.hpItemMatch||!game.rpgRun)return;game.rpgRun.hp=game.rpgRun.hp.map((_,seat)=>hpItemEffectiveHp(game,seat));game.hpItemMatch.pendingItemDelta=game.players.map(()=>0);}
-export function hpItemDisplayHp(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'>,seat:number,reveal=false,heldBattle:HpBattleEvent|null=null,heldItem:{id:string,target:number,before:number}|null=null){
+export function hpItemDisplayHp(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'>&{round?:number},seat:number,reveal=false,heldBattle:HpBattleEvent|null=null,heldItem:{id:string,target:number,before:number}|null=null){
  if(heldItem&&game.rpgRun?.lastItem?.id===heldItem.id&&heldItem.target===seat)return heldItem.before;
+ // Story mode: the round's HP change shows only once the settlement screen opens; until then keep the round-start HP.
+ const health=game.rpgRun?.rework&&!game.hpItemMode&&game.phase==='ended'&&!reveal?game.rpgRun.roundHealth:undefined;
+ if(health&&(game.round===undefined||health.round===game.round)&&Number.isFinite(health.before[seat]))return health.before[seat];
  // Presentation only: the authoritative HP remains immediate for all game decisions.
  if(heldBattle&&(game.hpItemMatch?.lastBattle||game.rpgRun?.combat?.lastBattle)?.id===heldBattle.id)return heldBattle.hpBefore[seat];
  const finalBattle=game.hpItemMatch?.lastBattle||game.rpgRun?.combat?.lastBattle;

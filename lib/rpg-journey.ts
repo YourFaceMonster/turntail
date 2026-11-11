@@ -35,22 +35,22 @@ export const JOURNEY_NODES:{id:JourneyNode,name:string,x:number,y:number,portrai
  {id:'battle-2',name:'ST2 · 마을 광장',x:54,y:45,kind:'battle',region:1},
  {id:'battle-3',name:'ST3 · 북쪽 성채',x:57,y:17,kind:'battle',region:1},
  // Landscape placeholders and cropped portrait paintings have separate landmark coordinates.
- {id:'quest-4',name:'물에 젖은 기록',x:22,y:62,portrait:{x:13,y:62},kind:'event',region:2},
- {id:'battle-4',name:'ST4 · 물안개 폭포',x:40,y:78,portrait:{x:69,y:60},kind:'battle',region:2},
- {id:'quest-5',name:'끊긴 매듭',x:76,y:60,portrait:{x:89,y:33},kind:'event',region:2},
- {id:'battle-5',name:'ST5 · 구름다리 쉼터',x:56,y:50,portrait:{x:49,y:40},kind:'battle',region:2},
- {id:'quest-6',name:'잊힌 맹세',x:28,y:30,portrait:{x:14,y:18},kind:'event',region:2},
- {id:'dice-den',name:'안개 나루 주사위판',x:82,y:32,portrait:{x:78,y:84},kind:'event',region:2},
- {id:'battle-6',name:'ST6 · 수호자의 회랑',x:58,y:20,portrait:{x:61,y:14},kind:'battle',region:2},
- {id:'battle-7',name:'ST7 · 달빛 고목',x:40,y:78,portrait:{x:50,y:84},kind:'battle',region:3},
- {id:'quest-8',name:'전해지지 못한 편지',x:76,y:58,portrait:{x:85,y:54},kind:'event',region:3},
- {id:'battle-8',name:'ST8 · 별빛 성소',x:56,y:50,portrait:{x:59,y:31},kind:'battle',region:3},
+ {id:'quest-4',name:'물에 젖은 기록',x:22,y:62,portrait:{x:17,y:61},kind:'event',region:2},
+ {id:'battle-4',name:'ST4 · 물안개 폭포',x:40,y:78,portrait:{x:67,y:59},kind:'battle',region:2},
+ {id:'quest-5',name:'끊긴 매듭',x:76,y:60,portrait:{x:86,y:36},kind:'event',region:2},
+ {id:'battle-5',name:'ST5 · 구름다리 쉼터',x:56,y:50,portrait:{x:48,y:42},kind:'battle',region:2},
+ {id:'quest-6',name:'잊힌 맹세',x:28,y:30,portrait:{x:18,y:19},kind:'event',region:2},
+ {id:'dice-den',name:'안개 나루 주사위판',x:82,y:32,portrait:{x:78,y:83},kind:'event',region:2},
+ {id:'battle-6',name:'ST6 · 수호자의 회랑',x:58,y:20,portrait:{x:60,y:14},kind:'battle',region:2},
+ {id:'battle-7',name:'ST7 · 달빛 고목',x:40,y:78,portrait:{x:52,y:84},kind:'battle',region:3},
+ {id:'quest-8',name:'전해지지 못한 편지',x:76,y:58,portrait:{x:83,y:53},kind:'event',region:3},
+ {id:'battle-8',name:'ST8 · 별빛 성소',x:56,y:50,portrait:{x:60,y:31},kind:'battle',region:3},
  {id:'quest-9',name:'마지막 불씨',x:28,y:32,portrait:{x:14,y:21},kind:'event',region:3},
- {id:'battle-9',name:'ST9 · 잿불 제단',x:58,y:20,portrait:{x:56,y:10},kind:'battle',region:3},
- {id:'battle-10',name:'ST10 · 붉은 세계수',x:50,y:42,portrait:{x:50,y:44},kind:'battle',region:4},
+ {id:'battle-9',name:'ST9 · 잿불 제단',x:58,y:20,portrait:{x:56,y:9},kind:'battle',region:3},
+ {id:'battle-10',name:'ST10 · 붉은 세계수',x:50,y:42,portrait:{x:50,y:48},kind:'battle',region:4},
 ];
 export function initRpgJourney(game:Game){
- const run=game.rpgRun;if(!run?.phaseOne||game.hpItemMode||game.rpgTest)throw Error('새 RPG 여정에서 시작해 주세요.');
+ const run=game.rpgRun;if(!run?.phaseOne||game.hpItemMode||game.rpgTest)throw Error('새 스토리 여정에서 시작해 주세요.');
  run.storyCards=['crown-two'];run.fate=3;run.journey={version:1,livesVersion:1,location:'map',currentNode:'battle-1',startedStages:[],completedNodes:[],rumors:[],tavernRewardPaid:false};
  game.phase='ended';game.turnDeadline=0;
 }
@@ -69,7 +69,7 @@ export function journeyNodeState(run:RpgRun,id:JourneyNode):'available'|'complet
  const next=j.retryStage|| (j.startedStages.length===0&&run.stage===1&&run.status==='playing'?1:run.status==='ready'?run.stage+1:0);
  return id===`battle-${next}`?'available':'locked';
 }
-function journeyGame(game:Game){const run=game.rpgRun;if(!run?.journey||!run.phaseOne||game.hpItemMode||game.rpgTest)throw Error('탐험형 RPG 여정이 아니에요.');return {run,j:run.journey};}
+function journeyGame(game:Game){const run=game.rpgRun;if(!run?.journey||!run.phaseOne||game.hpItemMode||game.rpgTest)throw Error('탐험형 스토리 여정이 아니에요.');return {run,j:run.journey};}
 /** Returns a stage for the caller to enter through the existing combat factory. */
 export function visitJourneyNode(game:Game,id:JourneyNode):number|undefined{
  const {run,j}=journeyGame(game);

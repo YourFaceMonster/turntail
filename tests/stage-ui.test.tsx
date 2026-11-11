@@ -15,7 +15,7 @@ const noop=()=>{},game=createStageGame('점검');
 const currentMap=renderToStaticMarkup(<StageHub active={game} start={noop} resume={noop} advance={noop} records={noop} abandon={noop} close={noop}/>);
 assert.equal((currentMap.match(/disabled=""/g)||[]).length,9,'only the first destination is open in a fresh run');
 assert.ok(currentMap.includes('map-current-badge')&&currentMap.includes('1스테이지부터'));
-const mode=renderToStaticMarkup(<SinglePlayerMenu normal={noop} yacht={noop} rpg={noop} close={noop}/>);assert.ok(mode.includes('일반모드')&&mode.includes('요트다이스')&&mode.includes('RPG 모드')&&!mode.includes('도전'));
+const mode=renderToStaticMarkup(<SinglePlayerMenu normal={noop} yacht={noop} rpg={noop} close={noop}/>);assert.ok(mode.includes('일반모드')&&mode.includes('요트다이스')&&mode.includes('스토리모드')&&!mode.includes('도전'));
 const resume=renderToStaticMarkup(<ResumePicker slots={['single','stage'].map(mode=>({mode:mode as 'single'|'stage',title:mode,detail:'저장 상태',session:{code:mode,token:mode}}))} errors={[]} choose={noop} close={noop}/>);assert.equal((resume.match(/이어서 하기/g)||[]).length,1);
 const confirm=renderToStaticMarkup(<NewGameConfirm mode="rpg" detail="STAGE 5 · HP 80" confirm={noop} cancel={noop}/>);assert.ok(confirm.includes('role="alertdialog"')&&confirm.includes('STAGE 5')&&confirm.includes('취소 · 저장된 진행 유지'));
 const luminance=(hex:string)=>{const rgb=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(c=>c<=.04045?c/12.92:((c+.055)/1.055)**2.4);return rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722;};
