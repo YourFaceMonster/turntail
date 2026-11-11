@@ -42,17 +42,20 @@ test('API: daily board, first table is ranked, later ones are practice, finished
  let board=await post({action:'dailyBoard',profileToken:me});assert.equal(board.status,200);assert.equal(board.attempt,'none');assert.equal(board.rows.length,0);
  const first=await post({action:'create',daily:true,name:'나',profileToken:me});assert.equal(first.status,200);
  assert.equal(first.game.daily.ranked,true);assert.equal(first.game.practice,true);assert.equal(first.game.players.length,3);
- const again=await post({action:'create',daily:true,name:'나',profileToken:me});assert.equal(again.game.daily.ranked,false,'second table today is practice');
+ // The first table was left unfinished, so the next one takes over the ranked slot (user choice A, 2026-11-11).
+ const again=await post({action:'create',daily:true,name:'나',profileToken:me});assert.equal(again.game.daily.ranked,true,'an unfinished ranked table is taken over');
  const other=await post({action:'create',daily:true,name:'친구',profileToken:friend});assert.equal(other.game.daily.ranked,true);
  assert.deepEqual(other.game.players[0].hand.map((t:any)=>t.id),first.game.players[0].hand.map((t:any)=>t.id),'same deal for everyone');
  board=await post({action:'dailyBoard',profileToken:me});assert.equal(board.attempt,'started');assert.equal(board.rows.length,0,'unfinished tables never show');
 
  // Finish the ranked table (the route does this in the same batch as the room update).
  const {deviceKeyFor}={deviceKeyFor:async(secret:string)=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(secret))),x=>x.toString(16).padStart(2,'0')).join('')};
- const key=await deviceKeyFor(me),rev=(sqlite.prepare('SELECT revision FROM rooms WHERE code=?').get(first.game.code) as any).revision;
- const s=dailyFinishStatement(db as any,key,dailyDate(),first.game.code,7,true,Date.now(),rev);
+ const key=await deviceKeyFor(me),revOf=(code:string)=>(sqlite.prepare('SELECT revision FROM rooms WHERE code=?').get(code) as any).revision;
+ assert.equal((await dailyFinishStatement(db as any,key,dailyDate(),first.game.code,99,true,Date.now(),revOf(first.game.code)).run()).meta.changes,0,'the replaced first table can no longer write a score');
+ const s=dailyFinishStatement(db as any,key,dailyDate(),again.game.code,7,true,Date.now(),revOf(again.game.code));
  assert.equal((await s.run()).meta.changes,1);assert.equal((await s.run()).meta.changes,0,'filled in once');
- assert.equal((await dailyFinishStatement(db as any,key,dailyDate(),again.game.code,99,true,Date.now(),1).run()).meta.changes,0,'a practice table cannot overwrite it');
+ const third=await post({action:'create',daily:true,name:'나',profileToken:me});assert.equal(third.game.daily.ranked,false,'after a finished ranked round, later tables are practice');
+ assert.equal((await dailyFinishStatement(db as any,key,dailyDate(),third.game.code,99,true,Date.now(),revOf(third.game.code)).run()).meta.changes,0,'a practice table cannot overwrite it');
  board=await post({action:'dailyBoard',profileToken:me});
  assert.equal(board.attempt,'done');assert.equal(board.rows.length,1);assert.equal(board.rows[0].score,7);assert.equal(board.rows[0].isMe,true);assert.equal(board.mine.rank,1);
  assert.ok(!JSON.stringify(board).includes(key),'device keys stay private');

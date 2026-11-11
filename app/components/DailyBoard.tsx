@@ -20,7 +20,7 @@ export default function DailyBoard({profileToken,start,close}:{profileToken:stri
   return()=>{stop=true;};
  },[day,profileToken]);
  const showingToday=!board||board.date===board.today;
- const note=!board?'':board.attempt==='done'?'오늘 기록을 남겼어요. 다시 하면 연습판이에요(같은 패, 순위 반영 안 됨).':board.attempt==='started'?'오늘 첫 판을 시작했어요. 다시 하면 연습판이에요(같은 패, 순위 반영 안 됨).':'오늘 처음 여는 판의 점수만 순위에 올라가요.';
+ const note=!board?'':board.attempt==='done'?'오늘 기록을 남겼어요. 다시 하면 연습판이에요(같은 패, 순위 반영 안 됨).':board.attempt==='started'?'오늘 순위 판이 아직 끝나지 않았어요. 새로 시작하면 그 판이 순위 판이 돼요(끝까지 마친 판만 기록).':'오늘 처음 끝까지 마친 판의 점수가 순위에 올라가요.';
  return <div className="modal-shade" onClick={close}><section ref={panel} tabIndex={-1} className="modal daily-board" role="dialog" aria-modal="true" aria-labelledby="daily-title" onClick={e=>e.stopPropagation()} onKeyDown={e=>{if(e.key==='Escape')close();}}>
   <button className="close" onClick={close} aria-label="닫기">×</button>
   <span className="eyebrow">DAILY TABLE</span><h2 id="daily-title">오늘의 판{board?` · ${fmt(board.date)}`:''}</h2>
@@ -29,6 +29,6 @@ export default function DailyBoard({profileToken,start,close}:{profileToken:stri
   {error?<p role="alert" className="daily-error">{error}</p>:!board?<p className="daily-empty" role="status">순위를 불러오는 중…</p>:
    board.rows.length?<ol className="daily-rows">{board.rows.map((r,i)=><li key={i} className={r.isMe?'is-me':''}><b>{r.rank}</b><span>{r.name}{r.win&&<em>1등</em>}</span><strong>{signed(r.score)}점</strong></li>)}</ol>:<p className="daily-empty">아직 기록이 없어요. 첫 기록을 남겨 보세요!</p>}
   {board&&<p className="daily-mine">{board.mine?`내 순위 ${board.mine.rank}위 / ${board.total}명 · ${signed(board.mine.score)}점`:`참가 ${board.total}명`}</p>}
-  {showingToday&&<><button className="primary full" onClick={start}>{board?.attempt==='none'?'오늘의 판 시작 →':'연습판으로 다시 하기 →'}</button><p className="daily-note">{note}{!profileToken&&' 이 기기 기록을 확인하지 못해 순위에는 올라가지 않아요.'}</p></>}
+  {showingToday&&<><button className="primary full" onClick={start}>{board?.attempt==='done'?'연습판으로 다시 하기 →':board?.attempt==='started'?'오늘의 판 다시 시작 →':'오늘의 판 시작 →'}</button><p className="daily-note">{note}{!profileToken&&' 이 기기 기록을 확인하지 못해 순위에는 올라가지 않아요.'}</p></>}
  </section></div>;
 }

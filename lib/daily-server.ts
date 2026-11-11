@@ -6,13 +6,20 @@ type Reply=(body:unknown,status?:number)=>Response;
 
 export async function ensureDailyTable(db:Db){await db.prepare(DAILY_TABLE_SQL).run();await db.prepare(DAILY_INDEX_SQL).run();}
 
-/** Reserve today's ranked attempt for this device. Returns true when this new table is the ranked one. */
+/**
+ * Reserve today's ranked attempt for this device. Returns true when this new table is the ranked one.
+ * 2026-11-11 user choice (A): if today's ranked table never finished (left, closed, connection lost), the next
+ * table takes over the ranked slot. The old table's finish statement is guarded by its room code, so it can no
+ * longer write a score. Once a ranked round finishes (done=1), later tables that day are practice.
+ */
 export async function claimDailyAttempt(db:Db,profile:string|null,name:string,code:string,now=Date.now()){
  if(!profile)return false;
- await ensureDailyTable(db);const date=dailyDate(now);
- const r=await db.prepare('INSERT OR IGNORE INTO daily_scores (id,device,name,date,code,score,win,at,done) VALUES (?,?,?,?,?,0,0,?,0)').bind(`${profile}:${date}`,profile,name,date,code,now).run();
+ await ensureDailyTable(db);const date=dailyDate(now),id=`${profile}:${date}`;
+ const r=await db.prepare('INSERT OR IGNORE INTO daily_scores (id,device,name,date,code,score,win,at,done) VALUES (?,?,?,?,?,0,0,?,0)').bind(id,profile,name,date,code,now).run();
  await db.prepare(DAILY_PRUNE_SQL).bind(dailyPruneBefore(now)).run();
- return !!r.meta.changes;
+ if(r.meta.changes)return true;
+ const takeover=await db.prepare('UPDATE daily_scores SET code=?,name=?,at=? WHERE id=? AND done=0').bind(code,name,now,id).run();
+ return !!takeover.meta.changes;
 }
 
 /**
