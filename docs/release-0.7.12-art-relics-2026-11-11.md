@@ -24,4 +24,10 @@
 - 그림 화면 확인은 Codex 기록(375×812·360×800·812×375·1366×768, 로컬 dev 서버)과 Claude의 캡처 검토. 실제 휴대기기 조작은 하지 않음.
 
 ## 배포
-GitHub `main` push → Cloudflare Workers Builds 자동 배포. 공개 사이트 확인 결과는 후속 기록에 적는다.
+GitHub `main` push(`c62d09f..29c72d3`) → Cloudflare Workers Builds 자동 배포.
+
+2026-11-11 공개 사이트 확인 결과
+- 메인 페이지 HTTP 200, 0.7.12 표시.
+- `region-2-map-portrait-v1.webp`, `st9-after-portrait-v1.webp`, `st10-guardian-v1.webp`, `secret-key-two-front-v1.webp`, `haro-ivory-die-v1.webp` 모두 HTTP 200 `image/webp`.
+- 배포 JS에 "갖고만 있어도 적용", "바닥 +1장" 문구가 들어 있다.
+- 공개 사이트에서 실제로 플레이하지는 않았다.
