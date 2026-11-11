@@ -21,4 +21,10 @@
 - 화면 확인은 로컬 dev 서버에서 이전에 한 것(지도 375×812, PC 1366×768, 온라인 요트 두 클라이언트 e2e). 도전 규칙 선택 화면은 진엔딩 저장이 없어 브라우저로 보지 못함.
 
 ## 배포
-GitHub `main` push → Cloudflare Workers Builds 자동 배포.
+GitHub `main` push(`196d8c4..312e6e9`) → Cloudflare Workers Builds 자동 배포.
+
+2026-11-11 공개 사이트 확인 결과
+- 메인 페이지 HTTP 200, 0.7.13 표시.
+- `region-2-map-portrait-v1.webp`, `st6-before-portrait-v1.webp`, `dice-den-portrait-v1.webp` 모두 HTTP 200 `image/webp`.
+- `/api/game` `dailyBoard` HTTP 200(오늘 날짜 2026-11-11, 기록 0건) — 운영 D1에 `daily_scores`가 만들어져 동작함.
+- 공개 사이트에서 실제로 플레이하거나 두 기기로 온라인 요트를 해 보지는 않았다.
