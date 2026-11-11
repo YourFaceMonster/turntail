@@ -5,6 +5,10 @@ import {avatarImage,updateProfile,sendChat} from "../../../lib/social";
 import {scoreEntries,mergeScores,type HighScore} from "../../../lib/challenge";
 import {LINEUP_SUMMARY_SQL,LINEUP_PLAYERS_SQL} from "../../../lib/history";
 import {sharedScores,LEADERBOARD_CTE,boardArgs,PAGE_SIZE,PRUNE_SCORES_SQL,PRUNE_MATCHES_SQL} from "../../../lib/leaderboard";
+import {createYachtRoomRequest,yachtHistoryRequest,yachtRoomRequest,YACHT_ACTIONS} from "../../../lib/yacht-room-server";
+import {isYachtRoom} from "../../../lib/yacht-room";
+import {claimDailyAttempt,dailyBoardRequest,dailyFinishStatement} from "../../../lib/daily-server";
+import {dailyDate,DAILY_AI_NAMES,DAILY_SIZE} from "../../../lib/daily";
 export const dynamic="force-dynamic";
 function reply(x:unknown,status=200){return Response.json(x,{status,headers:{"Cache-Control":"no-store"}});}
 async function deviceKey(secret:unknown){
@@ -50,6 +54,21 @@ export async function POST(req:Request){try{
   const groups=lineups.results.map((g:any)=>({key:g.lineup,names:JSON.parse(g.lineup),size:g.size,games:g.games,wins:g.wins,points:g.points,lastAt:g.lastAt,players:participants.results.filter((p:any)=>p.lineup===g.lineup&&p.size===g.size).map((p:any)=>({name:p.name,occurrence:p.occurrence,games:p.games,wins:p.wins,losses:p.losses,points:p.points}))}));
   return reply({summary,groups,records:records.results.map((r:any)=>({...r,result:JSON.parse(r.result)}))});
  }
+ if(b.action==="dailyBoard")return await dailyBoardRequest(db,b,profile,reply);
+ if(b.action==="create"&&b.daily){
+  const p=player(String(b.name||"플레이어"));p.avatar=avatarImage(b.avatar);if(profile)p.profile=profile;
+  for(let k=0;k<5;k++){
+   const code=crypto.randomUUID().replaceAll("-","").slice(0,6).toUpperCase();const g=room(code,p,true,DAILY_SIZE);
+   g.daily={date:dailyDate(),ranked:false};for(const name of DAILY_AI_NAMES)g.players.push(player(name,true));start(g);
+   const r=await db.prepare("INSERT OR IGNORE INTO rooms (code,revision,state,updated) VALUES (?,0,?,?)").bind(code,JSON.stringify(g),Date.now()).run();
+   if(!r.meta.changes)continue;
+   // The first daily table a device opens today is the ranked one; later ones are practice with the same deal.
+   let revision=0;if(await claimDailyAttempt(db,profile,p.name,code)){g.daily.ranked=true;await db.prepare("UPDATE rooms SET state=?,revision=1 WHERE code=? AND revision=0").bind(JSON.stringify(g),code).run();revision=1;}
+   return reply({token:p.token,game:view(g,p.token),revision});
+  }throw Error("방을 다시 만들어 주세요.");
+ }
+ if(b.action==="yachtCreate")return await createYachtRoomRequest(db,b,profile,avatarImage(b.avatar),reply);
+ if(b.action==="yachtHistory")return await yachtHistoryRequest(db,profile,reply);
  if(b.action==="create"){
   if(b.challenge)return reply({error:"도전모드는 종료됐어요. 일반 대전을 이용해 주세요.",retiredMode:true},410);
   const size=Number(b.size||3);if(![3,4].includes(size))throw Error("3·4인 중 선택해 주세요.");
@@ -65,6 +84,8 @@ export async function POST(req:Request){try{
  for(let retry=0;retry<5;retry++){
   const row=await db.prepare("SELECT state,revision FROM rooms WHERE code=?").bind(code).first<{state:string,revision:number}>();
   if(!row)return reply({error:"방을 찾지 못했어요."},404);
+  if((YACHT_ACTIONS as readonly string[]).includes(b.action)){const answer=await yachtRoomRequest(db,code,row,b,profile,avatarImage(b.avatar),reply);if(answer)return answer;continue;}
+  if(isYachtRoom(JSON.parse(row.state)))return reply({error:"요트다이스 방이에요. 멀티플레이에서 요트다이스를 골라 참가해 주세요.",yachtRoom:true},409);
   const g=JSON.parse(row.state) as Game,wasEnded=g.phase==="ended";let token=String(b.token||""),changed=false,skipped=false;
   if(g.challenge||g.stageRun)return reply({error:"도전모드는 종료됐어요. 새 일반 대전을 시작해 주세요.",retiredMode:true},410);
   if(b.action==="join"){
@@ -93,6 +114,9 @@ export async function POST(req:Request){try{
   if(!changed)return reply({token,game:view(g,token),revision:row.revision});
   const eventId=g.lastEvent?.id||crypto.randomUUID(),now=Date.now();
   const statements=[db.prepare("UPDATE rooms SET state=?,revision=revision+1,updated=? WHERE code=? AND revision=?").bind(JSON.stringify(g),now,code,row.revision)];
+  if(!wasEnded&&g.phase==="ended"&&g.result&&!g.result.voided&&g.daily?.ranked&&g.players[0]?.profile){
+   const r=g.result.players[0];if(r)statements.push(dailyFinishStatement(db,g.players[0].profile,g.daily.date,code,r.delta,!!r.winner,g.result.at,row.revision+1));
+  }
   if(!wasEnded&&g.phase==="ended"&&g.result&&!g.result.voided&&!g.practice){
    for(let i=0;i<g.players.length;i++){
     const p=g.players[i],r=g.result.players[i];if(!p.profile||p.bot)continue;

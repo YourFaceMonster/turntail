@@ -114,5 +114,11 @@ body>.journey-popup-shade>.journey-popup:has(.village-market){background:radial-
 .single-mode-cards .mode-yacht .menu-mode-scene.is-yacht{display:flex!important;gap:6px;align-items:center;justify-content:flex-start;background:none!important}
 .menu-yacht-die{display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);width:30px;height:30px;padding:4px;box-sizing:border-box;border:2px solid #3b2a1a;border-radius:7px;background:radial-gradient(circle at 32% 28%,#fffaf0,#e9dcc0);box-shadow:0 3px 0 #0006}
 .menu-yacht-die:nth-child(1){transform:rotate(-12deg)}.menu-yacht-die:nth-child(3){transform:rotate(9deg)}
+/* Five dice for Yacht Dice: three on top, two below, centered (6-column grid, each die spans 2 columns). */
+.single-mode-cards .mode-yacht .menu-mode-scene.is-yacht{display:grid!important;width:100%;grid-template-columns:repeat(6,minmax(0,11px));row-gap:3px;justify-content:center;align-content:center;justify-items:center}
+.single-mode-cards .mode-yacht .is-yacht .menu-yacht-die{grid-column:span 2;width:19px;height:19px;padding:3px;border-radius:6px;border-width:2px}
+/* The bomb market card is a link, so it needs the same column layout the button cards get. */
+.single-mode-menu .single-mode-cards>a.mode-bomb-market{display:flex;flex-direction:column;align-items:center;text-align:center}
+.single-mode-cards .mode-yacht .is-yacht .menu-yacht-die:nth-child(4){grid-column:2/span 2;transform:rotate(7deg)}.single-mode-cards .mode-yacht .is-yacht .menu-yacht-die:nth-child(5){grid-column:4/span 2;transform:rotate(-8deg)}
 .menu-yacht-die i{display:block;margin:auto;width:70%;aspect-ratio:1;border-radius:50%}
 .menu-yacht-die i.is-pip{background:#2a1d12}.menu-yacht-die i.is-ace{width:100%;background:#b3201b}

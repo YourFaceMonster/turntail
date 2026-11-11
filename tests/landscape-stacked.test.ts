@@ -7,7 +7,8 @@ test('auto table layout follows how the device is held; a Settings pick wins',()
  assert.equal(resolveTableLayout('auto',{width:844,height:390},true),'landscape','phone held sideways');
  assert.equal(resolveTableLayout('auto',{width:390,height:844},true),'portrait','phone held upright');
  assert.equal(resolveTableLayout('auto',{width:844,height:390},false),'landscape','short wide window');
- assert.equal(resolveTableLayout('auto',{width:1440,height:900},false),'portrait','wide desktop window keeps the portrait table');
+ assert.equal(resolveTableLayout('auto',{width:1440,height:900},false),'landscape','wide desktop window uses the landscape table');
+ assert.equal(resolveTableLayout('auto',{width:1000,height:900},false),'portrait','near-square desktop window keeps the portrait table');
  assert.equal(resolveTableLayout('auto',{width:0,height:0},true),'portrait','before the first measure');
  assert.equal(resolveTableLayout('portrait',{width:844,height:390},true),'portrait');
  assert.equal(resolveTableLayout('landscape',{width:390,height:844},true),'landscape');

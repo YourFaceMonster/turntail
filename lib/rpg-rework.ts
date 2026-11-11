@@ -3,6 +3,7 @@ import type {Game,Tile,RoundResult} from './game';
 import type {RpgRun} from './rpg';
 import {DICE_RELIC,DICE_RELIC_HEAL} from './rpg-dice-den';
 import {withRelicActivations} from './rpg-relic-feedback';
+import {rpgRelicSlots,trialEnemyHp,trialStartHp} from './rpg-trials';
 /** Quest-only relics never appear in stage reward offers. */
 const QUEST_RELICS=['watchkeepers-blue-glass',DICE_RELIC.id];
 
@@ -73,11 +74,11 @@ export function enableRpgRework(run:RpgRun,fresh=false){
  const allowed=new Set(RPG_REWORK_RELICS.map(r=>r.id));
  run.relics=fresh?['gamblers-gloves']:run.relics.filter(id=>allowed.has(id));
  if(!run.relics.length)run.relics=['gamblers-gloves'];
- run.equipped=fresh?[...run.relics]:run.equipped.filter(id=>run.relics.includes(id)).slice(0,3);
+ run.equipped=fresh?run.relics.slice(0,rpgRelicSlots(run)):run.equipped.filter(id=>run.relics.includes(id)).slice(0,rpgRelicSlots(run));
  run.rework={version:2,chapter:Math.min(4,Math.ceil(run.stage/3)),activated:[],knotStages:[],intel:{},resolvedTricks:[],rewardOffers:{}};
  run.combat=undefined;run.coins=0;run.points=0;run.fate=0;run.consumables=[];run.shops=[];run.enemyConsumables={};run.tactics={};
  run.itemGuards={};run.lastItem=undefined;run.lastExchange=undefined;run.relicActivations=[];run.pendingSoup=false;run.pendingBandage=false;run.shield=0;
- run.maxHp=100;run.hp=fresh?[100,...RPG_STAGE_HP[0]]:run.hp.map(hp=>Math.min(100,Math.max(0,hp)));
+ run.maxHp=100;run.hp=fresh?[trialStartHp(run),...trialEnemyHp(run,RPG_STAGE_HP[0])]:run.hp.map(hp=>Math.min(100,Math.max(0,hp)));
  run.discovered=fresh?[...run.relics]:[...new Set([...run.discovered,...run.relics])];
  if(run.journey)run.journey.retryStage=undefined;
  Object.assign(run,activateRpgRelics(run));
@@ -212,8 +213,8 @@ export function advanceReworkStage(run:RpgRun){
  if(run.status!=='ready'||!run.phaseOne?.clear?.chosen||run.stage>=10)throw Error('유물 보상을 먼저 확인해 주세요.');
  const next=structuredClone(run),stage=next.stage+1,state=next.rework!;
  if([4,7,10].includes(stage)){
-  next.relics=state.inherited?[state.inherited]:[];next.equipped=[...next.relics];next.hp[0]=100;state.chapter++;state.activated=[];state.knotStages=[];state.inherited=undefined;
+  next.relics=state.inherited?[state.inherited]:[];next.equipped=next.relics.slice(0,rpgRelicSlots(next));next.hp[0]=trialStartHp(next);state.chapter++;state.activated=[];state.knotStages=[];state.inherited=undefined;
  }
- next.stage=stage;next.hp=[next.hp[0],...RPG_STAGE_HP[stage-1]];next.status='playing';next.phaseOne!.eliminated=[];next.phaseOne!.clear=undefined;next.reward=null;state.nextForesight=undefined;
+ next.stage=stage;next.hp=[next.hp[0],...trialEnemyHp(next,RPG_STAGE_HP[stage-1])];next.status='playing';next.phaseOne!.eliminated=[];next.phaseOne!.clear=undefined;next.reward=null;state.nextForesight=undefined;
  return activateRpgRelics(next);
 }

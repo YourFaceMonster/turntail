@@ -1,0 +1,23 @@
+/* Yacht Dice skins (lib/dice-skins.ts). Ivory is the default look defined in yacht-dice.css / yacht-online.css. */
+html[data-dice-skin="obsidian"]{--die-face:radial-gradient(circle at 32% 28%,#5b5f6b,#25272e 62%,#14151a);--die-edge:#08090c;--die-pip:#e7e9ef;--die-ace:#e2463d}
+html[data-dice-skin="jade"]{--die-face:radial-gradient(circle at 32% 28%,#c9f0d6,#6fbf8e 60%,#3f8a60);--die-edge:#1f4a33;--die-pip:#123322;--die-ace:#b3201b}
+html[data-dice-skin="gilded"]{--die-face:radial-gradient(circle at 32% 28%,#fff3c4,#e8c25a 58%,#b5862b);--die-edge:#6b4a12;--die-pip:#3a260a;--die-ace:#8c1410}
+html[data-dice-skin="crimson"]{--die-face:radial-gradient(circle at 32% 28%,#e8656a,#a51f2b 60%,#6d0f19);--die-edge:#3d060c;--die-pip:#ffd877;--die-ace:#fff2c2}
+html[data-dice-skin]:not([data-dice-skin="ivory"]) :is(.yacht-die,.yo-die,.menu-yacht-die){background:var(--die-face)!important;border-color:var(--die-edge)!important}
+html[data-dice-skin]:not([data-dice-skin="ivory"]) :is(.yacht-die-face i.pip,.yo-die i.is-pip,.menu-yacht-die i.is-pip,.menu-yacht-die i.pip){background:var(--die-pip)!important}
+html[data-dice-skin]:not([data-dice-skin="ivory"]) :is(.yacht-die-face i.is-ace,.yo-die i.is-ace,.menu-yacht-die i.is-ace){background:var(--die-ace)!important}
+
+/* Picker inside the achievements window. */
+.dice-skin-picker{margin:10px 0 0;padding:12px 14px;border-top:1px solid #e6d8b433}
+.dice-skin-picker h3{margin:0 0 8px;font-size:14px}
+.dice-skin-picker ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.dice-skin-picker li button{width:100%;display:grid;justify-items:center;gap:4px;padding:8px 4px;border:1px solid #e6d8b433;border-radius:6px;background:#ffffff08;color:inherit;font-size:11px;cursor:pointer}
+.dice-skin-picker li button[aria-pressed=true]{border-color:#e6c97a;box-shadow:0 0 0 2px #e6c97a55}
+.dice-skin-picker li button:disabled{opacity:.5;cursor:default}
+.dice-skin-picker small{opacity:.75;font-size:10px}
+.dice-skin-swatch{width:30px;height:30px;border-radius:7px;border:2px solid #3b2a1a;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:4px;background:radial-gradient(circle at 32% 28%,#fffaf0,#e9dcc0)}
+.dice-skin-swatch i{display:block;margin:auto;width:70%;aspect-ratio:1;border-radius:50%;background:var(--pip,#2a1d12)}
+.dice-skin-swatch.is-obsidian{background:radial-gradient(circle at 32% 28%,#5b5f6b,#25272e 62%,#14151a);border-color:#08090c;--pip:#e7e9ef}
+.dice-skin-swatch.is-jade{background:radial-gradient(circle at 32% 28%,#c9f0d6,#6fbf8e 60%,#3f8a60);border-color:#1f4a33;--pip:#123322}
+.dice-skin-swatch.is-gilded{background:radial-gradient(circle at 32% 28%,#fff3c4,#e8c25a 58%,#b5862b);border-color:#6b4a12;--pip:#3a260a}
+.dice-skin-swatch.is-crimson{background:radial-gradient(circle at 32% 28%,#e8656a,#a51f2b 60%,#6d0f19);border-color:#3d060c;--pip:#ffd877}

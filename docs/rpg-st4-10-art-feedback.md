@@ -91,3 +91,48 @@ On the table lie a few blank cream-white rectangular stone game tiles (like domi
    - 지역 3·4 지도도 같은 방식으로 맞춘다. 지역 3은 고목(아래)·편지 보관함(오른쪽)·성소(가운데)·잿불 흔적(왼쪽 위)·제단(위), 지역 4는 세계수(가운데)다.
 5. **확인:** 폰 세로(375·360), 폰 가로(812×375), PC에서 각 장면·지도·패를 띄워 본다. 아래쪽 자막에 그림 속 중요한 부분이 가리지 않는지도 본다. 전체 테스트(`scripts/register-tests.mjs` 로더)와 `tsc --noEmit`을 돌리고 결과를 기록한다.
 6. **저장:** 로컬에만 저장한다. 버전 올림·커밋·push·배포는 사용자가 요청할 때만 한다.
+
+---
+
+# 2차 검수 (2026-11-11 오후, 0.7.12 배포본 기준)
+
+1차 수정본 12장과 나머지 그림을 `public/story/*-portrait-v1.png` 원본으로 다시 봤다. 2-A(프롤로그 돌기둥·주점 복제)와 ST5·ST8·ST9 탁자 위 다른 말은 고쳐졌다. 아래는 **남은 문제**다. 앱 경로 이름은 그대로(`-portrait-v1`) 두고 원본은 `artifacts/`에 `-v2`, `-v3`처럼 새 번호로 보존한다.
+
+## 5. 기준: 게임 패 모양
+
+기준 그림은 `public/prologue/tavern-wager-portrait-v2.png`(주점 패 건네기)와 `public/story/ending-handoff-portrait-v1.png`다. 패는 **손바닥만 한 크림색 돌 패, 가로세로가 비슷하거나 살짝 세로로 긴 비율, 작은 벽돌처럼 두께가 보이고 모서리가 둥글게 닳음**이다. 종이 카드처럼 얇거나 체스 말처럼 세워진 것은 틀리다.
+
+패가 나오는 장면을 다시 뽑을 때 공통 스타일 뒤에 이 문장을 넣고, 기준 그림 `tavern-wager-portrait-v2.png`를 함께 첨부한다.
+
+```
+Game tiles must look exactly like the tiles in the attached tavern reference: chunky cream-white stone tiles about the size of a palm, roughly square to slightly taller than wide (about 4:5), thick like a small brick with visible side thickness and worn rounded edges. They lie flat on the table, a few scattered, face down (blank). They are not paper cards, not thin plates, not upright blocks, not chess or checkers pieces, and there is no game board grid on the table.
+```
+
+## 6. 다시 뽑을 그림 (우선순위 순)
+
+| 순서 | 파일 | 문제 | 고칠 점 |
+|---|---|---|---|
+| 1 | `st6-before` | 격자 판 위에 체스 말 같은 작은 기둥이 서 있음(1차 검수에서 놓침) | 격자 판·말 제거, 5번 문장의 패 몇 장. 철갑 수호자·은발 깃발지기는 지금 그대로 좋다 |
+| 2 | `st6-after` | 같은 탁자에 격자와 세워진 말 | st6-before와 같은 탁자로, 패 몇 장 또는 빈 탁자. 철갑·부엉이·장부는 그대로 |
+| 3 | `dice-den` | 탁자 위 주사위가 4개(손에 1개). 요트다이스는 주사위 5개 | 탁자 위에 **흰 주사위 5개** + 하로가 손에 **상아 주사위 1개**. 문장: `Exactly five white dice lie on the table, clearly countable, plus one separate ivory die in the gambler's fingers.` |
+| 4 | `st5-before` | 패가 맥주잔보다 훨씬 작고 종이처럼 얇음 | 5번 문장. 패 3~4장을 잔 옆에 잔 바닥 크기만 하게 |
+| 5 | `true-ending-village` | 패 모양은 맞지만 문양이 성·나무·별·물결·검·사슴 등 게임에 없는 것 | 문양을 게임 문양 4개(왕관·철문·성화·열쇠)만 쓰기. 문장: `The tiles show only these four carved emblems, repeated: crown, iron gate, flame, key. No other symbols.` |
+| 6 | `quest-9` | 제단의 맞물린 문양이 해·달 원 두 개라서 `st9-after` 제단(왕관+철문)과 다름 | `st9-after`의 왕관+철문 맞물린 문양과 같은 모양으로 맞추기(`st9-after-portrait-v3.png` 첨부) |
+
+## 7. 그대로 둬도 되는 것 (참고)
+
+- `st4-before`, `st7-before`, `st8-before`, `st9-before`, `st9-after`: 패가 기준보다 조금 얇지만 크기·모양은 읽힌다. 시간이 남으면 5번 문장으로 다시 뽑아도 된다.
+- `st10-after`: 갈색 패 2장은 ST10 패 뒷면(갈색 나무)과 맞는다.
+- `st6-flame-two`, `st9-key-two`: 패가 세로로 긴 카드 비율이라 게임 패보다 길쭉하지만, 이야기 패 그림(1024×1536)과 같은 모양이라 유지.
+- 비율: 앱 WebP 36장은 모두 9:16(941×1672)이고, 원본이 넓었던 3장(`region-2-map`, `region-3-map`, `ending-handoff`)도 늘리지 않고 가운데를 잘라 만든 것을 확인했다.
+
+## 8. 반영 방법
+
+1. 받은 PNG를 941×1672(9:16)로 맞춘다. 넓게 나오면 좌우를 똑같이 자르고, 늘리지 않는다.
+2. `public/story/{키}-portrait-v1.png`와 `.webp`를 교체한다(앱 경로는 그대로). 교체 전 원본은 `artifacts/`에 보존한다.
+3. 375×812에서 해당 장면을 띄워 확인하고, 전체 테스트와 `tsc --noEmit`을 돌린다.
+4. 로컬 저장까지만 한다.
+
+## 9. 2차 검수 반영 완료 (2026-11-11, Codex)
+
+사용자 수정 요청으로 6번 표의 6장을 수정해 기존 PNG·WebP 경로에 로컬 적용했다. ST6 대결 후는 장부만 있는 빈 탁자를 채택했다. 하로는 탁자 위 5개+손 1개이며, 폰 대사창 위로 다섯 개가 모두 보이도록 배치도 조정했다. 원본·수정본·프롬프트와 이번 검증은 [이미지 일치화 적용 기록](local-art-consistency-2026-11-11.md)을 따른다.

@@ -1,0 +1,32 @@
+.dialogue-tools{position:absolute;z-index:6;display:flex;gap:6px}
+.dialogue-tools button{min-height:34px;padding:6px 11px;border:1px solid #eee6cf55;border-radius:3px;background:#07121e99;color:#e7e1d1;font:11px system-ui,sans-serif;letter-spacing:.06em;cursor:pointer}
+.dialogue-tools button[aria-pressed=true]{border-color:#e6c97a;color:#f3dc9b}
+.dialogue-tools button:disabled{opacity:.45;cursor:default}
+.dialogue-tools button:focus-visible{outline:2px solid #e6d8b4;outline-offset:2px}
+/* Story cutscenes: top-left, opposite the skip button. */
+.rpg-prologue>.dialogue-tools.is-story{top:max(24px,env(safe-area-inset-top));left:max(22px,env(safe-area-inset-left))}
+.rpg-prologue:has(.journey-story-chrome)>.dialogue-tools.is-story{top:110px;left:12px}
+.rpg-prologue:has(.journey-story-chrome)>.dialogue-tools.is-story button{min-height:30px;font-size:10px;padding:5px 9px}
+@media(max-aspect-ratio:1/1){.rpg-prologue>.dialogue-tools.is-story{top:max(18px,env(safe-area-inset-top));left:14px}}
+@media(max-height:500px){.rpg-prologue>.dialogue-tools.is-story{top:12px;left:16px}.dialogue-tools button{min-height:30px;padding:4px 9px}}
+/* Quest conversations: inside the box (it clips overflow), top-right next to the page count, outside its grid flow. */
+.quest-dialogue>.dialogue-tools.is-quest{position:absolute;right:46px;top:4px;gap:4px}
+.quest-dialogue>.dialogue-tools.is-quest button{min-height:22px;padding:2px 8px;font-size:10px;background:#07121e66}
+
+.dialogue-backlog-overlay{position:fixed;inset:0;z-index:100000;display:grid;place-items:center;padding:16px;background:#000a}
+.dialogue-backlog{width:min(560px,100%);max-height:min(76dvh,640px);display:flex;flex-direction:column;border:1px solid #e6d8b455;border-radius:6px;background:#0d1620f2;color:#ece5d2;box-shadow:0 20px 60px #000c;outline:none}
+.dialogue-backlog header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #e6d8b433;font:13px system-ui,sans-serif;letter-spacing:.08em}
+.dialogue-backlog header button{width:36px;height:36px;border:0;background:none;color:inherit;font-size:22px;cursor:pointer}
+.dialogue-backlog ol{list-style:none;margin:0;padding:10px 16px 16px;overflow:auto;display:grid;gap:12px}
+.dialogue-backlog li small{display:block;color:#e6c97a;font:11px system-ui,sans-serif;margin-bottom:2px}
+.dialogue-backlog li p{margin:0;font-size:15px;line-height:1.6;white-space:pre-line}
+.dialogue-backlog li:last-child p{color:#fff}
+
+/* Choice pages: the choices fill the top-right, so the tools move to the bottom-left of the box. */
+.quest-dialogue.has-choices>.dialogue-tools.is-quest{top:auto;bottom:6px;right:auto;left:14px}
+/* Phone held sideways: a slimmer dialogue box so the painting stays visible (it covered ~45% of the height). */
+@media (max-height:500px) and (min-aspect-ratio:1/1){
+ .rpg-prologue.quest-cutscene .quest-dialogue,.rpg-prologue.quest-cutscene[data-painting] .quest-dialogue{height:124px!important;min-height:124px!important;grid-template-rows:70px 24px!important}
+ .rpg-prologue.quest-cutscene .quest-dialogue-text p,.rpg-prologue.quest-cutscene[data-painting] .quest-dialogue-text p{font-size:15px!important;line-height:1.4!important}
+ .rpg-prologue.quest-cutscene .quest-scene-choices>button,.rpg-prologue.quest-cutscene[data-painting] .quest-scene-choices>button{min-height:30px!important;font-size:12.5px!important}
+}

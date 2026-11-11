@@ -16,7 +16,7 @@ class Statement{
 }
 const db={prepare:(sql:string)=>new Statement(sql),batch:async(statements:Statement[])=>{sqlite.exec('BEGIN');try{const rows=[];for(const s of statements)rows.push(await s.run());sqlite.exec('COMMIT');return rows;}catch(e){sqlite.exec('ROLLBACK');throw e;}}};
 let source=fs.readFileSync('app/api/game/route.ts','utf8').replace("'../../../lib/record-retention'",JSON.stringify(pathToFileURL(process.cwd()+'/lib/record-retention.ts').href)).replace('import { env } from "cloudflare:workers";','const env=(globalThis as any).__boardTest;');
-for(const name of ['game','social','challenge','history','leaderboard'])source=source.replaceAll('"../../../lib/'+name+'"',JSON.stringify(pathToFileURL(process.cwd()+'/lib/'+name+'.ts').href));
+for(const name of ['game','social','challenge','history','leaderboard','yacht-room-server','yacht-room','daily-server','daily'])source=source.replaceAll('"../../../lib/'+name+'"',JSON.stringify(pathToFileURL(process.cwd()+'/lib/'+name+'.ts').href));
 (globalThis as any).__boardTest={DB:db};
 const {POST}=await import('data:text/javascript;base64,'+Buffer.from(ts.transpileModule(source,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText).toString('base64'));
 const post=async(body:any,origin='https://turntale.test')=>{const r=await POST(new Request('https://turntale.test/api/game',{method:'POST',headers:{'Content-Type':'application/json',Origin:origin},body:JSON.stringify(body)}));return {status:r.status,data:await r.json() as any};};

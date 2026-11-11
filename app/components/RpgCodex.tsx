@@ -5,6 +5,7 @@ import {RPG_REWORK_RELICS} from '../../lib/rpg-rework';
 import {relicImage} from '../../lib/item-battle-relics';
 import {STORY_CARDS,type StoryCardId} from '../../lib/rpg-story-cards';
 import {STORY_CARD_ART} from '../../lib/rpg-story-card-art';
+import {readRelicTally} from '../../lib/relic-tally';
 
 /** Journey relics found so far: archive + the run in progress. Legacy (pre-rework) relic ids are ignored. */
 export function codexEntries(discovered:readonly string[],storyCards:readonly StoryCardId[]){
@@ -17,7 +18,8 @@ export function codexEntries(discovered:readonly string[],storyCards:readonly St
 /** Read-only collection view: no rewards, no unlock side effects (content-unlock growth stays in the journey). */
 export default function RpgCodex({discovered,storyCards,close}:{discovered:readonly string[],storyCards:readonly StoryCardId[],close:()=>void}){
  const [tab,setTab]=useState<'relics'|'stories'>('relics'),[flipped,setFlipped]=useState<StoryCardId|null>(null);
- const data=codexEntries(discovered,storyCards);
+ const data=codexEntries(discovered,storyCards),[fired,setFired]=useState<Record<string,number>>({});
+ useEffect(()=>{setFired(readRelicTally().counts);},[]);
  useEffect(()=>{const key=(e:KeyboardEvent)=>{if(e.key==='Escape')close();};document.addEventListener('keydown',key);return()=>document.removeEventListener('keydown',key);},[close]);
  const body=<div className="modal-shade codex-shade" onClick={close}><section className="modal rpg-codex" role="dialog" aria-modal="true" aria-labelledby="codex-title" onClick={e=>e.stopPropagation()}>
   <button className="close" aria-label="도감 닫기" onClick={close}>×</button>
@@ -28,7 +30,7 @@ export default function RpgCodex({discovered,storyCards,close}:{discovered:reado
   </div>
   {tab==='relics'?<ul className="codex-grid codex-relics">{data.relics.map(relic=><li key={relic.id} className={relic.found?'is-found':'is-hidden'}>
    {relic.found?<img src={relicImage(relic.id)} alt=""/>:<span className="codex-unknown" aria-hidden="true">?</span>}
-   <strong>{relic.found?relic.name:'???'}</strong><small>{relic.found?relic.effect:'여정에서 발견하면 기록돼요'}</small>{relic.found&&relic.passive&&<em className="rpg-offer-passive">갖고만 있어도 적용</em>}
+   <strong>{relic.found?relic.name:'???'}</strong><small>{relic.found?relic.effect:'여정에서 발견하면 기록돼요'}</small>{relic.found&&relic.passive&&<em className="rpg-offer-passive">갖고만 있어도 적용</em>}{relic.found&&<span className="codex-fired">발동 {fired[relic.id]||0}회</span>}
   </li>)}</ul>
   :<ul className="codex-grid codex-stories">{data.stories.map(card=><li key={card.id} className={card.found?'is-found':'is-hidden'}>
    {card.found?<button className="codex-card" aria-label={`${card.name} ${flipped===card.id?'앞면 보기':'뒷면 보기'}`} onClick={()=>setFlipped(flipped===card.id?null:card.id)}><img src={flipped===card.id?STORY_CARD_ART[card.id].back:STORY_CARD_ART[card.id].front} alt=""/></button>:<span className="codex-unknown codex-card-unknown" aria-hidden="true">?</span>}

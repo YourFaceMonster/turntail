@@ -1,3 +1,4 @@
+import {rpgRelicSlots} from './rpg-trials';
 import {activateRpgRelics,isPassiveRelic,rpgMaxHp} from './rpg-rework';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
 import {restoreRetiredJourneyNodes} from './rpg-journey-legacy.ts';
@@ -34,13 +35,13 @@ export const JOURNEY_NODES:{id:JourneyNode,name:string,x:number,y:number,portrai
  {id:'battle-2',name:'ST2 · 마을 광장',x:54,y:45,kind:'battle',region:1},
  {id:'battle-3',name:'ST3 · 북쪽 성채',x:57,y:17,kind:'battle',region:1},
  // Landscape placeholders and cropped portrait paintings have separate landmark coordinates.
- {id:'quest-4',name:'물에 젖은 기록',x:22,y:62,portrait:{x:12,y:59},kind:'event',region:2},
- {id:'battle-4',name:'ST4 · 물안개 폭포',x:40,y:78,portrait:{x:70,y:59},kind:'battle',region:2},
- {id:'quest-5',name:'끊긴 매듭',x:76,y:60,portrait:{x:88.5,y:31},kind:'event',region:2},
- {id:'battle-5',name:'ST5 · 구름다리 쉼터',x:56,y:50,portrait:{x:48,y:37},kind:'battle',region:2},
+ {id:'quest-4',name:'물에 젖은 기록',x:22,y:62,portrait:{x:13,y:62},kind:'event',region:2},
+ {id:'battle-4',name:'ST4 · 물안개 폭포',x:40,y:78,portrait:{x:69,y:60},kind:'battle',region:2},
+ {id:'quest-5',name:'끊긴 매듭',x:76,y:60,portrait:{x:89,y:33},kind:'event',region:2},
+ {id:'battle-5',name:'ST5 · 구름다리 쉼터',x:56,y:50,portrait:{x:49,y:40},kind:'battle',region:2},
  {id:'quest-6',name:'잊힌 맹세',x:28,y:30,portrait:{x:14,y:18},kind:'event',region:2},
- {id:'dice-den',name:'안개 나루 주사위판',x:82,y:32,portrait:{x:78,y:82},kind:'event',region:2},
- {id:'battle-6',name:'ST6 · 수호자의 회랑',x:58,y:20,portrait:{x:61,y:12},kind:'battle',region:2},
+ {id:'dice-den',name:'안개 나루 주사위판',x:82,y:32,portrait:{x:78,y:84},kind:'event',region:2},
+ {id:'battle-6',name:'ST6 · 수호자의 회랑',x:58,y:20,portrait:{x:61,y:14},kind:'battle',region:2},
  {id:'battle-7',name:'ST7 · 달빛 고목',x:40,y:78,portrait:{x:50,y:84},kind:'battle',region:3},
  {id:'quest-8',name:'전해지지 못한 편지',x:76,y:58,portrait:{x:85,y:54},kind:'event',region:3},
  {id:'battle-8',name:'ST8 · 별빛 성소',x:56,y:50,portrait:{x:59,y:31},kind:'battle',region:3},
@@ -102,7 +103,7 @@ function settleDiceDen(run:RpgRun,den:DiceDenState,result:'win'|'lose'|'draw'|'f
  if(result==='lose'||result==='forfeit'){next.hp=[Math.max(1,run.hp[0]-DICE_DEN_STAKE),...run.hp.slice(1)];nextDen.losses=den.losses+1;}
  if(result==='win'&&!den.relicClaimed){
   const relics=run.relics.includes(DICE_RELIC_ID)?run.relics:[...run.relics,DICE_RELIC_ID];
-  next={...next,relics,equipped:run.equipped.includes(DICE_RELIC_ID)||run.equipped.length>=3?run.equipped:[...run.equipped,DICE_RELIC_ID],discovered:[...new Set([...run.discovered,DICE_RELIC_ID])],unlocked:[...new Set([...(run.unlocked||[]),DICE_RELIC_ID])]};
+  next={...next,relics,equipped:run.equipped.includes(DICE_RELIC_ID)||run.equipped.length>=rpgRelicSlots(run)?run.equipped:[...run.equipped,DICE_RELIC_ID],discovered:[...new Set([...run.discovered,DICE_RELIC_ID])],unlocked:[...new Set([...(run.unlocked||[]),DICE_RELIC_ID])]};
   nextDen={...nextDen,relicClaimed:true};
   next.journey={...j,diceDen:nextDen,completedNodes:[...new Set<JourneyNode>([...j.completedNodes,'dice-den'])]};
   return activateRpgRelics(next);
@@ -187,7 +188,7 @@ export function claimWatchtowerRelic(run:RpgRun,replace?:string):RpgRun{
  if(!relics.includes(BLUE_GLASS_ID)){
   relics.push(BLUE_GLASS_ID);
  }
- const equipped=run.equipped.includes(BLUE_GLASS_ID)||run.equipped.length>=3?run.equipped:[...run.equipped,BLUE_GLASS_ID];
+ const equipped=run.equipped.includes(BLUE_GLASS_ID)||run.equipped.length>=rpgRelicSlots(run)?run.equipped:[...run.equipped,BLUE_GLASS_ID];
  return {...run,relics,equipped,discovered:[...new Set([...run.discovered,BLUE_GLASS_ID])],unlocked:[...new Set([...run.unlocked,BLUE_GLASS_ID])],journey:{...j,watchtowerRelicClaimed:true},updatedAt:Date.now()};
 }
 export function equipJourneyRelic(run:RpgRun,id:string,replace?:string):RpgRun{
@@ -196,7 +197,7 @@ export function equipJourneyRelic(run:RpgRun,id:string,replace?:string):RpgRun{
  if(run.rework&&isPassiveRelic(id)&&!run.equipped.includes(id))throw Error('가방에 갖고만 있어도 적용되는 유물이에요.');
  let equipped=run.equipped.filter(relic=>run.relics.includes(relic));
  if(equipped.includes(id)){equipped=equipped.filter(relic=>relic!==id);}
- else{if(equipped.length>=3){if(!replace||!equipped.includes(replace))throw Error('교체할 장착 유물을 선택해 주세요.');equipped=equipped.filter(relic=>relic!==replace);}equipped.push(id);}
+ else{if(equipped.length>=rpgRelicSlots(run)){if(!replace||!equipped.includes(replace))throw Error('교체할 장착 유물을 선택해 주세요.');equipped=equipped.filter(relic=>relic!==replace);}equipped.push(id);}
  return activateRpgRelics({...run,equipped,updatedAt:Date.now()});
 }
 function createJourneyMini(game:Game,now:number,purpose:'tavern'|'letter'){

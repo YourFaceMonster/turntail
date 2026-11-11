@@ -15,3 +15,8 @@ main.turntale.table-v211.active-table.landscape-table.landscape-stacked.rpg-mode
 main.turntale.table-v211.active-table.landscape-table.landscape-stacked.rpg-mode .floor-relic-dock .rpg-relic-tray-heading strong{font-size:10px}
 main.turntale.table-v211.active-table.landscape-table.landscape-stacked.rpg-mode .floor-relic-dock :is(.rpg-relic-slot-condition,.rpg-relic-slot-bonus){font-size:9.5px!important;line-height:1.2!important}
 main.turntale.table-v211.active-table.landscape-table.landscape-stacked .play-column{grid-template-areas:"board played" "board hand"!important;grid-template-rows:calc(var(--played-card-height) + var(--trick-chrome,8px) + 2px) minmax(0,1fr)!important}
+
+/* PC monitor (mouse, large window): the enlarged floor sits in the middle of its tall column. */
+@media (hover:hover) and (pointer:fine) and (min-width:1000px) and (min-height:650px){
+ .turntale.table-v211.active-table.landscape-table.landscape-stacked .floor-stage>.wall{align-content:center!important}
+}

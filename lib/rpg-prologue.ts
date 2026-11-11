@@ -50,9 +50,12 @@ export function prologueCuts(connection?:{normalEndingCleared:boolean,handoffSce
 /** Visible time only; natural completion, rapid taps and skip share one latch. */
 export class PrologueClock{
  index=0;elapsed=0;completed=false;paused=false;
+ /** Player turned auto-advance off (or opened the log): the timer stops, but tapping still moves on. */
+ held=false;
  private last:number|null=null;
  constructor(readonly cuts:readonly PrologueCut[],private finish:()=>void){}
- tick(now:number){if(this.completed)return;if(this.last!==null&&!this.paused)this.elapsed+=Math.max(0,Math.min(250,now-this.last));this.last=now;if(!this.paused&&this.elapsed>=this.cuts[this.index].duration)this.next();}
+ tick(now:number){if(this.completed)return;if(this.last!==null&&!this.paused&&!this.held)this.elapsed+=Math.max(0,Math.min(250,now-this.last));this.last=now;if(!this.paused&&!this.held&&this.elapsed>=this.cuts[this.index].duration)this.next();}
+ hold(value:boolean){this.held=value;this.last=null;}
  pause(value:boolean){this.paused=value;this.last=null;}
  next(){if(this.completed||this.paused)return;if(this.index===this.cuts.length-1){this.complete();return;}this.index++;this.elapsed=0;this.last=null;}
  complete(){if(this.completed)return;this.completed=true;this.finish();}

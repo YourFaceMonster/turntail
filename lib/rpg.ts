@@ -1,3 +1,4 @@
+import {rpgRelicSlots} from './rpg-trials';
 import type {RpgRework} from './rpg-rework';
 import {activateRpgRelics} from './rpg-rework';
 import {isRpgDemo,demoShop} from './rpg-demo-catalog.ts';
@@ -16,7 +17,7 @@ export type RpgStatus='playing'|'allocation'|'relic'|'ready'|'complete'|'game-ov
 export type RpgResult={id:string,at:number,players:{count:number,delta:number,total?:number}[]};
 export type RpgReward={stage:number,rank:number,counts:number[],hpAfterSettlement:number[],coins:number,points:number,nextStage:number,offers:string[],retry:boolean,special?:boolean,reason:'clear'|'fate'|'end'};
 export type RpgShop={area:number,stock:{id:string,kind:'relic'|'consumable',price:number,quantity:number}[]};
-export type RpgRun={pendingRework?:boolean,rework?:RpgRework,storyCards?:StoryCardId[],roundHealth?:RpgRoundHealth,journey?:RpgJourneyState,phaseOne?:RpgPhaseOneState,maxHp?:number,combat?:RpgProfessionCombat,itemGuards?:Record<number,boolean>,tactics?:Record<number,RpgTacticalState>,enemyConsumables?:Record<number,string[]>,protectedCounts?:number[],lastItem?:RpgItemEvent,version:1,id:string,stage:number,status:RpgStatus,hp:number[],fate:number,coins:number,points:number,rounds:number,roundIds:string[],gloveRoundIds:string[],startedAt:number,updatedAt:number,reward:RpgReward|null,relics:string[],equipped:string[],consumables:string[],shops:RpgShop[],scaleUsed:number[],pendingSoup:boolean,pendingBandage:boolean,shield:number,bossCoinPaid:number[],crackedHeartUsed:number[],discovered:string[],unlocked:string[],relicActivations?:RpgRelicActivation[],lastExchange?:RpgExchangeEvent,tacticalRound?:number,tacticalUsed?:number,tacticalTurn?:number,tacticalPeeks?:{round:number,index:number,tile:{id:number,n:number,s:number}}[],tacticalPeek?:{round:number,index:number,tile:{id:number,n:number,s:number}}};
+export type RpgRun={/** Challenge rules picked at the start (rpg-trials.ts). */trials?:import('./rpg-trials').RpgTrialId[],pendingRework?:boolean,rework?:RpgRework,storyCards?:StoryCardId[],roundHealth?:RpgRoundHealth,journey?:RpgJourneyState,phaseOne?:RpgPhaseOneState,maxHp?:number,combat?:RpgProfessionCombat,itemGuards?:Record<number,boolean>,tactics?:Record<number,RpgTacticalState>,enemyConsumables?:Record<number,string[]>,protectedCounts?:number[],lastItem?:RpgItemEvent,version:1,id:string,stage:number,status:RpgStatus,hp:number[],fate:number,coins:number,points:number,rounds:number,roundIds:string[],gloveRoundIds:string[],startedAt:number,updatedAt:number,reward:RpgReward|null,relics:string[],equipped:string[],consumables:string[],shops:RpgShop[],scaleUsed:number[],pendingSoup:boolean,pendingBandage:boolean,shield:number,bossCoinPaid:number[],crackedHeartUsed:number[],discovered:string[],unlocked:string[],relicActivations?:RpgRelicActivation[],lastExchange?:RpgExchangeEvent,tacticalRound?:number,tacticalUsed?:number,tacticalTurn?:number,tacticalPeeks?:{round:number,index:number,tile:{id:number,n:number,s:number}}[],tacticalPeek?:{round:number,index:number,tile:{id:number,n:number,s:number}}};
 export const RPG_BOSSES=[3,6,9,10];
 export const RPG_TEST_ROUNDS=5;
 export const RPG_RELIC_REWARD_STAGES=[1,2,4,5,7,8];
@@ -130,7 +131,7 @@ export function equipRpgRelic(run:RpgRun,id:string,replace:string|null=null):Rpg
  if(run.status!=='ready')throw Error('유물은 전투 준비 중에만 바꿀 수 있어요.');
  if(!run.relics.includes(id))throw Error('보유하지 않은 유물이에요.');
  if(run.equipped.includes(id))return activateRpgRelics({...run,equipped:run.equipped.filter(item=>item!==id)});
- if(run.equipped.length>=3&&(!replace||!run.equipped.includes(replace)))throw Error('장착 자리가 가득 찼어요. 교체할 유물을 고르세요.');
+ if(run.equipped.length>=rpgRelicSlots(run)&&(!replace||!run.equipped.includes(replace)))throw Error('장착 자리가 가득 찼어요. 교체할 유물을 고르세요.');
  return activateRpgRelics({...run,equipped:[...run.equipped.filter(item=>item!==replace),id]});
 }
 export function advanceRpgStage(run:RpgRun):RpgRun{

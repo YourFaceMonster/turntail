@@ -1,0 +1,155 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-11-11",
+  "baseVersion": "0.7.12",
+  "sourceDocument": "docs/rpg-st4-10-art-feedback.md sections 5-8",
+  "jobs": [
+    {
+      "key": "st6-before",
+      "generatedOriginal": "artifacts/art-consistency-2026-11-11/st6-before-portrait-v2.png",
+      "backup": "artifacts/art-consistency-2026-11-11/before/st6-before-portrait-v1.png",
+      "targetPng": "public/story/st6-before-portrait-v1.png",
+      "targetWebp": "public/story/st6-before-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "references": [
+        "public/story/st6-before-portrait-v1.png",
+        "public/prologue/tavern-wager-portrait-v2.png"
+      ],
+      "prompt": "Edit the FIRST image only. Preserve the approved TURNTALE hand-drawn 2D cartoon fantasy ink contours, original characters, exact poses, clothing, architecture, camera position, light and color, and calm lower quarter for captions. Keep portrait 9:16, target 941 by 1672. Supporting references are for the requested prop design only. Do not copy their people, buildings or composition. No added writing, letters, numbers or watermarks. Replace the grid and all standing playing pieces on the black stone tabletop with FOUR Game tiles must look exactly like the tiles in the attached tavern reference: chunky cream-white stone tiles about the size of a palm, roughly square to slightly taller than wide (about 4:5), thick like a small brick with visible side thickness and worn rounded edges. They lie flat on the table, a few scattered, face down (blank). They are not paper cards, not thin plates, not upright blocks, not chess or checkers pieces, and there is no game board grid on the table. The table is a plain worn black basalt slab, with no grid or border game lines. Keep the original armor guardian and the silver-haired banner keeper exactly.",
+      "generatedSize": [
+        941,
+        1671
+      ],
+      "beforeSha256": "d3904d47bacb5748fd1c5433443c0ace90051a6d28b41eb81cf76c90aba2b88a",
+      "pngSha256": "94153cbc51078d13a7a3d7b161a4828fc97b71d5292144d064b25f29a6684d63",
+      "webpSha256": "206ac7f007b1e06489abcf1c410d282a212d46e921bf1b9bde23d11553ed98a3",
+      "webpBytes": 236082
+    },
+    {
+      "key": "st6-after",
+      "generatedOriginal": "artifacts/art-consistency-2026-11-11/st6-after-portrait-v3.png",
+      "backup": "artifacts/art-consistency-2026-11-11/before/st6-after-portrait-v1.png",
+      "targetPng": "public/story/st6-after-portrait-v1.png",
+      "targetWebp": "public/story/st6-after-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "references": [
+        "public/story/st6-after-portrait-v1.png"
+      ],
+      "prompt": "Edit the FIRST image only. Preserve the approved TURNTALE hand-drawn 2D cartoon fantasy ink contours, original characters, exact poses, clothing, architecture, camera position, light and color, and calm lower quarter for captions. Keep portrait 9:16, target 941 by 1672. Supporting references are for the requested prop design only. Do not copy their people, buildings or composition. No added writing, letters, numbers or watermarks. Remove the entire grid pattern, every standing piece, and every loose game piece from the black basalt tabletop. The tabletop is plain worn black basalt and EMPTY except for the owl's existing open ledger. Preserve the bowed empty armor, brass owl opening ledger, shafts of dusty light and all other details. Match the same plain black basalt table in the before-match scene.",
+      "generatedSize": [
+        941,
+        1671
+      ],
+      "beforeSha256": "d9cf0872410b46884c3defa90eba666fb55d36988ed7aa8e780caba39123f85b",
+      "pngSha256": "3ce182fd31103a4ec01dbd3800c310301d585cb3aec09905db00fc2676658a6f",
+      "webpSha256": "756f968af124db555f9cb6a11ba8b8c75543969a3a9af3c918065cf1fba5e39d",
+      "webpBytes": 253692
+    },
+    {
+      "key": "dice-den",
+      "generatedOriginal": "artifacts/art-consistency-2026-11-11/dice-den-portrait-v3.png",
+      "backup": "artifacts/art-consistency-2026-11-11/before/dice-den-portrait-v1.png",
+      "targetPng": "public/story/dice-den-portrait-v1.png",
+      "targetWebp": "public/story/dice-den-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "references": [
+        "public/story/dice-den-portrait-v1.png"
+      ],
+      "prompt": "Edit the FIRST image only. Preserve the approved TURNTALE hand-drawn 2D cartoon fantasy ink contours, original characters, exact poses, clothing, architecture, camera position, light and color, and calm lower quarter for captions. Keep portrait 9:16, target 941 by 1672. Supporting references are for the requested prop design only. Do not copy their people, buildings or composition. No added writing, letters, numbers or watermarks. Correct the dice count in the existing scene: Exactly FIVE WHITE dice lie flat on the wooden tabletop, clearly countable and separated from one another, PLUS ONE separate IVORY die in the gambler's existing fingers. There are six dice total, five tabletop dice and one held die. Replace the current tabletop dice arrangement with a loose semicircle of five individually visible white dice in front of him. Each die is a real cube with ordinary dark pips. Preserve his existing raised hand holding the one ivory die, hat, face, boat shed, waterfall, lantern, and table. No extra dice hidden in background. Pips are allowed.",
+      "generatedSize": [
+        941,
+        1672
+      ],
+      "beforeSha256": "8b679de6bed267bbc6074383b28c5a6d62aa7bd5e44aede06cac87980d5d9b7b",
+      "pngSha256": "08f7679cb02486a94f2194679dc685702c3c538514eaac588f99295578084409",
+      "webpSha256": "e9603d42d4349200c128c6dff1efe2f639b216ce35efc1f7f43db2c587066f77",
+      "webpBytes": 162254,
+      "previousGeneratedOriginal": "artifacts/art-consistency-2026-11-11/dice-den-portrait-v2.png",
+      "compositionPrompt": "Edit the dice arrangement ONLY in this TURNTALE portrait. Keep exactly FIVE white cube dice on the tabletop plus exactly ONE ivory die in the gambler's fingers. Move the five tabletop dice into ONE shallow, gently staggered horizontal row near the BACK edge of the tabletop, immediately below the gambler's resting forearm, spread evenly from left to right. Keep all five tabletop dice in a narrow horizontal band well ABOVE the lower third of the picture, each die fully separate and clearly countable. The frontmost die currently near the lower-center must move up into this higher row. Leave the lower quarter completely empty wooden tabletop for an in-game dialogue panel. Preserve exactly the character, face, held die, hands, hat, waterfall, shed, lantern, lighting, bold hand-drawn 2D ink style, and 9:16 framing. No added objects or text. Exactly five tabletop dice, one held die."
+    },
+    {
+      "key": "st5-before",
+      "generatedOriginal": "artifacts/art-consistency-2026-11-11/st5-before-portrait-v3.png",
+      "backup": "artifacts/art-consistency-2026-11-11/before/st5-before-portrait-v1.png",
+      "targetPng": "public/story/st5-before-portrait-v1.png",
+      "targetWebp": "public/story/st5-before-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "references": [
+        "public/story/st5-before-portrait-v1.png",
+        "public/prologue/tavern-wager-portrait-v2.png"
+      ],
+      "prompt": "Edit the FIRST image only. Preserve the approved TURNTALE hand-drawn 2D cartoon fantasy ink contours, original characters, exact poses, clothing, architecture, camera position, light and color, and calm lower quarter for captions. Keep portrait 9:16, target 941 by 1672. Supporting references are for the requested prop design only. Do not copy their people, buildings or composition. No added writing, letters, numbers or watermarks. Replace the three tiny thin slabs on the tabletop with THREE palm-sized chunky cream stone game tiles, each approximately the diameter of an adjacent tankard's base. Game tiles must look exactly like the tiles in the attached tavern reference: chunky cream-white stone tiles about the size of a palm, roughly square to slightly taller than wide (about 4:5), thick like a small brick with visible side thickness and worn rounded edges. They lie flat on the table, a few scattered, face down (blank). They are not paper cards, not thin plates, not upright blocks, not chess or checkers pieces, and there is no game board grid on the table. Each tile is about four times as wide as its visible side thickness. Preserve the mugs and pouch and all characters and bridge.",
+      "generatedSize": [
+        941,
+        1672
+      ],
+      "beforeSha256": "21436283b64835d2e0c39f97ab9160b1cc5610fbac91ba9af3cdb66424ea7d93",
+      "pngSha256": "462006ee4978652568b24415d0f5d893726e8fb23ae0c61970df03e2a7442dac",
+      "webpSha256": "92cef0ef510d5ae74f42837c8e9c3d480b442794175ad201f8d7600db3cbb22e",
+      "webpBytes": 272810
+    },
+    {
+      "key": "true-ending-village",
+      "generatedOriginal": "artifacts/art-consistency-2026-11-11/true-ending-village-portrait-v2.png",
+      "backup": "artifacts/art-consistency-2026-11-11/before/true-ending-village-portrait-v1.png",
+      "targetPng": "public/story/true-ending-village-portrait-v1.png",
+      "targetWebp": "public/story/true-ending-village-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "references": [
+        "public/story/true-ending-village-portrait-v1.png",
+        "public/prologue/tile-front-portrait-crown-v1.png",
+        "public/story-cards/iron-gate-two-front-v1.png",
+        "public/story-cards/sacred-flame-two-front-v1.png",
+        "public/story-cards/secret-key-two-front-v1.png"
+      ],
+      "prompt": "Edit the FIRST image only. Preserve the approved TURNTALE hand-drawn 2D cartoon fantasy ink contours, original characters, exact poses, clothing, architecture, camera position, light and color, and calm lower quarter for captions. Keep portrait 9:16, target 941 by 1672. Supporting references are for the requested prop design only. Do not copy their people, buildings or composition. No added writing, letters, numbers or watermarks. Change ONLY the carved emblems on every game tile, including the tile in the traveler's hand. The tiles show only these FOUR carved emblems, repeated: a simple three-point CROWN, an arched barred IRON GATE, a FLAME rising from a bowl, and an old KEY. Replace the castle, tree, starburst, waves, sword, deer and any other symbol with one of these four emblems. Keep the existing tile shapes, thickness, lighting and placement. Keep every face, hand, villager, child, clothing, fireplace and room identical. No other symbols and no text. The four story-card references give the four emblem designs only.",
+      "generatedSize": [
+        941,
+        1672
+      ],
+      "beforeSha256": "c780eff2da42664cd0b60e388ace0b26885f4a6ac06f1e2b5d0df47d6b0b0a85",
+      "pngSha256": "7c173b4fa9a34244f160ff3023635e1c1a136ea7ec406e6e918dc581cbff0b7f",
+      "webpSha256": "e5a863ea2abae009ed73cdb08c8d640ac4ecf1dff2e55026868b17475789a7d9",
+      "webpBytes": 221658
+    },
+    {
+      "key": "quest-9",
+      "generatedOriginal": "artifacts/art-consistency-2026-11-11/quest-9-portrait-v3.png",
+      "backup": "artifacts/art-consistency-2026-11-11/before/quest-9-portrait-v1.png",
+      "targetPng": "public/story/quest-9-portrait-v1.png",
+      "targetWebp": "public/story/quest-9-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "references": [
+        "public/story/quest-9-portrait-v1.png",
+        "public/story/st9-after-portrait-v1.png"
+      ],
+      "prompt": "Edit the FIRST image only. Preserve the approved TURNTALE hand-drawn 2D cartoon fantasy ink contours, original characters, exact poses, clothing, architecture, camera position, light and color, and calm lower quarter for captions. Keep portrait 9:16, target 941 by 1672. Supporting references are for the requested prop design only. Do not copy their people, buildings or composition. No added writing, letters, numbers or watermarks. Replace ONLY the two large interlocking sun-and-moon circles carved on the foreground altar top with the SAME interlocking CROWN AND IRON GATE emblem shown prominently on the foreground altar face in reference 2. Copy its icon geometry: a three-point outlined crown on the left, connected by overlapping curved lines to a tall arch with straight vertical bars on the right. Reproduce it as glowing ember-gold carved grooves lying in perspective on the flat altar top. The combined symbol must be unmistakably that crown plus barred gate. Remove the sun rays, crescent, circles and central diamond from the original carving. Keep both characters, hands, ember, slab geometry, summit landscape and linework exactly.",
+      "generatedSize": [
+        941,
+        1671
+      ],
+      "beforeSha256": "090061eafd910721a0334266748965929b2c183bd387e59a825147d94f4ce423",
+      "pngSha256": "96d895ef9cfde9cc086db1abb630aa3f78354629533dd6e8add1bfe966814fed",
+      "webpSha256": "87b2a1a030b989c0976ae92b368d958e2c0b564d23276d7cac8f68c252d87733",
+      "webpBytes": 237904
+    }
+  ]
+}

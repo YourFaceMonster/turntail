@@ -1,4 +1,5 @@
-import {enableRpgRework,advanceReworkStage} from './rpg-rework';
+import {enableRpgRework,advanceReworkStage,RPG_STAGE_HP} from './rpg-rework';
+import {cleanTrials,rpgRelicSlots,trialEnemyHp,trialStartHp,type RpgTrialId} from './rpg-trials';
 import {initRpgJourney,visitJourneyNode,type JourneyNode} from './rpg-journey.ts';
 import {initRpgPhaseOne,advanceRpgPhaseOne,isRpgPhaseOne,RPG_PHASE_ONE} from './rpg-phase-one.ts';
 import {newItemBattleState} from './item-battle-rules.ts';
@@ -51,9 +52,14 @@ export function abandonRpgGame(game:Game,now=Date.now()){
 
 export function createRpgPhaseOneGame(name:string,avatar='',now=Date.now(),profession:RpgProfessionId='swordsman'){return createRpgGame(name,avatar,now,profession,true);}
 
-export function createRpgJourneyGame(name:string,avatar='',now=Date.now(),profession:RpgProfessionId='swordsman'){
+export function createRpgJourneyGame(name:string,avatar='',now=Date.now(),profession:RpgProfessionId='swordsman',trials:readonly RpgTrialId[]=[]){
  const game=createRpgGame(name,avatar,now,profession,true,true);initRpgJourney(game);
- game.rpgRun!.fate=0;
+ const run=game.rpgRun!;run.fate=0;
+ const picked=cleanTrials(trials);
+ if(picked.length){
+  // Applied on top of the fresh journey start: harder start only, nothing is granted.
+  run.trials=picked;run.hp=[trialStartHp(run),...trialEnemyHp(run,RPG_STAGE_HP[0])];run.equipped=run.equipped.slice(0,rpgRelicSlots(run));
+ }
  return game;
 }
 export function enterJourneyNode(game:Game,id:JourneyNode,now=Date.now()){const retry=!!game.rpgRun?.journey?.retryStage;const stage=visitJourneyNode(game,id);if(stage===undefined)return;if(stage===1&&!retry){game.phase='playing';game.turnReadyAt=now+3000;game.lastEvent={...game.lastEvent!,at:now};}else startRpgRound(game,now);}

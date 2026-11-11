@@ -1,0 +1,55 @@
+/*
+ * Story cutscenes ST4~10: the painting stays the same, but a slow camera drift and a light regional effect
+ * play on top so a long conversation does not sit on a frozen picture. Individual `scale`/`translate`/`rotate`
+ * properties are animated so they compose with each cut's own `transform` crop.
+ */
+.rpg-prologue:is([data-cut^="ST4_"],[data-cut^="ST5_"],[data-cut^="ST6_"],[data-cut^="ST7_"],[data-cut^="ST8_"],[data-cut^="ST9_"],[data-cut^="ST10_"]) .prologue-picture .prologue-camera{animation:story-drift 26s ease-in-out infinite alternate}
+.rpg-prologue[data-cut^="ST5_"] .prologue-picture .prologue-camera{animation:story-drift 26s ease-in-out infinite alternate,story-sway 7s ease-in-out infinite alternate}
+.rpg-prologue[data-cut^="ST9_"] .prologue-picture .prologue-camera{animation:story-drift 26s ease-in-out infinite alternate,story-flicker 2.6s ease-in-out infinite alternate}
+.rpg-prologue[data-cut^="ST10_"] .prologue-picture .prologue-camera{animation:story-drift 26s ease-in-out infinite alternate,story-glow 6s ease-in-out infinite alternate}
+@keyframes story-drift{from{scale:1;translate:-1.2% .6%}to{scale:1.06;translate:1.2% -.8%}}
+@keyframes story-sway{from{rotate:-.5deg}to{rotate:.5deg}}
+@keyframes story-flicker{0%{filter:brightness(.96)}40%{filter:brightness(1.05)}70%{filter:brightness(.99)}100%{filter:brightness(1.06)}}
+@keyframes story-glow{from{filter:brightness(.97) saturate(1)}to{filter:brightness(1.06) saturate(1.08)}}
+
+/* Regional overlay: one layer of tiled soft particles, looping seamlessly (end position = tile size). */
+.rpg-prologue[data-cut^="ST"] .prologue-picture::after{content:none;position:absolute;inset:0;pointer-events:none}
+/* ST4 waterfall: drifting mist and fine spray. */
+.rpg-prologue[data-cut^="ST4_"] .prologue-picture::after{content:'';background-image:radial-gradient(60% 30% at 30% 70%,#d8e8ff2e,transparent 70%),radial-gradient(50% 25% at 75% 55%,#d8e8ff24,transparent 70%),radial-gradient(2.4px 4.8px at 20% 10%,#e8f4ffaa,transparent),radial-gradient(2.4px 4.8px at 70% 60%,#e8f4ff88,transparent);background-size:200% 100%,220% 100%,90px 120px,130px 170px;animation:fx-mist 16s linear infinite}
+@keyframes fx-mist{from{background-position:0 0,100% 0,0 0,0 0}to{background-position:200% 0,-120% 0,0 120px,0 170px}}
+/* ST5 sky bridge: wind streaks crossing the clouds. */
+.rpg-prologue[data-cut^="ST5_"] .prologue-picture::after{content:'';background-image:linear-gradient(90deg,transparent 0 40%,#ffffff22 50%,transparent 60% 100%),linear-gradient(90deg,transparent 0 45%,#ffffff1a 50%,transparent 55% 100%);background-size:260px 3px,340px 2px;background-repeat:repeat;background-position:0 30%,0 62%;mask-image:repeating-linear-gradient(transparent 0 37px,#000 37px 39px,transparent 39px 83px);animation:fx-wind 4.5s linear infinite}
+@keyframes fx-wind{from{background-position:0 0,0 0}to{background-position:260px 0,340px 0}}
+/* ST6 colonnade: dust motes rising in the broken-roof light. */
+.rpg-prologue[data-cut^="ST6_"] .prologue-picture::after{content:'';background-image:radial-gradient(2.6px 2.6px at 30% 40%,#fff4d0cc,transparent),radial-gradient(1.9px 1.9px at 75% 70%,#fff4d0aa,transparent),radial-gradient(3.2px 3.2px at 55% 15%,#fff4d088,transparent);background-size:110px 160px,150px 210px,190px 260px;animation:fx-dust 22s linear infinite}
+@keyframes fx-dust{from{background-position:0 0,0 0,0 0}to{background-position:20px -160px,-30px -210px,10px -260px}}
+/* ST7 silver tree: blue fireflies slowly blinking. */
+.rpg-prologue[data-cut^="ST7_"] .prologue-picture::after{content:'';background-image:radial-gradient(4.8px 4.8px at 20% 30%,#9fd8ffee,#9fd8ff33 2px,transparent 4px),radial-gradient(4px 4px at 65% 55%,#bfe6ffdd,#9fd8ff22 2px,transparent 4px),radial-gradient(4.8px 4.8px at 85% 20%,#9fd8ffcc,transparent 4px);background-size:170px 210px,230px 260px,290px 330px;animation:fx-firefly 18s ease-in-out infinite alternate,fx-blink 3.2s ease-in-out infinite alternate}
+@keyframes fx-firefly{from{background-position:0 0,0 0,0 0}to{background-position:40px -60px,-50px -40px,30px 50px}}
+@keyframes fx-blink{from{opacity:.35}to{opacity:1}}
+/* ST8 sanctuary: golden leaves drifting down. */
+.rpg-prologue[data-cut^="ST8_"] .prologue-picture::after{content:'';background-image:radial-gradient(6.4px 4px at 25% 20%,#f1c44fdd,transparent),radial-gradient(5.6px 3.2px at 70% 50%,#e7ad35cc,transparent),radial-gradient(4.8px 3.2px at 45% 80%,#f6d36fbb,transparent);background-size:160px 230px,210px 280px,260px 330px;animation:fx-fall-gold 15s linear infinite}
+@keyframes fx-fall-gold{from{background-position:0 0,0 0,0 0}to{background-position:60px 230px,-40px 280px,30px 330px}}
+/* ST9 obsidian altar: embers rising. */
+.rpg-prologue[data-cut^="ST9_"] .prologue-picture::after{content:'';background-image:radial-gradient(3.2px 3.2px at 30% 70%,#ffb15aee,#ff6a2a44 2px,transparent 4px),radial-gradient(2.6px 2.6px at 70% 40%,#ffd08add,transparent 3px),radial-gradient(3.8px 3.8px at 50% 90%,#ff8a3acc,transparent 4px);background-size:130px 190px,170px 240px,220px 300px;animation:fx-embers 9s linear infinite}
+@keyframes fx-embers{from{background-position:0 0,0 0,0 0}to{background-position:-25px -190px,20px -240px,-15px -300px}}
+/* ST10 world tree: crimson leaves falling. */
+.rpg-prologue[data-cut^="ST10_"] .prologue-picture::after{content:'';background-image:radial-gradient(7.2px 4px at 20% 15%,#d8333add,transparent),radial-gradient(5.6px 3.2px at 65% 45%,#b51f2acc,transparent),radial-gradient(6.4px 4px at 85% 75%,#e2464dbb,transparent);background-size:170px 240px,220px 300px,280px 360px;animation:fx-fall-red 17s linear infinite}
+@keyframes fx-fall-red{from{background-position:0 0,0 0,0 0}to{background-position:-50px 240px,40px 300px,-30px 360px}}
+
+/* Portrait-only paintings on wide screens (PC, phone held sideways): whole painting in the middle, blurred copy behind. */
+.prologue-scene-backdrop{display:none}
+@media(min-aspect-ratio:1/1){
+ .prologue-picture.is-framed .prologue-scene-backdrop{display:block;position:absolute;inset:-40px;width:calc(100% + 80px);height:calc(100% + 80px);object-fit:cover;filter:blur(20px) brightness(.42) saturate(.9);pointer-events:none}
+ .prologue-picture.is-framed .prologue-scene-art{object-fit:contain!important;object-position:50% 50%!important}
+ .prologue-picture.is-framed .prologue-camera{transform:none}
+ .prologue-picture.is-framed .prologue-canvas{filter:drop-shadow(0 18px 40px #000b)}
+}
+
+/* Side-quest cutscenes: the same gentle drift (their own crop transforms are kept). */
+.quest-cutscene .prologue-picture .prologue-camera{animation:story-drift 26s ease-in-out infinite alternate}
+
+@media(prefers-reduced-motion:reduce){
+ .rpg-prologue[data-cut^="ST"] .prologue-picture .prologue-camera,.quest-cutscene .prologue-picture .prologue-camera{animation:none!important}
+ .rpg-prologue[data-cut^="ST"] .prologue-picture::after{animation:none!important;opacity:.6}
+}

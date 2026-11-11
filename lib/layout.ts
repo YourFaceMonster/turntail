@@ -25,7 +25,10 @@ export function tileLayout({width,height,floorWidth,handWidth,handCount,cols,row
  const handLimit=Math.min((handWidth-4-(columns-1)*gap)/columns/.76,handCount>18?(handWidth-4-8*6)/9/.76:Infinity,handCount>30?(handWidth-4-14*4)/15/.76:Infinity);
  const playedLabelWidth=84;
  const fiveLimit=landscape?(stackedLandscape?Infinity:(floorWidth-playedLabelWidth-12-4*6)/5/.76):(width-24-surfaceInset-4*6)/5/.76;
- const floorHeight=Math.max(10,Math.floor(Math.min(portraitTarget,vertical,floorLimit,fiveLimit)));
+ // A large landscape desktop window (PC monitor) lets the floor grow into its tall left column instead of
+ // stopping at the phone-sized cap and leaving the lower half empty. The hand keeps its own cap.
+ const floorCap=landscape&&desktop?Math.max(tileCeiling,Math.min(150,height*.24)):portraitTarget;
+ const floorHeight=Math.max(10,Math.floor(Math.min(floorCap,vertical,floorLimit,fiveLimit)));
  const playedHeight=stackedPlayedHeight(floorHeight,handWidth,playedLabelWidth);
  const stackedPlayedRow=stackedLandscape?playedHeight+trickChrome+2+6-(foldedHeading?STACKED_HAND_CHROME_SAVED:0):0;
  const portraitHandRoom=(height-portraitChrome-rows*floorHeight-floorHeight*1.28)/2;
@@ -40,11 +43,13 @@ export function tileLayout({width,height,floorWidth,handWidth,handCount,cols,row
 export type TableLayoutChoice='auto'|'portrait'|'landscape';
 /**
  * "auto" follows how the device is held: a phone/tablet held sideways, or any short wide window,
- * gets the landscape table. Wide desktop windows keep the portrait table as before.
+ * gets the landscape table. Since 2026-11-11 a clearly wide desktop window (PC monitor) does too;
+ * a near-square desktop window keeps the portrait table.
  */
 export function resolveTableLayout(choice:TableLayoutChoice,viewport:{width:number,height:number},touch:boolean):'portrait'|'landscape'{
  if(choice!=='auto')return choice;
- return viewport.width>viewport.height&&(touch||viewport.height<=500)?'landscape':'portrait';
+ if(viewport.width<=viewport.height)return 'portrait';
+ return touch||viewport.height<=500||viewport.width>=viewport.height*1.2?'landscape':'portrait';
 }
 
 /** Stacked landscape folds the hand heading's sort tools onto the name line (landscape-stacked.css). */

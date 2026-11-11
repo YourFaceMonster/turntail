@@ -261,11 +261,14 @@
 
 @media(max-aspect-ratio:1/1){.journey-map-scene .rpg-map-node[data-node='wayfarer-stop']{left:20%;top:34%}}
 
-/* ST4~10 use new portrait paintings and existing landscape placeholders. */
-.journey-map-scene[data-region]:not([data-region='1']) .rpg-map-paint{background:linear-gradient(#101c2655,#13242133),var(--region-map-wide) center/cover;filter:saturate(.9)}
-@media(max-aspect-ratio:1/1){.journey-map-scene[data-region]:not([data-region='1']) .rpg-map-paint{background-image:linear-gradient(#101c2655,#13242133),var(--region-map-tall);background-position:center;background-size:cover}}
+/* ST4~10 regions have portrait paintings only. Every orientation shows the whole portrait map framed between the HUD
+   and the dock (portrait node coordinates and route); on wide screens the sides show the same painting blurred. */
+.journey-map-scene[data-region]:not([data-region='1']) .rpg-map-paint{background:linear-gradient(#101c2655,#13242133),var(--region-map-tall) center/cover;filter:saturate(.9)}
 .journey-map-scene[data-region]:not([data-region='1']) .map-snow-drift{display:none}
-@media(max-aspect-ratio:1/1){
+.journey-map-scene[data-region]:not([data-region='1']) .map-route-landscape{display:none}
+.journey-map-scene[data-region]:not([data-region='1']) .map-route-portrait{display:block}
+.journey-map-scene[data-region]:not([data-region='1']) .rpg-node-map{box-shadow:0 0 0 1px #d9b97933,0 18px 50px #000a}
+@media all{
  .journey-map-scene[data-region]:not([data-region='1']) .rpg-node-map{
   width:min(100cqw,calc(100cqh * 941 / 1672));
   height:min(100cqh,calc(100cqw * 1672 / 941));
@@ -273,4 +276,7 @@
  }
  .journey-map-scene[data-region]:not([data-region='1']) .rpg-map-content{top:0;height:100%}
  .journey-map-scene[data-region]:not([data-region='1']) .rpg-map-node[data-node]{left:var(--map-portrait-x);top:var(--map-portrait-y);width:82px}
+ /* Fit the whole painting between the HUD and the dock; the bands left over show the same painting blurred and dimmed. */
+ .journey-map-scene[data-region]:not([data-region='1']) .journey-map-scroll{top:var(--journey-hud-h,98px);bottom:var(--journey-dock-h,56px);height:auto}
+ .journey-map-scene[data-region]:not([data-region='1']) .journey-exploration-layout::before{content:'';position:absolute;inset:-24px;background:var(--region-map-tall) center/cover no-repeat;filter:blur(14px) brightness(.45) saturate(.9);transform:scale(1.06);pointer-events:none}
 }

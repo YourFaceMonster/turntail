@@ -127,12 +127,13 @@ test('saves reject corrupt story data and the map only shows the current region'
  assert.ok(JOURNEY_NODES.filter(n=>n.region>1).every(n=>n.x>0&&n.x<100&&n.y>0&&n.y<100));
  for(const [key,slot] of Object.entries(CHAPTER_ART_SLOTS)){
   const art=chapterArt(key);
-  assert.equal(art.landscape,slot.placeholder.landscape,'landscape keeps its existing art until the wide painting arrives');
+  // 2026-11-11 user choice: until wide paintings exist, wide screens show the new portrait painting framed.
+  assert.equal(art.landscape,art.portrait,'wide screens use the portrait painting (framed) until the wide painting arrives');
   assert.equal(art.portrait,`/story/${key}-portrait-v1.webp`);
   assert.ok(existsSync(new URL(`../public${art.portrait}`,import.meta.url)),key);
  }
- assert.match(html,/--map-portrait-x:78%;--map-portrait-y:82%/,'the dice den follows the boathouse in the portrait map');
- assert.match(html,/class="map-route-portrait" d="M70 59L48 37L61 12"/);
+ assert.match(html,/--map-portrait-x:78%;--map-portrait-y:84%/,'the dice den follows the boathouse in the portrait map');
+ assert.match(html,/class="map-route-portrait" d="M69 60L60 62L43 60L29 54L13 48L6 43L15 39L30 42L49 40L64 43L78 41L89 38L88 33L81 29L79 27L88 24L82 22L68 19L65 16L61 14"/);
  for(const id of ['sacred-flame-two','secret-key-two'] as const){
   for(const side of ['front','back'] as const){
    assert.equal(STORY_CARD_ART[id][side],`/story-cards/${id}-${side}-v1.webp`);
@@ -143,4 +144,13 @@ test('saves reject corrupt story data and the map only shows the current region'
  assert.ok(RPG_GUARDIANS.every(guardian=>guardian.avatar==='stage-portrait:15'),'saved combat identity remains compatible');
  assert.ok(existsSync(new URL(`../public${relicImage('haro-ivory-die')}`,import.meta.url)));
  assert.ok(rpgMaxHp(mid.rpgRun!)>=100);
+});
+
+test('the map warms the next stage paintings: before, its quest, after; nothing outside ST4~10', async () => {
+ const {stageArtToPreload}=await import('../lib/rpg-chapters');
+ assert.deepEqual(stageArtToPreload(3),[]);assert.deepEqual(stageArtToPreload(11),[]);
+ const five=stageArtToPreload(5);
+ assert.deepEqual(five,['/story/st5-before-portrait-v1.webp','/story/quest-5-portrait-v1.webp','/story/st5-after-portrait-v1.webp']);
+ assert.equal(stageArtToPreload(7).length,2,'ST7 has no side quest');
+ for(const stage of [4,5,6,7,8,9,10])for(const src of stageArtToPreload(stage))assert.ok(existsSync('public'+src),src);
 });
