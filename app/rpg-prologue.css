@@ -65,3 +65,5 @@
 
 /* Authored beats are continuous captions; width, not a character count, wraps them. */
 .rpg-prologue .prologue-cut .prologue-caption p .dialogue-sentence{display:inline;text-wrap:wrap}
+/* Balance caption lines so a sentence never leaves one short word alone on its last line (phones). */
+.rpg-prologue .prologue-cut .prologue-caption p{text-wrap:balance}

@@ -26,6 +26,8 @@ export const RPG_GUARDIANS=[
  {name:'첫 번째 수호자',avatar:'stage-portrait:15'},
  {name:'두 번째 수호자',avatar:'stage-portrait:15'},
 ] as const;
+/** Keep saved avatar IDs and combat professions; the ST10 portrait is display-only. */
+export const RPG_GUARDIAN_ART='/story/st10-guardian-v1.webp';
 /** RPG seat picks per stage (indices into stage-theme opponents). ST3 twins and ST10 guardians are separate. */
 const RPG_CAST_PICKS:Record<number,readonly [number,number]>={4:[0,1],5:[0,1],6:[0,1],7:[0,1],8:[2,0],9:[1,0]};
 export function rpgStageCast(stage:number){
@@ -90,6 +92,7 @@ export const CHAPTER_ART_SLOTS:Record<string,{placeholder:{landscape:string,port
  'true-ending-record':{placeholder:ENV(10),note:'진엔딩 · 낡은 테이블 위 최초의 승부사의 기록'},
  'true-ending-village':{placeholder:TAVERN,note:'진엔딩 · 노르문 주점에서 이야기를 전하는 새 방랑자'},
 };
-export const CHAPTER_ART_READY=new Set<string>([]);
-export function chapterArt(key:string){const slot=CHAPTER_ART_SLOTS[key];if(!slot)throw Error(`Unknown chapter art: ${key}`);return CHAPTER_ART_READY.has(key)?FINAL(key):slot.placeholder;}
+/** Portraits are ready. Landscape art continues to use the existing placeholders. */
+export const CHAPTER_ART_READY=new Set<string>(Object.keys(CHAPTER_ART_SLOTS));
+export function chapterArt(key:string){const slot=CHAPTER_ART_SLOTS[key];if(!slot)throw Error(`Unknown chapter art: ${key}`);return CHAPTER_ART_READY.has(key)?{landscape:slot.placeholder.landscape,portrait:FINAL(key).portrait}:slot.placeholder;}
 export function chapterArtFinalPaths(key:string){return FINAL(key);}

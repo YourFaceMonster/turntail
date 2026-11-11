@@ -1,12 +1,15 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
+import {existsSync} from 'node:fs';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {createRpgJourneyGame,enterJourneyNode} from '../lib/rpg-game';
 import {settle,type Game,type Tile} from '../lib/game';
 import {rpgMaxHp,RPG_STAGE_HP} from '../lib/rpg-rework';
 import {chooseRpgStageReward} from '../lib/rpg-phase-one';
 import {answerStoryQuest,journeyNodeState,returnJourneyMap,setJourneyRunNumber,validateJourneySave,JOURNEY_NODES} from '../lib/rpg-journey';
-import {journeyRegion,STORY_QUESTS,CHAPTER_ART_SLOTS,chapterArt} from '../lib/rpg-chapters';
+import {journeyRegion,STORY_QUESTS,CHAPTER_ART_SLOTS,RPG_GUARDIAN_ART,RPG_GUARDIANS,chapterArt} from '../lib/rpg-chapters';
+import {STORY_CARD_ART} from '../lib/rpg-story-card-art';
+import {relicImage} from '../lib/item-battle-relics';
 import {journeyScenes} from '../lib/rpg-chapter-scenes';
 import {saveRpgGame,readRpgArchive,nextJourneyRunNumber} from '../lib/rpg-storage';
 import {pendingStageStory} from '../lib/rpg-story-cards';
@@ -122,6 +125,22 @@ test('saves reject corrupt story data and the map only shows the current region'
  const html=renderToStaticMarkup(<JourneyMapView run={mid.rpgRun!} busy={false} error="" action={()=>{}} exit={()=>{}}/>);
  assert.match(html,/ST4 · 물안개 폭포/);assert.match(html,/물에 젖은 기록/);assert.doesNotMatch(html,/눈길의 주점/);assert.match(html,/성화의 영역/);assert.match(html,/data-region="2"/);
  assert.ok(JOURNEY_NODES.filter(n=>n.region>1).every(n=>n.x>0&&n.x<100&&n.y>0&&n.y<100));
- for(const key of Object.keys(CHAPTER_ART_SLOTS))assert.ok(chapterArt(key).landscape.startsWith('/'));
+ for(const [key,slot] of Object.entries(CHAPTER_ART_SLOTS)){
+  const art=chapterArt(key);
+  assert.equal(art.landscape,slot.placeholder.landscape,'landscape keeps its existing art until the wide painting arrives');
+  assert.equal(art.portrait,`/story/${key}-portrait-v1.webp`);
+  assert.ok(existsSync(new URL(`../public${art.portrait}`,import.meta.url)),key);
+ }
+ assert.match(html,/--map-portrait-x:78%;--map-portrait-y:82%/,'the dice den follows the boathouse in the portrait map');
+ assert.match(html,/class="map-route-portrait" d="M70 59L48 37L61 12"/);
+ for(const id of ['sacred-flame-two','secret-key-two'] as const){
+  for(const side of ['front','back'] as const){
+   assert.equal(STORY_CARD_ART[id][side],`/story-cards/${id}-${side}-v1.webp`);
+   assert.ok(existsSync(new URL(`../public${STORY_CARD_ART[id][side]}`,import.meta.url)));
+  }
+ }
+ assert.ok(existsSync(new URL(`../public${RPG_GUARDIAN_ART}`,import.meta.url)));
+ assert.ok(RPG_GUARDIANS.every(guardian=>guardian.avatar==='stage-portrait:15'),'saved combat identity remains compatible');
+ assert.ok(existsSync(new URL(`../public${relicImage('haro-ivory-die')}`,import.meta.url)));
  assert.ok(rpgMaxHp(mid.rpgRun!)>=100);
 });

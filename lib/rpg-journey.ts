@@ -1,4 +1,5 @@
-import {activateRpgRelics,rpgMaxHp} from './rpg-rework';
+import {activateRpgRelics,isPassiveRelic,rpgMaxHp} from './rpg-rework';
+import {withRelicActivations} from './rpg-relic-feedback.ts';
 import {restoreRetiredJourneyNodes} from './rpg-journey-legacy.ts';
 import {restoreDemoReward} from './rpg-demo-catalog.ts';
 import {restoreStoryCards,ST3_STORY_KEY} from './rpg-story-cards.ts';
@@ -24,7 +25,7 @@ export const JOURNEY_RUMOR={id:'sheltered-light',title:'모르의 등불 이야�
 export const JOURNEY_LETTER_RUMOR={id:'sealed-letter-relic',title:'봉인 편지 속 유물 소문',text:'편지에는 성 안 북쪽 구역에 잠든 낡은 유물의 흔적이 적혀 있다. 정확한 장소를 아는 사람을 찾아보면 좋을 것 같다.'};
 export const JOURNEY_WAYFARER_RUMOR={id:'wayfarer-relic-trail',title:'검은 소나무 파수탑',text:'여행자는 성벽 안쪽 파수탑의 무너진 돌틈에서 희미한 푸른 빛이 샌다고 했다. 일부러 들여다보지 않으면 지나치기 쉬운 곳이라 한다.'};
 export const JOURNEY_BLUE_GLASS_RUMOR={id:'blue-glass-hidden-route',title:'파수꾼의 푸른 유리',text:'옛 파수꾼의 등잔에 남아 있던 푸른 유리. 장착 중 응급 약초의 회복량이 10에서 15로 늘어난다. 주점의 여행 가방에서 장착할 수 있다.'};
-export const JOURNEY_NODES:{id:JourneyNode,name:string,x:number,y:number,kind:'battle'|'place'|'event',region:JourneyRegion}[]=[
+export const JOURNEY_NODES:{id:JourneyNode,name:string,x:number,y:number,portrait?:{x:number,y:number},kind:'battle'|'place'|'event',region:JourneyRegion}[]=[
  {id:'battle-1',name:'ST1 · 마을 관문',x:52,y:66,kind:'battle',region:1},
  {id:'tavern',name:'눈길의 주점',x:67,y:40,kind:'place',region:1},
  {id:'letter-alley',name:'시장 뒤 골목',x:82,y:49,kind:'place',region:1},
@@ -32,20 +33,20 @@ export const JOURNEY_NODES:{id:JourneyNode,name:string,x:number,y:number,kind:'b
  {id:'watchtower',name:'검은 소나무 파수탑',x:28,y:31,kind:'place',region:1},
  {id:'battle-2',name:'ST2 · 마을 광장',x:54,y:45,kind:'battle',region:1},
  {id:'battle-3',name:'ST3 · 북쪽 성채',x:57,y:17,kind:'battle',region:1},
- // ST4~10 region maps (percent positions over placeholder art until the generated maps arrive).
- {id:'quest-4',name:'물에 젖은 기록',x:22,y:62,kind:'event',region:2},
- {id:'battle-4',name:'ST4 · 물안개 폭포',x:40,y:78,kind:'battle',region:2},
- {id:'quest-5',name:'끊긴 매듭',x:76,y:60,kind:'event',region:2},
- {id:'battle-5',name:'ST5 · 구름다리 쉼터',x:56,y:50,kind:'battle',region:2},
- {id:'quest-6',name:'잊힌 맹세',x:28,y:30,kind:'event',region:2},
- {id:'dice-den',name:'안개 나루 주사위판',x:82,y:32,kind:'event',region:2},
- {id:'battle-6',name:'ST6 · 수호자의 회랑',x:58,y:20,kind:'battle',region:2},
- {id:'battle-7',name:'ST7 · 달빛 고목',x:40,y:78,kind:'battle',region:3},
- {id:'quest-8',name:'전해지지 못한 편지',x:76,y:58,kind:'event',region:3},
- {id:'battle-8',name:'ST8 · 별빛 성소',x:56,y:50,kind:'battle',region:3},
- {id:'quest-9',name:'마지막 불씨',x:28,y:32,kind:'event',region:3},
- {id:'battle-9',name:'ST9 · 잿불 제단',x:58,y:20,kind:'battle',region:3},
- {id:'battle-10',name:'ST10 · 붉은 세계수',x:50,y:42,kind:'battle',region:4},
+ // Landscape placeholders and cropped portrait paintings have separate landmark coordinates.
+ {id:'quest-4',name:'물에 젖은 기록',x:22,y:62,portrait:{x:12,y:59},kind:'event',region:2},
+ {id:'battle-4',name:'ST4 · 물안개 폭포',x:40,y:78,portrait:{x:70,y:59},kind:'battle',region:2},
+ {id:'quest-5',name:'끊긴 매듭',x:76,y:60,portrait:{x:88.5,y:31},kind:'event',region:2},
+ {id:'battle-5',name:'ST5 · 구름다리 쉼터',x:56,y:50,portrait:{x:48,y:37},kind:'battle',region:2},
+ {id:'quest-6',name:'잊힌 맹세',x:28,y:30,portrait:{x:14,y:18},kind:'event',region:2},
+ {id:'dice-den',name:'안개 나루 주사위판',x:82,y:32,portrait:{x:78,y:82},kind:'event',region:2},
+ {id:'battle-6',name:'ST6 · 수호자의 회랑',x:58,y:20,portrait:{x:61,y:12},kind:'battle',region:2},
+ {id:'battle-7',name:'ST7 · 달빛 고목',x:40,y:78,portrait:{x:50,y:84},kind:'battle',region:3},
+ {id:'quest-8',name:'전해지지 못한 편지',x:76,y:58,portrait:{x:85,y:54},kind:'event',region:3},
+ {id:'battle-8',name:'ST8 · 별빛 성소',x:56,y:50,portrait:{x:59,y:31},kind:'battle',region:3},
+ {id:'quest-9',name:'마지막 불씨',x:28,y:32,portrait:{x:14,y:21},kind:'event',region:3},
+ {id:'battle-9',name:'ST9 · 잿불 제단',x:58,y:20,portrait:{x:56,y:10},kind:'battle',region:3},
+ {id:'battle-10',name:'ST10 · 붉은 세계수',x:50,y:42,portrait:{x:50,y:44},kind:'battle',region:4},
 ];
 export function initRpgJourney(game:Game){
  const run=game.rpgRun;if(!run?.phaseOne||game.hpItemMode||game.rpgTest)throw Error('새 RPG 여정에서 시작해 주세요.');
@@ -148,7 +149,11 @@ export function chooseVillageRequestReward(run:RpgRun,reward:unknown):RpgRun{
 }
 export function assertJourneyPreparation(run:RpgRun){if(!run.journey||run.status!=='ready'||['battle','mini-game'].includes(run.journey.location))throw Error('전투 밖 준비 구간에서 사용할 수 있어요.');}
 export function assertJourneyShop(run:RpgRun){if(run.rework)throw Error('새 RPG에서는 상점을 이용하지 않아요.');if(!run.journey||run.journey.location!=='map'||run.status!=='ready')throw Error('마을 지도의 잡화점에서 구매할 수 있어요.');}
-export function hearJourneyRumor(run:RpgRun):RpgRun{assertJourneyTavern(run);return {...run,journey:{...run.journey!,rumors:[...new Set([...run.journey!.rumors,JOURNEY_RUMOR.id])]},updatedAt:Date.now()};}
+export function hearJourneyRumor(run:RpgRun):RpgRun{
+ assertJourneyTavern(run);const fresh=!run.journey!.rumors.includes(JOURNEY_RUMOR.id);
+ const next={...run,journey:{...run.journey!,rumors:[...new Set([...run.journey!.rumors,JOURNEY_RUMOR.id])]},updatedAt:Date.now()};
+ return fresh&&run.rework&&run.relics.includes('mor-quill')?withRelicActivations(next,[{relicId:'mor-quill',message:'소문 수첩에 유물 소문 추가'}]):next;
+}
 export function startLetterQuest(run:RpgRun):RpgRun{
  assertJourneyTavern(run);const j=run.journey!;
  if(j.letterQuest)throw Error('모르의 편지 부탁은 이미 시작했어요.');
@@ -188,6 +193,7 @@ export function claimWatchtowerRelic(run:RpgRun,replace?:string):RpgRun{
 export function equipJourneyRelic(run:RpgRun,id:string,replace?:string):RpgRun{
  if(!run.journey||(run.journey.location==='mini-game'||run.journey.location==='battle'&&run.status==='playing')||!['playing','ready','allocation','complete'].includes(run.status))throw Error('대결 중에는 유물을 변경할 수 없어요.');
  if(!run.relics.includes(id))throw Error('보유한 유물을 선택해 주세요.');
+ if(run.rework&&isPassiveRelic(id)&&!run.equipped.includes(id))throw Error('가방에 갖고만 있어도 적용되는 유물이에요.');
  let equipped=run.equipped.filter(relic=>run.relics.includes(relic));
  if(equipped.includes(id)){equipped=equipped.filter(relic=>relic!==id);}
  else{if(equipped.length>=3){if(!replace||!equipped.includes(replace))throw Error('교체할 장착 유물을 선택해 주세요.');equipped=equipped.filter(relic=>relic!==replace);}equipped.push(id);}

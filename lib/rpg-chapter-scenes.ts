@@ -49,7 +49,7 @@ const SCRIPTS:Record<number,{before:(c:Ctx)=>(Beat|false)[],after:(c:Ctx)=>(Beat
  10:{
   before:c=>[N('왕관, 철문, 성화, 열쇠. 네 장의 패에 남은 문양이 하나의 기록을 가리켰다.'),S('첫 번째 수호자','너는 무엇을 얻기 위해 여기까지 왔는가?'),S('두 번째 수호자','그리고 무엇을 남기고 떠날 것인가?'),c.second&&S('두 번째 수호자','…같은 패를 든 사람이 또 왔군.')],
   after:c=>c.second?[
-   N('두 수호자의 마지막 패가 테이블에 놓였다.','ending-thrones'),
+   N('두 수호자의 마지막 패가 테이블에 놓였다.','st10-after'),
    N('이번에는 두 왕의 목소리 대신, 낡은 테이블 위에 적힌 기록이 들려왔다.','true-ending-record'),
    S('기록','나는 두 사람과 패를 두던 평범한 승부사였다.','true-ending-record'),
    S('기록','그날의 승패는 이제 기억나지 않는다. 다만 두 사람 모두 돌아오지 않았다는 사실을 기억한다.','ending-kings'),
@@ -65,7 +65,7 @@ const SCRIPTS:Record<number,{before:(c:Ctx)=>(Beat|false)[],after:(c:Ctx)=>(Beat
    N('그날 밤, 낡은 규칙은 처음으로 이야기가 되었다.','true-ending-village'),
    N('이야기는 승부가 끝나도 남는다.','true-ending-village'),
   ]:[
-   N('두 수호자의 마지막 패가 테이블에 놓였다.','ending-thrones'),
+   N('두 수호자의 마지막 패가 테이블에 놓였다.','st10-after'),
    S('방랑자','여기엔 왕이 두 사람 있었다.','ending-thrones'),
    S('형','문을 닫는 건 내가 하겠다.','ending-kings'),
    S('아우','그럼 나는, 그 문이 열리지 않게 할게.','ending-kings'),

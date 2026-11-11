@@ -1,0 +1,368 @@
+{
+  "tool": "built-in image_gen",
+  "promptSource": "docs/rpg-st4-10-art-prompts.md",
+  "corrections": "docs/rpg-st4-10-art-feedback.md",
+  "portraitOnly": true,
+  "assets": [
+    {
+      "source": "artifacts/region-2-map-portrait-v1.png",
+      "png": "public/story/region-2-map-portrait-v1.png",
+      "webp": "public/story/region-2-map-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 340232
+    },
+    {
+      "source": "artifacts/region-3-map-portrait-v1.png",
+      "png": "public/story/region-3-map-portrait-v1.png",
+      "webp": "public/story/region-3-map-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 532510
+    },
+    {
+      "source": "artifacts/region-4-map-portrait-v1.png",
+      "png": "public/story/region-4-map-portrait-v1.png",
+      "webp": "public/story/region-4-map-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 432868
+    },
+    {
+      "source": "artifacts/st4-before-portrait-v2.png",
+      "png": "public/story/st4-before-portrait-v1.png",
+      "webp": "public/story/st4-before-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 308866
+    },
+    {
+      "source": "artifacts/st4-after-portrait-v2.png",
+      "png": "public/story/st4-after-portrait-v1.png",
+      "webp": "public/story/st4-after-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 280600
+    },
+    {
+      "source": "artifacts/st5-before-portrait-v2.png",
+      "png": "public/story/st5-before-portrait-v1.png",
+      "webp": "public/story/st5-before-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 274626
+    },
+    {
+      "source": "artifacts/st5-after-portrait-v2.png",
+      "png": "public/story/st5-after-portrait-v1.png",
+      "webp": "public/story/st5-after-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 297668
+    },
+    {
+      "source": "artifacts/st6-before-portrait-v1.png",
+      "png": "public/story/st6-before-portrait-v1.png",
+      "webp": "public/story/st6-before-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 250476
+    },
+    {
+      "source": "artifacts/st6-after-portrait-v2.png",
+      "png": "public/story/st6-after-portrait-v1.png",
+      "webp": "public/story/st6-after-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 258964
+    },
+    {
+      "source": "artifacts/st7-before-portrait-v1.png",
+      "png": "public/story/st7-before-portrait-v1.png",
+      "webp": "public/story/st7-before-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 303158
+    },
+    {
+      "source": "artifacts/st7-after-portrait-v1.png",
+      "png": "public/story/st7-after-portrait-v1.png",
+      "webp": "public/story/st7-after-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 276544
+    },
+    {
+      "source": "artifacts/st8-before-portrait-v2.png",
+      "png": "public/story/st8-before-portrait-v1.png",
+      "webp": "public/story/st8-before-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 327676
+    },
+    {
+      "source": "artifacts/st8-after-portrait-v1.png",
+      "png": "public/story/st8-after-portrait-v1.png",
+      "webp": "public/story/st8-after-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 323452
+    },
+    {
+      "source": "artifacts/st9-before-portrait-v2.png",
+      "png": "public/story/st9-before-portrait-v1.png",
+      "webp": "public/story/st9-before-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 270670
+    },
+    {
+      "source": "artifacts/st9-after-portrait-v3.png",
+      "png": "public/story/st9-after-portrait-v1.png",
+      "webp": "public/story/st9-after-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 253710
+    },
+    {
+      "source": "artifacts/st10-before-portrait-v2.png",
+      "png": "public/story/st10-before-portrait-v1.png",
+      "webp": "public/story/st10-before-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 313180
+    },
+    {
+      "source": "artifacts/st10-after-portrait-v2.png",
+      "png": "public/story/st10-after-portrait-v1.png",
+      "webp": "public/story/st10-after-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 286080
+    },
+    {
+      "source": "artifacts/quest-4-portrait-v2.png",
+      "png": "public/story/quest-4-portrait-v1.png",
+      "webp": "public/story/quest-4-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 253144
+    },
+    {
+      "source": "artifacts/quest-5-portrait-v2.png",
+      "png": "public/story/quest-5-portrait-v1.png",
+      "webp": "public/story/quest-5-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 270096
+    },
+    {
+      "source": "artifacts/quest-6-portrait-v1.png",
+      "png": "public/story/quest-6-portrait-v1.png",
+      "webp": "public/story/quest-6-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 242002
+    },
+    {
+      "source": "artifacts/quest-8-portrait-v1.png",
+      "png": "public/story/quest-8-portrait-v1.png",
+      "webp": "public/story/quest-8-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 250728
+    },
+    {
+      "source": "artifacts/quest-9-portrait-v2.png",
+      "png": "public/story/quest-9-portrait-v1.png",
+      "webp": "public/story/quest-9-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 248202
+    },
+    {
+      "source": "artifacts/dice-den-portrait-v1.png",
+      "png": "public/story/dice-den-portrait-v1.png",
+      "webp": "public/story/dice-den-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 154212
+    },
+    {
+      "source": "artifacts/st6-flame-two-portrait-v2.png",
+      "png": "public/story/st6-flame-two-portrait-v1.png",
+      "webp": "public/story/st6-flame-two-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 267342
+    },
+    {
+      "source": "artifacts/st9-key-two-portrait-v2.png",
+      "png": "public/story/st9-key-two-portrait-v1.png",
+      "webp": "public/story/st9-key-two-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 225714
+    },
+    {
+      "source": "artifacts/ending-thrones-portrait-v2.png",
+      "png": "public/story/ending-thrones-portrait-v1.png",
+      "webp": "public/story/ending-thrones-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 282642
+    },
+    {
+      "source": "artifacts/ending-kings-portrait-v1.png",
+      "png": "public/story/ending-kings-portrait-v1.png",
+      "webp": "public/story/ending-kings-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 112708
+    },
+    {
+      "source": "artifacts/ending-handoff-portrait-v1.png",
+      "png": "public/story/ending-handoff-portrait-v1.png",
+      "webp": "public/story/ending-handoff-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 199780
+    },
+    {
+      "source": "artifacts/true-ending-record-portrait-v1.png",
+      "png": "public/story/true-ending-record-portrait-v1.png",
+      "webp": "public/story/true-ending-record-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 150172
+    },
+    {
+      "source": "artifacts/true-ending-village-portrait-v1.png",
+      "png": "public/story/true-ending-village-portrait-v1.png",
+      "webp": "public/story/true-ending-village-portrait-v1.webp",
+      "size": [
+        941,
+        1672
+      ],
+      "bytes": 210798
+    },
+    {
+      "source": "artifacts/sacred-flame-two-front-v1.png",
+      "png": "public/story-cards/sacred-flame-two-front-v1.png",
+      "webp": "public/story-cards/sacred-flame-two-front-v1.webp",
+      "size": [
+        1024,
+        1536
+      ],
+      "bytes": 147808
+    },
+    {
+      "source": "artifacts/sacred-flame-two-back-v1.png",
+      "png": "public/story-cards/sacred-flame-two-back-v1.png",
+      "webp": "public/story-cards/sacred-flame-two-back-v1.webp",
+      "size": [
+        1024,
+        1536
+      ],
+      "bytes": 220960
+    },
+    {
+      "source": "artifacts/secret-key-two-front-v1.png",
+      "png": "public/story-cards/secret-key-two-front-v1.png",
+      "webp": "public/story-cards/secret-key-two-front-v1.webp",
+      "size": [
+        1024,
+        1536
+      ],
+      "bytes": 142538
+    },
+    {
+      "source": "artifacts/secret-key-two-back-v1.png",
+      "png": "public/story-cards/secret-key-two-back-v1.png",
+      "webp": "public/story-cards/secret-key-two-back-v1.webp",
+      "size": [
+        1024,
+        1536
+      ],
+      "bytes": 242612
+    },
+    {
+      "source": "artifacts/haro-ivory-die-v1.png",
+      "png": "public/rpg-items-v1/relics/haro-ivory-die-v1.png",
+      "webp": "public/rpg-items-v1/relics/haro-ivory-die-v1.webp",
+      "size": [
+        256,
+        256
+      ],
+      "bytes": 9198
+    },
+    {
+      "source": "artifacts/st10-guardian-portrait-v1.png",
+      "png": "public/story/st10-guardian-v1.png",
+      "webp": "public/story/st10-guardian-v1.webp",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 50120
+    }
+  ]
+}

@@ -126,3 +126,5 @@ body>.journey-popup-shade>.journey-popup:has(.village-market){width:min(780px,ca
 .quest-cutscene .quest-dialogue-text p,.quest-cutscene[data-painting] .quest-dialogue-text p{width:100%;min-width:0;font-size:18px!important;line-height:1.35!important;text-wrap:wrap;word-break:keep-all;overflow-wrap:anywhere;animation:none}
 .quest-cutscene .quest-dialogue-text p .dialogue-sentence{display:inline!important;text-wrap:wrap!important}
 .quest-cutscene .quest-scene-choices>button{font-size:15.5px!important;line-height:1.2}
+/* Balance dialogue lines so a page never leaves one short word alone on its last line (phones). */
+.quest-cutscene .quest-dialogue-text p,.quest-cutscene[data-painting] .quest-dialogue-text p{text-wrap:balance}

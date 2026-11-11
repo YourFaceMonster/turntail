@@ -14,6 +14,6 @@ test('every new-RPG relic has a short two-line rail summary that fits the narrow
 test('the rail shows the short summary, not the full effect text',()=>{
  const run=createRpgJourneyGame('레일','',0).rpgRun!;run.equipped=['cracked-heart','gamblers-gloves'];run.relics=[...run.equipped];
  const html=renderToStaticMarkup(<RpgEquippedRelics run={run}/>);
- assert.ok(html.includes('최대 HP')&&html.includes('+20')&&html.includes('5장 승리')&&html.includes('정찰 +1'));
+ assert.ok(html.includes('최대 HP')&&html.includes('+20')&&html.includes('5장 승리')&&html.includes('바닥 +1장'));
  assert.ok(!html.includes('챕터 첫 장착 시 현재 HP'),'long effect text stays in the tooltip only');
 });

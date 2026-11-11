@@ -3,7 +3,7 @@ import {test} from 'node:test';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {createRpgJourneyGame,createRpgPhaseOneGame,startRpgRound,enterJourneyNode} from '../lib/rpg-game';
 import {act,settle,start,view,player,room,botMove,legalOptions,rpgTwinBotView,type Game,type Tile} from '../lib/game';
-import {rpgHandSettlement,scoutCount,scoutRpgFloor,resolveRpgScout,activateRpgRelics,rpgMaxHp,reworkRewardOffers,advanceReworkStage,chooseReworkReward,RPG_STAGE_HP} from '../lib/rpg-rework';
+import {rpgHandSettlement,scoutCount,scoutRpgFloor,resolveRpgScout,activateRpgRelics,rpgMaxHp,reworkRewardOffers,advanceReworkStage,chooseReworkReward,isPassiveRelic,RPG_STAGE_HP} from '../lib/rpg-rework';
 import {chooseRpgStageReward} from '../lib/rpg-phase-one';
 import {giveHerbToWayfarer,returnLetterToMor,discoverWayfarerRelic,equipJourneyRelic,hearJourneyRumor,settleJourneyMini} from '../lib/rpg-journey';
 import {saveRpgGame,readRpgArchive,RPG_PHASE_ONE_STORAGE_KEY,RPG_REWORK_BACKUP_KEY} from '../lib/rpg-storage';
@@ -115,14 +115,14 @@ test('final knot once per stage, ring only 3 seats, no resurrection',()=>{
 test('rewards: 2/3 offers, mirror +1, stable compass preview, quest exclusion',()=>{
  for(const stage of [1,2,3,6,9]){
   const run=fresh().rpgRun!;run.stage=stage;const preview=reworkRewardOffers(structuredClone(run));assert.deepEqual(reworkRewardOffers(run),preview);assert.equal(preview.length,[3,6,9].includes(stage)?3:2);assert.ok(!preview.includes('watchkeepers-blue-glass'));
-  const mirror=fresh().rpgRun!;mirror.stage=stage;mirror.equipped.push('split-mirror');assert.equal(reworkRewardOffers(mirror).length,preview.length+1);
+  const mirror=fresh().rpgRun!;mirror.stage=stage;mirror.relics.push('split-mirror');assert.equal(reworkRewardOffers(mirror).length,preview.length+1);
  }
  const exhausted=fresh().rpgRun!;exhausted.relics=['gamblers-gloves','cracked-heart','second-heart','recovery-lantern','stopped-hourglass','final-knot','second-ring','mor-quill','twin-needle-compass','split-mirror'];assert.deepEqual(reworkRewardOffers(exhausted),[]);
  const final=fresh().rpgRun!;final.stage=10;assert.deepEqual(reworkRewardOffers(final),[]);
 });
 test('ST1→ST2→ST3 rewards preserve stories, no repeated claims, and the journey continues to ST4',()=>{
  const game=fresh();for(let stage=1;stage<=3;stage++){
-  game.rpgRun!.hp=[70,1,1];finish(game,[0,3,3]);const run=game.rpgRun!,offers=run.phaseOne!.clear!.relicOffers!;assert.equal(offers.length,(stage===3?3:2)+(run.equipped.includes('split-mirror')?1:0));
+  game.rpgRun!.hp=[70,1,1];finish(game,[0,3,3]);const run=game.rpgRun!,offers=run.phaseOne!.clear!.relicOffers!;assert.equal(offers.length,(stage===3?3:2)+(run.relics.includes('split-mirror')?1:0));
   game.rpgRun=chooseRpgStageReward(run,'relic',undefined,false,offers[0]);assert.throws(()=>chooseRpgStageReward(game.rpgRun!,'relic',undefined,false,offers[0]));
   if(stage<3){assert.equal(game.rpgRun.status,'ready');enterJourneyNode(game,`battle-${stage+1}` as 'battle-2');assert.equal(game.rpgRun.stage,stage+1);assert.deepEqual(game.rpgRun.hp.slice(1),RPG_STAGE_HP[stage]);}
  }
@@ -132,7 +132,7 @@ test('ST1→ST2→ST3 rewards preserve stories, no repeated claims, and the jour
 test('future chapter transition resets HP/equipment, inherits one, retains permanent data',()=>{
  const game=fresh();let run=game.rpgRun!;run.journey=undefined;run.stage=3;game.rpgRun=run;run.hp=[70,1,1];finish(game,[0,3,3]);
  run=chooseReworkReward(game.rpgRun!,game.rpgRun!.phaseOne!.clear!.relicOffers![0]);const inherited=run.rework!.inherited!;run.hp[0]=40;
- const permanent=[...run.discovered];run=advanceReworkStage(run);assert.equal(run.stage,4);assert.deepEqual(run.relics,[inherited]);assert.deepEqual(run.equipped,[inherited]);assert.equal(run.hp[0],rpgMaxHp(run));assert.ok(permanent.every(id=>run.discovered.includes(id)));assert.deepEqual(run.hp.slice(1),[40,45]);
+ const permanent=[...run.discovered];run=advanceReworkStage(run);assert.equal(run.stage,4);assert.deepEqual(run.relics,[inherited]);assert.deepEqual(run.equipped,isPassiveRelic(inherited)?[]:[inherited],'owned-only relics carry over without an equip slot');assert.equal(run.hp[0],rpgMaxHp(run));assert.ok(permanent.every(id=>run.discovered.includes(id)));assert.deepEqual(run.hp.slice(1),[40,45]);
 });
 test('travel help/letter/blue glass preserve flags without items or currency',()=>{
  let run=fresh().rpgRun!;run.status='ready';run.journey!.location='wayfarer-stop';
@@ -191,7 +191,7 @@ test('new preview screens use the new engine, including zero-HP failure and ST3 
 });
 test('new relic tray describes scouting and HP, preserving the legacy catalogue separately',()=>{
  const run=fresh().rpgRun!;run.equipped=['gamblers-gloves','cracked-heart'];
- const html=renderToStaticMarkup(<RpgEquippedRelics run={run}/>);assert.match(html,/정찰 \+1/);assert.match(html,/최대 HP[\s\S]*\+20/);assert.doesNotMatch(html,/포인트|피해 8 감소/);
+ const html=renderToStaticMarkup(<RpgEquippedRelics run={run}/>);assert.match(html,/바닥 \+1장/);assert.match(html,/최대 HP[\s\S]*\+20/);assert.doesNotMatch(html,/포인트|피해 8 감소/);
 });
 test('migration from completed old stage keeps player HP and uses the next stage trial HP',()=>{
  const game=createRpgPhaseOneGame('old'),run=game.rpgRun!;run.pendingRework=true;run.status='ready';run.hp=[60,0,0];run.phaseOne!.clear={stage:1,hpBefore:60,baseHeal:0,relicHeal:0,synergyHeal:0,relicId:'recovery-lantern',chosen:'all'};game.phase='ended';
