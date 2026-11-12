@@ -58,8 +58,10 @@
 
 /* Story-only keepsake closeups retain the original handoff location. */
 .prologue-picture[data-keepsake-face] .prologue-camera{filter:blur(3px) brightness(.42)}
-.prologue-keepsake-preview{position:absolute;z-index:3;left:50%;top:43%;transform:translate(-50%,-50%);width:min(42vw,300px);height:60dvh;object-fit:contain;filter:drop-shadow(0 12px 22px #0009)}
-@media(max-aspect-ratio:1/1){.prologue-keepsake-preview{width:66vw;height:52dvh;top:43%}}
+.prologue-keepsake-preview{position:absolute;z-index:3;left:50%;top:43%;transform:translate(-50%,-50%);width:auto;height:min(60dvh,calc(min(42vw,300px) * 1.5));aspect-ratio:2/3;object-fit:contain;filter:drop-shadow(0 12px 22px #0009)}
+@media(max-aspect-ratio:1/1){.prologue-keepsake-preview{height:min(52dvh,99vw);top:43%}}
+/* Flame/key/crown fronts are opaque on a dark matte (card body 6.4%..93.6% × 3.8%..96.2%): trim to the card. */
+.prologue-keepsake-preview[data-matte]{clip-path:inset(3.8% 6.4% round 7% / 4.6%)}
 .story-card-faces{display:flex;gap:5px;justify-content:center;margin-bottom:5px}
 .story-card-faces img{width:42px;height:62px;object-fit:contain;border-radius:5px;background:#16212a}
 

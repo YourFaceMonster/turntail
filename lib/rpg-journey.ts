@@ -1,5 +1,5 @@
 import {rpgRelicSlots} from './rpg-trials';
-import {activateRpgRelics,isPassiveRelic,rpgMaxHp} from './rpg-rework';
+import {activateRpgRelics,isPassiveRelic,learnRecipes,rpgMaxHp} from './rpg-rework';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
 import {restoreRetiredJourneyNodes} from './rpg-journey-legacy.ts';
 import {restoreDemoReward} from './rpg-demo-catalog.ts';
@@ -19,7 +19,7 @@ export type DiceDenState={match?:YachtMatch,result?:'win'|'lose'|'draw'|'forfeit
 export type JourneyMini={game:Game,roundIds:string[],lastReward:number};
 export type LetterQuest={step:'alley'|'recovered'|'complete'|'failed',defeated?:boolean};
 export type VillageRequestReward='coins'|'heal';
-export type RpgJourneyState={version:1,livesVersion?:1,retryStage?:number,seenScenes?:string[],location:'map'|'tavern'|'market-alley'|'wayfarer-stop'|'watchtower'|'battle'|'mini-game'|'story-quest'|'dice-den',diceDen?:DiceDenState,currentNode:JourneyNode,story?:StoryQuestState,startedStages:number[],completedNodes:JourneyNode[],villageRequestReward?:VillageRequestReward,letterQuest?:LetterQuest,wayfarerHerbGiven?:boolean,watchtowerRelicFound?:boolean,watchtowerRelicClaimed?:boolean,rumors:string[],tavernRewardPaid:boolean,miniSummary?:{roundIndex:number,finished:boolean},mini?:JourneyMini,letterMini?:JourneyMini,miniKind?:'tavern'|'letter'};
+export type RpgJourneyState={version:1,livesVersion?:1,retryStage?:number,seenScenes?:string[],location:'map'|'tavern'|'market-alley'|'wayfarer-stop'|'watchtower'|'battle'|'mini-game'|'story-quest'|'dice-den',diceDen?:DiceDenState,currentNode:JourneyNode,story?:StoryQuestState,startedStages:number[],completedNodes:JourneyNode[],villageRequestReward?:VillageRequestReward,letterQuest?:LetterQuest,wayfarerHerbGiven?:boolean,watchtowerRelicFound?:boolean,watchtowerRelicClaimed?:boolean,rumors:string[],/** Recipes Pio taught this journey (set once he has spoken). */pioRecipes?:string[],tavernRewardPaid:boolean,miniSummary?:{roundIndex:number,finished:boolean},mini?:JourneyMini,letterMini?:JourneyMini,miniKind?:'tavern'|'letter'};
 /** Trial values for this three-stage prototype; never used by normal or HP item play. */
 export const JOURNEY_TRIAL={villageRequestHeal:5,villageRequestCoins:5,miniRounds:3,miniRewards:[12,8,4]} as const;
 export const JOURNEY_RUMOR={id:'sheltered-light',title:'모르의 등불 이야기',text:'금이 간 심장 곁에 회복의 등불을 장착해 보게. 둘을 함께 지니고 싸우면, 승부를 마친 뒤 등불이 조금 더 힘을 내지.'};
@@ -152,8 +152,15 @@ export function assertJourneyPreparation(run:RpgRun){if(!run.journey||run.status
 export function assertJourneyShop(run:RpgRun){if(run.rework)throw Error('새 RPG에서는 상점을 이용하지 않아요.');if(!run.journey||run.journey.location!=='map'||run.status!=='ready')throw Error('마을 지도의 잡화점에서 구매할 수 있어요.');}
 export function hearJourneyRumor(run:RpgRun):RpgRun{
  assertJourneyTavern(run);const fresh=!run.journey!.rumors.includes(JOURNEY_RUMOR.id);
- const next={...run,journey:{...run.journey!,rumors:[...new Set([...run.journey!.rumors,JOURNEY_RUMOR.id])]},updatedAt:Date.now()};
- return fresh&&run.rework&&run.relics.includes('mor-quill')?withRelicActivations(next,[{relicId:'mor-quill',message:'소문 수첩에 유물 소문 추가'}]):next;
+ let next:RpgRun={...run,journey:{...run.journey!,rumors:[...new Set([...run.journey!.rumors,JOURNEY_RUMOR.id])]},updatedAt:Date.now()};
+ if(!run.rework)return next;
+ // Pio shares forging recipes once per journey: one, or two with Mor's quill in the bag.
+ if(!next.journey!.pioRecipes){
+  const quill=run.relics.includes('mor-quill'),taught=learnRecipes(next,quill?2:1);
+  next={...taught.run,journey:{...taught.run.journey!,pioRecipes:taught.learned}};
+  return quill&&taught.learned.length>1?withRelicActivations(next,[{relicId:'mor-quill',message:'조합법 하나 더 듣기'}]):next;
+ }
+ return fresh&&run.relics.includes('mor-quill')?withRelicActivations(next,[{relicId:'mor-quill',message:'소문 수첩에 유물 소문 추가'}]):next;
 }
 export function startLetterQuest(run:RpgRun):RpgRun{
  assertJourneyTavern(run);const j=run.journey!;

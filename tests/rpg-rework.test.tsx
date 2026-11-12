@@ -94,13 +94,13 @@ test('private 2층-only intel, no repeats, pickup expiry, per-round reset and ho
  const game=fresh();scoutRpgFloor(game,0,100);assert.equal(game.rpgRun!.rework!.intel[0].length,15);assert.ok(game.rpgRun!.rework!.intel[0].every(i=>game.stacks[i.index][1]?.id===i.tile.id),'only face-down 2층 tiles are scouted');scoutRpgFloor(game,0,5);assert.equal(game.rpgRun!.rework!.intel[0].length,15);
  const other=view(game,game.players[1].token);assert.deepEqual(other.rpgRun!.rework!.intel,{1:[]});assert.ok(other.stacks.every(s=>!('scoutedLower' in s)));assert.deepEqual(other.rpgRun!.tacticalPeeks,[]);
  const seen=game.rpgRun!.rework!.intel[0][0];game.stacks[seen.index]=game.stacks[seen.index].map(t=>t?.id===seen.tile.id?null:t);view(game,game.players[0].token);assert.ok(!game.rpgRun!.rework!.intel[0].some(i=>i.tile.id===seen.tile.id));
- game.rpgRun!.hp=[70,90,90];finish(game,[0,3,6]);game.rpgRun!.equipped=['stopped-hourglass','watchkeepers-blue-glass'];startRpgRound(game,0);assert.equal(game.rpgRun!.rework!.intel[0].length,6);
- game.rpgRun!.hp=[70,90,90];finish(game,[3,0,6]);startRpgRound(game,0);assert.equal(game.rpgRun!.rework!.intel[0].length,1);assert.equal(game.rpgRun!.rework!.intel[1].length,3);
+ game.rpgRun!.hp=[70,90,90];finish(game,[0,3,6]);game.rpgRun!.equipped=['stopped-hourglass','watchkeepers-blue-glass'];startRpgRound(game,0);assert.equal(game.rpgRun!.rework!.intel[0].length,7,'3 foresight +2 hourglass +1 blue glass +1 scout synergy (two scout relics)');
+ game.rpgRun!.hp=[70,90,90];finish(game,[3,0,6]);startRpgRound(game,0);assert.equal(game.rpgRun!.rework!.intel[0].length,2,'blue glass +1 scout synergy');assert.equal(game.rpgRun!.rework!.intel[1].length,3);
 });
 test('heart first activation, unequip/re-equip and delayed equip cannot farm HP',()=>{
  let run=fresh().rpgRun!;run.status='ready';run.journey!.location='tavern';run.hp[0]=60;run.relics.push('cracked-heart','second-heart');
  run=equipJourneyRelic(run,'cracked-heart');assert.equal(run.hp[0],80);assert.equal(rpgMaxHp(run),120);
- run=equipJourneyRelic(run,'second-heart');assert.equal(run.hp[0],90);assert.equal(rpgMaxHp(run),130);
+ run=equipJourneyRelic(run,'second-heart');assert.equal(run.hp[0],90);assert.equal(rpgMaxHp(run),135,'both hearts wake the heart synergy (+5 max HP, no current HP)');
  run=equipJourneyRelic(run,'cracked-heart');assert.equal(rpgMaxHp(run),110);assert.equal(run.hp[0],90);run=equipJourneyRelic(run,'cracked-heart');assert.equal(run.hp[0],90);
  run.hp[0]=125;run=equipJourneyRelic(run,'cracked-heart');assert.equal(run.hp[0],110);
  const high=fresh().rpgRun!;high.hp[0]=95;high.relics.push('cracked-heart');high.equipped.push('cracked-heart');assert.equal(activateRpgRelics(high).hp[0],115);

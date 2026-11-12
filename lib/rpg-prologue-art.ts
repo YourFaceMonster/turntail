@@ -19,16 +19,18 @@ export function prologueArt(cut:PrologueCut){
  if(cut.scene==='dark')return null;
  return PROLOGUE_ART[cut.scene==='card'?(cut.back?'cardBack':'cardFront'):cut.scene];
 }
+/** Closeup of a story keepsake laid over the dimmed painting (ST3 iron gate, ST6 flame, ST9 key). */
+export function keepsakeSource(cut:PrologueCut){return cut.keepsakeFace?STORY_CARD_ART[cut.keepsakeCard||'iron-gate-two'][cut.keepsakeFace]:undefined;}
 export function prologueArtSources(portrait:boolean){
  return [...new Set(Object.values(PROLOGUE_ART).map(frame=>portrait?frame.portrait:frame.landscape))];
 }
 export function prologueSceneSources(cuts:readonly PrologueCut[],portrait:boolean){
- return [...new Set(cuts.flatMap(cut=>{const art=prologueArt(cut);return [...(art?[portrait?art.portrait:art.landscape]:[]),...(cut.keepsakeFace?[STORY_CARD_ART['iron-gate-two'][cut.keepsakeFace]]:[])];}))];
+ return [...new Set(cuts.flatMap(cut=>{const art=prologueArt(cut);return [...(art?[portrait?art.portrait:art.landscape]:[]),...(cut.keepsakeFace?[keepsakeSource(cut)!]:[])];}))];
 }
 
 /** Consecutive captions over one painting share a single mounted picture and camera. */
 export function prologueSceneGroup(cuts:readonly PrologueCut[],index:number){
- const identity=(cut:PrologueCut)=>{const art=prologueArt({...cut,poseArt:undefined});return art?JSON.stringify([art.landscape,art.portrait,cut.focus||'',cut.keepsakeFace||'']):'dark';};
+ const identity=(cut:PrologueCut)=>{const art=prologueArt({...cut,poseArt:undefined});return art?JSON.stringify([art.landscape,art.portrait,cut.focus||'',keepsakeSource(cut)||'']):'dark';};
  if(!cuts[index])throw Error('이야기 장면을 찾을 수 없어요.');
  const visual=identity(cuts[index]);let start=index,end=index;
  while(start>0&&identity(cuts[start-1])===visual)start--;
@@ -36,7 +38,7 @@ export function prologueSceneGroup(cuts:readonly PrologueCut[],index:number){
  return {key:`${start}:${visual}`,start,end,duration:cuts.slice(start,end+1).reduce((sum,cut)=>sum+cut.duration,0)};
 }
 
-export function storyPictureKey(cut:PrologueCut){const art=prologueArt(cut);return JSON.stringify([cut.scene,art?.landscape,art?.portrait,cut.focus||'',cut.keepsakeFace||'']);}
+export function storyPictureKey(cut:PrologueCut){const art=prologueArt(cut);return JSON.stringify([cut.scene,art?.landscape,art?.portrait,cut.focus||'',keepsakeSource(cut)||'']);}
 function storyPlace(cut:PrologueCut){
  if(cut.location)return cut.location;
  if(cut.id.startsWith('quest-'))return cut.id;

@@ -1,5 +1,7 @@
 
-export type PrologueCut={keepsakeFace?:'front'|'back',storyboard?:string,id:string,scene:'dark'|'snow'|'inn'|'room'|'table'|'card'|'road'|'stone'|'gate',duration:number,line:string,speaker?:string,back?:boolean,audio:'wind'|'hearth'|'tile'|'quiet',art?:{landscape:string,portrait:string},poseArt?:{landscape:string,portrait:string},focus?:string,location?:string};
+import type {StoryCardId} from './rpg-story-cards.ts';
+/** keepsakeCard picks the closeup overlay (default: the ST3 iron gate 2). */
+export type PrologueCut={keepsakeFace?:'front'|'back',keepsakeCard?:StoryCardId,storyboard?:string,id:string,scene:'dark'|'snow'|'inn'|'room'|'table'|'card'|'road'|'stone'|'gate',duration:number,line:string,speaker?:string,back?:boolean,audio:'wind'|'hearth'|'tile'|'quiet',art?:{landscape:string,portrait:string},poseArt?:{landscape:string,portrait:string},focus?:string,location?:string};
 type Storyboard={id:string,scene:PrologueCut['scene'],audio:PrologueCut['audio'],back?:boolean,art?:PrologueCut['art'],parts:{line:string,speaker?:string,poseArt?:PrologueCut['art']}[]};
 import {STORY_CARD_SCENE_ART} from './rpg-story-card-art.ts';
 const speaking=STORY_CARD_SCENE_ART.wagerSpeaking;

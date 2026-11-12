@@ -34,12 +34,26 @@ test('flame and key discoveries switch to a back painting when the narration tur
  for(const [stage,line,stem] of [[6,'패를 뒤집자','st6-flame-two'],[9,'뒷면에는','st9-key-two']] as const){
   const cuts=journeyScenes(stage,run).after,index=cuts.findIndex(c=>c.line.startsWith(line));
   assert.ok(index>0);
-  assert.equal(cuts[index-1].art!.portrait,`/story/${stem}-portrait-special-v1.webp`);
-  assert.equal(cuts[index].art!.portrait,`/story/${stem}-back-portrait-special-v1.webp`);
+  assert.equal(cuts[index-1].art!.portrait,`/story/${stem}-portrait-special-v2.webp`);
+  assert.equal(cuts[index].art!.portrait,`/story/${stem}-back-portrait-special-v2.webp`);
   assert.notEqual(prologueSceneGroup(cuts,index-1).key,prologueSceneGroup(cuts,index).key);
   assert.equal(storyPictureTransition(cuts[index-1],cuts[index]),'overlap');
   for(const orientation of ['landscape','portrait'] as const){
    const size=imageSize(readFileSync('public'+cuts[index].art![orientation]));assert.ok(size.height>size.width);
   }
+ }
+});
+
+test('flame and key keepsakes get a closeup of both faces after the wide altar shot',()=>{
+ const run=createRpgJourneyGame('그림 확인','',0).rpgRun!;
+ for(const [stage,card,stem] of [[6,'sacred-flame-two','st6-flame-two'],[9,'secret-key-two','st9-key-two']] as const){
+  const cuts=journeyScenes(stage,run).after,front=cuts.findIndex(c=>c.keepsakeFace==='front'),back=cuts.findIndex(c=>c.keepsakeFace==='back');
+  assert.ok(front>0&&back===front+1);
+  assert.ok(!cuts[front-1].keepsakeFace&&cuts[front-1].art!.portrait.includes(stem),'the wide painting comes first');
+  assert.equal(cuts[front].keepsakeCard,card);assert.equal(cuts[back].keepsakeCard,card);
+  assert.ok(cuts[back].art!.portrait.includes(`${stem}-back`));
+  for(const face of Object.values(STORY_CARD_ART[card]))assert.ok(prologueSceneSources(cuts,true).includes(face));
+  const html=renderToStaticMarkup(<ProloguePicture cut={cuts[front]}/>);assert.ok(html.includes(STORY_CARD_ART[card].front)&&html.includes('data-matte'),'opaque fronts are trimmed to the card');
+  assert.ok(!renderToStaticMarkup(<ProloguePicture cut={cuts[back]}/>).includes('data-matte'),'backs are already cut out');
  }
 });

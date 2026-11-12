@@ -28,11 +28,11 @@ test('fast pacing skips the combo announcement on local games only',()=>{
  assert.equal(fastPlayDuration(5),FAST_FIVE_PLAY_MS);assert.ok(FAST_FIVE_PLAY_MS>500,'longer than the 0.5s flight');
 });
 
-test('codex lists all twelve journey relics and four story cards, hiding the unfound ones',()=>{
+test('codex lists all sixteen journey relics (four forged) and four story cards, hiding the unfound ones',()=>{
  const data=codexEntries(['gamblers-gloves','cracked-heart','sun-sigil'],['crown-two','iron-gate-two']);
  assert.equal(data.relics.length,RPG_REWORK_RELICS.length);assert.equal(data.relicCount,2,'legacy relic ids are ignored');assert.equal(data.storyCount,2);
  const html=renderToStaticMarkup(<RpgCodex discovered={['gamblers-gloves']} storyCards={['crown-two']} close={noop}/>);
- assert.match(html,/여정 도감/);assert.match(html,/승부사의 장갑/);assert.match(html,/\?\?\?/);assert.match(html,/1\/12/);assert.doesNotMatch(html,/금이 간 심장/,'unfound relic names stay hidden');
+ assert.match(html,/여정 도감/);assert.match(html,/승부사의 장갑/);assert.match(html,/\?\?\?/);assert.match(html,/1\/16/);assert.doesNotMatch(html,/금이 간 심장/,'unfound relic names stay hidden');
  const menu=renderToStaticMarkup(<MainMenu single={noop} multi={noop} tutorial={noop} scores={noop} achievements={noop} codex={noop} settings={noop} profile={noop} resume={noop} canResume={false} name="" avatar=""/>);
  assert.match(menu,/menu-tool-codex/);assert.match(menu,/스토리모드 정산까지/);assert.doesNotMatch(menu,/직업·주화|아이템전/,'the hidden item battle is not advertised');
 });

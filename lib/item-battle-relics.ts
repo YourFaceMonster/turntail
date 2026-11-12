@@ -9,7 +9,9 @@ export {ITEM_BATTLE_RELICS};
 export const ITEM_BATTLE_RELIC_POOL=[RPG_RELICS.find(relic=>relic.id==='cracked-heart')!,...ITEM_BATTLE_RELICS];
 export const ALL_GAME_RELICS=[...RPG_RELICS,...ITEM_BATTLE_RELICS];
 export function gameRelic(id:string){return RPG_RELICS.find(relic=>relic.id===id)||ITEM_BATTLE_RELICS.find(relic=>relic.id===id)||(id===DICE_RELIC.id?{...DICE_RELIC,grade:'common' as const}:undefined);}
-export function relicImage(id:string){if(id===BLUE_GLASS_ID)return '/rpg-items-v1/relics/watchkeepers-blue-glass-v1.webp';if(id===DICE_RELIC.id)return '/rpg-items-v1/relics/haro-ivory-die-v1.webp';return ITEM_BATTLE_RELICS.some(relic=>relic.id===id)?`/item-battle-v1/relics/${id}.webp`:`/rpg-items-v1/relics/${id}.webp`;}
+/** Forged legendaries borrow a material's icon until their own art is wired (docs/codex-art-request-2026-11-12-forged-relics.md). */
+const FORGED_TEMP_ICON:Record<string,string>={'whole-heart':'cracked-heart','gamblers-hourglass':'stopped-hourglass','undying-lantern':'recovery-lantern','forked-mirror':'split-mirror'};
+export function relicImage(id:string){if(FORGED_TEMP_ICON[id])return `/rpg-items-v1/relics/${FORGED_TEMP_ICON[id]}.webp`;if(id===BLUE_GLASS_ID)return '/rpg-items-v1/relics/watchkeepers-blue-glass-v1.webp';if(id===DICE_RELIC.id)return '/rpg-items-v1/relics/haro-ivory-die-v1.webp';return ITEM_BATTLE_RELICS.some(relic=>relic.id===id)?`/item-battle-v1/relics/${id}.webp`:`/rpg-items-v1/relics/${id}.webp`;}
 export function itemBattleRelicWin(equipped:readonly string[],label:string,tiles:readonly Tile[]){
  const effects:{relicId:string,message:string}[]=[];let damage=0,heal=0;
  const add=(id:string,amount:number,healing=false)=>{if(!equipped.includes(id))return;if(healing)heal+=amount;else damage+=amount;effects.push({relicId:id,message:healing?`HP +${amount}`:`추가 피해 +${amount}`});};

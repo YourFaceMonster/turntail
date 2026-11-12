@@ -10,7 +10,8 @@ export const STORY_CARD_ART:Record<StoryCardId,{front:string,back:string}>={
 };
 
 type StoryFrame={landscape:string,portrait:string};
-const prologue=(landscape:string,portrait:string):StoryFrame=>({landscape:`/prologue/${landscape}-special-v1.webp`,portrait:`/prologue/${portrait}-special-v1.webp`});
+/** Ordinary playing-card physical size (63 × 88 mm), judged against the painted hands. */
+const prologue=(landscape:string,portrait:string):StoryFrame=>({landscape:`/prologue/${landscape}-special-v3.webp`,portrait:`/prologue/${portrait}-special-v3.webp`});
 /** Shared registry for the approved design across the prologue and ST3. */
 export const STORY_CARD_SCENE_ART={
  crownFront:prologue('tile-front-landscape-crown','tile-front-portrait-crown'),
@@ -21,7 +22,7 @@ export const STORY_CARD_SCENE_ART={
  ironHandoff:prologue('st3-keepsake-handoff-wide','st3-keepsake-handoff-portrait'),
  ironComparison:prologue('st3-keepsake-compare-wide','st3-keepsake-compare-portrait'),
 };
-const chapter=(key:string):StoryFrame=>({landscape:`/story/${key}-portrait-special-v1.webp`,portrait:`/story/${key}-portrait-special-v1.webp`});
+const chapter=(key:string):StoryFrame=>({landscape:`/story/${key}-portrait-special-v2.webp`,portrait:`/story/${key}-portrait-special-v2.webp`});
 export const STORY_CARD_CHAPTER_ART:Partial<Record<string,StoryFrame>>=Object.fromEntries([
  'st6-flame-two','st6-flame-two-back','st9-key-two','st9-key-two-back','true-ending-record','true-ending-village','ending-handoff',
 ].map(key=>[key,chapter(key)]));

@@ -1,0 +1,366 @@
+[
+  {
+    "scene": "crownFront",
+    "orientation": "portrait",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "src": "/prologue/tile-front-portrait-crown-special-v3.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "crownFront",
+    "orientation": "landscape",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "src": "/prologue/tile-front-landscape-crown-special-v3.webp",
+    "naturalWidth": 1672,
+    "naturalHeight": 941,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "crownBack",
+    "orientation": "portrait",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "src": "/prologue/tile-back-portrait-special-v3.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "crownBack",
+    "orientation": "landscape",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "src": "/prologue/tile-back-landscape-special-v3.webp",
+    "naturalWidth": 1672,
+    "naturalHeight": 941,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "wagerRest",
+    "orientation": "portrait",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "src": "/prologue/wager-rest-portrait-symbols-special-v3.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "wagerRest",
+    "orientation": "landscape",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "src": "/prologue/wager-rest-wide-symbols-special-v3.webp",
+    "naturalWidth": 1672,
+    "naturalHeight": 941,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "wagerSpeaking",
+    "orientation": "portrait",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "src": "/prologue/wager-speaking-portrait-symbols-special-v3.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "wagerSpeaking",
+    "orientation": "landscape",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "src": "/prologue/wager-speaking-wide-symbols-special-v3.webp",
+    "naturalWidth": 1672,
+    "naturalHeight": 941,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "stoneComparison",
+    "orientation": "portrait",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "src": "/prologue/stone-revelation-portrait-special-v3.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "stoneComparison",
+    "orientation": "landscape",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "src": "/prologue/stone-revelation-landscape-special-v3.webp",
+    "naturalWidth": 1672,
+    "naturalHeight": 941,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "ironHandoff",
+    "orientation": "portrait",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "src": "/prologue/st3-keepsake-handoff-portrait-special-v3.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1671,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "ironHandoff",
+    "orientation": "landscape",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "src": "/prologue/st3-keepsake-handoff-wide-special-v3.webp",
+    "naturalWidth": 1671,
+    "naturalHeight": 941,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "ironComparison",
+    "orientation": "portrait",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "src": "/prologue/st3-keepsake-compare-portrait-special-v3.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "ironComparison",
+    "orientation": "landscape",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "src": "/prologue/st3-keepsake-compare-wide-special-v3.webp",
+    "naturalWidth": 1672,
+    "naturalHeight": 941,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "st6-flame-two",
+    "orientation": "portrait",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "src": "/story/st6-flame-two-portrait-special-v2.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "st6-flame-two",
+    "orientation": "landscape",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "src": "/story/st6-flame-two-portrait-special-v2.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "contain",
+    "transform": "none"
+  },
+  {
+    "scene": "st6-flame-two-back",
+    "orientation": "portrait",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "src": "/story/st6-flame-two-back-portrait-special-v2.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "st6-flame-two-back",
+    "orientation": "landscape",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "src": "/story/st6-flame-two-back-portrait-special-v2.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "contain",
+    "transform": "none"
+  },
+  {
+    "scene": "st9-key-two",
+    "orientation": "portrait",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "src": "/story/st9-key-two-portrait-special-v2.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "st9-key-two",
+    "orientation": "landscape",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "src": "/story/st9-key-two-portrait-special-v2.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "contain",
+    "transform": "none"
+  },
+  {
+    "scene": "st9-key-two-back",
+    "orientation": "portrait",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "src": "/story/st9-key-two-back-portrait-special-v2.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "st9-key-two-back",
+    "orientation": "landscape",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "src": "/story/st9-key-two-back-portrait-special-v2.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "contain",
+    "transform": "none"
+  },
+  {
+    "scene": "true-ending-record",
+    "orientation": "portrait",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "src": "/story/true-ending-record-portrait-special-v2.webp",
+    "naturalWidth": 940,
+    "naturalHeight": 1672,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "true-ending-record",
+    "orientation": "landscape",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "src": "/story/true-ending-record-portrait-special-v2.webp",
+    "naturalWidth": 940,
+    "naturalHeight": 1672,
+    "fit": "contain",
+    "transform": "none"
+  },
+  {
+    "scene": "true-ending-village",
+    "orientation": "portrait",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "src": "/story/true-ending-village-portrait-special-v2.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "true-ending-village",
+    "orientation": "landscape",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "src": "/story/true-ending-village-portrait-special-v2.webp",
+    "naturalWidth": 941,
+    "naturalHeight": 1672,
+    "fit": "contain",
+    "transform": "none"
+  },
+  {
+    "scene": "ending-handoff",
+    "orientation": "portrait",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "src": "/story/ending-handoff-portrait-special-v2.webp",
+    "naturalWidth": 982,
+    "naturalHeight": 1602,
+    "fit": "cover",
+    "transform": "none"
+  },
+  {
+    "scene": "ending-handoff",
+    "orientation": "landscape",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "src": "/story/ending-handoff-portrait-special-v2.webp",
+    "naturalWidth": 982,
+    "naturalHeight": 1602,
+    "fit": "contain",
+    "transform": "none"
+  }
+]

@@ -40,5 +40,5 @@ test('all twelve supplemental assets have valid responsive dimensions and all ST
  const record=JSON.parse(readFileSync('docs/art-generation-scene-supplements-2026-11-05.json','utf8'));
  assert.equal(record.records.length,12);
  for(const {asset} of record.records){const {format,width:w,height:h}=imageSize(readFileSync(asset));assert.equal(format,'png','generation record keeps the original PNG masters');assert.equal(h>w,asset.includes('portrait'));assert.ok(Math.max(w,h)>=1536);}
- for(const phase of ['before','after'] as const)for(const cut of RPG_CONNECTION_SCENES[2][phase])for(const src of Object.values(prologueArt(cut)!))assert.ok(src.includes('night-symbols-v5'));
+ for(const phase of ['before','after'] as const)for(const cut of RPG_CONNECTION_SCENES[2][phase])for(const src of Object.values(prologueArt(cut)!))assert.ok(src.includes('night-symbols-v6'),'v6 keeps the corrected suits and paints the iron 2 in navy');
 });

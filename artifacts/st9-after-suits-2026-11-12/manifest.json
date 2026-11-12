@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-12",
+  "tool": "built-in image_gen",
+  "use_case": "precise-object-edit",
+  "request": "docs/codex-art-request-2026-11-12-st9-and-wide.md",
+  "references": [
+    "public/story/st9-after-portrait-v2.png",
+    "C:/Users/SONG/.codex/skills/turntale-cartoon-fantasy/references/prologue-approved.png"
+  ],
+  "prompt": "Use case: precise-object-edit.\nEdit target: first reference image, TURNTALE ST9 after-victory portrait scene. Second reference: approved hand-drawn 2D cartoon fantasy style only.\nMake one precise local correction: the FOUR small blank ivory playing cards on the stone altar tabletop must each show ONE clearly recognizable colored suit emblem: upper-left card RED CROWN (#ce203a); upper-right card DARK NAVY CLOSED IRON GATE with bars (#263547); lower-left card ORANGE FLAME (#ee8b23); lower-right card GREEN KEY (#007b3e). Paint each emblem onto the existing card surface, perspective aligned and centered. No numbers are required. Keep cards simple ordinary ivory playing cards, without gold ornate frames or story-keepsake embellishments.\nPreserve exactly the two characters (red hooded human on left, purple dragon person on right), their faces, hands, poses and costumes, the red crown and dark iron gate relief on the FRONT FACE of the stone altar, the burning red world tree, mountains, moon, flags, snow, altar, lighting, composition and framing. Do not modify any other emblem or any background element. Exactly four tabletop cards, exactly one of each suit. Preserve original portrait aspect ratio and if possible original 941x1672 dimensions.\nStyle: expressive irregular bold ink contours, simple cel shading, restrained rough texture, muted indigo slate and charcoal, restrained orange fire. Match source closely; no glossy 3D or photorealism.",
+  "generated_original": "C:/Users/SONG/.codex/generated_images/01a1cf7c-d700-71b1-8107-6d6c2a9bdffe/exec-e41445a9-9414-4d89-a540-6d9535bd409f.png",
+  "outputs": [
+    "public/story/st9-after-portrait-v3.png",
+    "public/story/st9-after-portrait-v3.webp"
+  ],
+  "dimensions": [
+    941,
+    1672
+  ],
+  "webp": {
+    "quality": 90,
+    "method": 6,
+    "encoder": "Pillow"
+  },
+  "visual_review": "Four suits visible with correct colors and perspective. Two characters, background and altar-front crown/gate relief retained.",
+  "rejected_variants": [],
+  "integration": "Claude handles app connections per request document; no app references changed.",
+  "wide_images": "Optional 29 landscape scenes not generated.",
+  "build": false,
+  "commit": false,
+  "push": false,
+  "deploy": false
+}

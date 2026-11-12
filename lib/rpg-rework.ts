@@ -8,8 +8,85 @@ import {rpgRelicSlots,trialEnemyHp,trialStartHp} from './rpg-trials';
 const QUEST_RELICS=['watchkeepers-blue-glass',DICE_RELIC.id];
 
 /** Owned-only relics: they work from the bag and never take one of the three equip slots. */
-export const PASSIVE_RELICS:readonly string[]=['mor-quill','twin-needle-compass','split-mirror'];
+export const PASSIVE_RELICS:readonly string[]=['mor-quill','twin-needle-compass','split-mirror','forked-mirror'];
 export const isPassiveRelic=(id:string)=>PASSIVE_RELICS.includes(id);
+export type RelicGrade='common'|'rare'|'legendary';
+/** Legendary relics exist only through forging; they are never offered as stage rewards. */
+export const RELIC_GRADES:Record<string,RelicGrade>={
+ 'recovery-lantern':'common','second-heart':'common','second-ring':'common','final-knot':'common','mor-quill':'common','twin-needle-compass':'common',
+ 'gamblers-gloves':'rare','cracked-heart':'rare','stopped-hourglass':'rare','split-mirror':'rare','watchkeepers-blue-glass':'rare',[DICE_RELIC.id]:'rare',
+ 'whole-heart':'legendary','gamblers-hourglass':'legendary','undying-lantern':'legendary','forked-mirror':'legendary',
+};
+/** Two equipped relics of one tag wake a small bonus. A forged relic counts once, under its materials' tag. */
+export type RelicTag='scout'|'heart'|'mend';
+export const RELIC_TAGS:Record<string,RelicTag>={
+ 'gamblers-gloves':'scout','stopped-hourglass':'scout','watchkeepers-blue-glass':'scout','gamblers-hourglass':'scout',
+ 'cracked-heart':'heart','second-heart':'heart','whole-heart':'heart',
+ 'recovery-lantern':'mend','final-knot':'mend','second-ring':'mend',[DICE_RELIC.id]:'mend','undying-lantern':'mend',
+};
+export const RELIC_TAG_NAMES:Record<RelicTag,string>={scout:'정찰',heart:'체력',mend:'회복'};
+export const RELIC_SYNERGIES:Record<RelicTag,{name:string,effect:string}>={
+ scout:{name:'정찰 공명',effect:'판이 시작될 때 바닥 패 1장을 더 몰래 봐요'},
+ heart:{name:'체력 공명',effect:'최대 HP +5'},
+ mend:{name:'회복 공명',effect:'스테이지를 클리어하면 HP +3'},
+};
+/** Active (equipped) relics only; owned-only relics never count. */
+export function reworkSynergies(run:Pick<RpgRun,'equipped'|'rework'>):RelicTag[]{
+ if(!run.rework)return [];
+ const count=(tag:RelicTag)=>run.equipped.filter(id=>RELIC_TAGS[id]===tag).length;
+ return (['scout','heart','mend'] as const).filter(tag=>count(tag)>=2);
+}
+const firstOfTag=(run:Pick<RpgRun,'equipped'>,tag:RelicTag)=>run.equipped.find(id=>RELIC_TAGS[id]===tag)!;
+/** Forging: two known materials become one legendary relic, freeing a slot. */
+export const RELIC_RECIPES=[
+ {id:'whole-heart',materials:['cracked-heart','second-heart'],pio:'금이 간 심장에 두 번째 심장을 포개면 금이 메워지면서 온전한 심장이 된대.'},
+ {id:'gamblers-hourglass',materials:['gamblers-gloves','stopped-hourglass'],pio:'승부사의 장갑을 낀 손으로 멈춘 모래시계를 뒤집으면, 모래가 다시 흐른다더군.'},
+ {id:'undying-lantern',materials:['recovery-lantern','final-knot'],pio:'회복의 등불 심지에 마지막 매듭을 묶으면 눈보라에도 꺼지지 않는 등불이 된대.'},
+ {id:'forked-mirror',materials:['twin-needle-compass','split-mirror'],pio:'쌍침 나침반을 갈라진 거울에 비추면, 두 갈래 길이 한꺼번에 보인다던데.'},
+] as const;
+export type RelicRecipe=typeof RELIC_RECIPES[number];
+export const recipeRumor=(id:string)=>`recipe:${id}`;
+export function relicRecipe(id:string){return RELIC_RECIPES.find(recipe=>recipe.id===id);}
+export function knownRecipes(run:Pick<RpgRun,'journey'>){const heard=run.journey?.rumors||[];return RELIC_RECIPES.filter(recipe=>heard.includes(recipeRumor(recipe.id)));}
+/** Teach unknown recipes, preferring ones whose material the player already holds. Recipes persist through the archive's rumors. */
+export function learnRecipes(run:RpgRun,count:number):{run:RpgRun,learned:string[]}{
+ const j=run.journey;if(!j||count<=0)return {run,learned:[]};
+ const known=new Set(knownRecipes(run).map(recipe=>recipe.id));
+ const unknown=RELIC_RECIPES.filter(recipe=>!known.has(recipe.id));
+ const holds=(recipe:RelicRecipe)=>recipe.materials.some(id=>run.relics.includes(id))?0:1;
+ const learned=[...unknown].sort((a,b)=>holds(a)-holds(b)).slice(0,count).map(recipe=>recipe.id);
+ return {run:learned.length?{...run,journey:{...j,rumors:[...j.rumors,...learned.map(recipeRumor)]}}:run,learned};
+}
+/** Why a known recipe cannot be forged right now, or '' when it can. */
+export function forgeBlocker(run:RpgRun,id:string){
+ const recipe=relicRecipe(id);if(!recipe)return '없는 조합법이에요.';
+ if(!run.rework||!run.journey)return '새 여정에서만 합성할 수 있어요.';
+ if(!knownRecipes(run).some(known=>known.id===id))return '아직 모르는 조합법이에요.';
+ const outside=run.status==='allocation'||run.status==='ready'&&!['battle','mini-game'].includes(run.journey.location);
+ if(!outside)return '승부 밖에서 합성할 수 있어요.';
+ const missing=recipe.materials.filter(material=>!run.relics.includes(material));
+ return missing.length?`재료가 부족해요 · ${missing.map(material=>reworkRelic(material)?.name||material).join(' · ')}`:'';
+}
+/** Current-HP bonus each heart relic grants on its first equip of a chapter. */
+const HEART_BONUS:Record<string,number>={'cracked-heart':20,'second-heart':10,'whole-heart':35};
+export function forgeRelic(run:RpgRun,id:string):RpgRun{
+ const blocked=forgeBlocker(run,id);if(blocked)throw Error(blocked);
+ const recipe=relicRecipe(id)!,materials:readonly string[]=recipe.materials,state=run.rework!;
+ const slot=run.equipped.findIndex(relic=>materials.includes(relic));
+ const equipped=run.equipped.filter(relic=>!materials.includes(relic));
+ if(!isPassiveRelic(id)&&(slot>=0||equipped.length<rpgRelicSlots(run)))equipped.splice(slot>=0?slot:equipped.length,0,id);
+ const activated=[...state.activated];let hp=run.hp[0];
+ // A forged heart never repays what its materials already granted this chapter.
+ const granted=materials.reduce((sum,material)=>sum+(activated.includes(material)?HEART_BONUS[material]||0:0),0);
+ if(HEART_BONUS[id]&&granted){activated.push(id);if(equipped.includes(id)&&hp>0)hp+=Math.max(0,HEART_BONUS[id]-granted);}
+ let next:RpgRun={...run,relics:[...run.relics.filter(relic=>!materials.includes(relic)),id],equipped,hp:[hp,...run.hp.slice(1)],
+  discovered:[...new Set([...run.discovered,id])],rework:{...state,activated},updatedAt:Date.now()};
+ next=withRelicActivations(next,[{relicId:id,message:'합성 완료'}]);
+ return activateRpgRelics(next);
+}
+/** Compass preview of the next reward offers (compass alone or forged into the mirror). */
+export const hasRewardPreview=(run:Pick<RpgRun,'relics'>)=>run.relics.includes('twin-needle-compass')||run.relics.includes('forked-mirror');
+const hasExtraOffer=(run:Pick<RpgRun,'relics'>)=>run.relics.includes('split-mirror')||run.relics.includes('forked-mirror');
 /** RPG only. Shared item-match catalogues and the global HP limit remain intact.
  * effect = one line "when → what"; detail = the plain-language explanation shown when the relic is tapped. */
 export const RPG_REWORK_RELICS=[
@@ -25,7 +102,12 @@ export const RPG_REWORK_RELICS=[
  ['twin-needle-compass','쌍침 나침반','다음 유물 보상 후보를 미리 봐요','장착하지 않고 갖고만 있어도 적용돼요. 여행 가방과 스테이지 정산 화면에서 다음 클리어 보상 후보를 보여 줘요.'],
  ['split-mirror','갈라진 거울','유물 보상 후보가 1개 더 나와요','장착하지 않고 갖고만 있어도 적용돼요. 스테이지 클리어 보상 후보가 2개에서 3개로(보스는 3개에서 4개로) 늘어요.'],
  [DICE_RELIC.id,DICE_RELIC.name,'판이 시작될 때 HP가 50 이하면 HP +2','매 판 시작 시 HP가 50 이하이면 HP 2를 회복해요. 위기일수록 조금씩 버티게 도와줘요.'],
-].map(([id,name,effect,detail])=>({id,name,effect,detail,grade:'common',passive:isPassiveRelic(id)}));
+ // Forged legendaries (see RELIC_RECIPES). Never offered as rewards.
+ ['whole-heart','온전한 심장','최대 HP +35 · 챕터에서 처음 장착하면 HP도 +35','금이 간 심장과 두 번째 심장을 합친 유물이에요. 장착하는 동안 최대 HP가 35 늘어나요. 현재 HP +35는 챕터마다 처음 장착할 때 한 번만 받고, 재료로 이미 받은 만큼은 빼요.'],
+ ['gamblers-hourglass','승부사의 모래시계','5장 족보로 이기면 바닥 +1장 · 판에서 이기면 다음 판 바닥 +3장','승부사의 장갑과 멈춘 모래시계를 합친 유물이에요. 5장 족보로 이기면 바닥 패를 1장 더 보고, 판에서 1등을 하면 다음 판 시작에 바닥 패를 6장 몰래 봐요.'],
+ ['undying-lantern','꺼지지 않는 등불','클리어하면 HP +8 · 판이 끝났을 때 HP 15 이하면 HP +6 (스테이지당 1번)','회복의 등불과 마지막 매듭을 합친 유물이에요. 스테이지를 클리어하면 HP 8을, 판 정산 후 HP가 1~15이면 HP 6을 회복해요(스테이지당 한 번).'],
+ ['forked-mirror','두 갈래 거울','유물 보상 후보 +1 · 다음 보상 후보 미리 보기','쌍침 나침반과 갈라진 거울을 합친 유물이에요. 장착하지 않고 갖고만 있어도 적용돼요. 보상 후보가 1개 늘고, 다음 클리어 보상 후보도 미리 보여 줘요.'],
+].map(([id,name,effect,detail])=>({id,name,effect,detail,grade:RELIC_GRADES[id]||'common',passive:isPassiveRelic(id)}));
 export function reworkRelic(id:string){return RPG_REWORK_RELICS.find(relic=>relic.id===id);}
 /** Two-line rail summary (when / what) for the narrow equipped-relic rail; the full effect stays in the tap tooltip. */
 export const RPG_REWORK_RELIC_SHORT:Record<string,{label:string,bonus:string}>={
@@ -41,6 +123,10 @@ export const RPG_REWORK_RELIC_SHORT:Record<string,{label:string,bonus:string}>={
  'twin-needle-compass':{label:'소지',bonus:'미리 보기'},
  'split-mirror':{label:'소지',bonus:'후보 +1'},
  [DICE_RELIC.id]:{label:'HP 50↓',bonus:'HP +2'},
+ 'whole-heart':{label:'최대 HP',bonus:'+35'},
+ 'gamblers-hourglass':{label:'5장·판승리',bonus:'+1/+3장'},
+ 'undying-lantern':{label:'클리어·위기',bonus:'HP+8·6'},
+ 'forked-mirror':{label:'소지',bonus:'후보 +1'},
 };
 /** Chapter of a stage (1~3, 4~6, 7~9, 10): normal-stage relics last until the chapter ends. */
 export function reworkChapterRange(stage:number):[number,number]{return stage>=10?[10,10]:[Math.floor((stage-1)/3)*3+1,Math.floor((stage-1)/3)*3+3];}
@@ -53,18 +139,20 @@ export type RpgRework={version:2,chapter:number,activated:string[],knotStages:nu
  intel:Record<number,FloorIntel[]>,resolvedTricks:string[],rewardOffers:Record<number,string[]>,
  lastScout?:{seat:number,count:number,bonus:number,round:number},settledSeats?:number[],overflow?:{dealt:number[],taken:number[]},inherited?:string,
  /** Player relic heals applied in the last settlement, for the result screen line. */
- relicHeals?:{relicId:string,amount:number}[]};
+ relicHeals?:{relicId:string,amount:number}[],
+ /** Recipe taught by the chapter boss just cleared (result screen line). */
+ lastRecipe?:string};
 export function isRpgRework(game:{hpItemMode?:boolean,rpgTest?:boolean,rpgRun?:{rework?:RpgRework}|null}){return !!game.rpgRun?.rework&&!game.hpItemMode&&!game.rpgTest;}
-export function rpgMaxHp(run:RpgRun,seat=0){return seat===0?100+(run.equipped.includes('cracked-heart')?20:0)+(run.equipped.includes('second-heart')?10:0):100;}
+export function rpgMaxHp(run:RpgRun,seat=0){if(seat!==0)return 100;const on=(id:string)=>run.equipped.includes(id);return 100+(on('cracked-heart')?20:0)+(on('second-heart')?10:0)+(on('whole-heart')?35:0)+(reworkSynergies(run).includes('heart')?5:0);}
 export function activateRpgRelics(run:RpgRun):RpgRun{
  const state=run.rework;if(!state)return run;
  // Owned-only relics never sit in an equip slot (older saves may still have them equipped).
  const equipped=run.equipped.filter(id=>!isPassiveRelic(id));
  let hp=run.hp[0];const activated=[...state.activated],procs:string[]=[];
- for(const [id,amount] of [['cracked-heart',20],['second-heart',10]] as const)if(equipped.includes(id)&&!activated.includes(id)){if(hp>0){hp+=amount;procs.push(id);}activated.push(id);}
+ for(const [id,amount] of Object.entries(HEART_BONUS))if(equipped.includes(id)&&!activated.includes(id)){if(hp>0){hp+=amount;procs.push(id);}activated.push(id);}
  const next={...run,equipped},maxHp=rpgMaxHp(next),healed=Math.min(maxHp,Math.max(0,hp));
  const result={...next,maxHp,hp:[healed,...run.hp.slice(1)],rework:{...state,activated}};
- return procs.length?withRelicActivations(result,procs.map(id=>({relicId:id,message:`최대 HP ${maxHp} · HP +${id==='cracked-heart'?20:10}`}))):result;
+ return procs.length?withRelicActivations(result,procs.map(id=>({relicId:id,message:`최대 HP ${maxHp} · HP +${HEART_BONUS[id]}`}))):result;
 }
 /** Called for new journeys, or at the next safe deal after a legacy round. */
 export function enableRpgRework(run:RpgRun,fresh=false){
@@ -142,27 +230,36 @@ export function beginReworkRound(game:Game){
  }
  run.roundHealth={round:game.round,before:[...run.hp],damage:run.hp.map(()=>0),healing:run.hp.map(()=>0),moneyDamage:run.hp.map(()=>0),coinsBefore:0};
  if(state.nextForesight!==undefined&&run.hp[state.nextForesight]>0){
-  const mine=state.nextForesight===0,hourglass=mine&&run.equipped.includes('stopped-hourglass');
-  const revealed=scoutRpgFloor(game,state.nextForesight,3+(hourglass?2:0),hourglass?2:0);
-  if(hourglass&&revealed>3)recordRelic(run,'stopped-hourglass',`바닥 패 ${revealed-3}장 더 확인`);
+  const mine=state.nextForesight===0,glass=!mine?'':run.equipped.includes('gamblers-hourglass')?'gamblers-hourglass':run.equipped.includes('stopped-hourglass')?'stopped-hourglass':'';
+  const extra=glass==='gamblers-hourglass'?3:glass?2:0,revealed=scoutRpgFloor(game,state.nextForesight,3+extra,extra);
+  if(glass&&revealed>3)recordRelic(run,glass,`바닥 패 ${revealed-3}장 더 확인`);
  }
  state.nextForesight=undefined;
  if(run.equipped.includes('watchkeepers-blue-glass')&&scoutRpgFloor(game,0,1))recordRelic(run,'watchkeepers-blue-glass','바닥 패 1장 확인');
+ if(run.hp[0]>0&&reworkSynergies(run).includes('scout')&&scoutRpgFloor(game,0,1))recordRelic(run,firstOfTag(run,'scout'),'정찰 공명 · 바닥 패 1장 확인');
 }
 export function resolveRpgScout(game:Game){
  if(!isRpgRework(game)||game.lastBy===null)return;const state=game.rpgRun!.rework!,id=game.tablePlay?.id;
  if(!id||state.resolvedTricks.includes(id))return;state.resolvedTricks.push(id);
- const bonus=game.lastBy===0&&game.trick.length===5&&game.rpgRun!.equipped.includes('gamblers-gloves')?1:0;
+ const gloves=game.rpgRun!.equipped.find(relic=>relic==='gamblers-gloves'||relic==='gamblers-hourglass'),bonus=game.lastBy===0&&game.trick.length===5&&gloves?1:0;
  const count=scoutCount(game.trick);if(!count)return;
  const revealed=scoutRpgFloor(game,game.lastBy,count+bonus,bonus);
- if(bonus&&revealed>count)recordRelic(game.rpgRun!,'gamblers-gloves','바닥 패 1장 더 확인');
+ if(bonus&&revealed>count)recordRelic(game.rpgRun!,gloves!,'바닥 패 1장 더 확인');
 }
 export function reworkRewardOffers(run:RpgRun,stage=run.stage){
  const state=run.rework!;if(state.rewardOffers[stage])return state.rewardOffers[stage];
- const boss=[3,6,9].includes(stage),count=(boss?3:2)+(run.relics.includes('split-mirror')?1:0);
- const pool=RPG_REWORK_RELICS.filter(r=>!QUEST_RELICS.includes(r.id)&&(boss||!run.relics.includes(r.id))).map(r=>r.id);
+ const boss=[3,6,9].includes(stage),count=(boss?3:2)+(hasExtraOffer(run)?1:0);
+ const pool=RPG_REWORK_RELICS.filter(r=>!QUEST_RELICS.includes(r.id)&&r.grade!=='legendary'&&(boss||!run.relics.includes(r.id))).map(r=>r.id);
+ // Bosses lean rare; a relic that completes a recipe with one already held is twice as likely.
+ const partner=new Set<string>(RELIC_RECIPES.flatMap(recipe=>{const materials:readonly string[]=recipe.materials,held=materials.filter(id=>run.relics.includes(id));return held.length===1?materials.filter(id=>!run.relics.includes(id)):[];}));
+ const weight=(id:string)=>(RELIC_GRADES[id]==='rare'?(boss?3:1):(boss?2:3))*(partner.has(id)?2:1);
  let seed=2166136261;for(const char of `${run.id}:${stage}`)seed=Math.imul(seed^char.charCodeAt(0),16777619)>>>0;
- const picked:string[]=[];while(pool.length&&picked.length<count){picked.push(pool.splice(seed%pool.length,1)[0]);seed=Math.imul(seed^picked.length,16777619)>>>0;}
+ const picked:string[]=[];
+ while(pool.length&&picked.length<count){
+  let roll=seed%pool.reduce((sum,id)=>sum+weight(id),0),index=0;
+  while(roll>=weight(pool[index])){roll-=weight(pool[index]);index++;}
+  picked.push(pool.splice(index,1)[0]);seed=Math.imul(seed^picked.length,16777619)>>>0;
+ }
  return state.rewardOffers[stage]=stage===10?[]:picked;
 }
 export function settleReworkRound(run:RpgRun,result:RpgResultLike):RpgRun{
@@ -177,7 +274,9 @@ export function settleReworkRound(run:RpgRun,result:RpgResultLike):RpgRun{
   const gained=next.hp[0]-before;if(gained>0){heals.push({relicId,amount:gained});recordRelic(next,relicId,`${label} HP +${gained}`);}
  };
  if(seats.length===3&&result.players[0].place===2&&next.equipped.includes('second-ring'))heal('second-ring',3,'2등 ·');
- if(next.hp[0]>0&&next.hp[0]<=10&&next.equipped.includes('final-knot')&&!state.knotStages.includes(next.stage)){heal('final-knot',5,'위기 회복 ·');state.knotStages.push(next.stage);}
+ const knot=next.equipped.includes('undying-lantern')?{id:'undying-lantern',limit:15,amount:6}:next.equipped.includes('final-knot')?{id:'final-knot',limit:10,amount:5}:null;
+ if(knot&&next.hp[0]>0&&next.hp[0]<=knot.limit&&!state.knotStages.includes(next.stage)){heal(knot.id,knot.amount,'위기 회복 ·');state.knotStages.push(next.stage);}
+ state.lastRecipe=undefined;
  next.rounds++;next.roundIds.push(result.id);next.updatedAt=result.at;state.intel={};state.lastScout=undefined;
  // ST7 optional observation: finishing a round in second place unlocks one extra line.
  if(next.stage===7&&next.journey&&result.players[0]?.place===2)next.journey={...next.journey,story:{runNumber:next.journey.story?.runNumber||1,quests:next.journey.story?.quests||{},secondPlaceSeen:true}};
@@ -187,9 +286,13 @@ export function settleReworkRound(run:RpgRun,result:RpgResultLike):RpgRun{
  if(failed){next.status='game-over';next.reward=null;state.nextForesight=undefined;}
  else if(cleared){
   const phase=next.phaseOne!;if(!phase.clearedStages.includes(next.stage)){
-   phase.clearedStages.push(next.stage);const hpBefore=next.hp[0];if(next.equipped.includes('recovery-lantern'))heal('recovery-lantern',5,'클리어 회복 ·');
-   const offers=reworkRewardOffers(next);
-   if(offers.length&&next.relics.includes('split-mirror'))recordRelic(next,'split-mirror','보상 후보 +1');phase.clear={stage:next.stage,hpBefore,baseHeal:0,relicHeal:next.hp[0]-hpBefore,synergyHeal:0,relicId:offers[0]||'',relicOffers:offers};
+   phase.clearedStages.push(next.stage);const hpBefore=next.hp[0];
+   if(next.equipped.includes('undying-lantern'))heal('undying-lantern',8,'클리어 회복 ·');else if(next.equipped.includes('recovery-lantern'))heal('recovery-lantern',5,'클리어 회복 ·');
+   if(reworkSynergies(next).includes('mend'))heal(firstOfTag(next,'mend'),3,'회복 공명 ·');
+   // Each chapter boss leaves a note with one unknown forging recipe.
+   if([3,6,9].includes(next.stage)&&next.journey){const taught=learnRecipes(next,1);next.journey=taught.run.journey;state.lastRecipe=taught.learned[0];}
+   const offers=reworkRewardOffers(next),mirror=next.relics.includes('forked-mirror')?'forked-mirror':'split-mirror';
+   if(offers.length&&hasExtraOffer(next))recordRelic(next,mirror,'보상 후보 +1');phase.clear={stage:next.stage,hpBefore,baseHeal:0,relicHeal:next.hp[0]-hpBefore,synergyHeal:0,relicId:offers[0]||'',relicOffers:offers};
   }next.status=next.stage===10?'complete':'allocation';next.storyCards=storyCardsForRun(next);state.nextForesight=undefined;
  }else state.nextForesight=result.players.findIndex(p=>p.winner);
  state.relicHeals=heals.length?heals:undefined;
@@ -202,7 +305,7 @@ export function chooseReworkReward(run:RpgRun,id?:string,decline=false){
  if(next.status!=='allocation'||!clear||clear.chosen)throw Error('선택할 유물 보상이 없어요.');
  const offers=clear.relicOffers||[];if(!decline&&offers.length&&(!id||!offers.includes(id)))throw Error('제시된 유물 중 하나를 선택해 주세요.');
  if(id&&!decline){clear.relicId=id;if([3,6,9].includes(next.stage))next.rework!.inherited=id;
-  else{next.relics=[...new Set([...next.relics,id])];if(!isPassiveRelic(id)&&next.equipped.length<3&&!next.equipped.includes(id))next.equipped.push(id);}
+  else{next.relics=[...new Set([...next.relics,id])];if(!isPassiveRelic(id)&&next.equipped.length<rpgRelicSlots(next)&&!next.equipped.includes(id))next.equipped.push(id);}
   next.discovered=[...new Set([...next.discovered,id])];}
  clear.chosen='relic';clear.declined=decline;next.phaseOne!.rewardHistory=[...(next.phaseOne!.rewardHistory||[]),{stage:next.stage,choice:'relic',...(id&&!decline?{relicId:id}:{}),declined:decline}];
  // The journey now continues through ST10 (story bible v1.4); ST3 is no longer a demo ending.

@@ -24,6 +24,14 @@ test('every relic has a one-line effect and a plain-language detail',()=>{
  assert.deepEqual(reworkChapterRange(2),[1,3]);assert.deepEqual(reworkChapterRange(5),[4,6]);assert.deepEqual(reworkChapterRange(9),[7,9]);assert.deepEqual(reworkChapterRange(10),[10,10]);
 });
 
+test('a won relic auto-equips only while the trial still has a free slot',()=>{
+ const game=fresh();game.rpgRun!.hp=[70,1,1];finish(game,[0,3,3]);
+ const run=game.rpgRun!,active=run.phaseOne!.clear!.relicOffers!.find(id=>!PASSIVE_RELICS.includes(id as never))!;
+ const occupied={...run,equipped:['existing-relic'],relics:[...run.relics,'existing-relic']};
+ assert.deepEqual(chooseReworkReward({...occupied,trials:['lone-relic']},active).equipped,['existing-relic'],'홀로 든 유물: the single slot is already taken');
+ assert.ok(chooseReworkReward(occupied,active).equipped.includes(active),'normal journeys keep three slots');
+});
+
 test('owned-only relics work from the bag and never take an equip slot',()=>{
  const game=fresh(),run=game.rpgRun!;run.hp=[70,1,1];finish(game,[0,3,3]);
  const offers=game.rpgRun!.phaseOne!.clear!.relicOffers!;const picked=chooseReworkReward({...game.rpgRun!,phaseOne:{...game.rpgRun!.phaseOne!,clear:{...game.rpgRun!.phaseOne!.clear!,relicOffers:[...offers,'split-mirror']}}},'split-mirror');

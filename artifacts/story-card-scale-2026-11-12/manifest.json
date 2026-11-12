@@ -1,0 +1,336 @@
+[
+  {
+    "id": "crownFrontPortrait",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-portrait-crown-special-v2.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-portrait-crown-special-v3.png",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-portrait-crown-special-v2.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png",
+      "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-76d3e5dd-0243-49f0-8585-a264814d039a.png"
+    ],
+    "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Viewer-held foreground crown FRONT. Same physical card relative to thumb as NEW crown-wide scale reference. Reduce current body340x560 to approximately240x335px; keep lower grip anchored, top moves DOWN. Not a large plaque.",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-00cfa87f-24f1-4ef9-b871-8ebf7b4c5494.png"
+  },
+  {
+    "id": "crownFrontWide",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-landscape-crown-special-v2.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-landscape-crown-special-v3.png",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-landscape-crown-special-v2.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png"
+    ],
+    "prompt": "EDIT image 1 only. User correction: the special keepsake must be an ORDINARY PLAYING CARD in physical size, approximately 63 x 88 mm, width:height 0.72, thin edge. It is currently much too large and long. SHRINK BOTH its width and height relative to the existing hand; do not extend its top upwards. Preserve the approved red double-crown/laurel, digit 2, ivory face and gold decorated border from reference 2, adjusting margins without distorting the emblem. Preserve the exact original canvas, camera, characters, faces, lighting and bold ink 2D cartoon fantasy drawing. Repaint the background revealed by shrinking the card. Keep natural grip, existing hands and fingers; no extra fingers. No added labels or objects. Viewer's foreground held card: reduce body from about310x490px to about230x320px on1672x941 canvas. Keep lower edge near y655 and thumb contact natural, center near x805. It must be a normal card held between fingertips, not a tablet. Hand stays the same size. Card top should be near335 rather than165.",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-76d3e5dd-0243-49f0-8585-a264814d039a.png"
+  },
+  {
+    "id": "crownBackPortrait",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-back-portrait-special-v2.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-back-portrait-special-v3.png",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-back-portrait-special-v2.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-back-special-v1.png",
+      "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-76d3e5dd-0243-49f0-8585-a264814d039a.png"
+    ],
+    "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Viewer-held crown BACK. Reduce body width25%,height35% to a normal playing card, same hand scale as crown-front reference. Keep thumb contact. Brown inset/gold outline double crowns; no digit.",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-b8051135-04d8-4a81-b38c-1d53bf342a10.png"
+  },
+  {
+    "id": "crownBackWide",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-back-landscape-special-v2.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-back-landscape-special-v3.png",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-back-landscape-special-v2.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-back-special-v1.png",
+      "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-76d3e5dd-0243-49f0-8585-a264814d039a.png"
+    ],
+    "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Viewer-held crown BACK. Reduce body to approx230x320px, keep bottom thumb contact; match new crown-front wide reference in physical size. Brown/gold outline double crowns; no digit.",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-6f6d9343-8cf9-438d-a1f6-0902c2a7b8cc.png"
+  },
+  {
+    "id": "wagerRestPortrait",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-portrait-symbols-special-v2.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-portrait-symbols-special-v3.png",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-portrait-symbols-special-v2.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png"
+    ],
+    "prompt": "EDIT image 1 only. User correction: the special keepsake must be an ORDINARY PLAYING CARD in physical size, approximately 63 x 88 mm, width:height 0.72, thin edge. It is currently much too large and long. SHRINK BOTH its width and height relative to the existing hand; do not extend its top upwards. Preserve the approved red double-crown/laurel, digit 2, ivory face and gold decorated border from reference 2, adjusting margins without distorting the emblem. Preserve the exact original canvas, camera, characters, faces, lighting and bold ink 2D cartoon fantasy drawing. Repaint the background revealed by shrinking the card. Keep natural grip, existing hands and fingers; no extra fingers. No added labels or objects. The elderly man offers the card. Make it a normal pocket playing card wholly within the scale of his palm: about 100px wide x 140px high on the 941x1672 image, not the existing 140x238 slab. Keep the point where his thumb touches it anchored, thin painted-gold edge. The card is clearly smaller than his palm length.",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-99eb6ad8-b33c-4a9e-8a7d-0369d0638ed4.png"
+  },
+  {
+    "id": "wagerRestWide",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-wide-symbols-special-v2.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-wide-symbols-special-v3.png",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-wide-symbols-special-v2.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png",
+      "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-99eb6ad8-b33c-4a9e-8a7d-0369d0638ed4.png"
+    ],
+    "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Elderly man offers crown FRONT, normal card smaller than palm length; reduce current width25%,height40%. Match elderly portrait reference's hand-to-card scale. Keep thumb grip at top.",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-03133ee6-e07c-406a-ae92-9549c192c77d.png"
+  },
+  {
+    "id": "wagerSpeakingPortrait",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-speaking-portrait-symbols-special-v2.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-speaking-portrait-symbols-special-v3.png",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-speaking-portrait-symbols-special-v2.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png",
+      "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-99eb6ad8-b33c-4a9e-8a7d-0369d0638ed4.png"
+    ],
+    "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Elderly man speaking/offering crown FRONT. Reduce width25%,height40%, normal card within his palm. Match resting portrait reference card exactly in physical size. Keep thumb grip at top.",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-0fc63955-eba1-453e-9df7-da196c162065.png"
+  },
+  {
+    "id": "wagerSpeakingWide",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-speaking-wide-symbols-special-v2.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-speaking-wide-symbols-special-v3.png",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-speaking-wide-symbols-special-v2.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png",
+      "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-99eb6ad8-b33c-4a9e-8a7d-0369d0638ed4.png"
+    ],
+    "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Elderly man speaking/offering crown FRONT. Reduce width25%,height40%, match resting portrait reference hand-to-card scale. Keep thumb grip.",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-5b8e69a7-b129-4053-a570-cd7ccc90a4ac.png"
+  },
+  {
+    "id": "stonePortrait",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/stone-revelation-portrait-special-v2.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/stone-revelation-portrait-special-v3.png",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/stone-revelation-portrait-special-v2.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-back-special-v1.png"
+    ],
+    "prompt": "EDIT ONLY IMAGE1, preserve IMAGE1's original scene and exact canvas orientation. All remaining images are isolated DESIGN references only, never scene references. Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Only handheld crown BACK comparison card. Reduce width25%,height40%, normal pocket card inside palm, same scale as crown-front reference. Standing stone carvings unchanged and remain large. Brown/gold double crown outline back, no digit. Do not replace this outdoor/temple scene with tavern. Keep ALL background from image1.",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-b7171474-6d68-4b57-9d71-b3204e2a9d5b.png",
+    "attempts": [
+      {
+        "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-b4a1d30f-9268-47e6-9ad5-e7042fabf71d.png",
+        "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Only handheld crown BACK comparison card. Reduce width25%,height40%, normal pocket card inside palm, same scale as crown-front reference. Standing stone carvings unchanged and remain large. Brown/gold double crown outline back, no digit.",
+        "refs": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/stone-revelation-portrait-special-v2.png",
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-back-special-v1.png",
+          "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-76d3e5dd-0243-49f0-8585-a264814d039a.png"
+        ],
+        "reason": "Visual QA: wrong reference scene copied or card still too large"
+      }
+    ]
+  },
+  {
+    "id": "stoneWide",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/stone-revelation-landscape-special-v2.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/stone-revelation-landscape-special-v3.png",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/stone-revelation-landscape-special-v2.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-back-special-v1.png",
+      "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-76d3e5dd-0243-49f0-8585-a264814d039a.png"
+    ],
+    "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Only handheld crown BACK comparison card. Reduce width25%,height40%, normal playing card held by fingertips. Standing stone carvings unchanged. Brown/gold double crown outline back, no digit.",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-965c33a5-6b33-432d-8a92-77151f70fc6c.png"
+  },
+  {
+    "id": "ironHandoffPortrait",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-handoff-portrait-special-v2.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-handoff-portrait-special-v3.png",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-handoff-portrait-special-v2.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-front-special-v1.png",
+      "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-76d3e5dd-0243-49f0-8585-a264814d039a.png"
+    ],
+    "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. ST3 iron gate FRONT offered between existing hands. Normal playing card63x88mm, smaller than palm, reduce width20%,height35%. Keep hand contact and gate design visible. Do not enlarge hands.",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-6d602d2f-ae1d-4e2f-9835-e3fc954b370f.png"
+  },
+  {
+    "id": "ironHandoffWide",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-handoff-wide-special-v2.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-handoff-wide-special-v3.png",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-handoff-wide-special-v2.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-front-special-v1.png"
+    ],
+    "prompt": "EDIT ONLY IMAGE1, preserve IMAGE1's original scene and exact canvas orientation. All remaining images are isolated DESIGN references only, never scene references. Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. ST3 iron gate FRONT offered between existing hands. Normal playing card63x88mm, smaller than palm, reduce width20%,height35%, approximately43x60px. Keep hand contact. Do not enlarge hands. Do not replace this outdoor/temple scene with tavern. Keep ALL background from image1.",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-65e9afc1-4249-4379-88d2-ab0ead05e96f.png",
+    "attempts": [
+      {
+        "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-73ecd76a-a402-4968-aaf9-f8aad9a2eb80.png",
+        "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. ST3 iron gate FRONT offered between existing hands. Normal playing card63x88mm, smaller than palm, reduce width20%,height35%, approximately43x60px. Keep hand contact. Do not enlarge hands.",
+        "refs": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-handoff-wide-special-v2.png",
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-front-special-v1.png",
+          "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-76d3e5dd-0243-49f0-8585-a264814d039a.png"
+        ],
+        "reason": "Visual QA: wrong reference scene copied or card still too large"
+      }
+    ]
+  },
+  {
+    "id": "ironComparisonPortrait",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-compare-portrait-special-v2.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-compare-portrait-special-v3.png",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-compare-portrait-special-v2.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-back-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-back-special-v1.png",
+      "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-76d3e5dd-0243-49f0-8585-a264814d039a.png"
+    ],
+    "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Only handheld iron-gate BACK beside stone carving. Normal palm-contained playing card, reduce width25%,height40%, thin edge. Keep stone carving large/unchanged, gold double-gate outline back no numeral.",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-7d42a5bf-d03b-41f2-b145-456370cf7fa1.png"
+  },
+  {
+    "id": "ironComparisonWide",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-compare-wide-special-v2.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-compare-wide-special-v3.png",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-compare-wide-special-v2.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-back-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-back-special-v1.png"
+    ],
+    "prompt": "EDIT ONLY IMAGE1, preserve IMAGE1's original scene and exact canvas orientation. All remaining images are isolated DESIGN references only, never scene references. Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Only handheld iron-gate BACK beside stone carving. Normal palm-contained playing card, reduce width25%,height40%, thin edge. Stone carving stays unchanged, gold double-gate outline back no numeral. Do not replace this outdoor/temple scene with tavern. Keep ALL background from image1.",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-41d25d84-e814-4b04-99a5-eea6b954b619.png",
+    "attempts": [
+      {
+        "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-36c76d20-f5bb-4094-b479-81fe4329dbf4.png",
+        "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Only handheld iron-gate BACK beside stone carving. Normal palm-contained playing card, reduce width25%,height40%, thin edge. Stone carving stays unchanged, gold double-gate outline back no numeral.",
+        "refs": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-compare-wide-special-v2.png",
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-back-special-v1.png",
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-back-special-v1.png",
+          "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-76d3e5dd-0243-49f0-8585-a264814d039a.png"
+        ],
+        "reason": "Visual QA: wrong reference scene copied or card still too large"
+      }
+    ]
+  },
+  {
+    "id": "st6-flame-two",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-portrait-special-v1.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-portrait-special-v2.png",
+    "prompt": "EDIT ONLY IMAGE1, preserve IMAGE1's original scene and exact canvas orientation. All remaining images are isolated DESIGN references only, never scene references. Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Only orange sacred-flame FRONT on altar. It is NOT a giant altar tablet. Shrink to about40% current width AND height, approximately65x90px, a small normal playing card leaning on altar at current base. Preserve altar carvings/props. IMPORTANT SMALL SIZE: altar is approx80cm wide. Card SHORT EDGE must be only 1/12 the altar top width, about40-45px wide and56-63px tall on941x1672 canvas. A tiny real playing card, not a plaque. Move top down and keep base anchored. Actual dimensions are critical. Preserve current front/back identity.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-portrait-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/sacred-flame-two-front-special-v1.png"
+    ],
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-82748327-cb9a-4a0e-9b9d-c9db1b05211d.png",
+    "attempts": [
+      {
+        "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-a6c2aace-f65b-4aba-be41-01d0fbc99ec0.png",
+        "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Only orange sacred-flame FRONT on altar. It is NOT a giant altar tablet. Shrink to about40% current width AND height, approximately65x90px, a small normal playing card leaning on altar at current base. Preserve altar carvings/props.",
+        "refs": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-portrait-special-v1.png",
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/sacred-flame-two-front-special-v1.png",
+          "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-99eb6ad8-b33c-4a9e-8a7d-0369d0638ed4.png"
+        ],
+        "reason": "Visual QA: wrong reference scene copied or card still too large"
+      }
+    ]
+  },
+  {
+    "id": "st9-key-two",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-portrait-special-v1.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-portrait-special-v2.png",
+    "prompt": "EDIT ONLY IMAGE1, preserve IMAGE1's original scene and exact canvas orientation. All remaining images are isolated DESIGN references only, never scene references. Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Only green twin-key FRONT on altar. Shrink to about35% current dimensions, approximately80x112px. A normal pocket playing card resting at samebase, ring/altar stays large unchanged. IMPORTANT SMALL SIZE: altar is approx80cm wide. Card SHORT EDGE must be only 1/12 the altar top width, about40-45px wide and56-63px tall on941x1672 canvas. A tiny real playing card, not a plaque. Move top down and keep base anchored. Actual dimensions are critical. Preserve current front/back identity.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-portrait-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/secret-key-two-front-special-v1.png"
+    ],
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-36847a13-3704-4933-a89c-295f9cf3d955.png",
+    "attempts": [
+      {
+        "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-b4e3772b-9fe8-4644-896b-969cde50c852.png",
+        "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Only green twin-key FRONT on altar. Shrink to about35% current dimensions, approximately80x112px. A normal pocket playing card resting at samebase, ring/altar stays large unchanged.",
+        "refs": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-portrait-special-v1.png",
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/secret-key-two-front-special-v1.png",
+          "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-99eb6ad8-b33c-4a9e-8a7d-0369d0638ed4.png"
+        ],
+        "reason": "Visual QA: wrong reference scene copied or card still too large"
+      }
+    ]
+  },
+  {
+    "id": "true-ending-record",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-record-portrait-special-v1.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-record-portrait-special-v2.png",
+    "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Exactly FOUR special cards surrounding open book: crown upperleft, gate upperright, flame lowerleft, key lowerright. Give all four SAME physical playing-card size, thin edges, each about1/7 open-book width, reduce current heights ~30%. Preserve book writing and props.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-record-portrait-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-front-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/sacred-flame-two-front-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/secret-key-two-front-special-v1.png"
+    ],
+    "generated": "C:/Users/SONG/.codex/generated_images/01a1ccd3-65d9-7112-86d8-9d31c75b6b7b/exec-65b22d68-72f9-45c7-8ed1-b94ec30f5bfb.png"
+  },
+  {
+    "id": "true-ending-village",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-village-portrait-special-v1.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-village-portrait-special-v2.png",
+    "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Exactly FOUR existing special cards: held red crown, table dark gate upperleft, green key center, orange flame upperright. Normal thin playing cards, same physical size despite perspective; reduce held card20% and tables30%. Keep all other ordinary game tiles plain, no new special cards.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-village-portrait-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-front-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/sacred-flame-two-front-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/secret-key-two-front-special-v1.png"
+    ],
+    "generated": "C:/Users/SONG/.codex/generated_images/01a1ccd3-65d9-7112-86d8-9d31c75b6b7b/exec-dc99b41d-006e-4a61-a4ac-8bd0aabd3fea.png"
+  },
+  {
+    "id": "ending-handoff",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/ending-handoff-portrait-special-v1.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/ending-handoff-portrait-special-v2.png",
+    "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Crown FRONT offered by hooded traveler to receiving hands. Normal playing card63x88mm fits comfortably inside palm, reduce width25%,height35%, thin edge. Preserve all people/hands/natural grip.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/ending-handoff-portrait-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png",
+      "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-99eb6ad8-b33c-4a9e-8a7d-0369d0638ed4.png"
+    ],
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-e35dd722-d3f4-40d8-9509-0c353f253f83.png"
+  },
+  {
+    "id": "st6-flame-two-back",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-back-portrait-special-v1.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-back-portrait-special-v2.png",
+    "prompt": "EDIT ONLY IMAGE1, preserve IMAGE1's original scene and exact canvas orientation. All remaining images are isolated DESIGN references only, never scene references. Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Only flame BACK on altar. Same small65x90px normal card as front, about40% current dimensions at same base. Brown inset, fine gold double flame outline, no digit. Not a stone plaque. IMPORTANT SMALL SIZE: altar is approx80cm wide. Card SHORT EDGE must be only 1/12 the altar top width, about40-45px wide and56-63px tall on941x1672 canvas. A tiny real playing card, not a plaque. Move top down and keep base anchored. Actual dimensions are critical. Preserve current front/back identity.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-back-portrait-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/sacred-flame-two-back-special-v1.png"
+    ],
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-bdaa7ee4-1060-433f-bf36-9ee9189b2fcf.png",
+    "attempts": [
+      {
+        "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-8cdbbb77-f2d3-4080-92dc-e00f10c9ac25.png",
+        "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Only flame BACK on altar. Same small65x90px normal card as front, about40% current dimensions at same base. Brown inset, fine gold double flame outline, no digit. Not a stone plaque.",
+        "refs": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-back-portrait-special-v1.png",
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/sacred-flame-two-back-special-v1.png",
+          "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-99eb6ad8-b33c-4a9e-8a7d-0369d0638ed4.png"
+        ],
+        "reason": "Visual QA: wrong reference scene copied or card still too large"
+      }
+    ]
+  },
+  {
+    "id": "st9-key-two-back",
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-back-portrait-special-v1.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-back-portrait-special-v2.png",
+    "prompt": "EDIT ONLY IMAGE1, preserve IMAGE1's original scene and exact canvas orientation. All remaining images are isolated DESIGN references only, never scene references. Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Only twin-key BACK on altar. Shrink to about35% current dimensions, approximately80x112px. Normal playing card, same as key front. Brown inset/gold double keys no digit. Keep ring/altar. IMPORTANT SMALL SIZE: altar is approx80cm wide. Card SHORT EDGE must be only 1/12 the altar top width, about40-45px wide and56-63px tall on941x1672 canvas. A tiny real playing card, not a plaque. Move top down and keep base anchored. Actual dimensions are critical. Preserve current front/back identity.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-back-portrait-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/secret-key-two-back-special-v1.png"
+    ],
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-93e33223-5cce-4a15-aea9-03bda85635f6.png",
+    "attempts": [
+      {
+        "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-fb10fc8e-9fe7-4a95-a0f1-504e3b7b985f.png",
+        "prompt": "Precise local image edit, image 1 is the scene to edit. LATEST USER REQUIREMENT supersedes tall stone tile: special story keepsakes are normal PLAYING CARD physical size, 63x88mm, width:height about0.72, a thin edge, fitting inside an adult palm. SHRINK current oversize prop, BOTH height and width; do not lengthen. Keep approved ivory/gold frame, numeral2 and special emblem designs; thin gold trim rather than thick block. Scale artwork uniformly, adjust margins, no squashing glyph. Other refs show approved identity and the new normal-card scale. Preserve input canvas and scene, character identities, faces, clothes, background, lighting, composition, camera. Change only named card(s), minimum grip adjustment, fill exposed background seamlessly. Existing fingers naturally occlude card, no added hands/fingers. Ordinary game tiles elsewhere stay unchanged. Bold hand drawn ink 2D cartoon fantasy. No added text. Only twin-key BACK on altar. Shrink to about35% current dimensions, approximately80x112px. Normal playing card, same as key front. Brown inset/gold double keys no digit. Keep ring/altar.",
+        "refs": [
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-back-portrait-special-v1.png",
+          "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/secret-key-two-back-special-v1.png",
+          "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-99eb6ad8-b33c-4a9e-8a7d-0369d0638ed4.png"
+        ],
+        "reason": "Visual QA: wrong reference scene copied or card still too large"
+      }
+    ]
+  }
+]

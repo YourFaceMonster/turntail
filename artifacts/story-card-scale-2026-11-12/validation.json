@@ -1,0 +1,338 @@
+[
+  {
+    "id": "crownFrontPortrait",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\tile-front-portrait-crown-special-v2.png",
+    "source_sha256": "00835e218fdda9308d3a8ad94373150145700559f5eaaee11296d57c1af2bcc7",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\tile-front-portrait-crown-special-v3.png",
+    "size": [
+      941,
+      1672
+    ],
+    "generated_size": [
+      941,
+      1672
+    ],
+    "png_bytes": 2008970,
+    "webp_bytes": 163558
+  },
+  {
+    "id": "crownFrontWide",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\tile-front-landscape-crown-special-v2.png",
+    "source_sha256": "74a345bfc2b60de98ab64c682567e0ecdda66a22c4dfd57ce305fa9aef4e5de8",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\tile-front-landscape-crown-special-v3.png",
+    "size": [
+      1672,
+      941
+    ],
+    "generated_size": [
+      1671,
+      941
+    ],
+    "png_bytes": 2014232,
+    "webp_bytes": 166694
+  },
+  {
+    "id": "crownBackPortrait",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\tile-back-portrait-special-v2.png",
+    "source_sha256": "6a3b8fc4b33a0741a4ecfb800a68edf93f91feb7aa3e6cfed6eebe9b1bc16946",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\tile-back-portrait-special-v3.png",
+    "size": [
+      941,
+      1672
+    ],
+    "generated_size": [
+      941,
+      1671
+    ],
+    "png_bytes": 2029416,
+    "webp_bytes": 166606
+  },
+  {
+    "id": "crownBackWide",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\tile-back-landscape-special-v2.png",
+    "source_sha256": "de360c48c4c7fe9b020c5af77048c59d503ef0b2ff146d5db44f227189ccbe6f",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\tile-back-landscape-special-v3.png",
+    "size": [
+      1672,
+      941
+    ],
+    "generated_size": [
+      1671,
+      941
+    ],
+    "png_bytes": 2035598,
+    "webp_bytes": 168572
+  },
+  {
+    "id": "wagerRestPortrait",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\wager-rest-portrait-symbols-special-v2.png",
+    "source_sha256": "5cd3f28f41b4625238d7c1443ec6acdcdb97b7c2a1270efdda7b9b0797a05c5d",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\wager-rest-portrait-symbols-special-v3.png",
+    "size": [
+      941,
+      1672
+    ],
+    "generated_size": [
+      941,
+      1672
+    ],
+    "png_bytes": 2167531,
+    "webp_bytes": 229776
+  },
+  {
+    "id": "wagerRestWide",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\wager-rest-wide-symbols-special-v2.png",
+    "source_sha256": "34057e74da8318a5e7346e850ce44c392be9e32bd35cab552c94036cbdf374d5",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\wager-rest-wide-symbols-special-v3.png",
+    "size": [
+      1672,
+      941
+    ],
+    "generated_size": [
+      1672,
+      941
+    ],
+    "png_bytes": 2005268,
+    "webp_bytes": 198024
+  },
+  {
+    "id": "wagerSpeakingPortrait",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\wager-speaking-portrait-symbols-special-v2.png",
+    "source_sha256": "223b6180cce6ddeb46aa7f85c4378c010e5d76ebb5e65b4c398e4bbf1b5e4cd4",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\wager-speaking-portrait-symbols-special-v3.png",
+    "size": [
+      941,
+      1672
+    ],
+    "generated_size": [
+      941,
+      1671
+    ],
+    "png_bytes": 2106122,
+    "webp_bytes": 210886
+  },
+  {
+    "id": "wagerSpeakingWide",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\wager-speaking-wide-symbols-special-v2.png",
+    "source_sha256": "6bfac4810a9ed54366c28fab6f06000a7eb96aebdada34560207b07a81ac2042",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\wager-speaking-wide-symbols-special-v3.png",
+    "size": [
+      1672,
+      941
+    ],
+    "generated_size": [
+      1672,
+      941
+    ],
+    "png_bytes": 1996964,
+    "webp_bytes": 182752
+  },
+  {
+    "id": "stonePortrait",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\stone-revelation-portrait-special-v2.png",
+    "source_sha256": "efebbcde6b2442e07db83ae481e06e02448d1e79bf274c3628df928e4c3361cc",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\stone-revelation-portrait-special-v3.png",
+    "size": [
+      941,
+      1672
+    ],
+    "generated_size": [
+      941,
+      1671
+    ],
+    "png_bytes": 2928025,
+    "webp_bytes": 393102
+  },
+  {
+    "id": "stoneWide",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\stone-revelation-landscape-special-v2.png",
+    "source_sha256": "7075aeed01f802551889677957bc06470ed0925a109b7db8454b152c2ce7fea4",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\stone-revelation-landscape-special-v3.png",
+    "size": [
+      1672,
+      941
+    ],
+    "generated_size": [
+      1671,
+      941
+    ],
+    "png_bytes": 2645568,
+    "webp_bytes": 313324
+  },
+  {
+    "id": "ironHandoffPortrait",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\st3-keepsake-handoff-portrait-special-v2.png",
+    "source_sha256": "3313aeb03497b01e7215c814e4dd37ce9d72b53cfe4b556fb80d9b72eacabc45",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\st3-keepsake-handoff-portrait-special-v3.png",
+    "size": [
+      941,
+      1671
+    ],
+    "generated_size": [
+      941,
+      1670
+    ],
+    "png_bytes": 2459885,
+    "webp_bytes": 292276
+  },
+  {
+    "id": "ironHandoffWide",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\st3-keepsake-handoff-wide-special-v2.png",
+    "source_sha256": "d7faea45aef825fb527f2009b31ee7df73b3248438ea0c3d7898109a31b50e10",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\st3-keepsake-handoff-wide-special-v3.png",
+    "size": [
+      1671,
+      941
+    ],
+    "generated_size": [
+      1670,
+      941
+    ],
+    "png_bytes": 2347781,
+    "webp_bytes": 246518
+  },
+  {
+    "id": "ironComparisonPortrait",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\st3-keepsake-compare-portrait-special-v2.png",
+    "source_sha256": "0574d3a5b4512e3598377fb5d5e88624443caa460327a914aa83ce6443f627e6",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\st3-keepsake-compare-portrait-special-v3.png",
+    "size": [
+      941,
+      1672
+    ],
+    "generated_size": [
+      941,
+      1671
+    ],
+    "png_bytes": 2278802,
+    "webp_bytes": 205730
+  },
+  {
+    "id": "ironComparisonWide",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\st3-keepsake-compare-wide-special-v2.png",
+    "source_sha256": "24e916d368fbeb1de2c480a57e86d48813d550dace505b0ae2ce5beab8b1c552",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\prologue\\st3-keepsake-compare-wide-special-v3.png",
+    "size": [
+      1672,
+      941
+    ],
+    "generated_size": [
+      1671,
+      941
+    ],
+    "png_bytes": 2222628,
+    "webp_bytes": 214968
+  },
+  {
+    "id": "st6-flame-two",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story\\st6-flame-two-portrait-special-v1.png",
+    "source_sha256": "687fc80dc8638c99c435cfa30a5e3391a6ae46e732e1290bf70a5a82dcda6241",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story\\st6-flame-two-portrait-special-v2.png",
+    "size": [
+      941,
+      1672
+    ],
+    "generated_size": [
+      941,
+      1672
+    ],
+    "png_bytes": 2354165,
+    "webp_bytes": 228872
+  },
+  {
+    "id": "st9-key-two",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story\\st9-key-two-portrait-special-v1.png",
+    "source_sha256": "22646a03d1172953359841bac23e45bd2e6ed7e02de2cabc8f9ddbf9500c410b",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story\\st9-key-two-portrait-special-v2.png",
+    "size": [
+      941,
+      1672
+    ],
+    "generated_size": [
+      941,
+      1671
+    ],
+    "png_bytes": 2256609,
+    "webp_bytes": 216190
+  },
+  {
+    "id": "true-ending-record",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story\\true-ending-record-portrait-special-v1.png",
+    "source_sha256": "9079d70e5f6865f519e916deba01d0a6208aa94d951c59e60cef41bcb03ca063",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story\\true-ending-record-portrait-special-v2.png",
+    "size": [
+      940,
+      1672
+    ],
+    "generated_size": [
+      940,
+      1672
+    ],
+    "png_bytes": 1914613,
+    "webp_bytes": 160786
+  },
+  {
+    "id": "true-ending-village",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story\\true-ending-village-portrait-special-v1.png",
+    "source_sha256": "3f0e22d239dd5b01b7443fc7980c8aafcdd2fa1088cb6fbd168be39f53df294c",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story\\true-ending-village-portrait-special-v2.png",
+    "size": [
+      941,
+      1672
+    ],
+    "generated_size": [
+      941,
+      1671
+    ],
+    "png_bytes": 2023631,
+    "webp_bytes": 202122
+  },
+  {
+    "id": "ending-handoff",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story\\ending-handoff-portrait-special-v1.png",
+    "source_sha256": "ad5ccb3f68ca0f44146b04369c2ff0de2926310132fb5a9020c284b86c85d6eb",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story\\ending-handoff-portrait-special-v2.png",
+    "size": [
+      982,
+      1602
+    ],
+    "generated_size": [
+      982,
+      1601
+    ],
+    "png_bytes": 2006628,
+    "webp_bytes": 179622
+  },
+  {
+    "id": "st6-flame-two-back",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story\\st6-flame-two-back-portrait-special-v1.png",
+    "source_sha256": "e8482a9d6e3794b50802b543033b787718afe8a0b069b47025829806caa0acf5",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story\\st6-flame-two-back-portrait-special-v2.png",
+    "size": [
+      941,
+      1672
+    ],
+    "generated_size": [
+      941,
+      1671
+    ],
+    "png_bytes": 2345662,
+    "webp_bytes": 233870
+  },
+  {
+    "id": "st9-key-two-back",
+    "source": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story\\st9-key-two-back-portrait-special-v1.png",
+    "source_sha256": "0c68b151f7b6dca635a7deca09b99f5ae429ed08130132a76b1176afd1f87f42",
+    "output": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story\\st9-key-two-back-portrait-special-v2.png",
+    "size": [
+      941,
+      1672
+    ],
+    "generated_size": [
+      941,
+      1672
+    ],
+    "png_bytes": 2272082,
+    "webp_bytes": 213494
+  }
+]

@@ -1,5 +1,4 @@
 'use client';
-import {STORY_CARD_ART} from '../../lib/rpg-story-card-art';
 import {questLightAnchor,coverImagePoint} from '../../lib/quest-light-position';
 import {SuitEmblem} from './TileFace';
 import {useEffect,useRef,useState,type CSSProperties} from 'react';
@@ -11,7 +10,7 @@ import {prologueAmbience} from '../../lib/rpg-prologue-audio';
 import {holdCutsceneSilence} from '../../lib/cutscene-music';
 import '../story-motion.css';
 import {DialogueTools,useDialogueAuto} from './DialogueTools';
-import {prologueArt,prologueSceneSources,prologueSceneGroup,storyPictureKey,storyPictureTransition} from '../../lib/rpg-prologue-art';
+import {keepsakeSource,prologueArt,prologueSceneSources,prologueSceneGroup,storyPictureKey,storyPictureTransition} from '../../lib/rpg-prologue-art';
 
 export function TwoCrowns(){return <svg viewBox="0 0 100 70" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round"><path d="M12 21l13 10 10-19 11 19 14-10-5 29H17zM17 56h38"/><path d="M40 31l13 10 10-19 11 19 14-10-5 29H45zM45 66h38"/></g></svg>;}
 export function StoryTile({back=false}:{back?:boolean}){return <div className={`prologue-tile ${back?'is-back':''}`} aria-label={back?'겹친 두 왕관이 새겨진 낡은 패 뒷면':'낡은 빨간 숫자 2 패'}><div className="prologue-tile-front"><span>2</span><i><SuitEmblem s={3}/></i></div><div className="prologue-tile-back"><TwoCrowns/></div><b className="prologue-tile-scratch"/></div>;}
@@ -34,7 +33,7 @@ export function ProloguePicture({cut,duration=cut.duration,hiddenLight=false}:{c
   {indoor&&<div className="prologue-firelight"/>}
   {['snow','inn'].includes(cut.scene)&&Array.from({length:24},(_,i)=><i key={i} className="prologue-snow" style={{'--x':`${(i*37)%100}%`,'--delay':`${-i*.73}s`,'--drift':`${12+i%5*7}px`} as CSSProperties}/>)}
   <div className="prologue-shade"/>
-  {cut.keepsakeFace&&<img className="prologue-keepsake-preview" src={STORY_CARD_ART['iron-gate-two'][cut.keepsakeFace]} alt=""/>}
+  {cut.keepsakeFace&&<img className="prologue-keepsake-preview" src={keepsakeSource(cut)} data-matte={cut.keepsakeFace==='front'&&(cut.keepsakeCard||'iron-gate-two')!=='iron-gate-two'?'':undefined} alt=""/>}
  </div>;
 }
 /** Decode first and retain keyed layers so the outgoing painting never restarts its fade. */
