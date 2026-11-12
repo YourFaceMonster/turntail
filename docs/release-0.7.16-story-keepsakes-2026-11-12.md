@@ -22,4 +22,12 @@
 
 ## 배포 확인
 
-GitHub main push 후 공개 버전과 이미지 파일·배포 번들의 실제 응답을 확인해 여기에 기록한다.
+2026-11-12 PC 로컬에서 소스 커밋 `756e460`을 GitHub main에 push했다(`6004cb6..756e460`). 이후 공개 사이트의 실제 응답을 확인했다.
+
+- 공개 홈페이지 HTTP 200, `title-version` 표시 0.7.16.
+- 이번 승인 패·앞뒤·컷씬 WebP 30개 HTTP 200 / image/webp, 로컬 파일과 바이트 및 SHA-256 일치.
+- 현재 홈페이지가 참조하는 배포 JS 4개를 읽어 승인 앞면 4종·철문 분리본·성화/열쇠 뒷면·ST3 연결과 special-v1 참조 확인.
+- [실시간 확인 결과 JSON](../artifacts/story-keepsakes-scenes-2026-11-12/public-verification-0.7.16.json), [재확인 스크립트](../artifacts/story-keepsakes-scenes-2026-11-12/verify-public.py).
+- Cloudflare 빌드 대시보드의 상태/빌드 로그는 직접 조회하지 않았다. 위 성공 표기는 공개 사이트와 파일 응답의 실제 확인을 뜻한다. 실제 브라우저 플레이·실기기 확인은 하지 않았다.
+
+이 공개 확인 결과와 README 상태를 별도 기록 커밋으로 GitHub main에 함께 보존한다.

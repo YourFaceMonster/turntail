@@ -1,0 +1,242 @@
+{
+  "checked_at_utc": "2026-11-12T00:36:50.601765+00:00",
+  "homepage": {
+    "url": "https://turntail.yousexybaby.workers.dev/",
+    "http": 200,
+    "versions": [
+      "0.7.16"
+    ]
+  },
+  "images_matching_local": 30,
+  "images": [
+    {
+      "path": "/prologue/st3-keepsake-compare-portrait-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 261910,
+      "sha256": "2e32638e085eb597fab5127120edca9e332a8ed5111b7afe3a8f7c47d14cc9b6"
+    },
+    {
+      "path": "/prologue/st3-keepsake-compare-wide-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 236826,
+      "sha256": "0629cd5858b4c062728297167bd635ee5c4fc6f86f7a58cbb22f3e5b3eb84ae6"
+    },
+    {
+      "path": "/prologue/st3-keepsake-handoff-portrait-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 258690,
+      "sha256": "4817f91325ca6a35dfd813450a831bd9ba20fb8bb1f0dbd742ea03e37eb40233"
+    },
+    {
+      "path": "/prologue/st3-keepsake-handoff-wide-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 245578,
+      "sha256": "07edb63e35a90ff20882540085366acc4d21ee6a6c78ada87a954a1ee76cae1c"
+    },
+    {
+      "path": "/prologue/stone-revelation-landscape-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 319440,
+      "sha256": "b44bcc89dee90d1f76c2922bf91329be2e10b106e77b4b611034dea3fca75f29"
+    },
+    {
+      "path": "/prologue/stone-revelation-portrait-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 370544,
+      "sha256": "fca093231014ac002e05fe065aa2b8a0c7a72d171e6047ea689821c05a8eca27"
+    },
+    {
+      "path": "/prologue/tile-back-landscape-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 167614,
+      "sha256": "318db908c7aff767ac174186cf7d1931d9354098c5a2c264cd31226e371d2fa7"
+    },
+    {
+      "path": "/prologue/tile-back-portrait-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 168470,
+      "sha256": "fcf3390b707b20e71861df30b50986867dbe1cfc3e6791468b8099206b72710d"
+    },
+    {
+      "path": "/prologue/tile-front-landscape-crown-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 160410,
+      "sha256": "6df9addace437961f75cd9c44178b0cb386139e1367a135de68dd0a563271c90"
+    },
+    {
+      "path": "/prologue/tile-front-portrait-crown-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 168658,
+      "sha256": "026f6608f04672eae1633898b40d2a77a5ae109c35f4f52b0fbebdadad4b54e4"
+    },
+    {
+      "path": "/prologue/wager-rest-portrait-symbols-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 223988,
+      "sha256": "66cc83c0bd2e004516a43a99e49f48b7607bac5eeca4cf21eea0aee9084797ff"
+    },
+    {
+      "path": "/prologue/wager-rest-wide-symbols-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 180060,
+      "sha256": "f519f15e0c16bed9fe4c80c1ff75ca47c1eba34afdf44e7d120fc4f1b8f1dc09"
+    },
+    {
+      "path": "/prologue/wager-speaking-portrait-symbols-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 210256,
+      "sha256": "2cec7ba6df6a9cd3aee5fcde2844456d4c2445d408a1064af06275ac35eb4b1e"
+    },
+    {
+      "path": "/prologue/wager-speaking-wide-symbols-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 180032,
+      "sha256": "6dbb085a27b45a4ac6d5bb0ebabf16b4d5682269cb1d05a2f633e18206b6cc2b"
+    },
+    {
+      "path": "/story-cards/crown-two-back-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 226050,
+      "sha256": "e46fecbcaf2c1a0d7203356f8a731b11a06841431a936ba13e04368b6caaf6b5"
+    },
+    {
+      "path": "/story-cards/crown-two-front-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 197042,
+      "sha256": "9ec5e3f18181b614eb5c300957c0e62d378bc83589e8c458c19ade42ab458246"
+    },
+    {
+      "path": "/story-cards/iron-gate-two-back-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 223488,
+      "sha256": "4340d7e9204f4b43921b51e13d1ebb08dbecdada6f69559dd2d3a030b67d1436"
+    },
+    {
+      "path": "/story-cards/iron-gate-two-front-special-cutout-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 169944,
+      "sha256": "850e7a1d39d63d84c4e8bb17868f4a2ac8564ed13a701ee0c1f8c7ffafdc600e"
+    },
+    {
+      "path": "/story-cards/iron-gate-two-front-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 160476,
+      "sha256": "85bedb6a0dce197cb1796d9ccdbab62adce90be0e27b64472ce34db5f96a4276"
+    },
+    {
+      "path": "/story-cards/sacred-flame-two-back-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 239444,
+      "sha256": "c67df994d98a60b9c6cbac8e7435ab7c242d6de19349e6bfeca4634af320d1c0"
+    },
+    {
+      "path": "/story-cards/sacred-flame-two-front-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 222196,
+      "sha256": "b060f0ced6b52b3a99b7fb6f6989bf49538faaea94914f8167329268c1a26d64"
+    },
+    {
+      "path": "/story-cards/secret-key-two-back-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 213132,
+      "sha256": "ff4f6a07e0fd20db3fcbd8e5a678e1dc4531383e5b83289f3a21fc3c6df19ca9"
+    },
+    {
+      "path": "/story-cards/secret-key-two-front-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 193656,
+      "sha256": "3cff7ef9168255254d1425d1d53271b76e92df39527a56a9b6000f33f4ed167e"
+    },
+    {
+      "path": "/story/ending-handoff-portrait-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 192754,
+      "sha256": "36cfef0904adacda275d8148675539e4c2ffb59a75b63662159fdf0d4208f82c"
+    },
+    {
+      "path": "/story/st6-flame-two-back-portrait-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 249796,
+      "sha256": "b48882c0f7b6130f454bde3d37a04d8a376f619fa29ced59238c6da479288878"
+    },
+    {
+      "path": "/story/st6-flame-two-portrait-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 250794,
+      "sha256": "0fb6c8c7f09cfe01cf2750662f78c2075d43729e3e86bffde4c6891b91a1eb3b"
+    },
+    {
+      "path": "/story/st9-key-two-back-portrait-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 225580,
+      "sha256": "a120f15f94f521c1cf78fa576092d0fce21b2cd2d87effcdb12a19bef4c7c9bb"
+    },
+    {
+      "path": "/story/st9-key-two-portrait-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 214250,
+      "sha256": "a6179b49b1df05274c0a33bb24c317ba3e6271fd3bd267fbb076c2ba4ea4704b"
+    },
+    {
+      "path": "/story/true-ending-record-portrait-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 167880,
+      "sha256": "c1416b601daf868a5a325e61a62db17750360216d7065e455e0863968a4e9c8a"
+    },
+    {
+      "path": "/story/true-ending-village-portrait-special-v1.webp",
+      "http": 200,
+      "content_type": "image/webp",
+      "bytes": 206922,
+      "sha256": "fcf84c869fb54ded7c38e5b7d39e2382f0d18fbccd3537a4b7a2babc54112e21"
+    }
+  ],
+  "failures": [],
+  "bundles_checked": [
+    "/_next/static/chunks/page-B8MaE-wD.js",
+    "/_next/static/chunks/page-BWASCrpc.js",
+    "/_next/static/chunks/page-DhZGe5s4.js",
+    "/_next/static/chunks/rpg-connection-scenes-DY4w6o8y.js"
+  ],
+  "approved_artwork_tokens_verified": [
+    "crown-two-front-special-v1.webp",
+    "iron-gate-two-front-special-cutout-v1.webp",
+    "sacred-flame-two-front-special-v1.webp",
+    "secret-key-two-front-special-v1.webp",
+    "st6-flame-two-back",
+    "st9-key-two-back",
+    "st3-keepsake-handoff-wide",
+    "-special-v1.webp"
+  ],
+  "browser_playthrough": false,
+  "cloudflare_build_dashboard_checked": false
+}
