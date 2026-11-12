@@ -1,0 +1,40 @@
+✔ the journey runs ST1→ST10 with region maps, chapter HP resets, stage casts and story cards (24.9714ms)
+✔ second journey reaches the true ending and records it (9.5433ms)
+✔ optional quests record a choice only, close when skipped, and change scene lines (21.3655ms)
+✔ second-journey variants, ST7 second place and the true ending script (2.0436ms)
+✔ every TEST screen shortcut opens, including ST4~10, quests, region maps and both endings (82.3046ms)
+✔ scene lists keep their identity across renders so the cutscene player never restarts (1.0571ms)
+✔ saves reject corrupt story data and the map only shows the current region (29.0227ms)
+✔ the map warms the next stage paintings: before, its quest, after; nothing outside ST4~10 (1.9862ms)
+✔ approved nineteen-board prologue keeps read time and second-run prerequisites (2.1136ms)
+✔ no input completes once; skip and late taps cannot re-enter or write a second save (11.5883ms)
+✔ background and lock pause the current beat without accumulating hidden time (0.2987ms)
+✔ every visible story beat has finished landscape and portrait paintings, including both tile faces and the matching stone (56.1664ms)
+✔ muting both buses creates no sources; music-only and effects-only stay independent and cleanup is idempotent (2.0203ms)
+✔ opening narration ends each page at a complete sentence within two lines (0.3912ms)
+✔ all nineteen shortened boards retain their words, order and speakers through sentence pagination (3.1998ms)
+✔ story keepsakes stay outside combat and grant the second card only on a real ST3 clear (22.0998ms)
+✔ old pending clears restore collection without changing hands, ordinary rewards or records; completed keepsakes survive restart (6.5337ms)
+✔ incomplete stages and malformed collection cannot invent a clear or silently overwrite saves (2.2322ms)
+✔ epilogue joins crown and gate to an uncertain torch-region lead without revealing later locations or granting replay rewards (16.1338ms)
+✔ all consecutive lines over one connection painting share a camera key and full scene duration (17.7313ms)
+✔ real artwork changes transition, while a repeated painting after another scene starts a fresh group (0.7479ms)
+✔ scene groups partition the full reel without dropping any expanded narrative time (1.1622ms)
+✔ short connections preload only their own paintings in the requested orientation (0.7102ms)
+✔ dialogue pose drawings change while the camera group stays mounted and both drawings preload (0.5975ms)
+✔ picture transitions distinguish dialogue, pose, quest progress and actual location changes (0.5762ms)
+✔ gate closeups preload both faces and keep the flip in its own camera group (16.2638ms)
+✔ new handoff and comparison paintings exist in the correct aspect ratios, with transparent keepsakes (2.792ms)
+✔ flame and key discoveries switch to a back painting when the narration turns the keepsake over (8.406ms)
+✔ illustrations respect invitation, wager, gameplay, award, discovery and comparison order (1.8771ms)
+✔ record illustration appears exactly while reading the incomplete torch lead (0.3953ms)
+✔ Mor cannot hold the missing letter before the actual return, including failed and recovered states (2.3673ms)
+✔ all twelve supplemental assets have valid responsive dimensions and all ST2 dialogue poses use corrected suits (19.8008ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3542.2071

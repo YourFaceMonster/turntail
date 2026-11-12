@@ -1,5 +1,6 @@
 import {DEMO_ENDING} from './rpg-demo-ending.ts';
 import {FIRST_PROLOGUE,type PrologueCut} from './rpg-prologue.ts';
+import {STORY_CARD_SCENE_ART} from './rpg-story-card-art.ts';
 // Dialogue follows the 2026-11-02 handoff; original prologue assets are preserved.
 export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];after:readonly PrologueCut[]}>={
  "1": {
@@ -401,10 +402,10 @@ RPG_CONNECTION_SCENES[3].after[1].poseArt=ironFrame('twins-after-reply-wide-v1',
 // Matching story paintings in both orientations; the first five approved replies remain.
 for(const cut of RPG_CONNECTION_SCENES[3].after){
  const beat=Number(/^ST3_POST_(\d+)/.exec(cut.id)?.[1]);
- if(beat>=6&&beat<=8){cut.art=sceneFrame('st3-keepsake-handoff-wide-v1','st3-keepsake-handoff-portrait-v1');cut.focus='50% 45%';}
+ if(beat>=6&&beat<=8){cut.art=STORY_CARD_SCENE_ART.ironHandoff;cut.focus='50% 45%';}
  if(beat===7)cut.keepsakeFace='front';
  if(beat===8)cut.keepsakeFace='back';
- if(beat>=9&&beat<=13){cut.art=sceneFrame('st3-keepsake-compare-wide-v1','st3-keepsake-compare-portrait-v1');cut.focus='50% 50%';}
+ if(beat>=9&&beat<=13){cut.art=STORY_CARD_SCENE_ART.ironComparison;cut.focus='50% 50%';}
  if(beat===11||beat===12){cut.art=sceneFrame('st3-record-wide-v1','st3-record-portrait-v1');cut.focus='50% 50%';}
  if(beat===14){cut.art=sceneFrame('iron-gate-village-map-wide-v3','iron-gate-village-map-portrait-v3');cut.focus='57% 18%';}
 }

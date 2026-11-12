@@ -1,0 +1,21 @@
+{
+  "original_scene_files_match_HEAD": 19,
+  "png_webp_scene_pairs": 21,
+  "rgba_back_and_cutout_pairs": [
+    "crown-two",
+    "iron-gate-two",
+    "sacred-flame-two",
+    "secret-key-two",
+    "iron-front-cutout"
+  ],
+  "typecheck": "passed",
+  "targeted_tests": {
+    "pass": 32,
+    "fail": 0
+  },
+  "build": false,
+  "push": false,
+  "deploy": false,
+  "approved_front_masters_preserved": 4,
+  "new_image_pairs": 26
+}

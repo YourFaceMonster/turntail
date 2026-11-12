@@ -1,4 +1,4 @@
-import {STORY_CARD_ART} from './rpg-story-card-art.ts';
+import {STORY_CARD_ART,STORY_CARD_SCENE_ART} from './rpg-story-card-art.ts';
 import type {PrologueCut} from './rpg-prologue.ts';
 
 const frame=(landscape:string,portrait:string)=>({landscape:`/prologue/${landscape}.webp`,portrait:`/prologue/${portrait}.webp`});
@@ -6,11 +6,11 @@ export const PROLOGUE_ART={
  snow:frame('snow-traveler-v1','snow-traveler-portrait-v1'),
  inn:frame('snow-inn-v3','snow-inn-portrait-v1'),
  room:frame('tavern-interior-v2','tavern-interior-portrait-v1'),
- table:frame('wager-rest-wide-symbols-v1','wager-rest-portrait-symbols-v1'),
- cardFront:frame('tile-front-landscape-crown-v1','tile-front-portrait-crown-v1'),
- cardBack:frame('tile-back-landscape-v1','tile-back-portrait-v1'),
+ table:STORY_CARD_SCENE_ART.wagerRest,
+ cardFront:STORY_CARD_SCENE_ART.crownFront,
+ cardBack:STORY_CARD_SCENE_ART.crownBack,
  road:frame('dawn-castle-road-v2','dawn-castle-road-portrait-v2'),
- stone:frame('stone-revelation-landscape-v1','stone-revelation-portrait-v1'),
+ stone:STORY_CARD_SCENE_ART.stoneComparison,
  gate:frame('normun-village-distant-wide-v2','normun-village-distant-portrait-v2'),
 };
 export function prologueArt(cut:PrologueCut){

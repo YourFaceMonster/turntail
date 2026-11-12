@@ -1,0 +1,121 @@
+[
+  {
+    "i": 0,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-front-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-97347dc0-9916-473c-a8f8-0478dfa745f9.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-front-v2.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor only the printed number 2 and iron gate emblem to dark navy #263547, deep ink #0b1521 in shadows. Remove brown cast from this ink."
+  },
+  {
+    "i": 1,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/sacred-flame-two-front-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-7f93403b-26e3-4264-b482-7f7c23846f25.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/sacred-flame-two-front-v2.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor only the printed number 2 and entire existing sacred flame-and-bowl emblem to orange #ee8b23. Both number and emblem same orange."
+  },
+  {
+    "i": 2,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/secret-key-two-front-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-d38b4df8-fdea-416c-86cd-468ed012e55c.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/secret-key-two-front-v2.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor only the printed number 2 and existing ornate key emblem to green #007b3e. Both number and emblem same green."
+  },
+  {
+    "i": 3,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-28f874cb-75d3-450f-bbe5-4329fd8ad90d.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-portrait-v2.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor only number 2 and flame-and-bowl emblem on the altar tile to orange #ee8b23, keeping the same symbol shape."
+  },
+  {
+    "i": 4,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-b152acf4-406a-4213-a565-49afef6795ab.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-portrait-v2.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor only number 2 and simple key emblem on foreground altar tile to green #007b3e, keeping the same symbol shape."
+  },
+  {
+    "i": 5,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-before-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-f36a719b-936d-4619-ac5c-c4aa81ca1395.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-before-portrait-v2.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor ONLY four tabletop tile symbols: left rear crown red #ce203a, left front gate dark navy #263547, right rear flame orange #ee8b23, right front key green #007b3e. Do not add numbers."
+  },
+  {
+    "i": 6,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-record-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-57b02090-590e-4c94-a356-6b049f952303.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-record-portrait-v2.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor the four existing emblems INSIDE THE BOOK and matching FOUR TABLETOP TILE emblems: crowns red #ce203a, gates dark navy #263547, flames orange #ee8b23, keys green #007b3e. Leave diamond frames brown. Do not add numbers."
+  },
+  {
+    "i": 7,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-village-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-506c8d4c-4427-4e34-9561-1faefaef940f.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-village-portrait-v2.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor ONLY all existing tile emblems on the table and crown tile held by the storyteller: crown red #ce203a, gate dark navy #263547, flame orange #ee8b23, key green #007b3e. Do not add numbers or tiles."
+  },
+  {
+    "i": 8,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-mila-portrait-night-symbols-v5.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-6104c36e-8410-4951-b77f-0e471eba56a7.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-mila-portrait-night-symbols-v6.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor the red number 2 on Mila's held iron gate tile to dark navy #263547, and gate to matching navy. Also ensure numbers on other face-up tiles match their suit (key green #007b3e, flame orange #ee8b23, crown red #ce203a). Preserve every number and symbol shape."
+  },
+  {
+    "i": 9,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-poko-portrait-night-symbols-v5.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-285dc98c-5450-4ca9-bfd4-de7bdf3fd29a.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-poko-portrait-night-symbols-v6.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. STRICT MASK-LIKE COLOR-ONLY EDIT. Change ONLY THREE printed digits: the red 2 held by the FOX at left to navy #263547, the red 2 held by hooded traveler right to navy #263547, and the red 3 on the flame tile near bottom center to orange #ee8b23. Do NOT recolor or redraw ANY OTHER tile. In particular preserve the RED CROWN TILE at lower left beside the purse, all green keys, and all gate/flame silhouettes exactly. Absolutely no replacement of a crown with a key. Keep everything else identical."
+  },
+  {
+    "i": 10,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-mila-wide-night-symbols-v5.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-0077acc7-ee77-47b7-a461-d81d1bc178b6.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-mila-wide-night-symbols-v6.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Ensure all existing face-up tile numbers match their suit emblem color: flame 1 orange #ee8b23 (currently red number in traveler's hand), crown red #ce203a, key green #007b3e, gate dark navy #263547. Change only mismatched ink colors, no shapes or numbers."
+  },
+  {
+    "i": 11,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-poko-wide-night-symbols-v5.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-f2bd8989-ea86-47f0-b084-1cda4b576ea4.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/square-poko-wide-night-symbols-v6.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor red 2s and red 4 on all iron gate tiles to dark navy #263547 matching gate symbols. Recolor red 3 and red 2 on flame tiles to orange #ee8b23 matching flames. Preserve crown reds and key greens and all glyph shapes."
+  },
+  {
+    "i": 12,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st4-after-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-58fb7a76-ac8f-4d5d-898d-8739bf1d0873.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st4-after-portrait-v2.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor ONLY faded crown outline spread across the wet book to faded red #ce203a, preserving water damage, transparency and washed-out quality."
+  },
+  {
+    "i": 13,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st7-after-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-ed511e84-8baa-4c17-aa6a-31df82e079ee.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st7-after-portrait-v2.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor ONLY the outlined crown beside the pointing finger in the ledger to red ink #ce203a. Preserve shield emblem, lines and other ornaments."
+  },
+  {
+    "i": 14,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st8-after-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-a37da472-be94-4dbf-8448-c9a26c5b9d71.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st8-after-portrait-v2.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor ONLY gold crown outline on the FRONT FACE OF THE LETTER BOX to red #ce203a. Keep gold corner hardware, stars, wax seal and gate banners unchanged."
+  },
+  {
+    "i": 15,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-after-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-27fed895-cd3d-4c05-993f-64d5ffd112fa.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-after-portrait-v2.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor ONLY intertwined crown and iron gate carvings on FRONT OF FOREGROUND STONE TABLE: crown red #ce203a with restrained red glow, gate dark navy #263547 with subtle cool blue edge for visibility, no orange gate glow. Keep central circled-cross emblem and background flame banners unchanged."
+  },
+  {
+    "i": 16,
+    "original": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/quest-9-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-4a3fe55e-98fe-4dd8-af02-f207edfc1a5b.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/quest-9-portrait-v2.png",
+    "prompt": "Use case: precise-object-edit. This image is the EDIT TARGET. Perform a surgical local ink color correction, not a redraw. Preserve exact composition, crop, aspect ratio, all faces, bodies, backgrounds, lighting, surface texture, cracks, contours, object sizes and locations. Preserve original hand-drawn 2D cartoon fantasy rendering and all glyph shapes; no new text, symbols, digits or objects. Keep brown-and-gold tile backs unchanged. Recolor ONLY intertwined crown and iron gate carvings on TOP SURFACE OF FOREGROUND STONE TABLE: crown red #ce203a with restrained red glow, gate dark navy #263547 with subtle cool blue edge for visibility, no orange gate glow. Keep central circled-cross emblem, held gem and flame banners unchanged."
+  }
+]

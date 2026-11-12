@@ -1,7 +1,8 @@
 
 export type PrologueCut={keepsakeFace?:'front'|'back',storyboard?:string,id:string,scene:'dark'|'snow'|'inn'|'room'|'table'|'card'|'road'|'stone'|'gate',duration:number,line:string,speaker?:string,back?:boolean,audio:'wind'|'hearth'|'tile'|'quiet',art?:{landscape:string,portrait:string},poseArt?:{landscape:string,portrait:string},focus?:string,location?:string};
 type Storyboard={id:string,scene:PrologueCut['scene'],audio:PrologueCut['audio'],back?:boolean,art?:PrologueCut['art'],parts:{line:string,speaker?:string,poseArt?:PrologueCut['art']}[]};
-const speaking={landscape:'/prologue/wager-speaking-wide-symbols-v1.webp',portrait:'/prologue/wager-speaking-portrait-symbols-v1.webp'};
+import {STORY_CARD_SCENE_ART} from './rpg-story-card-art.ts';
+const speaking=STORY_CARD_SCENE_ART.wagerSpeaking;
 /** P01–P19 with moderate narration; only authored beats advance the prologue. */
 export const PROLOGUE_STORYBOARD:readonly Storyboard[]=[
  {id:'P01',scene:'dark',audio:'wind',parts:[{line:'패 한 장으로 시작된 여행도 있었다.'}]},

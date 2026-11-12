@@ -1,0 +1,241 @@
+[
+  {
+    "i": 0,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-portrait-crown-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-56b4a5a5-cbce-4250-bfea-b9a608bb6ac9.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-portrait-crown-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the EDIT TARGET SCENE. All other supplied images are approved special STORY TILE DESIGN REFERENCES, not backgrounds or new scenes. Preserve the target scene's EXACT camera, crop, aspect ratio, characters/faces/hands/expressions, architecture, weather, lighting, and object positions. Change ONLY the explicitly identified story tile(s), rendering the approved tile design at the ORIGINAL TILE'S PHYSICAL SIZE, position, perspective and occlusion by fingers. Do not enlarge tiles, cover fingers, or turn tiles into plaques/monoliths. Copy reference design faithfully: thick small handheld tile, warm ivory face, aged brass frame with four corner brackets, dark perimeter groove, double-ring engraving, one numeral 2 in suit color above the distinctive colored emblem and a small matching bottom inset. Keep other ordinary playing tiles PLAIN and unchanged, without special rims. Preserve all original scene detail and hand-drawn bold ink 2D cartoon fantasy shading, adapt only tile illumination to scene. No added characters, objects, numbers or text. Replace ONLY the single foreground tile held by the viewer with the approved crimson CROWN 2 front, including overlapping ornate crowns and laurel. The old tile's position, dimensions and fingers stay unchanged.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-portrait-crown-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png"
+    ]
+  },
+  {
+    "i": 1,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-landscape-crown-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-5f23ba28-fef1-4099-91c3-249fd61aff6e.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-landscape-crown-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the EDIT TARGET SCENE. All other supplied images are approved special STORY TILE DESIGN REFERENCES, not backgrounds or new scenes. Preserve the target scene's EXACT camera, crop, aspect ratio, characters/faces/hands/expressions, architecture, weather, lighting, and object positions. Change ONLY the explicitly identified story tile(s), rendering the approved tile design at the ORIGINAL TILE'S PHYSICAL SIZE, position, perspective and occlusion by fingers. Do not enlarge tiles, cover fingers, or turn tiles into plaques/monoliths. Copy reference design faithfully: thick small handheld tile, warm ivory face, aged brass frame with four corner brackets, dark perimeter groove, double-ring engraving, one numeral 2 in suit color above the distinctive colored emblem and a small matching bottom inset. Keep other ordinary playing tiles PLAIN and unchanged, without special rims. Preserve all original scene detail and hand-drawn bold ink 2D cartoon fantasy shading, adapt only tile illumination to scene. No added characters, objects, numbers or text. Replace ONLY the single foreground tile held by the viewer with the approved crimson CROWN 2 front, including overlapping ornate crowns and laurel. The old tile's position, dimensions and fingers stay unchanged.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-front-landscape-crown-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png"
+    ]
+  },
+  {
+    "i": 2,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-back-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-6b633bec-05e5-4fe4-adb2-b99b950f665c.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-back-portrait-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the scene EDIT TARGET. Remaining images are approved STORY TILE BACK design references ONLY. Preserve the target composition, original aspect ratio, camera, every character, hands, background and lighting. Integrate reference tiles at original tile bounds, small handheld dimensions and appropriate perspective, with exact finger occlusion. Preserve bold hand-drawn 2D cartoon fantasy style; only the tile artwork and frame change, not the scene. Do not add, delete or enlarge objects. Replace ONLY the foreground held tile BACK with the approved brown-and-gold CROWN BACK in image 2. Copy its brass rim/corners, double-ring engraving and TWO SIMPLE OVERLAPPING CROWN OUTLINES, with NO digit 2. Keep original physical tile size, angle, hands, bearded man and tavern unchanged.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-back-portrait-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-back-special-v1.png"
+    ]
+  },
+  {
+    "i": 3,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-back-landscape-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-cf4ba87a-bbed-4251-ac77-8b4832c2aa3f.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-back-landscape-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the scene EDIT TARGET. Remaining images are approved STORY TILE BACK design references ONLY. Preserve the target composition, original aspect ratio, camera, every character, hands, background and lighting. Integrate reference tiles at original tile bounds, small handheld dimensions and appropriate perspective, with exact finger occlusion. Preserve bold hand-drawn 2D cartoon fantasy style; only the tile artwork and frame change, not the scene. Do not add, delete or enlarge objects. Replace ONLY the foreground held tile BACK with the approved brown-and-gold CROWN BACK in image 2. Copy its brass rim/corners, double-ring engraving and TWO SIMPLE OVERLAPPING CROWN OUTLINES, with NO digit 2. Keep original physical tile size, angle, hands, bearded man and tavern unchanged.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/tile-back-landscape-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-back-special-v1.png"
+    ]
+  },
+  {
+    "i": 4,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-portrait-symbols-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-7e7972e0-61c5-490b-ac58-37a0521771f1.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-portrait-symbols-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the EDIT TARGET SCENE. All other supplied images are approved special STORY TILE DESIGN REFERENCES, not backgrounds or new scenes. Preserve the target scene's EXACT camera, crop, aspect ratio, characters/faces/hands/expressions, architecture, weather, lighting, and object positions. Change ONLY the explicitly identified story tile(s), rendering the approved tile design at the ORIGINAL TILE'S PHYSICAL SIZE, position, perspective and occlusion by fingers. Do not enlarge tiles, cover fingers, or turn tiles into plaques/monoliths. Copy reference design faithfully: thick small handheld tile, warm ivory face, aged brass frame with four corner brackets, dark perimeter groove, double-ring engraving, one numeral 2 in suit color above the distinctive colored emblem and a small matching bottom inset. Keep other ordinary playing tiles PLAIN and unchanged, without special rims. Preserve all original scene detail and hand-drawn bold ink 2D cartoon fantasy shading, adapt only tile illumination to scene. No added characters, objects, numbers or text. Replace ONLY the CROWN 2 tile the older bearded man offers in his right hand near center of the scene with approved crimson CROWN 2 story tile. All loose table tiles are ORDINARY playing tiles: keep them plain and unchanged. Do not add special frames to the table tiles.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-portrait-symbols-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png"
+    ]
+  },
+  {
+    "i": 5,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-wide-symbols-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-b6b6f93b-9ba0-475c-b0d1-e5378e5205d3.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-wide-symbols-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the EDIT TARGET SCENE. All other supplied images are approved special STORY TILE DESIGN REFERENCES, not backgrounds or new scenes. Preserve the target scene's EXACT camera, crop, aspect ratio, characters/faces/hands/expressions, architecture, weather, lighting, and object positions. Change ONLY the explicitly identified story tile(s), rendering the approved tile design at the ORIGINAL TILE'S PHYSICAL SIZE, position, perspective and occlusion by fingers. Do not enlarge tiles, cover fingers, or turn tiles into plaques/monoliths. Copy reference design faithfully: thick small handheld tile, warm ivory face, aged brass frame with four corner brackets, dark perimeter groove, double-ring engraving, one numeral 2 in suit color above the distinctive colored emblem and a small matching bottom inset. Keep other ordinary playing tiles PLAIN and unchanged, without special rims. Preserve all original scene detail and hand-drawn bold ink 2D cartoon fantasy shading, adapt only tile illumination to scene. No added characters, objects, numbers or text. Replace ONLY the CROWN 2 tile the older bearded man offers in his right hand near center of the scene with approved crimson CROWN 2 story tile. All loose table tiles are ORDINARY playing tiles: keep them plain and unchanged. Do not add special frames to the table tiles.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-rest-wide-symbols-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png"
+    ]
+  },
+  {
+    "i": 6,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-speaking-portrait-symbols-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-165d2b52-771a-4af0-83a6-83ff12f6bf7d.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-speaking-portrait-symbols-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the EDIT TARGET SCENE. All other supplied images are approved special STORY TILE DESIGN REFERENCES, not backgrounds or new scenes. Preserve the target scene's EXACT camera, crop, aspect ratio, characters/faces/hands/expressions, architecture, weather, lighting, and object positions. Change ONLY the explicitly identified story tile(s), rendering the approved tile design at the ORIGINAL TILE'S PHYSICAL SIZE, position, perspective and occlusion by fingers. Do not enlarge tiles, cover fingers, or turn tiles into plaques/monoliths. Copy reference design faithfully: thick small handheld tile, warm ivory face, aged brass frame with four corner brackets, dark perimeter groove, double-ring engraving, one numeral 2 in suit color above the distinctive colored emblem and a small matching bottom inset. Keep other ordinary playing tiles PLAIN and unchanged, without special rims. Preserve all original scene detail and hand-drawn bold ink 2D cartoon fantasy shading, adapt only tile illumination to scene. No added characters, objects, numbers or text. Replace ONLY the CROWN 2 tile the older bearded man offers in his right hand near center of the scene with approved crimson CROWN 2 story tile. All loose table tiles are ORDINARY playing tiles: keep them plain and unchanged. Do not add special frames to the table tiles.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-speaking-portrait-symbols-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png"
+    ]
+  },
+  {
+    "i": 7,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-speaking-wide-symbols-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-43562251-d442-44c5-89e8-ed9bdf30ce34.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-speaking-wide-symbols-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the EDIT TARGET SCENE. All other supplied images are approved special STORY TILE DESIGN REFERENCES, not backgrounds or new scenes. Preserve the target scene's EXACT camera, crop, aspect ratio, characters/faces/hands/expressions, architecture, weather, lighting, and object positions. Change ONLY the explicitly identified story tile(s), rendering the approved tile design at the ORIGINAL TILE'S PHYSICAL SIZE, position, perspective and occlusion by fingers. Do not enlarge tiles, cover fingers, or turn tiles into plaques/monoliths. Copy reference design faithfully: thick small handheld tile, warm ivory face, aged brass frame with four corner brackets, dark perimeter groove, double-ring engraving, one numeral 2 in suit color above the distinctive colored emblem and a small matching bottom inset. Keep other ordinary playing tiles PLAIN and unchanged, without special rims. Preserve all original scene detail and hand-drawn bold ink 2D cartoon fantasy shading, adapt only tile illumination to scene. No added characters, objects, numbers or text. Replace ONLY the CROWN 2 tile the older bearded man offers in his right hand near center of the scene with approved crimson CROWN 2 story tile. All loose table tiles are ORDINARY playing tiles: keep them plain and unchanged. Do not add special frames to the table tiles.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/wager-speaking-wide-symbols-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png"
+    ]
+  },
+  {
+    "i": 8,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/stone-revelation-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-a8c7eef3-901f-4f83-b70c-0e6084a596ad.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/stone-revelation-portrait-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the scene EDIT TARGET. Remaining images are approved STORY TILE BACK design references ONLY. Preserve the target composition, original aspect ratio, camera, every character, hands, background and lighting. Integrate reference tiles at original tile bounds, small handheld dimensions and appropriate perspective, with exact finger occlusion. Preserve bold hand-drawn 2D cartoon fantasy style; only the tile artwork and frame change, not the scene. Do not add, delete or enlarge objects. Replace ONLY the held foreground tile BACK with the approved brown-and-gold CROWN BACK in image 2, including special brass rim/corners and double-ring engraving, NO digit. Keep the two simple crown outlines matching the EXISTING STANDING-STONE ENGRAVING. Do not alter that stone, snow, hand, sky or mountains.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/stone-revelation-portrait-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-back-special-v1.png"
+    ]
+  },
+  {
+    "i": 9,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/stone-revelation-landscape-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-72f787b7-dd61-48a5-937c-fe791380d65f.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/stone-revelation-landscape-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the scene EDIT TARGET. Remaining images are approved STORY TILE BACK design references ONLY. Preserve the target composition, original aspect ratio, camera, every character, hands, background and lighting. Integrate reference tiles at original tile bounds, small handheld dimensions and appropriate perspective, with exact finger occlusion. Preserve bold hand-drawn 2D cartoon fantasy style; only the tile artwork and frame change, not the scene. Do not add, delete or enlarge objects. Replace ONLY the held foreground tile BACK with the approved brown-and-gold CROWN BACK in image 2, including special brass rim/corners and double-ring engraving, NO digit. Keep the two simple crown outlines matching the EXISTING STANDING-STONE ENGRAVING. Do not alter that stone, snow, hand, sky or mountains.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/stone-revelation-landscape-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-back-special-v1.png"
+    ]
+  },
+  {
+    "i": 10,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-handoff-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-eaea306a-bcc7-4958-896b-968af7b81be5.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-handoff-portrait-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the EDIT TARGET SCENE. All other supplied images are approved special STORY TILE DESIGN REFERENCES, not backgrounds or new scenes. Preserve the target scene's EXACT camera, crop, aspect ratio, characters/faces/hands/expressions, architecture, weather, lighting, and object positions. Change ONLY the explicitly identified story tile(s), rendering the approved tile design at the ORIGINAL TILE'S PHYSICAL SIZE, position, perspective and occlusion by fingers. Do not enlarge tiles, cover fingers, or turn tiles into plaques/monoliths. Copy reference design faithfully: thick small handheld tile, warm ivory face, aged brass frame with four corner brackets, dark perimeter groove, double-ring engraving, one numeral 2 in suit color above the distinctive colored emblem and a small matching bottom inset. Keep other ordinary playing tiles PLAIN and unchanged, without special rims. Preserve all original scene detail and hand-drawn bold ink 2D cartoon fantasy shading, adapt only tile illumination to scene. No added characters, objects, numbers or text. Replace ONLY the small pale IRON GATE 2 tile being passed from the standing man at left to the kneeling traveler with approved navy IRON GATE 2 story tile. Keep its original small size, hand position, torchlight and two distant gate banners unchanged.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-handoff-portrait-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-front-special-v1.png"
+    ]
+  },
+  {
+    "i": 11,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-handoff-wide-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-1e64face-94f1-45f3-930e-e1f8ffd52edc.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-handoff-wide-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the EDIT TARGET SCENE. All other supplied images are approved special STORY TILE DESIGN REFERENCES, not backgrounds or new scenes. Preserve the target scene's EXACT camera, crop, aspect ratio, characters/faces/hands/expressions, architecture, weather, lighting, and object positions. Change ONLY the explicitly identified story tile(s), rendering the approved tile design at the ORIGINAL TILE'S PHYSICAL SIZE, position, perspective and occlusion by fingers. Do not enlarge tiles, cover fingers, or turn tiles into plaques/monoliths. Copy reference design faithfully: thick small handheld tile, warm ivory face, aged brass frame with four corner brackets, dark perimeter groove, double-ring engraving, one numeral 2 in suit color above the distinctive colored emblem and a small matching bottom inset. Keep other ordinary playing tiles PLAIN and unchanged, without special rims. Preserve all original scene detail and hand-drawn bold ink 2D cartoon fantasy shading, adapt only tile illumination to scene. No added characters, objects, numbers or text. Replace ONLY the small pale IRON GATE 2 tile being passed from the standing man at left to the kneeling traveler with approved navy IRON GATE 2 story tile. Keep its original small size, hand position, torchlight and two distant gate banners unchanged.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-handoff-wide-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-front-special-v1.png"
+    ]
+  },
+  {
+    "i": 12,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-compare-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-42dd5cf9-5d5e-4cbf-a371-7d34f3a51102.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-compare-portrait-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the scene EDIT TARGET. Remaining images are approved STORY TILE BACK design references ONLY. Preserve the target composition, original aspect ratio, camera, every character, hands, background and lighting. Integrate reference tiles at original tile bounds, small handheld dimensions and appropriate perspective, with exact finger occlusion. Preserve bold hand-drawn 2D cartoon fantasy style; only the tile artwork and frame change, not the scene. Do not add, delete or enlarge objects. Replace ONLY the TWO HELD TILE BACKS: LEFT is approved brown-and-gold CROWN BACK in image 2; RIGHT is approved brown-and-gold TWO IRON GATES BACK in image 3. Both have matching special brass frames and double-ring engraving. NO digits on either back. Maintain both original tile sizes/positions, fingers and perspective; all twins, pillars, flags, table and torches unchanged.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-compare-portrait-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-back-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-back-special-v1.png"
+    ]
+  },
+  {
+    "i": 13,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-compare-wide-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-da101d23-2152-4753-a855-c8936f28d3d5.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-compare-wide-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the scene EDIT TARGET. Remaining images are approved STORY TILE BACK design references ONLY. Preserve the target composition, original aspect ratio, camera, every character, hands, background and lighting. Integrate reference tiles at original tile bounds, small handheld dimensions and appropriate perspective, with exact finger occlusion. Preserve bold hand-drawn 2D cartoon fantasy style; only the tile artwork and frame change, not the scene. Do not add, delete or enlarge objects. Replace ONLY the TWO HELD TILE BACKS: LEFT is approved brown-and-gold CROWN BACK in image 2; RIGHT is approved brown-and-gold TWO IRON GATES BACK in image 3. Both have matching special brass frames and double-ring engraving. NO digits on either back. Maintain both original tile sizes/positions, fingers and perspective; all twins, pillars, flags, table and torches unchanged.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/prologue/st3-keepsake-compare-wide-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-back-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-back-special-v1.png"
+    ]
+  },
+  {
+    "i": 14,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-8a6b34b5-8b0c-4e2d-950a-dd2a4c4ea794.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-portrait-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the EDIT TARGET SCENE. All other supplied images are approved special STORY TILE DESIGN REFERENCES, not backgrounds or new scenes. Preserve the target scene's EXACT camera, crop, aspect ratio, characters/faces/hands/expressions, architecture, weather, lighting, and object positions. Change ONLY the explicitly identified story tile(s), rendering the approved tile design at the ORIGINAL TILE'S PHYSICAL SIZE, position, perspective and occlusion by fingers. Do not enlarge tiles, cover fingers, or turn tiles into plaques/monoliths. Copy reference design faithfully: thick small handheld tile, warm ivory face, aged brass frame with four corner brackets, dark perimeter groove, double-ring engraving, one numeral 2 in suit color above the distinctive colored emblem and a small matching bottom inset. Keep other ordinary playing tiles PLAIN and unchanged, without special rims. Preserve all original scene detail and hand-drawn bold ink 2D cartoon fantasy shading, adapt only tile illumination to scene. No added characters, objects, numbers or text. Replace ONLY the single tile on the stone pedestal with approved ORANGE SACRED FLAME 2 tile, braided double flame and ritual bowl, including brass rim. Keep original tile dimensions and stone altar, light beam and banners unchanged.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-portrait-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/sacred-flame-two-front-special-v1.png"
+    ]
+  },
+  {
+    "i": 15,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-58a81fd4-cab1-4c67-a98b-7f36a60fbe19.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-portrait-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the EDIT TARGET SCENE. All other supplied images are approved special STORY TILE DESIGN REFERENCES, not backgrounds or new scenes. Preserve the target scene's EXACT camera, crop, aspect ratio, characters/faces/hands/expressions, architecture, weather, lighting, and object positions. Change ONLY the explicitly identified story tile(s), rendering the approved tile design at the ORIGINAL TILE'S PHYSICAL SIZE, position, perspective and occlusion by fingers. Do not enlarge tiles, cover fingers, or turn tiles into plaques/monoliths. Copy reference design faithfully: thick small handheld tile, warm ivory face, aged brass frame with four corner brackets, dark perimeter groove, double-ring engraving, one numeral 2 in suit color above the distinctive colored emblem and a small matching bottom inset. Keep other ordinary playing tiles PLAIN and unchanged, without special rims. Preserve all original scene detail and hand-drawn bold ink 2D cartoon fantasy shading, adapt only tile illumination to scene. No added characters, objects, numbers or text. Replace ONLY the single tile among foreground altar embers with approved GREEN SECRET KEY 2 tile with two interlocked keys, including brass rim. Keep original tile dimensions, embers and all scenery unchanged.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-portrait-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/secret-key-two-front-special-v1.png"
+    ]
+  },
+  {
+    "i": 16,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-record-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-a9d21ac0-2497-4fa1-ad90-85d9b7fd38c7.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-record-portrait-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the EDIT TARGET SCENE. All other supplied images are approved special STORY TILE DESIGN REFERENCES, not backgrounds or new scenes. Preserve the target scene's EXACT camera, crop, aspect ratio, characters/faces/hands/expressions, architecture, weather, lighting, and object positions. Change ONLY the explicitly identified story tile(s), rendering the approved tile design at the ORIGINAL TILE'S PHYSICAL SIZE, position, perspective and occlusion by fingers. Do not enlarge tiles, cover fingers, or turn tiles into plaques/monoliths. Copy reference design faithfully: thick small handheld tile, warm ivory face, aged brass frame with four corner brackets, dark perimeter groove, double-ring engraving, one numeral 2 in suit color above the distinctive colored emblem and a small matching bottom inset. Keep other ordinary playing tiles PLAIN and unchanged, without special rims. Preserve all original scene detail and hand-drawn bold ink 2D cartoon fantasy shading, adapt only tile illumination to scene. No added characters, objects, numbers or text. Replace exactly the FOUR loose tabletop tiles beside the open book with matching approved four story tile fronts: crown red, gate navy, flame orange, key green. Preserve each tile's location and angle, add their numeral 2 and special rims. The small book emblems can be colored red/navy/orange/green in place, but leave their simple drawings and page lines intact. Do not turn the book into a tile. Do not add or remove tiles.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-record-portrait-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-front-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/sacred-flame-two-front-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/secret-key-two-front-special-v1.png"
+    ]
+  },
+  {
+    "i": 17,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-village-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-9da2009b-2822-4cbd-b716-5bb6f136a224.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-village-portrait-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the EDIT TARGET SCENE. All other supplied images are approved special STORY TILE DESIGN REFERENCES, not backgrounds or new scenes. Preserve the target scene's EXACT camera, crop, aspect ratio, characters/faces/hands/expressions, architecture, weather, lighting, and object positions. Change ONLY the explicitly identified story tile(s), rendering the approved tile design at the ORIGINAL TILE'S PHYSICAL SIZE, position, perspective and occlusion by fingers. Do not enlarge tiles, cover fingers, or turn tiles into plaques/monoliths. Copy reference design faithfully: thick small handheld tile, warm ivory face, aged brass frame with four corner brackets, dark perimeter groove, double-ring engraving, one numeral 2 in suit color above the distinctive colored emblem and a small matching bottom inset. Keep other ordinary playing tiles PLAIN and unchanged, without special rims. Preserve all original scene detail and hand-drawn bold ink 2D cartoon fantasy shading, adapt only tile illumination to scene. No added characters, objects, numbers or text. In this TRUE ENDING scene there must be EXACTLY FOUR special keepsake tiles TOTAL, one of each suit. 1) CROWN 2 is the ONE TILE HELD by storyteller: reference image 2. 2) IRON GATE 2 is the UPPER LEFT TABLE TILE, directly below elf's elbow: reference image 3. 3) SECRET KEY 2 is the CENTRAL TABLE TILE: reference image 5. 4) SACRED FLAME 2 is the UPPER RIGHT TABLE TILE beside the mug: reference image 4. Carefully replace those four tiles only, at original positions and dimensions, retaining all digits 2. The TWO LOWER CROWN TILES and LOWER LEFT FLAME TILE and RIGHTMOST GATE TILE MUST STAY PLAIN ORDINARY cream tiles with simple brown emblems: no brass rim, no number 2, no change. Do not create a fifth special tile or duplicate special crown. Do not omit the special gate tile at upper left. Keep all people, faces, mugs, food and setting identical to original.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/true-ending-village-portrait-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/iron-gate-two-front-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/sacred-flame-two-front-special-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/secret-key-two-front-special-v1.png"
+    ]
+  },
+  {
+    "i": 18,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/ending-handoff-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-28f8609a-6676-4e30-923f-e7aac10fa782.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/ending-handoff-portrait-special-v1.png",
+    "prompt": "Use case: compositing / precise-object-edit. Image 1 is the EDIT TARGET SCENE. All other supplied images are approved special STORY TILE DESIGN REFERENCES, not backgrounds or new scenes. Preserve the target scene's EXACT camera, crop, aspect ratio, characters/faces/hands/expressions, architecture, weather, lighting, and object positions. Change ONLY the explicitly identified story tile(s), rendering the approved tile design at the ORIGINAL TILE'S PHYSICAL SIZE, position, perspective and occlusion by fingers. Do not enlarge tiles, cover fingers, or turn tiles into plaques/monoliths. Copy reference design faithfully: thick small handheld tile, warm ivory face, aged brass frame with four corner brackets, dark perimeter groove, double-ring engraving, one numeral 2 in suit color above the distinctive colored emblem and a small matching bottom inset. Keep other ordinary playing tiles PLAIN and unchanged, without special rims. Preserve all original scene detail and hand-drawn bold ink 2D cartoon fantasy shading, adapt only tile illumination to scene. No added characters, objects, numbers or text. Replace ONLY the offered foreground tile (currently red 2 and a red crescent) with the approved RED CROWN 2 story keepsake. The narrative calls this crown 2, so remove the crescent and use the approved overlapping ornate crowns with laurel. Keep hands, small physical tile size, table, hooded traveler and tavern unchanged.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/ending-handoff-portrait-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/crown-two-front-special-v1.png"
+    ]
+  },
+  {
+    "i": 19,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-dc91c5c5-0e77-4d3c-80d1-ec708c803832.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-back-portrait-special-v1.png",
+    "prompt": "Use case: precise-object-edit. Image 1 is the EDIT TARGET, image 2 is the approved BACK of the same special story tile. Create the precise flipped-over moment of this exact discovery scene. Replace ONLY the face and frame of the ONE foreground altar tile with image 2: dark brown inset, aged brass frame and corners, double circular engraving, pale GOLD double-symbol outline. There must be NO number 2 and NO colored front emblem visible because this is the BACK SIDE. Copy the two nested flame outlines exactly from reference 2. Preserve the exact scene aspect ratio, composition, tile position/size, altar, every rock, background, lighting, sky and atmosphere from image 1. This is the same small handheld tile turned around, not a new giant plaque. Hand-drawn bold ink 2D cartoon fantasy with simple shading; no new text, characters, objects or runes.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st6-flame-two-portrait-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/sacred-flame-two-back-special-v1.png"
+    ]
+  },
+  {
+    "i": 20,
+    "source": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-portrait-v1.png",
+    "generated": "C:\\Users\\SONG\\.codex\\generated_images\\01a1ccd3-65d9-7112-86d8-9d31c75b6b7b\\exec-f3abb48a-fa74-4d84-8390-bad59f43f095.png",
+    "output": "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-back-portrait-special-v1.png",
+    "prompt": "Use case: precise-object-edit. Image 1 is the EDIT TARGET, image 2 is the approved BACK of the same special story tile. Create the precise flipped-over moment of this exact discovery scene. Replace ONLY the face and frame of the ONE foreground altar tile with image 2: dark brown inset, aged brass frame and corners, double circular engraving, pale GOLD double-symbol outline. There must be NO number 2 and NO colored front emblem visible because this is the BACK SIDE. Copy the two overlaid key outlines exactly from reference 2. Preserve the exact scene aspect ratio, composition, tile position/size, altar, every rock, background, lighting, sky and atmosphere from image 1. This is the same small handheld tile turned around, not a new giant plaque. Hand-drawn bold ink 2D cartoon fantasy with simple shading; no new text, characters, objects or runes.",
+    "refs": [
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story/st9-key-two-portrait-v1.png",
+      "D:/CHATGPT_CODEX/17_Turntail/site-publish-checkout/public/story-cards/secret-key-two-back-special-v1.png"
+    ]
+  }
+]

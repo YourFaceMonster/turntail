@@ -129,14 +129,15 @@ test('saves reject corrupt story data and the map only shows the current region'
   const art=chapterArt(key);
   // 2026-11-11 user choice: until wide paintings exist, wide screens show the new portrait painting framed.
   assert.equal(art.landscape,art.portrait,'wide screens use the portrait painting (framed) until the wide painting arrives');
-  assert.equal(art.portrait,`/story/${key}-portrait-v${/^region-[234]-map$/.test(key)?2:1}.webp`);
+  const special=['st6-flame-two','st6-flame-two-back','st9-key-two','st9-key-two-back','true-ending-record','true-ending-village','ending-handoff'].includes(key);
+  assert.equal(art.portrait,`/story/${key}-portrait-${special?'special-v1':`v${/^region-[234]-map$/.test(key)?2:1}`}.webp`);
   assert.ok(existsSync(new URL(`../public${art.portrait}`,import.meta.url)),key);
  }
  assert.match(html,/--map-portrait-x:78%;--map-portrait-y:83%/,'the dice den follows the boathouse in the portrait map');
  assert.match(html,/class="map-route-portrait" d="M67 59L55 62L40 61L28 55L16 48L8 44L17 41L30 43L48 42L64 41L82 37L80 30L77 25L71 21L64 18L60 14"/);
  for(const id of ['sacred-flame-two','secret-key-two'] as const){
   for(const side of ['front','back'] as const){
-   assert.equal(STORY_CARD_ART[id][side],`/story-cards/${id}-${side}-v1.webp`);
+   assert.equal(STORY_CARD_ART[id][side],`/story-cards/${id}-${side}-special-v1.webp`);
    assert.ok(existsSync(new URL(`../public${STORY_CARD_ART[id][side]}`,import.meta.url)));
   }
  }

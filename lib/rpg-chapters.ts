@@ -1,5 +1,6 @@
 import type {RpgRun} from './rpg.ts';
 import {stageTheme} from './stage-theme.ts';
+import {STORY_CARD_CHAPTER_ART} from './rpg-story-card-art.ts';
 
 /**
  * RPG journey ST4~10 (story bible v1.4, 2026-11-08). Story/cast/quests only:
@@ -73,7 +74,7 @@ export function storyState(run:Pick<RpgRun,'journey'>):StoryQuestState{return ru
  */
 /** Region maps were redrawn at 1024×1600 (v2) to fill the space between the map HUD and dock on phones. */
 const ART_VERSION:Record<string,number>={'region-2-map':2,'region-3-map':2,'region-4-map':2};
-const FINAL=(key:string)=>({landscape:`/story/${key}-wide-v1.webp`,portrait:`/story/${key}-portrait-v${ART_VERSION[key]||1}.webp`});
+const FINAL=(key:string)=>STORY_CARD_CHAPTER_ART[key]||({landscape:`/story/${key}-wide-v1.webp`,portrait:`/story/${key}-portrait-v${ART_VERSION[key]||1}.webp`});
 const ENV=(stage:number)=>({landscape:`/environments/stage-${stage}-055.webp`,portrait:`/environments/stage-${stage}-055.webp`});
 const TAVERN={landscape:'/prologue/tavern-interior-v2.webp',portrait:'/prologue/tavern-interior-portrait-v1.webp'};
 export const CHAPTER_ART_SLOTS:Record<string,{placeholder:{landscape:string,portrait:string},note:string}>={
@@ -87,7 +88,9 @@ export const CHAPTER_ART_SLOTS:Record<string,{placeholder:{landscape:string,port
  ...Object.fromEntries(STORY_QUESTS.map(quest=>[quest.id,{placeholder:ENV(quest.stage),note:`서브퀘스트 · ${quest.name} (${quest.speaker})`}])),
  'dice-den':{placeholder:ENV(4),note:'서브퀘스트 · 안개 나루 주사위판 (폭포 아래 나룻배 창고, 노름꾼 하로와 요트다이스)'},
  'st6-flame-two':{placeholder:ENV(6),note:'ST6 받침대 위 성화 2 발견'},
+ 'st6-flame-two-back':{placeholder:ENV(6),note:'ST6 성화 2를 뒤집어 두 겹 불꽃 확인'},
  'st9-key-two':{placeholder:ENV(9),note:'ST9 그을린 받침대 속 비밀의 열쇠 2'},
+ 'st9-key-two-back':{placeholder:ENV(9),note:'ST9 비밀의 열쇠 2를 뒤집어 포개진 열쇠 확인'},
  'ending-thrones':{placeholder:ENV(10),note:'ST10 비어 있는 두 왕좌'},
  'ending-kings':{placeholder:ENV(10),note:'두 왕의 마지막 순간 (철문 앞의 형 · 성화 앞의 아우)'},
  'ending-handoff':{placeholder:TAVERN,note:'노르문 주점 · 여정을 마친 방랑자가 새 방랑자에게 왕관 2를 건넴'},

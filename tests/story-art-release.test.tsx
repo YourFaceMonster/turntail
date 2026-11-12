@@ -8,6 +8,8 @@ import {prologueSceneGroup,prologueSceneSources,storyPictureTransition} from '..
 import {STORY_CARD_ART} from '../lib/rpg-story-card-art.ts';
 import {ProloguePicture} from '../app/components/RpgPrologue.tsx';
 import {imageSize} from './helpers/image-size';
+import {createRpgJourneyGame} from '../lib/rpg-game.ts';
+import {journeyScenes} from '../lib/rpg-chapter-scenes.ts';
 test('gate closeups preload both faces and keep the flip in its own camera group',()=>{
  const cuts=RPG_CONNECTION_SCENES[3].after;
  const front=cuts.findIndex(c=>c.id==='ST3_POST_7'),back=cuts.findIndex(c=>c.id==='ST3_POST_8');
@@ -25,4 +27,19 @@ test('new handoff and comparison paintings exist in the correct aspect ratios, w
  }
  for(const path of Object.values(STORY_CARD_ART['iron-gate-two'])){const img=readFileSync('public'+path);assert.ok(img.toString('ascii',12,16)==='VP8X'&&(img[20]&0x10)!==0,'RGBA keepsake cutout (WebP alpha flag)');}
  assert.ok(!cuts.slice(0,5).some(c=>c.keepsakeFace||c.art?.landscape.includes('st3-keepsake')));
+});
+
+test('flame and key discoveries switch to a back painting when the narration turns the keepsake over',()=>{
+ const run=createRpgJourneyGame('그림 확인','',0).rpgRun!;
+ for(const [stage,line,stem] of [[6,'패를 뒤집자','st6-flame-two'],[9,'뒷면에는','st9-key-two']] as const){
+  const cuts=journeyScenes(stage,run).after,index=cuts.findIndex(c=>c.line.startsWith(line));
+  assert.ok(index>0);
+  assert.equal(cuts[index-1].art!.portrait,`/story/${stem}-portrait-special-v1.webp`);
+  assert.equal(cuts[index].art!.portrait,`/story/${stem}-back-portrait-special-v1.webp`);
+  assert.notEqual(prologueSceneGroup(cuts,index-1).key,prologueSceneGroup(cuts,index).key);
+  assert.equal(storyPictureTransition(cuts[index-1],cuts[index]),'overlap');
+  for(const orientation of ['landscape','portrait'] as const){
+   const size=imageSize(readFileSync('public'+cuts[index].art![orientation]));assert.ok(size.height>size.width);
+  }
+ }
 });

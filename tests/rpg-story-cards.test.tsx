@@ -50,5 +50,5 @@ test('incomplete stages and malformed collection cannot invent a clear or silent
 test('epilogue joins crown and gate to an uncertain torch-region lead without revealing later locations or granting replay rewards',()=>{
  const text=RPG_CONNECTION_SCENES[3].after.map(c=>c.line).join('');for(const term of ['검은 철문','숫자 2','두 개의 철문','붉은 왕관 2','겹쳐진 두 왕관','같은 묶음','성화의 영역'])assert.ok(normalize(text).includes(normalize(term)),term);
  for(const term of ['스테이지 6','스테이지 9','네 장을 모','진엔딩','두 왕의 희생'])assert.ok(!text.includes(term));
- const html=render(h(StoryCardCollection,{cards:['crown-two','iron-gate-two']}));assert.ok(html.includes('이야기의 패')&&html.includes('두 철문'));assert.equal((html.match(/<img/g)||[]).length,4);assert.ok(html.includes('/story-cards/iron-gate-two-back-v1.webp')&&!html.includes('장착'));
+ const html=render(h(StoryCardCollection,{cards:['crown-two','iron-gate-two']}));assert.ok(html.includes('이야기의 패')&&html.includes('두 철문'));assert.equal((html.match(/<img/g)||[]).length,4);assert.ok(html.includes('/story-cards/iron-gate-two-back-special-v1.webp')&&!html.includes('장착'));
 });
