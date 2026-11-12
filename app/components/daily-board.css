@@ -5,6 +5,9 @@
 .single-daily-strip b{font-size:12px;color:#e6c97a;white-space:nowrap}
 .single-daily-strip:hover,.single-daily-strip:focus-visible{border-color:#e6c97a;outline:none}
 
+/* 2026-11-12: "오늘의 판 순위 보기" opens this board from the result screen (.result-shade, z-index 38);
+   a plain .modal-shade (30) opened it underneath, so the click looked dead. */
+.modal-shade:has(>.daily-board){z-index:45}
 .daily-board{width:min(460px,calc(100vw - 32px));max-height:min(88dvh,720px);overflow:auto;outline:none}
 .daily-board>p{font-size:13px;line-height:1.55;opacity:.85}
 .daily-days{margin:10px 0}
