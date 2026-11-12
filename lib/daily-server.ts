@@ -30,6 +30,23 @@ export function dailyFinishStatement(db:Db,profile:string,date:string,code:strin
  return db.prepare('UPDATE daily_scores SET score=?,win=?,at=?,done=1 WHERE id=? AND code=? AND done=0 AND EXISTS (SELECT 1 FROM rooms WHERE code=? AND revision=?)').bind(Math.round(score),Number(win),at,`${profile}:${date}`,code,code,revision);
 }
 
+/** Widest single-round score a 3-player table can reach: two hand-count differences over 60 tiles (-120..+60). */
+export const DAILY_SCORE_LIMIT=120;
+/**
+ * 2026-11-12 user choice (C): 오늘의 판 now plays in the browser like 일반모드 (the server round trips made it slow
+ * and sometimes failed). The browser claims the ranked slot (`dailyClaim`) and sends the final score here.
+ * The user accepted that a modified browser could send a false score; only the attempt code, done=0 and a range
+ * check guard the row.
+ */
+export async function dailyFinishRequest(db:Db,b:any,profile:string|null,reply:Reply,now=Date.now()){
+ if(!profile)return reply({error:'기기 기록을 확인하지 못했어요.'},400);
+ const code=String(b.code||''),score=Number(b.score),date=isDailyDate(b.date)?b.date:dailyDate(now);
+ if(!/^[A-Z0-9]{12}$/.test(code)||!Number.isInteger(score)||Math.abs(score)>DAILY_SCORE_LIMIT)return reply({error:'오늘의 판 기록을 확인하지 못했어요.'},400);
+ await ensureDailyTable(db);
+ const r=await db.prepare('UPDATE daily_scores SET score=?,win=?,at=?,done=1 WHERE id=? AND code=? AND done=0').bind(score,Number(!!b.win),now,`${profile}:${date}`,code).run();
+ return reply({recorded:!!r.meta.changes});
+}
+
 export async function dailyBoardRequest(db:Db,b:any,profile:string|null,reply:Reply){
  const date=isDailyDate(b.date)?b.date:dailyDate();
  await ensureDailyTable(db);

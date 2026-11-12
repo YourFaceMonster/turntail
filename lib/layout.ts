@@ -3,7 +3,10 @@ export function tileLayout({width,height,floorWidth,handWidth,handCount,cols,row
  const columns=Math.max(5,Math.ceil(handCount/2)),gap=handCount>30?2:handCount>18?4:6;
  const baseColumns=players===2?6:5,baseGap=6;
  const compactLandscape=landscape&&height<300;
- const seatHeight=rpg?(landscape?compactLandscape?54:62:74):landscape?36:players===4?84:80,handChrome=(rpg?10:0)+(landscape?(compactLandscape?152:186):144)-(rpg?(landscape?compactLandscape?32:36:8):0),trickChrome=landscape?8:32,surfaceInset=landscape?16:12;
+ // Side-by-side landscape (floor + played row left, hand right; 2026-11-12): the seat row drops its 20px
+ // dialogue line (the line floats over the seat card instead, landscape-stacked.css) so the floor gets that height.
+ const sideLandscape=landscape&&!stackedLandscape;
+ const seatHeight=rpg?(landscape?(compactLandscape?54:62)-(sideLandscape?20:0):74):landscape?36:players===4?84:80,handChrome=(rpg?10:0)+(landscape?(compactLandscape?152:186):144)-(rpg?(landscape?compactLandscape?32:36:8):0),trickChrome=landscape?8:32,surfaceInset=landscape?16:12;
  const boardChrome=seatHeight+18+8+18+(rows-1)*4;
  const portraitChrome=boardChrome+trickChrome+handChrome+12+surfaceInset;
  const deviceShort=Math.min(width+18,height+67),deviceLong=Math.max(width+18,height+67);
@@ -16,7 +19,8 @@ export function tileLayout({width,height,floorWidth,handWidth,handCount,cols,row
  // + gap 4; played-row chrome; floor row gaps and its 2px inset/outline.
  // The submitted face is enlarged to 1.28x, so reserve that full height too.
  const classicChrome=4+12+6+8+4+seatHeight+trickChrome+2+(rows-1)*4+4;
- const landscapeVertical=classicLandscape?(height-classicChrome)/(rows+1.28):(height-surfaceInset-landscapeChrome)/(rows+1);
+ // Side-by-side landscape shows the played row at the floor tile size (LANDSCAPE_PLAYED_SCALE), so it reserves one row, not 1.28.
+ const landscapeVertical=classicLandscape?(height-classicChrome)/(rows+LANDSCAPE_PLAYED_SCALE):(height-surfaceInset-landscapeChrome)/(rows+1);
  // Stacked landscape: the played row sits above the hand (right column), so the floor gets the
  // whole left column height and the hand gives up one played row instead.
  const stackedVertical=classicLandscape?(height-(classicChrome-trickChrome))/rows:(height-surfaceInset-(landscapeChrome-trickChrome))/rows;
@@ -24,7 +28,9 @@ export function tileLayout({width,height,floorWidth,handWidth,handCount,cols,row
  const floorLimit=(floorWidth-(cols-1)*6)/cols/.76;
  const handLimit=Math.min((handWidth-4-(columns-1)*gap)/columns/.76,handCount>18?(handWidth-4-8*6)/9/.76:Infinity,handCount>30?(handWidth-4-14*4)/15/.76:Infinity);
  const playedLabelWidth=84;
- const fiveLimit=landscape?(stackedLandscape?Infinity:(floorWidth-playedLabelWidth-12-4*6)/5/.76):(width-24-surfaceInset-4*6)/5/.76;
+ // Side-by-side: the played row spans the whole left column (not the rail-inset floor width) and playedTileLayout
+ // already fits five tiles to that row, so it must not cap the floor here (story floor was stuck at 50px).
+ const fiveLimit=landscape?(stackedLandscape||sideLandscape&&rpg?Infinity:(floorWidth-playedLabelWidth-12-4*6)/5/.76):(width-24-surfaceInset-4*6)/5/.76;
  // A large landscape desktop window (PC monitor) lets the floor grow into its tall left column instead of
  // stopping at the phone-sized cap and leaving the lower half empty. The hand keeps its own cap.
  const floorCap=landscape&&desktop?Math.max(tileCeiling,Math.min(150,height*.24)):portraitTarget;
@@ -59,8 +65,10 @@ export function stackedPlayedWidth(handWidth:number,playedLabelWidth=84){return 
 function stackedPlayedHeight(floorHeight:number,handWidth:number,playedLabelWidth:number){return playedTileLayout(floorHeight,stackedPlayedWidth(handWidth,playedLabelWidth),5).height;}
 
 /** Center the actual submitted group and cap it by its own row, not the viewport. */
-export function playedTileLayout(floorHeight:number,availableWidth:number,count:number,enhanced=true){
+/** Played tiles in the side-by-side landscape table are the same size as floor tiles (was 1.28x) so the floor can be taller. */
+export const LANDSCAPE_PLAYED_SCALE=1;
+export function playedTileLayout(floorHeight:number,availableWidth:number,count:number,enhanced=true,scale?:number){
  const n=Math.max(1,Math.min(5,count)),gap=5;
- const height=Math.max(10,Math.min(enhanced?120:76,floorHeight*(enhanced?1.28:1.15),(availableWidth-(n-1)*gap)/n/.76));
+ const height=Math.max(10,Math.min(enhanced?120:76,floorHeight*(scale??(enhanced?1.28:1.15)),(availableWidth-(n-1)*gap)/n/.76));
  return {height,width:height*.76};
 }

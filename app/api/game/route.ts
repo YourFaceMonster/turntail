@@ -7,7 +7,7 @@ import {LINEUP_SUMMARY_SQL,LINEUP_PLAYERS_SQL} from "../../../lib/history";
 import {sharedScores,LEADERBOARD_CTE,boardArgs,PAGE_SIZE,PRUNE_SCORES_SQL,PRUNE_MATCHES_SQL} from "../../../lib/leaderboard";
 import {createYachtRoomRequest,yachtHistoryRequest,yachtRoomRequest,YACHT_ACTIONS} from "../../../lib/yacht-room-server";
 import {isYachtRoom} from "../../../lib/yacht-room";
-import {claimDailyAttempt,dailyBoardRequest,dailyFinishStatement} from "../../../lib/daily-server";
+import {claimDailyAttempt,dailyBoardRequest,dailyFinishRequest,dailyFinishStatement} from "../../../lib/daily-server";
 import {dailyDate,DAILY_AI_NAMES,DAILY_SIZE} from "../../../lib/daily";
 export const dynamic="force-dynamic";
 function reply(x:unknown,status=200){return Response.json(x,{status,headers:{"Cache-Control":"no-store"}});}
@@ -55,6 +55,10 @@ export async function POST(req:Request){try{
   return reply({summary,groups,records:records.results.map((r:any)=>({...r,result:JSON.parse(r.result)}))});
  }
  if(b.action==="dailyBoard")return await dailyBoardRequest(db,b,profile,reply);
+ // 오늘의 판 in the browser (2026-11-12): reserve the ranked slot, then accept the finished score.
+ if(b.action==="dailyClaim"){const code=crypto.randomUUID().replaceAll("-","").slice(0,12).toUpperCase(),name=String(b.name||"플레이어").replace(/[\u0000-\u001f\u007f]/g,"").trim().slice(0,12)||"플레이어";
+  return reply({date:dailyDate(),code,ranked:await claimDailyAttempt(db,profile,name,code)});}
+ if(b.action==="dailyFinish")return await dailyFinishRequest(db,b,profile,reply);
  if(b.action==="create"&&b.daily){
   const p=player(String(b.name||"플레이어"));p.avatar=avatarImage(b.avatar);if(profile)p.profile=profile;
   for(let k=0;k<5;k++){

@@ -16,6 +16,14 @@ main.turntale.table-v211.active-table.landscape-table.landscape-stacked.rpg-mode
 main.turntale.table-v211.active-table.landscape-table.landscape-stacked.rpg-mode .floor-relic-dock :is(.rpg-relic-slot-condition,.rpg-relic-slot-bonus){font-size:9.5px!important;line-height:1.2!important}
 main.turntale.table-v211.active-table.landscape-table.landscape-stacked .play-column{grid-template-areas:"board played" "board hand"!important;grid-template-rows:calc(var(--played-card-height) + var(--trick-chrome,8px) + 2px) minmax(0,1fr)!important}
 
+/* Side-by-side landscape (2026-11-12, floor + played row left / hand right): the seat row gives its 20px dialogue
+   line to the floor (sideLandscape in lib/layout.ts). A line now floats over the lower half of its own seat card for
+   the ~3s it shows, so it never covers a floor tile. */
+main.turntale.table-v211.active-table.landscape-table:not(.landscape-stacked).rpg-mode .opponents>.opponent{grid-template-rows:minmax(0,1fr) 0!important}
+main.turntale.table-v211.active-table.landscape-table:not(.landscape-stacked) .opponents .opponent .opponent-status-row{height:0!important;min-height:0!important;padding:0!important;overflow:visible}
+main.turntale.table-v211.active-table.landscape-table:not(.landscape-stacked) .opponents .opponent-status-row .seat-dialogue{position:absolute!important;left:0;right:0;top:auto;bottom:0;height:auto;min-height:0;z-index:6;pointer-events:none}
+main.turntale.table-v211.active-table.landscape-table:not(.landscape-stacked) .opponents .opponent-status-row .seat-dialogue:empty{display:none}
+
 /* PC monitor (mouse, large window): the enlarged floor sits in the middle of its tall column. */
 @media (hover:hover) and (pointer:fine) and (min-width:1000px) and (min-height:650px){
  .turntale.table-v211.active-table.landscape-table.landscape-stacked .floor-stage>.wall{align-content:center!important}

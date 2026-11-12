@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {createElement as h} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
-import {tileLayout,playedTileLayout} from '../lib/layout.ts';
+import {tileLayout,playedTileLayout,LANDSCAPE_PLAYED_SCALE} from '../lib/layout.ts';
 import {createHpItemGame} from '../lib/hp-item-mode.ts';
 import {buyHpItemLoadout,HP_ITEM_PRICES} from '../lib/hp-item-shop.ts';
 import {view} from '../lib/game.ts';
@@ -14,7 +14,8 @@ for(const [width,height,floorWidth,handWidth,desktop] of [
 ] as const)for(const players of [3,4]){
  const input={width,height,floorWidth,handWidth,handCount:10,cols:players===4?4:5,rows:3,players,landscape:true,rpg:true,desktop};
  const base=tileLayout(input),fixed=tileLayout({...input,classicLandscape:true});
- const played=playedTileLayout(fixed.floorHeight,floorWidth-fixed.playedLabelWidth-18,5,true);
+ // 2026-11-12: the side-by-side landscape shows played tiles at the floor tile size.
+ const played=playedTileLayout(fixed.floorHeight,floorWidth-fixed.playedLabelWidth-18,5,true,LANDSCAPE_PLAYED_SCALE);
  const available=height-4-12-6-(played.height+fixed.trickChrome+2)-8-4-fixed.seatHeight;
  assert.ok(3*fixed.floorHeight+8+4<=available+.01,'all floor faces, gaps and outlines fit the actual floor track');
  assert.equal(fixed.height,base.height,'do not shrink the independent hand');

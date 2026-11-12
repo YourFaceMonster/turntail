@@ -64,6 +64,18 @@ test('API: daily board, first table is ranked, later ones are practice, finished
  assert.equal((await dailyFinishStatement(db as any,friendKey,dailyDate(),other.game.code,-5,false,Date.now(),friendRev).run()).meta.changes,1);
  board=await post({action:'dailyBoard',profileToken:friend});
  assert.equal(board.total,2);assert.deepEqual(board.rows.map((r:any)=>r.score),[7,-5]);assert.equal(board.mine.score,-5);assert.equal(board.mine.rank,2);assert.equal(board.mine.win,false);
+
+ // 2026-11-12 (user choice C): the table runs in the browser; the server claims the slot and takes the final score.
+ const third2=crypto.randomUUID();
+ const c1=await post({action:'dailyClaim',name:'셋째',profileToken:third2});assert.equal(c1.status,200);assert.equal(c1.ranked,true);assert.match(c1.code,/^[A-Z0-9]{12}$/);
+ const c2=await post({action:'dailyClaim',name:'셋째',profileToken:third2});assert.equal(c2.ranked,true,'an unfinished claim is taken over');
+ assert.equal((await post({action:'dailyFinish',profileToken:third2,code:c1.code,score:30,win:true})).recorded,false,'the replaced claim cannot write');
+ assert.equal((await post({action:'dailyFinish',profileToken:third2,code:c2.code,score:500,win:true})).status,400,'impossible scores are refused');
+ assert.equal((await post({action:'dailyFinish',profileToken:third2,code:c2.code,score:12,win:true})).recorded,true);
+ assert.equal((await post({action:'dailyFinish',profileToken:third2,code:c2.code,score:40,win:true})).recorded,false,'recorded once');
+ assert.equal((await post({action:'dailyClaim',name:'셋째',profileToken:third2})).ranked,false,'after the ranked round, later tables are practice');
+ board=await post({action:'dailyBoard',profileToken:third2});assert.deepEqual(board.rows.map((r:any)=>r.score),[12,7,-5]);assert.equal(board.mine.rank,1);
+ assert.equal((await post({action:'dailyFinish',code:c2.code,score:1})).status,400,'no device, no score');
 });
 
 test('relic activation counts: each activation once per run, cursors kept small', () => {
