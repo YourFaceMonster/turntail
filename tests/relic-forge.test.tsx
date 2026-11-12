@@ -7,6 +7,8 @@ import {RELIC_GRADES,RELIC_RECIPES,RPG_REWORK_RELICS,forgeBlocker,forgeRelic,kno
 import {equipJourneyRelic,hearJourneyRumor} from '../lib/rpg-journey';
 import {RelicForge} from '../app/components/RelicForge';
 import type {RpgRun} from '../lib/rpg';
+import {statSync} from 'node:fs';
+import {relicImage} from '../lib/item-battle-relics';
 
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 const fresh=()=>{const game=createRpgJourneyGame('합성 검증','',0);enterJourneyNode(game,'battle-1',0);return game;};
@@ -18,6 +20,10 @@ function hearts(equip:string[]=['cracked-heart','second-heart']):RpgRun{
  for(const id of equip)run=equipJourneyRelic(run,id);
  return run;
 }
+
+test('forged relics use their own small app icons',()=>{
+ for(const {id} of RELIC_RECIPES){const path=relicImage(id);assert.equal(path,`/rpg-items-v1/relics/${id}-v1.webp`);const size=statSync('public'+path).size;assert.ok(size<60_000,`${id} app icon stays light (${size} bytes)`);}
+});
 
 test('grades: legendaries exist only through forging and never appear in reward offers',()=>{
  assert.deepEqual(RPG_REWORK_RELICS.filter(r=>r.grade==='legendary').map(r=>r.id).sort(),RELIC_RECIPES.map(r=>r.id).sort());

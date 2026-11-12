@@ -1,0 +1,94 @@
+[
+  {
+    "id": "whole-heart",
+    "generated_size": [
+      1254,
+      1254
+    ],
+    "final_size": [
+      1254,
+      1254
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "alpha_bbox": [
+      0,
+      20,
+      1226,
+      1254
+    ],
+    "png_bytes": 845699,
+    "webp_bytes": 562064
+  },
+  {
+    "id": "gamblers-hourglass",
+    "generated_size": [
+      1254,
+      1254
+    ],
+    "final_size": [
+      1254,
+      1254
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "alpha_bbox": [
+      0,
+      31,
+      1210,
+      1254
+    ],
+    "png_bytes": 1307517,
+    "webp_bytes": 883868
+  },
+  {
+    "id": "undying-lantern",
+    "generated_size": [
+      1254,
+      1254
+    ],
+    "final_size": [
+      1254,
+      1254
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "alpha_bbox": [
+      41,
+      31,
+      1226,
+      1254
+    ],
+    "png_bytes": 1379130,
+    "webp_bytes": 956824
+  },
+  {
+    "id": "forked-mirror",
+    "generated_size": [
+      1254,
+      1254
+    ],
+    "final_size": [
+      1254,
+      1254
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "alpha_bbox": [
+      0,
+      0,
+      1235,
+      1254
+    ],
+    "png_bytes": 1109146,
+    "webp_bytes": 748076
+  }
+]

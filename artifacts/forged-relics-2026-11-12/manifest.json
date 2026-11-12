@@ -1,0 +1,63 @@
+{
+  "date": "2026-11-12",
+  "tool": "built-in image_gen",
+  "request": "docs/codex-art-request-2026-11-12-forged-relics.md",
+  "app_integration": "Claude handles removal of FORGED_TEMP_ICON; no app code changed",
+  "build": false,
+  "push": false,
+  "deploy": false,
+  "assets": [
+    {
+      "id": "whole-heart",
+      "prompt": "Use case: stylized-concept. Create ONE legendary fantasy RPG inventory icon named Whole Heart. References 1 and 2 are the two material relic icons: preserve recognizable red heart gemstone and turquoise gemstone metalwork, but fuse into ONE single whole heart, never two adjacent hearts. One ruby red heart whose former cracks are repaired with turquoise gemstone-metal inlay seams; faint crack history remains, heart intact. A restrained antique gold setting, with a VERY THIN warm gold #f2c166 rim light marking legendary rarity. Hand-drawn 2D cartoon fantasy, bold irregular dark ink outlines, broad simplified color areas, only 2-3 cel shading values, economical texture. Do not reproduce the references' glossy airbrushed rendering. One centered object, strong chunky readable silhouette at 40px, comfortably inside square frame with transparent margin. Output 1254x1254 PNG with genuine transparent background. No backdrop, no floor or ground shadow, no text, numbers, crowns, iron gates, flame suit or key suit symbols, no borders or UI.",
+      "references": [
+        "public/rpg-items-v1/relics/cracked-heart.webp",
+        "public/rpg-items-v1/relics/second-heart.webp"
+      ],
+      "generated_original": "C:/Users/SONG/.codex/generated_images/01a1cf7c-d700-71b1-8107-6d6c2a9bdffe/exec-f2fa4520-67f1-496b-ba44-737eb60f97e1.png",
+      "archived_original": "whole-heart-generated.png",
+      "png": "public/rpg-items-v1/relics/whole-heart.png",
+      "webp": "public/rpg-items-v1/relics/whole-heart.webp",
+      "rejected_variants": []
+    },
+    {
+      "id": "gamblers-hourglass",
+      "prompt": "Use case: stylized-concept. Create ONE legendary fantasy RPG inventory icon, Gambler's Hourglass. Reference 1: brown fingerless gambler leather gloves with burgundy cuffs and brass trim. Reference 2: antique brass hourglass with golden sand. Fuse into ONE coherent object: a single leather glove wrapped snugly around and grasping the hourglass body, the open glass waist and a clear stream of falling golden sand remain visible. No human arm or person. Not two separate adjacent items. Bold readable silhouette at 40px. Center the whole object with transparent margins. Hand-drawn 2D cartoon fantasy, expressive thick dark ink contours, simplified broad color forms and 2-3 cel shading values, restrained texture, no glossy 3D or airbrush. Warm brown leather, burgundy cuff, aged gold brass, golden sand. VERY THIN gold #f2c166 rim light, no large halo. Genuine transparent background, square 1254x1254 PNG. No scene, floor, cast shadow, letters, numbers, playing cards, crown/gate/flame/key suit motifs, UI or border.",
+      "references": [
+        "public/rpg-items-v1/relics/gamblers-gloves.webp",
+        "public/rpg-items-v1/relics/stopped-hourglass.webp"
+      ],
+      "generated_original": "C:/Users/SONG/.codex/generated_images/01a1cf7c-d700-71b1-8107-6d6c2a9bdffe/exec-ac878c91-07cc-4dca-bc3c-80d23eee17be.png",
+      "archived_original": "gamblers-hourglass-generated.png",
+      "png": "public/rpg-items-v1/relics/gamblers-hourglass.png",
+      "webp": "public/rpg-items-v1/relics/gamblers-hourglass.webp",
+      "rejected_variants": []
+    },
+    {
+      "id": "undying-lantern",
+      "prompt": "Use case: stylized-concept. Create ONE legendary fantasy RPG inventory icon, Undying Lantern. Reference 1 is an antique brass recovery lantern, reference 2 a thick crimson red braided lucky knot with short tassels. Fuse into ONE coherent object: the same recognizable brass lantern with a bold crimson knot tied securely to its top carrying handle, short red tassels falling at the side, not concealing the lamp window. Inside a bright steady compact amber-gold flame, clearly illustrated and stable. This flame is a physical light source, NOT a playing-card suit emblem. Use a VERY THIN #f2c166 gold edge radiance for legendary quality, restrained local light only. One object centered with transparent margins, strong silhouette readable at 40px. Hand-drawn 2D cartoon fantasy, bold irregular ink outlines, simplified 2-3 cel shade values, economical texture. Avoid smooth glossy 3D and photographic rendering. Genuine transparent background, 1254x1254 square PNG. No scenery, floor, cast shadow, letters, numbers, crown/gate/key/card suit motifs, UI or border.",
+      "references": [
+        "public/rpg-items-v1/relics/recovery-lantern.webp",
+        "public/rpg-items-v1/relics/final-knot.webp"
+      ],
+      "generated_original": "C:/Users/SONG/.codex/generated_images/01a1cf7c-d700-71b1-8107-6d6c2a9bdffe/exec-03ab8902-2b1a-4f13-8886-43732182b4c1.png",
+      "archived_original": "undying-lantern-generated.png",
+      "png": "public/rpg-items-v1/relics/undying-lantern.png",
+      "webp": "public/rpg-items-v1/relics/undying-lantern.webp",
+      "rejected_variants": []
+    },
+    {
+      "id": "forked-mirror",
+      "prompt": "Use case: stylized-concept. Create ONE legendary fantasy RPG inventory icon, Forked Mirror. First reference: twin-needle brass compass with jade green accents and gold/blue needles. Second reference: antique gold oval hand mirror with a central crack and teal-purple reflective glass. Fuse into ONE coherent object: ONE oval handheld mirror, recognizable gold handle and frame, cracked teal-purple glass, with TWO separate compass pointer needles INSIDE its mirror face, sharing a small central pivot but pointing to different directions (one GOLD pointer toward upper right; one BLUE pointer toward upper left). Two clearly legible needle tips diverge in a V, not a single double-ended needle. A thin fracture remains in reflective surface. Incorporate small jade accents in mirror frame. Do not place a compass beside a mirror. Very thin gold #f2c166 edge glow. Hand-drawn 2D cartoon fantasy, expressive thick dark ink outlines, simplified broad colors and only 2-3 cel shading values, restrained rough texture; avoid glossy 3D or airbrush. Centered one object with transparent margins, bold 40px-readable silhouette. Genuine transparent background, 1254x1254 square PNG. No scenery, floor, cast shadow, text, letters, digits, crown/gate/flame/key card suit motifs, UI or border.",
+      "references": [
+        "public/rpg-items-v1/relics/twin-needle-compass.webp",
+        "public/rpg-items-v1/relics/split-mirror.webp"
+      ],
+      "generated_original": "C:/Users/SONG/.codex/generated_images/01a1cf7c-d700-71b1-8107-6d6c2a9bdffe/exec-4b193662-8fab-4a7b-8fbd-cdfa75d1fa31.png",
+      "archived_original": "forked-mirror-generated.png",
+      "png": "public/rpg-items-v1/relics/forked-mirror.png",
+      "webp": "public/rpg-items-v1/relics/forked-mirror.webp",
+      "rejected_variants": []
+    }
+  ]
+}
