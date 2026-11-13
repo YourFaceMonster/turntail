@@ -26,8 +26,9 @@ test('every relic has a one-line effect and a plain-language detail',()=>{
 
 test('a won relic auto-equips only while the trial still has a free slot',()=>{
  const game=fresh();game.rpgRun!.hp=[70,1,1];finish(game,[0,3,3]);
- const run=game.rpgRun!,active=run.phaseOne!.clear!.relicOffers!.find(id=>!PASSIVE_RELICS.includes(id as never))!;
- const occupied={...run,equipped:['existing-relic'],relics:[...run.relics,'existing-relic']};
+ // Offers are random per journey and may all be owned-only relics, so fix one equippable offer.
+ const active='second-ring',base=game.rpgRun!,run={...base,phaseOne:{...base.phaseOne!,clear:{...base.phaseOne!.clear!,relicOffers:[active]}}};
+ const occupied={...run,equipped:['existing-relic'],relics:[...run.relics.filter(id=>id!==active),'existing-relic']};
  assert.deepEqual(chooseReworkReward({...occupied,trials:['lone-relic']},active).equipped,['existing-relic'],'홀로 든 유물: the single slot is already taken');
  assert.ok(chooseReworkReward(occupied,active).equipped.includes(active),'normal journeys keep three slots');
 });

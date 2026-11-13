@@ -1,0 +1,64 @@
+{
+  "mode": "built-in image_gen",
+  "request": "docs/codex-art-request-2026-11-13-story-events.md",
+  "integration": "Claude; assets only, no build or deployment",
+  "rejected": [],
+  "assets": [
+    {
+      "id": "st4-1",
+      "prompt": "Use case: stylized-concept. Create ONE isolated game UI asset for TURNTALE: the LEFT end fragment of a water-damaged old record, a very long horizontal torn paper strip. Canvas 900x280 or equivalent wide aspect, transparent background. Flat top-down view, no perspective. Paper occupies nearly the full width with a small transparent margin. Match the damp tan parchment held by the heron in reference 1: muted buff/tan, desaturated gray-blue water stains around edges, expressive irregular dark ink contour, simple 2D cel shading, restrained rough brush texture. Reference 2 is rendering style only. Center 75% of the strip must be light, completely blank and readable for app text overlay. Ragged top/bottom edges, left outer end worn. Right torn seam is a shallow zigzag with an outward point in its upper third and an inward notch in its lower third, suitable to join a center strip. No letters, numbers, glyphs, emblems, writing, characters, hands, scenery, frame, drop shadow or extra objects. Actual transparent alpha outside the paper, not a checkerboard illustration.",
+      "generated": "C:/Users/SONG/.codex/generated_images/01a1d224-a6e2-75a2-975f-575e920e4eb6/exec-69df28b3-6987-480d-81c4-3e811ce2bd87.png",
+      "output": "public/story-events/st4-fragment-1.png",
+      "size": [
+        900,
+        280
+      ],
+      "references": [
+        "public/story/quest-4-portrait-v1.png",
+        "C:/Users/SONG/.codex/skills/turntale-cartoon-fantasy/references/tavern-approved.png"
+      ]
+    },
+    {
+      "id": "st4-2",
+      "prompt": "Use case: stylized-concept. Create ONE isolated TURNTALE UI asset, the CENTER fragment of a water-damaged old paper record. Use the supplied first strip as a close matching sibling reference: same muted buff/tan parchment, gray-blue water staining, irregular expressive dark ink outlines and simple shaded 2D cartoon fantasy rendering, same paper height and long horizontal 900x280 proportions. Transparent background, flat overhead view. One strip only, full object visible with small transparent margin. The center 75% is light blank writing space for app overlay, with only soft subtle texture. Worn ragged upper/lower edges. Left torn seam complementary to reference strip's right seam: shallow inward upper-third notch, outward lower-third point. Right torn seam shallow inward upper point and outward lower point, as if next fragment could join it. Keep tearing understated. No text, letters, numbers, scribbles, symbols, holes in central writing area, characters, scenery, extra objects, heavy shadows, border or checkerboard. Match the reference's proportions and color extremely closely; genuinely transparent alpha outside paper.",
+      "generated": "C:/Users/SONG/.codex/generated_images/01a1d224-a6e2-75a2-975f-575e920e4eb6/exec-646fe286-ca89-4e27-a51e-ce4ccf940b35.png",
+      "output": "public/story-events/st4-fragment-2.png",
+      "size": [
+        900,
+        280
+      ],
+      "references": [
+        "public/story/quest-4-portrait-v1.png",
+        "C:/Users/SONG/.codex/skills/turntale-cartoon-fantasy/references/tavern-approved.png"
+      ]
+    },
+    {
+      "id": "st4-3",
+      "prompt": "Use case: stylized-concept. Create ONE isolated TURNTALE UI asset, RIGHT END fragment of a water-damaged old paper record. The supplied strip is its CENTER sibling; match its exact buff/tan parchment color, gray-blue water-stained edge bands, dark expressive irregular ink outlines and simplified 2D cartoon shading with restrained paper texture. One long horizontal torn paper strip, 900x280 proportions, flat overhead view, entire object inside frame with small transparent margin. Left torn seam should fit the center sibling's right seam visually, an outward upper-third point and inward lower-third notch. Right outer end is naturally ragged and water-worn, with one small folded corner and at most a tiny hole near outer edge. Ragged top and bottom, no curling perspective. Keep center 75% completely light and blank for app text overlay. No lettering, numbers, symbols, scribbles, characters, hands, objects, backdrop, drop shadow, checkerboard or border. Actual transparent alpha surrounding paper.",
+      "generated": "C:/Users/SONG/.codex/generated_images/01a1d224-a6e2-75a2-975f-575e920e4eb6/exec-b1c30d9d-9f83-4d8c-a0a7-57d81ffc8af1.png",
+      "output": "public/story-events/st4-fragment-3.png",
+      "size": [
+        900,
+        280
+      ],
+      "references": [
+        "public/story/quest-4-portrait-v1.png",
+        "C:/Users/SONG/.codex/skills/turntale-cartoon-fantasy/references/tavern-approved.png"
+      ]
+    },
+    {
+      "id": "st7",
+      "prompt": "Use case: stylized-concept. Asset: TURNTALE ST7 ledger-page UI background. Create ONE single portrait page from the open ancient ledger shown in reference 1. Flat straight-down orthographic view, 900x1100 proportions. Not a two-page spread. Isolated single aged buff/tan parchment page, small transparent margin all around. Match reference book's warm subdued paper, irregular bold ink edges, simple hand-drawn 2D cartoon fantasy shaded shapes; reference 2 guides ink/rendering only, do not include characters or scenery. Slightly worn rounded corners, subtle mottling mostly near perimeter, a small amount of pale candle wax at lower outer corner outside table. On page draw a faint clean table: FIVE horizontal writing bands total (one header band plus FOUR record bands), FOUR equal-width columns separated by exactly THREE faint vertical dividers. Use four very faint internal horizontal dividers to form five bands; the upper/lower table border, if present, is equally faint. Table fills central 78% width, from 16% to 84% page height, evenly spaced rows and columns. All cells completely empty and light for app text overlay. No letters, words, numbers, symbols, handwriting, names, runes, decorative emblems or invented marks. No hands, pen, candle, characters, desk, book cover, spine, second page, perspective, cast shadow or checkerboard. True alpha transparency outside the paper. Simple clear usable game asset.",
+      "generated": "C:/Users/SONG/.codex/generated_images/01a1d224-a6e2-75a2-975f-575e920e4eb6/exec-22b68e81-563c-4556-aed5-f3363645a774.png",
+      "output": "public/story-events/st7-ledger-page.png",
+      "size": [
+        900,
+        1100
+      ],
+      "references": [
+        "public/story/st7-before-portrait-v1.png",
+        "C:/Users/SONG/.codex/skills/turntale-cartoon-fantasy/references/tavern-approved.png"
+      ]
+    }
+  ]
+}

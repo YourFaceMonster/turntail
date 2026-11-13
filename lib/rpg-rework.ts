@@ -95,7 +95,7 @@ export const RPG_REWORK_RELICS=[
  ['second-heart','두 번째 심장','최대 HP +10 · 챕터에서 처음 장착하면 HP도 +10','장착하는 동안 최대 HP가 10 늘어나요. 현재 HP +10은 챕터마다 처음 장착할 때 한 번만 받아요.'],
  ['recovery-lantern','회복의 등불','스테이지를 클리어하면 HP +5','AI 한 명의 HP를 0으로 만들어 스테이지를 클리어하면 바로 HP 5를 회복해요. 최대 HP를 넘으면 회복하지 않아요.'],
  ['watchkeepers-blue-glass','파수꾼의 푸른 유리','판이 시작될 때마다 바닥 패 1장을 몰래 봐요','매 판 시작 시 바닥의 뒤집힌 위층 패 1장을 자동으로 확인해요. 나에게만 보여요.'],
- ['stopped-hourglass','멈춘 모래시계','판에서 이기면 다음 판에 바닥 패를 2장 더 봐요','판에서 1등을 하면 다음 판 시작에 바닥 패 3장을 몰래 봐요(선견지명). 이 유물이 있으면 5장을 봐요.'],
+ ['stopped-hourglass','멈춘 모래시계','판에서 이기면 다음 판에 바닥 패를 1장 더 봐요','판에서 1등을 하면 다음 판 시작에 바닥 패 1장을 몰래 봐요(선견지명). 이 유물이 있으면 2장을 봐요.'],
  ['final-knot','마지막 매듭','판이 끝났을 때 HP 10 이하면 HP +5 · 스테이지당 1번','판 정산 후 HP가 1~10이면 HP 5를 회복해요. 한 스테이지에서 한 번만 발동해요.'],
  ['second-ring','두 번째 반지','셋이 겨룬 판에서 2등이면 HP +3','세 명 모두 HP가 남은 판에서 2등으로 마치면 정산 후 HP 3을 회복해요.'],
  ['mor-quill','모르의 깃펜','주점의 피오에게서 유물 소문을 하나 더 들어요','장착하지 않고 갖고만 있어도 적용돼요. 주점에서 피오와 이야기하면 소문 수첩에 유물 정보가 추가돼요.'],
@@ -104,7 +104,7 @@ export const RPG_REWORK_RELICS=[
  [DICE_RELIC.id,DICE_RELIC.name,'판이 시작될 때 HP가 50 이하면 HP +2','매 판 시작 시 HP가 50 이하이면 HP 2를 회복해요. 위기일수록 조금씩 버티게 도와줘요.'],
  // Forged legendaries (see RELIC_RECIPES). Never offered as rewards.
  ['whole-heart','온전한 심장','최대 HP +35 · 챕터에서 처음 장착하면 HP도 +35','금이 간 심장과 두 번째 심장을 합친 유물이에요. 장착하는 동안 최대 HP가 35 늘어나요. 현재 HP +35는 챕터마다 처음 장착할 때 한 번만 받고, 재료로 이미 받은 만큼은 빼요.'],
- ['gamblers-hourglass','승부사의 모래시계','5장 족보로 이기면 바닥 +1장 · 판에서 이기면 다음 판 바닥 +3장','승부사의 장갑과 멈춘 모래시계를 합친 유물이에요. 5장 족보로 이기면 바닥 패를 1장 더 보고, 판에서 1등을 하면 다음 판 시작에 바닥 패를 6장 몰래 봐요.'],
+ ['gamblers-hourglass','승부사의 모래시계','5장 족보로 이기면 바닥 +1장 · 판에서 이기면 다음 판 바닥 +2장','승부사의 장갑과 멈춘 모래시계를 합친 유물이에요. 5장 족보로 이기면 바닥 패를 1장 더 보고, 판에서 1등을 하면 다음 판 시작에 바닥 패를 3장 몰래 봐요.'],
  ['undying-lantern','꺼지지 않는 등불','클리어하면 HP +8 · 판이 끝났을 때 HP 15 이하면 HP +6 (스테이지당 1번)','회복의 등불과 마지막 매듭을 합친 유물이에요. 스테이지를 클리어하면 HP 8을, 판 정산 후 HP가 1~15이면 HP 6을 회복해요(스테이지당 한 번).'],
  ['forked-mirror','두 갈래 거울','유물 보상 후보 +1 · 다음 보상 후보 미리 보기','쌍침 나침반과 갈라진 거울을 합친 유물이에요. 장착하지 않고 갖고만 있어도 적용돼요. 보상 후보가 1개 늘고, 다음 클리어 보상 후보도 미리 보여 줘요.'],
 ].map(([id,name,effect,detail])=>({id,name,effect,detail,grade:RELIC_GRADES[id]||'common',passive:isPassiveRelic(id)}));
@@ -116,7 +116,7 @@ export const RPG_REWORK_RELIC_SHORT:Record<string,{label:string,bonus:string}>={
  'second-heart':{label:'최대 HP',bonus:'+10'},
  'recovery-lantern':{label:'클리어',bonus:'HP +5'},
  'watchkeepers-blue-glass':{label:'판 시작',bonus:'바닥 1장'},
- 'stopped-hourglass':{label:'판 승리',bonus:'바닥 +2장'},
+ 'stopped-hourglass':{label:'판 승리',bonus:'바닥 +1장'},
  'final-knot':{label:'HP 10↓',bonus:'HP +5'},
  'second-ring':{label:'2등',bonus:'HP +3'},
  'mor-quill':{label:'소지',bonus:'소문 +1'},
@@ -124,7 +124,7 @@ export const RPG_REWORK_RELIC_SHORT:Record<string,{label:string,bonus:string}>={
  'split-mirror':{label:'소지',bonus:'후보 +1'},
  [DICE_RELIC.id]:{label:'HP 50↓',bonus:'HP +2'},
  'whole-heart':{label:'최대 HP',bonus:'+35'},
- 'gamblers-hourglass':{label:'5장·판승리',bonus:'+1/+3장'},
+ 'gamblers-hourglass':{label:'5장·판승리',bonus:'+1/+2장'},
  'undying-lantern':{label:'클리어·위기',bonus:'HP+8·6'},
  'forked-mirror':{label:'소지',bonus:'후보 +1'},
 };
@@ -221,6 +221,8 @@ export function scoutRpgFloor(game:Game,seat:number,count:number,bonus=0){
  let revealed=0;while(pool.length&&revealed<count){const random=new Uint32Array(1);crypto.getRandomValues(random);own.push(pool.splice(random[0]%pool.length,1)[0]);revealed++;}
  state.lastScout={seat,count:revealed,bonus:Math.min(bonus,revealed),round:game.round};return revealed;
 }
+/** Floor tiles the previous round's winner sees at the next deal (before relic bonuses). */
+export const FORESIGHT_TILES=1;
 export function beginReworkRound(game:Game){
  if(!isRpgRework(game))return;const run=game.rpgRun!,state=run.rework!;
  state.intel={};state.resolvedTricks=[];state.lastScout=undefined;state.settledSeats=undefined;state.overflow=undefined;state.relicHeals=undefined;
@@ -231,8 +233,9 @@ export function beginReworkRound(game:Game){
  run.roundHealth={round:game.round,before:[...run.hp],damage:run.hp.map(()=>0),healing:run.hp.map(()=>0),moneyDamage:run.hp.map(()=>0),coinsBefore:0};
  if(state.nextForesight!==undefined&&run.hp[state.nextForesight]>0){
   const mine=state.nextForesight===0,glass=!mine?'':run.equipped.includes('gamblers-hourglass')?'gamblers-hourglass':run.equipped.includes('stopped-hourglass')?'stopped-hourglass':'';
-  const extra=glass==='gamblers-hourglass'?3:glass?2:0,revealed=scoutRpgFloor(game,state.nextForesight,3+extra,extra);
-  if(glass&&revealed>3)recordRelic(run,glass,`바닥 패 ${revealed-3}장 더 확인`);
+  // 2026-11-13 balance: a round win shows 1 floor tile next round (stopped hourglass +1, forged hourglass +2).
+  const extra=glass==='gamblers-hourglass'?2:glass?1:0,revealed=scoutRpgFloor(game,state.nextForesight,FORESIGHT_TILES+extra,extra);
+  if(glass&&revealed>FORESIGHT_TILES)recordRelic(run,glass,`바닥 패 ${revealed-FORESIGHT_TILES}장 더 확인`);
  }
  state.nextForesight=undefined;
  if(run.equipped.includes('watchkeepers-blue-glass')&&scoutRpgFloor(game,0,1))recordRelic(run,'watchkeepers-blue-glass','바닥 패 1장 확인');

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "st4-1",
+    "generated_size": [
+      2172,
+      724
+    ],
+    "final_size": [
+      900,
+      280
+    ],
+    "png": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story-events\\st4-fragment-1.png",
+    "webp": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story-events\\st4-fragment-1.webp",
+    "png_bytes": 315486,
+    "webp_bytes": 40608,
+    "transparent_alpha_verified": true,
+    "png_sha256": "842df3019cf6e5d8c65e0813fb17f2401ab767d3c022353477e102c8b145c23a",
+    "webp_sha256": "788b9adb2cd8356e23329a758880947cb5035c911b54d75488bb499c4a06a52d"
+  },
+  {
+    "id": "st4-2",
+    "generated_size": [
+      2172,
+      724
+    ],
+    "final_size": [
+      900,
+      280
+    ],
+    "png": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story-events\\st4-fragment-2.png",
+    "webp": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story-events\\st4-fragment-2.webp",
+    "png_bytes": 295236,
+    "webp_bytes": 35150,
+    "transparent_alpha_verified": true,
+    "png_sha256": "97bc289d93374c5852f0c40c8cde5fef82ecc606ebe0c6893f39aae653cc7b29",
+    "webp_sha256": "cdb2599e271db70b77977fbb4855b5ab1b66cab8a92155a67892623394fa7ca5"
+  },
+  {
+    "id": "st4-3",
+    "generated_size": [
+      2172,
+      724
+    ],
+    "final_size": [
+      900,
+      280
+    ],
+    "png": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story-events\\st4-fragment-3.png",
+    "webp": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story-events\\st4-fragment-3.webp",
+    "png_bytes": 285035,
+    "webp_bytes": 34698,
+    "transparent_alpha_verified": true,
+    "png_sha256": "fa76743745f6b2278ac31cdf17e83325cd0ecb0a52a7257598911f8552e4b2cd",
+    "webp_sha256": "d9acd72ffcb295107f9bf21466a066527ed3d58485a14e5d8c3ec0bdd92eb88d"
+  },
+  {
+    "id": "st7",
+    "generated_size": [
+      1135,
+      1386
+    ],
+    "final_size": [
+      900,
+      1100
+    ],
+    "png": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story-events\\st7-ledger-page.png",
+    "webp": "D:\\CHATGPT_CODEX\\17_Turntail\\site-publish-checkout\\public\\story-events\\st7-ledger-page.webp",
+    "png_bytes": 1669457,
+    "webp_bytes": 172386,
+    "transparent_alpha_verified": true,
+    "png_sha256": "d29241d3facfb35a1005dd4bf5b4f0e1fb946a3a49ff6ab4fb30942bbeebd5ec",
+    "webp_sha256": "8d774bab407030596f78fd3419453dad05d75ca78fda313c006c43f6ce54ee35"
+  }
+]

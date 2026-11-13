@@ -53,3 +53,14 @@
  .rpg-prologue[data-cut^="ST"] .prologue-picture .prologue-camera,.quest-cutscene .prologue-picture .prologue-camera{animation:none!important}
  .rpg-prologue[data-cut^="ST"] .prologue-picture::after{animation:none!important;opacity:.6}
 }
+
+/* 2026-11-13 story rhythm: per-cut camera (push/pan/still) for ST4~10, overriding the static ST camera above. */
+.rpg-prologue[data-cut^="ST"] .prologue-picture[data-camera="push"] .prologue-camera{animation:story-camera-push var(--scene-duration) cubic-bezier(.2,.6,.3,1) both!important;transform-origin:50% 45%}
+.rpg-prologue[data-cut^="ST"] .prologue-picture[data-camera="pan"] .prologue-camera{animation:story-camera-pan var(--scene-duration) ease-in-out both!important}
+.rpg-prologue[data-cut^="ST"] .prologue-picture[data-camera="still"] .prologue-camera{animation:none!important}
+@keyframes story-camera-push{from{scale:1}to{scale:1.1}}
+@keyframes story-camera-pan{from{scale:1.06;translate:-2.5% 0}to{scale:1.06;translate:2.5% 0}}
+/* The flame keepsake's back glows like the fire it carries. */
+.prologue-keepsake-preview[data-card="sacred-flame-two"][data-face="back"]{animation:keepsake-flame-glow 1.6s ease-in-out infinite alternate}
+@keyframes keepsake-flame-glow{from{filter:drop-shadow(0 12px 22px #0009) drop-shadow(0 0 10px #ee8b2366)}to{filter:drop-shadow(0 12px 22px #0009) drop-shadow(0 0 26px #ee8b23cc)}}
+@media(prefers-reduced-motion:reduce){.rpg-prologue .prologue-picture[data-camera] .prologue-camera,.prologue-keepsake-preview{animation:none!important}}

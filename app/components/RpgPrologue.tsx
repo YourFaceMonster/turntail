@@ -10,6 +10,8 @@ import {prologueAmbience} from '../../lib/rpg-prologue-audio';
 import {holdCutsceneSilence} from '../../lib/cutscene-music';
 import '../story-motion.css';
 import {DialogueTools,useDialogueAuto} from './DialogueTools';
+import StoryPuzzle from './StoryPuzzle';
+import type {StoryEventId,StoryEventResult} from '../../lib/rpg-chapters';
 import {keepsakeSource,prologueArt,prologueSceneSources,prologueSceneGroup,storyPictureKey,storyPictureTransition} from '../../lib/rpg-prologue-art';
 
 export function TwoCrowns(){return <svg viewBox="0 0 100 70" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round"><path d="M12 21l13 10 10-19 11 19 14-10-5 29H17zM17 56h38"/><path d="M40 31l13 10 10-19 11 19 14-10-5 29H45zM45 66h38"/></g></svg>;}
@@ -25,7 +27,7 @@ export function ProloguePicture({cut,duration=cut.duration,hiddenLight=false}:{c
  const indoor=['room','table','card'].includes(cut.scene),art=prologueArt(cut);
  // A portrait-only painting on a wide screen: show it whole in the middle, the same painting blurred behind.
  const framed=!!art&&art.landscape===art.portrait&&art.portrait.includes('-portrait-');
- return <div className={`prologue-picture scene-${cut.scene}${framed?' is-framed':''}`} data-keepsake-face={cut.keepsakeFace} data-location={cut.location||undefined} style={{'--scene-duration':`${duration}ms`} as CSSProperties} aria-hidden="true">
+ return <div className={`prologue-picture scene-${cut.scene}${framed?' is-framed':''}`} data-keepsake-face={cut.keepsakeFace} data-camera={cut.camera} data-location={cut.location||undefined} style={{'--scene-duration':`${duration}ms`} as CSSProperties} aria-hidden="true">
   {framed&&<img className="prologue-scene-backdrop" src={art!.portrait} alt="" decoding="async" aria-hidden="true"/>}
   {art&&<div className="prologue-canvas"><div className="prologue-camera" style={cut.location?{transformOrigin:cut.focus}:undefined}>
    <picture><source media="(max-aspect-ratio:1/1)" srcSet={art.portrait}/><img ref={artImage} style={cut.focus?{objectPosition:cut.focus}:undefined} className="prologue-scene-art" src={art.landscape} alt="" decoding="async"/></picture>{hiddenLight&&light&&<span className="quest-hidden-light" style={light}/> }
@@ -33,7 +35,7 @@ export function ProloguePicture({cut,duration=cut.duration,hiddenLight=false}:{c
   {indoor&&<div className="prologue-firelight"/>}
   {['snow','inn'].includes(cut.scene)&&Array.from({length:24},(_,i)=><i key={i} className="prologue-snow" style={{'--x':`${(i*37)%100}%`,'--delay':`${-i*.73}s`,'--drift':`${12+i%5*7}px`} as CSSProperties}/>)}
   <div className="prologue-shade"/>
-  {cut.keepsakeFace&&<img className="prologue-keepsake-preview" src={keepsakeSource(cut)} data-matte={cut.keepsakeFace==='front'&&(cut.keepsakeCard||'iron-gate-two')!=='iron-gate-two'?'':undefined} alt=""/>}
+  {cut.keepsakeFace&&<img className="prologue-keepsake-preview" src={keepsakeSource(cut)} data-card={cut.keepsakeCard||'iron-gate-two'} data-face={cut.keepsakeFace} data-matte={cut.keepsakeFace==='front'&&(cut.keepsakeCard||'iron-gate-two')!=='iron-gate-two'?'':undefined} alt=""/>}
  </div>;
 }
 /** Decode first and retain keyed layers so the outgoing painting never restarts its fade. */
@@ -52,8 +54,8 @@ export function CrossfadePicture({cut,duration=cut.duration,hiddenLight=false}:{
  return <div className="story-painting-stack" data-transition={frame.transition}>{frame.previous&&<div key={frame.previous.key} className="story-painting-out"><ProloguePicture cut={frame.previous.cut} duration={frame.previous.duration} hiddenLight={frame.previous.hiddenLight}/></div>}<div key={frame.key} className={frame.previous?'story-painting-in':'story-painting-current'}><ProloguePicture cut={frame.cut} duration={frame.duration} hiddenLight={frame.hiddenLight}/></div></div>;
 }
 
-type Props={enter:()=>void,context?:AudioContext|null,music?:boolean,sound?:boolean,musicVolume?:number,cuts?:readonly PrologueCut[],label?:string,skipLabel?:string,chrome?:import('react').ReactNode};
-export default function RpgPrologue({enter,context,music=true,sound=true,musicVolume=40,cuts=FIRST_PROLOGUE,label='턴테일 프롤로그',skipLabel='건너뛰기',chrome}:Props){
+type Props={onEvent?:(id:StoryEventId,result:StoryEventResult)=>void,enter:()=>void,context?:AudioContext|null,music?:boolean,sound?:boolean,musicVolume?:number,cuts?:readonly PrologueCut[],label?:string,skipLabel?:string,chrome?:import('react').ReactNode};
+export default function RpgPrologue({onEvent,enter,context,music=true,sound=true,musicVolume=40,cuts=FIRST_PROLOGUE,label='턴테일 프롤로그',skipLabel='건너뛰기',chrome}:Props){
  const finish=useRef(enter),[closing,setClosing]=useState(false);const finishTimer=useRef<ReturnType<typeof setTimeout>|null>(null);const complete=()=>{if(finishTimer.current)return;setClosing(true);finishTimer.current=setTimeout(()=>finish.current(),240);};useEffect(()=>()=>{if(finishTimer.current)clearTimeout(finishTimer.current);},[]);
  useEffect(()=>{finish.current=enter;},[enter]);
  const clock=useRef<PrologueClock|null>(null);
@@ -75,14 +77,19 @@ export default function RpgPrologue({enter,context,music=true,sound=true,musicVo
  // Cutscenes are silent of music for now: pause page BGM and skip the synthesized tavern motif (ambient sounds stay).
  useEffect(()=>holdCutsceneSilence(),[]);
  useEffect(()=>{if(!artReady||!visible||!context||context.state!=='running')return;return prologueAmbience(context,cut,false,musicVolume,sound);},[context,cut,visible,artReady,musicVolume,sound]);
- const [auto,setAuto]=useDialogueAuto(true),[logOpen,setLogOpen]=useState(false);
- useEffect(()=>{clock.current?.hold(!auto||logOpen);},[auto,logOpen,artReady]);
+ const [auto,setAuto]=useDialogueAuto(true),[logOpen,setLogOpen]=useState(false),[handled,setHandled]=useState<readonly string[]>([]);
+ // A hands-on cut holds the clock until its event is solved or skipped.
+ const interactive=artReady&&!!cut.interaction&&!handled.includes(cut.id);
+ useEffect(()=>{clock.current?.hold(!auto||logOpen||interactive);},[auto,logOpen,artReady,interactive]);
+ useEffect(()=>{if(artReady&&visible&&sound&&cut.cue)cue(cut.cue);},[cut.id,artReady]);
+ const settle=(result:StoryEventResult)=>{if(cut.interaction)onEvent?.(cut.interaction,result);setHandled(list=>[...list,cut.id]);clock.current?.hold(!auto||logOpen);clock.current?.next();if(clock.current)setIndex(clock.current.index);};
  const backlog=cuts.slice(0,index+1).filter((item,i,list)=>item.line&&(i===0||item.line!==list[i-1].line||item.speaker!==list[i-1].speaker)).map(item=>({speaker:item.speaker,text:item.line}));
- function advance(){if(!artReady||logOpen)return;const now=performance.now();if(now-lastTap.current<350)return;lastTap.current=now;cue('dialogue');clock.current!.next();setIndex(clock.current!.index);}
+ function advance(){if(!artReady||logOpen||interactive)return;const now=performance.now();if(now-lastTap.current<350)return;lastTap.current=now;cue('dialogue');clock.current!.next();setIndex(clock.current!.index);}
  if(typeof document==='undefined')return null;
  return createPortal(<section ref={root} tabIndex={-1} className={`rpg-prologue ${closing?'is-story-closing':''}`} role="dialog" aria-modal="true" aria-label={label} data-cut={cut.id} data-storyboard={cut.storyboard} data-paused={!visible} onKeyDown={event=>{event.stopPropagation();if(event.key==='Escape'){event.preventDefault();clock.current!.complete();}if(event.target===event.currentTarget&&(event.key===' '||event.key==='Enter')){event.preventDefault();advance();}if(event.key==='Tab'){event.preventDefault();root.current?.querySelector<HTMLButtonElement>('.prologue-skip')?.focus();}}}>
   {chrome}
   {artReady?<div className="prologue-tap-surface" onClick={advance}><div className="prologue-cut" data-scene={cut.scene} style={{'--cut-duration':`${cut.duration}ms`} as CSSProperties}><CrossfadePicture cut={{...cuts[sceneGroup.start],poseArt:cut.poseArt}} duration={sceneGroup.duration}/><div key={cut.id} className="prologue-caption" aria-live="polite">{cut.speaker&&<small>{cut.speaker}</small>}<p><DialogueText text={cut.line}/></p>{cuts===FIRST_PROLOGUE&&cut.storyboard==='P19'&&<small>시작 유물 · 금이 간 심장</small>}</div></div></div>:<p className="prologue-loading" role="status">이야기를 펼치는 중…</p>}
+  {interactive&&<StoryPuzzle key={cut.id} inline id={cut.interaction!} done={settle}/>}
   {artReady&&<DialogueTools className="is-story" auto={auto} setAuto={setAuto} lines={backlog} onOpenChange={setLogOpen}/>}
   <button className="prologue-skip" onClick={()=>clock.current!.complete()}>{skipLabel} <span aria-hidden="true">↗</span></button><span className="prologue-touch-hint">화면을 누르면 다음 장면</span>
   {artReady&&cut.location&&<div className="prologue-location"><small>현재 위치</small><strong>{cut.location}</strong></div>}

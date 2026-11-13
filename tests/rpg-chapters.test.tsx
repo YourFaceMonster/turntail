@@ -80,9 +80,11 @@ test('optional quests record a choice only, close when skipped, and change scene
  assert.doesNotMatch(before(6),/이름 필드: 손상/);assert.match(before(6),/재방문/);
  assert.doesNotMatch(before(8),/사람의 이름은 잊혀도/);assert.match(before(8),/그 편지를 읽었구나/);
  const fresh=createRpgJourneyGame('검증','',0).rpgRun!;
- assert.match(lines(journeyScenes(4,fresh).before),/물길에서 건진 낡은 기록이 있어/);assert.match(lines(journeyScenes(9,fresh).before),/첫 번째가 문을 닫았다는/);
+ // 2026-11-13: unvisited quests no longer repeat the quest's own first line before the battle.
+ assert.match(lines(journeyScenes(4,fresh).before),/위쪽에서 떠내려온 기록이 있어/);assert.match(lines(journeyScenes(9,fresh).before),/누군가 문을 닫았다는 얘기쯤은/);
  // ST7 no longer contradicts its narration; the ending hand-off speaks like the prologue.
- assert.match(lines(journeyScenes(7,fresh).before),/자리만 남아 있거든\. 이름도 없이\./);
+ // ST7's ledger clue is now found in a hands-on cut instead of being told outright.
+ assert.ok(journeyScenes(7,fresh).before.some(cut=>cut.interaction==='st7-ledger'));
  assert.match(ending,/오래된 물건이오\./);assert.doesNotMatch(ending,/첫 번째 방랑자/);
 });
 test('second-journey variants, ST7 second place and the true ending script',()=>{

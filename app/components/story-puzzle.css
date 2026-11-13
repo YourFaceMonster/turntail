@@ -1,0 +1,63 @@
+/* Short hands-on story events (ST4~9). Mobile first, 44px+ touch targets. */
+/* Above the quest cutscene (z 1500) that opens it. */
+.story-puzzle-shade{position:fixed;inset:0;z-index:1600;display:grid;place-items:center;padding:16px;background:#05080dcc;backdrop-filter:blur(2px)}
+.story-puzzle-shade.is-inline{position:absolute;z-index:6}
+.story-puzzle{width:min(440px,100%);max-height:calc(100dvh - 32px);overflow:auto;display:grid;gap:12px;padding:16px;border:1px solid #f2c16666;border-radius:14px;background:linear-gradient(#2a2119,#17120e);color:#f4ead8;box-shadow:0 18px 40px #000a}
+.story-puzzle header{display:grid;gap:4px}
+.story-puzzle header strong{font-size:17px;color:#f2c166}
+.story-puzzle header small,.story-puzzle-note{font-size:13px;opacity:.8;line-height:1.4}
+.story-puzzle-skip{justify-self:end;font-size:13px}
+.story-puzzle-result{display:grid;gap:12px}
+.story-puzzle-result p{margin:0;line-height:1.55}
+.story-puzzle-shake{animation:story-puzzle-shake .32s ease-in-out}
+@keyframes story-puzzle-shake{25%{translate:-6px 0}50%{translate:6px 0}75%{translate:-3px 0}}
+
+/* ST4 torn strips */
+.story-strips-board{display:grid;gap:6px;padding:10px;border-radius:10px;background:#d9c7a3;color:#3a2b1c}
+.story-strip-slot{min-height:30px;padding:4px 10px;border-bottom:1px dashed #6b553a66;font-family:serif;font-size:17px}
+.story-puzzle>*{min-width:0}
+.story-strips{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;justify-items:center}
+/* Codex torn-paper strips (900×280, transparent); the app writes the words on top. */
+.story-strip{width:min(300px,100%);aspect-ratio:900/280;padding:0 12%;border:0;background:center/100% 100% no-repeat;color:#3a2b1c;font-family:serif;font-size:18px;font-weight:700;filter:drop-shadow(0 3px 4px #0008)}
+.story-strip[data-piece="1"]{background-image:url(/story-events/st4-fragment-1.webp);rotate:-1.5deg}
+.story-strip[data-piece="2"]{background-image:url(/story-events/st4-fragment-2.webp);rotate:1.2deg}
+.story-strip[data-piece="3"]{background-image:url(/story-events/st4-fragment-3.webp);rotate:-.8deg}
+.story-strip:disabled{opacity:.25}
+
+/* ST5 knots */
+.story-knots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.story-knot{position:relative;display:grid;place-items:center;gap:6px;min-height:96px;border:1px solid #c79a5a66;border-radius:12px;background:#3b2c1e;color:#f4ead8;touch-action:none;user-select:none;-webkit-user-select:none}
+.story-knot i{width:42px;height:42px;border-radius:50%;border:6px solid #b98b4f;border-style:dashed;transition:border-style .2s}
+.story-knot.is-holding i{animation:story-knot-tighten var(--hold) linear forwards}
+.story-knot.is-tied{border-color:#f2c16699;background:#4a3a24}
+.story-knot.is-tied i{border-style:solid;border-color:#f2c166;rotate:45deg}
+.story-knot small{font-size:12px;opacity:.85}
+@keyframes story-knot-tighten{from{scale:1.25;border-color:#b98b4f}to{scale:.8;border-color:#f2c166;rotate:180deg}}
+
+/* ST7 ledger */
+/* Codex ledger page (900×1100): its 4×5 grid spans x 98~800, y 205~895, so the table is padded onto it. */
+.story-ledger-page{box-sizing:border-box;width:min(380px,100%);margin:0 auto;aspect-ratio:900/1100;padding:22.7% 11.1% 22.8% 10.9%;background:url(/story-events/st7-ledger-page.webp) center/100% 100% no-repeat;filter:drop-shadow(0 6px 10px #0009)}
+.story-ledger{width:100%;height:100%;table-layout:fixed;border-collapse:collapse;color:#3a2b1c;font-family:serif}
+.story-ledger th,.story-ledger td{padding:2px;text-align:center;font-size:15px}
+.story-ledger th{font-size:12px;opacity:.75}
+.story-ledger td button{min-width:44px;min-height:44px;border-radius:8px;border:1px solid #6b553a88;background:#efe2c4;color:#3a2b1c;font-weight:700}
+.story-ledger-blank{display:inline-block;width:42px;height:2px;background:#6b553a44}
+.story-ledger-crown{display:inline-block;width:24px;height:24px;color:#ce203a;opacity:.75}
+.story-ledger-crown svg{width:100%;height:100%}
+
+/* ST8 traces */
+.story-traces{display:grid;gap:8px}
+.story-traces button{display:grid;gap:4px;min-height:56px;padding:10px 12px;text-align:left;border:1px solid #f2c16655;border-radius:10px;background:#2f2519;color:#f4ead8}
+.story-traces button.is-seen{border-color:#f2c166;background:#3f3220}
+.story-traces button small{font-size:13px;line-height:1.4;opacity:.85}
+
+/* ST9 interlocking emblems */
+.story-emblems{display:flex;justify-content:center;gap:4px;padding:16px;border-radius:12px;background:#2b2a33}
+.story-emblem{width:96px;height:96px;display:grid;place-items:center;border:2px solid #ffffff22;border-radius:14px;background:#e9e2d2;transition:rotate .25s ease,translate .5s ease}
+.story-emblem svg{width:70%;height:70%}
+.story-emblem[data-suit="3"]{color:#ce203a}
+.story-emblem[data-suit="0"]{color:#263547}
+.story-emblems.is-locked .story-emblem:first-child{translate:14px 0}
+.story-emblems.is-locked .story-emblem:last-child{translate:-14px 0}
+.story-emblems.is-locked .story-emblem{border-color:#f2c166;box-shadow:0 0 18px #f2c16699}
+@media(prefers-reduced-motion:reduce){.story-puzzle-shake,.story-knot.is-holding i{animation:none}.story-emblem{transition:none}}

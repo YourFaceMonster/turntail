@@ -37,7 +37,8 @@ import {morQuestPainting,questArt} from '../../lib/rpg-quest-art';
 import {RPG_STORY_REEL} from '../../lib/rpg-connection-scenes.ts';
 import {journeyScenes,journeyStoryReel} from '../../lib/rpg-chapter-scenes.ts';
 import {rpgRelicSlots} from '../../lib/rpg-trials';
-import {JOURNEY_REGIONS,JOURNEY_STAGE_NAMES,chapterArt,journeyRegion,journeyTargetStage,stageArtToPreload,storyQuest,storyState,rpgStageCast,RPG_GUARDIANS} from '../../lib/rpg-chapters.ts';
+import {JOURNEY_REGIONS,JOURNEY_STAGE_NAMES,chapterArt,journeyRegion,journeyTargetStage,stageArtToPreload,storyQuest,storyState,rpgStageCast,RPG_GUARDIANS,STORY_EVENT_RESULT_LINES,isStoryEventId} from '../../lib/rpg-chapters.ts';
+import StoryPuzzle from './StoryPuzzle';
 type View=ReturnType<typeof view>;
 type Props={run:RpgRun,busy:boolean,error:string,action:(action:string,extra?:Record<string,unknown>)=>void,exit:()=>void,playerName?:string,playerAvatar?:ReactNode,save?:()=>string,settings?:()=>void};
 const labels={available:'이동 가능',completed:'방문 완료',locked:'잠김',closed:'선택으로 닫힘'};
@@ -102,7 +103,7 @@ export function JourneyMapView({run,busy,error,action,exit,save,settings,playerA
   {bagOpen&&<JourneyPopup label="여행 가방" close={()=>setBagOpen(false)}><JourneyBagContent run={run} busy={busy} action={action}/></JourneyPopup>}
   {destination&&<div className="journey-destination-backdrop" onClick={()=>setDestination(null)}><section ref={dialog} onClick={event=>event.stopPropagation()} className="journey-destination" role="dialog" aria-modal="true" aria-label="다음 승부 확인"><h3>{JOURNEY_NODES.find(node=>node.id===destination)?.name}</h3><p>{stageOpponentNames(destinationStage)}</p><p>현재 HP {run.hp[0]}/{run.rework?rpgMaxHp(run):100} · 장착 유물 {run.equipped.length}/{rpgRelicSlots(run)}</p>{destination==='battle-10'&&<p>마지막 승부예요. 승리하면 여정의 끝을 보게 돼요.</p>}{[4,7,10].includes(destinationStage)&&<p>새 영역에 들어서면 HP가 100으로 회복되고, 보스에게서 받은 유물 1개만 이어집니다.</p>}<button className="primary" disabled={busy||journeyNodeState(run,destination)!=='available'} onClick={()=>setPreparing(true)}>이야기 보고 승부 시작 →</button><button className="secondary" disabled={busy} onClick={()=>setDestination(null)}>지도 더 보기</button></section></div>}
   {questReview&&<QuestReplay key={questReview} id={questReview} rework={!!run.rework} close={()=>setQuestReview(null)}/>}
-  {(preparing||review)&&<RpgPrologue key={review||`connection-${destination}`} cuts={review==='all'?(reached<=3?RPG_STORY_REEL:journeyStoryReel(run,reached)):review?journeyScenes(Number(/^\d+/.exec(review)?.[0]),run)[review.endsWith('after')?'after':'before']:journeyScenes(destinationStage,run).before} chrome={<JourneyStoryChrome placeOverride={review==='all'?'여정 이야기':JOURNEY_NODES.find(node=>node.id===(review?`battle-${/^\d+/.exec(review)?.[0]}`:destination))?.name} run={run} busy={busy} error={error} action={action} exit={exit} save={save} settings={settings} playerName={playerName} playerAvatar={playerAvatar}/>} label={review?"스토리 다시 보기":"스테이지 전투 연결 장면"} skipLabel={review==="all"?"전체 감상 종료":"건너뛰기"} enter={()=>{if(review){setReview(null);return;}if(destination)action('rpg-journey-node',{id:destination});}}/>}
+  {(preparing||review)&&<RpgPrologue key={review||`connection-${destination}`} cuts={review==='all'?(reached<=3?RPG_STORY_REEL:journeyStoryReel(run,reached)):review?journeyScenes(Number(/^\d+/.exec(review)?.[0]),run)[review.endsWith('after')?'after':'before']:journeyScenes(destinationStage,run).before} chrome={<JourneyStoryChrome placeOverride={review==='all'?'여정 이야기':JOURNEY_NODES.find(node=>node.id===(review?`battle-${/^\d+/.exec(review)?.[0]}`:destination))?.name} run={run} busy={busy} error={error} action={action} exit={exit} save={save} settings={settings} playerName={playerName} playerAvatar={playerAvatar}/>} onEvent={review?undefined:(id,result)=>action('rpg-story-event',{id,result})} label={review?"스토리 다시 보기":"스테이지 전투 연결 장면"} skipLabel={review==="all"?"전체 감상 종료":"건너뛰기"} enter={()=>{if(review){setReview(null);return;}if(destination)action('rpg-journey-node',{id:destination});}}/>}
  </section>;
 }
 export function JourneyTavernView({run,busy,error,action,exit,save,settings,playerAvatar,playerName}:Props){
@@ -146,9 +147,13 @@ export function JourneyDiceDenView({run,busy,error,action,playerName,playerAvata
 }
 /** ST4~9 optional story quests: choose once, then read the result and return to the map. */
 export function JourneyStoryQuestView({run,busy,error,action}:Props){
- const j=run.journey!,quest=storyQuest(j.currentNode);if(!quest)return null;
- const chosen=storyState(run).quests[quest.id],art=chapterArt(quest.id);
- return <QuestCutscene key={`${quest.id}-${chosen||'open'}`} title={quest.title} speaker={quest.speaker} scene="stone" art={art} busy={busy} error={error} close={()=>action('rpg-journey-map')} lines={chosen?[...quest.results[chosen]]:[...quest.intro]} speakers={chosen?quest.results[chosen].map((_,index)=>quest.resultSpeakers?.[chosen]?.[index]||''):quest.intro.map(()=>quest.speaker)} choices={chosen?[{label:'지도로 돌아간다',choose:()=>action('rpg-journey-map')}]:[{label:quest.choices.read,choose:()=>action('rpg-story-quest',{id:quest.id,choice:'read'})},{label:quest.choices.skip,choose:()=>action('rpg-story-quest',{id:quest.id,choice:'skip'})}]}/>;
+ const j=run.journey!,quest=storyQuest(j.currentNode),[puzzle,setPuzzle]=useState(false);if(!quest)return null;
+ const story=storyState(run),chosen=story.quests[quest.id],art=chapterArt(quest.id);
+ // Quests with a hands-on event play it before the "read" result; solving adds lines, skipping keeps the old result.
+ const hasEvent=isStoryEventId(quest.id),bonus=chosen==='read'&&isStoryEventId(quest.id)&&story.events?.[quest.id]==='solved'?STORY_EVENT_RESULT_LINES[quest.id]||[]:[];
+ const lines=chosen?[...quest.results[chosen],...bonus]:[...quest.intro],speakers=chosen?lines.map((_,index)=>quest.resultSpeakers?.[chosen]?.[index]||''):quest.intro.map(()=>quest.speaker);
+ return <><QuestCutscene key={`${quest.id}-${chosen||'open'}`} title={quest.title} speaker={quest.speaker} scene="stone" art={art} busy={busy} error={error} close={()=>action('rpg-journey-map')} lines={lines} speakers={speakers} choices={chosen?[{label:'지도로 돌아간다',choose:()=>action('rpg-journey-map')}]:[{label:quest.choices.read,choose:()=>hasEvent?setPuzzle(true):action('rpg-story-quest',{id:quest.id,choice:'read'})},{label:quest.choices.skip,choose:()=>action('rpg-story-quest',{id:quest.id,choice:'skip'})}]}/>
+  {puzzle&&!chosen&&isStoryEventId(quest.id)&&<StoryPuzzle id={quest.id} done={result=>{setPuzzle(false);action('rpg-story-quest',{id:quest.id,choice:'read',event:result});}}/>}</>;
 }
 export function JourneyStoryChrome(props:Props&{placeOverride?:string}){const [bag,setBag]=useState(false);return <div className="journey-map-scene journey-story-chrome"><JourneyHud {...props} home={props.exit} place={props.placeOverride||JOURNEY_STAGE_NAMES[props.run.stage]||'마을 관문'}/><JourneyDock run={props.run} map={()=>{}} bag={()=>setBag(true)}/>{bag&&<JourneyPopup label="여행 가방" close={()=>setBag(false)}><JourneyBagContent {...props}/></JourneyPopup>}</div>;}
 function JourneyEventView(props:Props){

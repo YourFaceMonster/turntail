@@ -9,7 +9,7 @@ import {BLUE_GLASS_ID} from './blue-glass.ts';
 import {DICE_DEN_STAGES,DICE_DEN_STAKE,DICE_RELIC_ID} from './rpg-dice-den.ts';
 import {newYachtMatch,rollYacht,scoreYacht,toggleYachtHold,validYachtMatch,yachtAiStep,yachtOutcome,cryptoDie,type DiceRandom,type YachtMatch} from './yacht-dice.ts';
 import {player,room,start,uid,type Game} from './game.ts';
-import {JOURNEY_STAGE_NAMES,journeyRegion,isStoryQuestId,storyQuest,storyState,type JourneyRegion,type StoryQuestChoice,type StoryQuestState} from './rpg-chapters.ts';
+import {JOURNEY_STAGE_NAMES,journeyRegion,journeyTargetStage,isStoryEventId,isStoryQuestId,storyQuest,storyState,type JourneyRegion,type StoryQuestChoice,type StoryQuestState} from './rpg-chapters.ts';
 export {JOURNEY_STAGE_NAMES};
 import type {RpgRun} from './rpg.ts';
 
@@ -122,11 +122,20 @@ export function playDiceDen(run:RpgRun,action:DiceAction,random:DiceRandom=crypt
  return {...run,journey:{...j,diceDen:updated},updatedAt:Date.now()};
 }
 /** ST4~9 optional story quests: records the choice only (no HP, relic or currency). */
-export function answerStoryQuest(run:RpgRun,id:unknown,choice:unknown):RpgRun{
+export function answerStoryQuest(run:RpgRun,id:unknown,choice:unknown,event?:unknown):RpgRun{
  const j=run.journey;if(!j||j.location!=='story-quest'||run.status!=='ready'||!isStoryQuestId(id)||j.currentNode!==id)throw Error('이야기 장소에서 선택할 수 있어요.');
  if(choice!=='read'&&choice!=='skip')throw Error('할 일을 선택해 주세요.');
  const story=storyState(run);if(story.quests[id])throw Error('이미 선택을 마친 이야기예요.');
- return {...run,journey:{...j,story:{...story,quests:{...story.quests,[id]:choice as StoryQuestChoice}},completedNodes:[...new Set<JourneyNode>([...j.completedNodes,id])]},updatedAt:Date.now()};
+ // A hands-on event result is only kept for the "read" path of a quest that has one.
+ const result=choice==='read'&&isStoryEventId(id)&&(event==='solved'||event==='skipped')?event:undefined;
+ const events=result?{...story.events,[id]:result}:story.events;
+ return {...run,journey:{...j,story:{...story,quests:{...story.quests,[id]:choice as StoryQuestChoice},...(events?{events}:{})},completedNodes:[...new Set<JourneyNode>([...j.completedNodes,id])]},updatedAt:Date.now()};
+}
+/** ST7 ledger (inside the ST7 opening cutscene, before the battle). Recorded once; replays never overwrite it. */
+export function recordStoryEvent(run:RpgRun,id:unknown,result:unknown):RpgRun{
+ const j=run.journey;if(!j||id!=='st7-ledger'||result!=='solved'&&result!=='skipped')throw Error('기록할 수 없는 이야기 사건이에요.');
+ const story=storyState(run);if(story.events?.[id]||journeyTargetStage(run)!==7)return run;
+ return {...run,journey:{...j,story:{...story,events:{...story.events,[id]:result}}},updatedAt:Date.now()};
 }
 /** A journey started after the normal ending belongs to the next traveller (bible 1.4). */
 export function setJourneyRunNumber(run:RpgRun,runNumber:number){if(!run.journey)return;run.journey.story={...storyState(run),runNumber:Math.max(1,Math.floor(runNumber))};}
@@ -268,7 +277,7 @@ export function validateJourneySave(game:Game){
  if(j.location==='mini-game'&&(j.miniKind!==undefined&&!['tavern','letter'].includes(j.miniKind)||j.miniKind==='letter'&&!j.letterMini||j.miniKind!=='letter'&&!j.mini))invalid();
  if(j.letterQuest!==undefined&&(!['alley','recovered','complete','failed'].includes(j.letterQuest.step)||j.letterQuest.defeated!==undefined&&typeof j.letterQuest.defeated!=='boolean'))invalid();
  if(j.villageRequestReward!==undefined&&j.villageRequestReward!=='coins'&&j.villageRequestReward!=='heal')invalid();
- if(j.story!==undefined&&(!Number.isInteger(j.story.runNumber)||j.story.runNumber<1||typeof j.story.quests!=='object'||!j.story.quests||Object.entries(j.story.quests).some(([key,value])=>!isStoryQuestId(key)||value!=='read'&&value!=='skip')||j.story.secondPlaceSeen!==undefined&&typeof j.story.secondPlaceSeen!=='boolean'))invalid();
+ if(j.story!==undefined&&(!Number.isInteger(j.story.runNumber)||j.story.runNumber<1||typeof j.story.quests!=='object'||!j.story.quests||Object.entries(j.story.quests).some(([key,value])=>!isStoryQuestId(key)||value!=='read'&&value!=='skip')||j.story.secondPlaceSeen!==undefined&&typeof j.story.secondPlaceSeen!=='boolean'||j.story.events!==undefined&&(typeof j.story.events!=='object'||!j.story.events||Object.entries(j.story.events).some(([key,value])=>!isStoryEventId(key)||value!=='solved'&&value!=='skipped'))))invalid();
  if(j.location==='story-quest'&&!isStoryQuestId(j.currentNode))invalid();
  const den=j.diceDen;if(den!==undefined&&(!den||typeof den!=='object'||!Number.isInteger(den.losses)||den.losses<0||den.relicClaimed!==undefined&&typeof den.relicClaimed!=='boolean'||den.result!==undefined&&!['win','lose','draw','forfeit'].includes(den.result)||den.match!==undefined&&!validYachtMatch(den.match)))invalid();
  if(j.location==='dice-den'&&j.currentNode!=='dice-den')invalid();

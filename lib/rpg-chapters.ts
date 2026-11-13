@@ -38,7 +38,19 @@ export function rpgStageCast(stage:number){
 
 export type StoryQuestId='quest-4'|'quest-5'|'quest-6'|'quest-8'|'quest-9';
 export type StoryQuestChoice='read'|'skip';
-export type StoryQuestState={runNumber:number,quests:Partial<Record<StoryQuestId,StoryQuestChoice>>,secondPlaceSeen?:boolean};
+/** Short hands-on story events (2026-11-13 workorder): quest puzzles plus the ST7 ledger inside its cutscene. */
+export type StoryEventId='quest-4'|'quest-5'|'st7-ledger'|'quest-8'|'quest-9';
+export type StoryEventResult='solved'|'skipped';
+export const STORY_EVENT_IDS:readonly StoryEventId[]=['quest-4','quest-5','st7-ledger','quest-8','quest-9'];
+export function isStoryEventId(id:unknown):id is StoryEventId{return typeof id==='string'&&(STORY_EVENT_IDS as readonly string[]).includes(id);}
+export type StoryQuestState={runNumber:number,quests:Partial<Record<StoryQuestId,StoryQuestChoice>>,secondPlaceSeen?:boolean,events?:Partial<Record<StoryEventId,StoryEventResult>>};
+/** Extra quest result lines once the hands-on event was solved (never a reward). */
+export const STORY_EVENT_RESULT_LINES:Partial<Record<StoryEventId,readonly string[]>>={
+ 'quest-4':['세 조각을 이어 붙이자 한 줄이 이어졌다.','“둘이… 한 문을… 나누어 맡았다.”','누가 무엇을 맡았는지는, 아직 알 수 없었다.'],
+ 'quest-5':['세 매듭이 단단히 조여졌다. 다리가 한결 덜 흔들렸다.'],
+ 'quest-8':['편지함, 별자리판, 봉인된 상자. 세 곳 모두에 같은 문양이 남아 있었다.','먼저 지나간 여행자는 문양을 따라 여기까지 온 것이다.'],
+ 'quest-9':['왕관과 철문이 맞물리자 제단 앞면의 새김과 똑같은 무늬가 되었다.'],
+};
 type QuestDef={id:StoryQuestId,stage:number,name:string,speaker:string,title:string,intro:readonly string[],choices:Record<StoryQuestChoice,string>,results:Record<StoryQuestChoice,readonly string[]>,resultSpeakers?:Partial<Record<StoryQuestChoice,readonly string[]>>};
 /** Optional quests: no HP, relic or currency rewards; skipping never blocks the main story. */
 export const STORY_QUESTS:readonly QuestDef[]=[

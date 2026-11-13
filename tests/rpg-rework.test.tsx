@@ -88,14 +88,14 @@ test('overwritten hand does not scout; final hand skips scouting and grants next
  const game=fresh();game.turn=0;game.players[0].hand=[tile(3),tile(3,1),tile(9)];game.players[1].hand=[tile(7),tile(7,1),tile(10)];
  act(game,0,'play',[tile(3).id,tile(3,1).id]);act(game,1,'play',[tile(7).id,tile(7,1).id]);assert.equal(Object.keys(game.rpgRun!.rework!.intel).length,0);
  const final=fresh();final.rpgRun!.hp=[60,60,60];final.players[0].hand=[tile(3),tile(3,1)];final.turn=0;act(final,0,'play',final.players[0].hand.map(t=>t.id));assert.deepEqual(final.rpgRun!.rework!.intel,{});assert.equal(final.rpgRun!.rework!.nextForesight,0);
- startRpgRound(final,0);assert.equal(final.rpgRun!.rework!.intel[0].length,3);assert.equal(final.rpgRun!.rework!.nextForesight,undefined);
+ startRpgRound(final,0);assert.equal(final.rpgRun!.rework!.intel[0].length,1,'a round win shows one floor tile next round');assert.equal(final.rpgRun!.rework!.nextForesight,undefined);
 });
 test('private 2층-only intel, no repeats, pickup expiry, per-round reset and hourglass',()=>{
  const game=fresh();scoutRpgFloor(game,0,100);assert.equal(game.rpgRun!.rework!.intel[0].length,15);assert.ok(game.rpgRun!.rework!.intel[0].every(i=>game.stacks[i.index][1]?.id===i.tile.id),'only face-down 2층 tiles are scouted');scoutRpgFloor(game,0,5);assert.equal(game.rpgRun!.rework!.intel[0].length,15);
  const other=view(game,game.players[1].token);assert.deepEqual(other.rpgRun!.rework!.intel,{1:[]});assert.ok(other.stacks.every(s=>!('scoutedLower' in s)));assert.deepEqual(other.rpgRun!.tacticalPeeks,[]);
  const seen=game.rpgRun!.rework!.intel[0][0];game.stacks[seen.index]=game.stacks[seen.index].map(t=>t?.id===seen.tile.id?null:t);view(game,game.players[0].token);assert.ok(!game.rpgRun!.rework!.intel[0].some(i=>i.tile.id===seen.tile.id));
- game.rpgRun!.hp=[70,90,90];finish(game,[0,3,6]);game.rpgRun!.equipped=['stopped-hourglass','watchkeepers-blue-glass'];startRpgRound(game,0);assert.equal(game.rpgRun!.rework!.intel[0].length,7,'3 foresight +2 hourglass +1 blue glass +1 scout synergy (two scout relics)');
- game.rpgRun!.hp=[70,90,90];finish(game,[3,0,6]);startRpgRound(game,0);assert.equal(game.rpgRun!.rework!.intel[0].length,2,'blue glass +1 scout synergy');assert.equal(game.rpgRun!.rework!.intel[1].length,3);
+ game.rpgRun!.hp=[70,90,90];finish(game,[0,3,6]);game.rpgRun!.equipped=['stopped-hourglass','watchkeepers-blue-glass'];startRpgRound(game,0);assert.equal(game.rpgRun!.rework!.intel[0].length,4,'1 foresight +1 hourglass +1 blue glass +1 scout synergy (two scout relics)');
+ game.rpgRun!.hp=[70,90,90];finish(game,[3,0,6]);startRpgRound(game,0);assert.equal(game.rpgRun!.rework!.intel[0].length,2,'blue glass +1 scout synergy');assert.equal(game.rpgRun!.rework!.intel[1].length,1,'an AI winner also sees just one');
 });
 test('heart first activation, unequip/re-equip and delayed equip cannot farm HP',()=>{
  let run=fresh().rpgRun!;run.status='ready';run.journey!.location='tavern';run.hp[0]=60;run.relics.push('cracked-heart','second-heart');
