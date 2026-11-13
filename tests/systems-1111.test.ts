@@ -16,6 +16,8 @@ test('daily date follows Korean midnight and the shuffle is the same for everyon
  const a=shuffleDaily(Array.from({length:60},(_,i)=>i),'2026-11-11'),b=shuffleDaily(Array.from({length:60},(_,i)=>i),'2026-11-11');
  assert.deepEqual(a,b);assert.notDeepEqual(a,shuffleDaily(Array.from({length:60},(_,i)=>i),'2026-11-12'));
  assert.deepEqual([...a].sort((x,y)=>x-y),Array.from({length:60},(_,i)=>i),'still a permutation');
+ const v1=(date:string)=>{let h=0x811c9dc5;for(const ch of `turntale-daily:${date}`){h^=ch.charCodeAt(0);h=Math.imul(h,0x01000193);}return h>>>0;};
+ assert.notEqual(dailySeed('2026-11-13'),v1('2026-11-13'),'the deal was changed from the first version (2026-11-13)');
  const r=seededRandom(dailySeed('x'));for(let i=0;i<100;i++){const v=r();assert.ok(v>=0&&v<1);}
 });
 

@@ -9,7 +9,13 @@ const KST_MS=9*60*60*1000;
 export function dailyDate(now=Date.now()){return new Date(now+KST_MS).toISOString().slice(0,10);}
 export function isDailyDate(value:unknown):value is string{return typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value);}
 /** FNV-1a → mulberry32: small, deterministic, identical on server and in tests. */
-export function dailySeed(date:string){let h=0x811c9dc5;for(const ch of `turntale-daily:${date}`){h^=ch.charCodeAt(0);h=Math.imul(h,0x01000193);}return h>>>0;}
+/**
+ * 2026-11-13 user request: deal a different 오늘의 판. Bumping this changes every date's deal; still the same for
+ * everyone on a given date. v1 used the plain `turntale-daily:<date>` key.
+ */
+export const DAILY_DEAL_VERSION:number=2;
+const dailyKey=(date:string)=>DAILY_DEAL_VERSION===1?`turntale-daily:${date}`:`turntale-daily:v${DAILY_DEAL_VERSION}:${date}`;
+export function dailySeed(date:string){let h=0x811c9dc5;for(const ch of dailyKey(date)){h^=ch.charCodeAt(0);h=Math.imul(h,0x01000193);}return h>>>0;}
 export function seededRandom(seed:number){let a=seed>>>0;return ()=>{a=(a+0x6d2b79f5)>>>0;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
 export function shuffleDaily<T>(deck:T[],date:string){const random=seededRandom(dailySeed(date));for(let i=deck.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}return deck;}
 
