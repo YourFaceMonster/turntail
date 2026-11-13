@@ -1,0 +1,36 @@
+/* 2026-11-13 "다음 승부 확인" dialog: stage painting, rivals, and a region gate for ST4·7·10. */
+.journey-destination-backdrop .journey-destination.is-dressed{gap:10px;padding:0 20px 20px;border:1px solid #d9b56f;border-radius:16px;background:radial-gradient(120% 50% at 50% 0%,#3a2b1a 0%,#0000 70%),linear-gradient(180deg,#1f1912,#120f0c)!important;box-shadow:0 0 0 3px #120f0c,0 0 0 4px #d9b56f55,0 16px 50px #000b;overflow-x:hidden}
+.journey-destination.is-dressed[data-gate]{border-color:#f0cf86;box-shadow:0 0 0 3px #120f0c,0 0 0 4px #f0cf8688,0 0 34px #f0b44a33,0 16px 50px #000b}
+.destination-hero{position:relative;margin:0 -20px;height:clamp(130px,38vw,170px);overflow:hidden;border-radius:15px 15px 0 0}
+.destination-hero[data-gate]{height:clamp(150px,46vw,210px)}
+.destination-hero img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 38%}
+.destination-hero[data-gate] img{object-position:50% 30%;animation:destination-drift 14s ease-in-out infinite alternate}
+.destination-hero:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#0000 40%,#1f1912d0 80%,#1f1912 100%),radial-gradient(ellipse at 50% 40%,#0000 55%,#0008 100%);pointer-events:none}
+@keyframes destination-drift{from{transform:scale(1.04) translateY(0)}to{transform:scale(1.1) translateY(-3%)}}
+@media (prefers-reduced-motion:reduce){.destination-hero[data-gate] img{animation:none}}
+.destination-ribbon{position:absolute;z-index:1;top:12px;left:12px;display:inline-flex;align-items:center;gap:6px;padding:5px 12px 5px 6px;border:1px solid #f0cf86aa;border-radius:999px;background:#120f0cd9;color:#ffe9b5;font-size:12px;font-weight:700;letter-spacing:.04em;box-shadow:0 2px 8px #0009}
+.destination-ribbon i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#f3e3bd;box-shadow:inset 0 0 0 1px #0003}
+.destination-ribbon i svg{width:16px;height:16px}
+.destination-ribbon i[data-region="1"]{color:#2f4a78}.destination-ribbon i[data-region="2"]{color:#d9731f}.destination-ribbon i[data-region="3"]{color:#3f8a4c}.destination-ribbon i[data-region="4"]{color:#b8322a}
+.destination-stage-no{position:absolute;z-index:1;left:20px;bottom:30px;color:#f0cf86;font-size:11px;font-weight:800;letter-spacing:.28em;text-shadow:0 1px 3px #000}
+.journey-destination.is-dressed .destination-title{position:relative;margin:-26px 0 0;font-size:24px;color:#fff1cf;text-shadow:0 2px 6px #000,0 0 18px #e6b45a40}
+.journey-destination.is-dressed[data-gate] .destination-title{font-size:27px}
+.destination-road{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:0;padding:0;list-style:none}
+.destination-road li{display:flex;align-items:center;gap:4px}
+.destination-road li>b,.destination-road li>span{font-size:11px}
+.destination-road li>b{padding:2px 7px;border-radius:999px;background:#ffffff14;color:#e6d3a6}
+.destination-road li>span{color:#bfae8a}
+.destination-road li[data-here]>b{background:linear-gradient(180deg,#f2d38f,#c99a4a);color:#2a1c08}
+.destination-road li[data-here]>span{color:#ffe7b0;font-weight:700}
+.destination-road em{font-style:normal;color:#d9b56f88;margin:0 2px}
+.destination-cast{display:flex;gap:14px;margin:2px 0 0;padding:10px 12px;list-style:none;border:1px solid #d9b56f33;border-radius:12px;background:#00000040}
+.destination-cast li{display:grid;justify-items:center;gap:4px;min-width:56px}
+.destination-face{display:grid;place-items:center;width:52px;height:52px;overflow:hidden;border-radius:50%;background:#2b231a;box-shadow:0 0 0 2px #d9b56f,0 3px 8px #0009}
+.destination-face>img,.destination-face>svg,.destination-face>*{width:100%;height:100%;object-fit:cover}
+.destination-face>span{display:grid;place-items:center;color:#f0cf86;font-weight:800;font-size:18px}
+.destination-cast small{font-size:12px;color:#f1e3c2}
+.destination-cast:before{content:'상대';align-self:center;writing-mode:vertical-rl;font-size:10px;letter-spacing:.3em;color:#d9b56f99}
+.journey-destination.is-dressed>p{color:#e6dcc6}
+.journey-destination.is-dressed>p.destination-rule{padding:8px 12px 8px 34px;border:1px solid #f0cf8655;border-radius:10px;background:#f0cf8614 no-repeat 11px 50%/16px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f0cf86'%3E%3Cpath d='M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6.6 5.2 5.2 0 0 1 21.3 12C19 16.6 12 21 12 21z'/%3E%3C/svg%3E");color:#ffe9b5;font-size:12px}
+.journey-destination.is-dressed>.primary{background:linear-gradient(180deg,#f2d38f,#c99a4a)!important;color:#2a1c08!important;border:1px solid #fff0c4aa!important;box-shadow:0 3px 0 #7a5420,0 8px 18px #0007;font-weight:800}
+.journey-destination.is-dressed>.primary:disabled{filter:grayscale(.6) brightness(.7)}

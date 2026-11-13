@@ -25,11 +25,12 @@ export default function DailyBoard({profileToken,start,close}:{profileToken:stri
  const startLabel=board?.attempt==='done'?'연습판으로 다시 하기 →':board?.attempt==='started'?`오늘의 판 다시 시작 (${used+1}/${max}) →`:board?.attempt==='again'?`다시 도전 (${used+1}/${max}) →`:`오늘의 판 시작 (1/${max}) →`;
  return <div className="modal-shade" onClick={close}><section ref={panel} tabIndex={-1} className="modal daily-board" role="dialog" aria-modal="true" aria-labelledby="daily-title" onClick={e=>e.stopPropagation()} onKeyDown={e=>{if(e.key==='Escape')close();}}>
   <button className="close" onClick={close} aria-label="닫기">×</button>
-  <span className="eyebrow">DAILY TABLE</span><h2 id="daily-title">오늘의 판{board?` · ${fmt(board.date)}`:''}</h2>
+  <div className="daily-hero" aria-hidden="true"><img src="/ui/daily-table-banner-v1.webp" alt="" decoding="async"/></div>
+  <div className="daily-head"><span className="eyebrow">DAILY TABLE</span><h2 id="daily-title">오늘의 판{board?` · ${fmt(board.date)}`:''}</h2></div>
   <p>오늘은 모두가 같은 패를 받아요. AI 2명과 3인전 한 판, 판 점수로 순위를 겨뤄요. 자정(한국 시간)에 새 판이 열려요.</p>
   <div className="segmented daily-days"><button className={day==='today'?'chosen':''} onClick={()=>setDay('today')}>오늘</button><button className={day==='yesterday'?'chosen':''} disabled={!board&&day==='today'} onClick={()=>setDay('yesterday')}>어제</button></div>
   {error?<p role="alert" className="daily-error">{error}</p>:!board?<p className="daily-empty" role="status">순위를 불러오는 중…</p>:
-   board.rows.length?<ol className="daily-rows">{board.rows.map((r,i)=><li key={i} className={r.isMe?'is-me':''}><b>{r.rank}</b><span>{r.name}{r.win&&<em>1등</em>}{!!r.tries&&<small className="daily-tries">도전 {r.tries}회</small>}</span><strong>{signed(r.score)}점</strong></li>)}</ol>:<p className="daily-empty">아직 기록이 없어요. 첫 기록을 남겨 보세요!</p>}
+   board.rows.length?<ol className="daily-rows">{board.rows.map((r,i)=><li key={i} className={r.isMe?'is-me':''} data-medal={r.rank<=3?r.rank:undefined}><b>{r.rank}</b><span>{r.name}{r.win&&<em>1등</em>}{!!r.tries&&<small className="daily-tries">도전 {r.tries}회</small>}</span><strong>{signed(r.score)}점</strong></li>)}</ol>:<p className="daily-empty">아직 기록이 없어요. 첫 기록을 남겨 보세요!</p>}
   {board&&<p className="daily-mine">{board.mine?`내 순위 ${board.mine.rank}위 / ${board.total}명 · ${signed(board.mine.score)}점${board.mine.tries?` · 도전 ${board.mine.tries}회`:''}`:`참가 ${board.total}명`}</p>}
   {showingToday&&<><button className="primary full" onClick={start}>{startLabel}</button><p className="daily-note">{note}{!profileToken&&' 이 기기 기록을 확인하지 못해 순위에는 올라가지 않아요.'}</p></>}
  </section></div>;

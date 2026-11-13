@@ -1,6 +1,6 @@
 import {RPG_CONNECTION_SCENES} from './rpg-connection-scenes.ts';
 import {storyReadingDuration,type PrologueCut} from './rpg-prologue.ts';
-import {JOURNEY_STAGE_NAMES,chapterArt,storyState,type StoryEventId} from './rpg-chapters.ts';
+import {JOURNEY_STAGE_NAMES,chapterArt,stageRegion,storyState,type StoryEventId} from './rpg-chapters.ts';
 import type {RpgRun} from './rpg.ts';
 
 /**
@@ -108,6 +108,69 @@ const SCRIPTS:Record<number,{before:(c:Ctx)=>(Beat|false)[],after:(c:Ctx)=>(Beat
  },
 };
 
+/**
+ * 2026-11-13 region crossings (ST3→4, ST6→7, ST9→10): a short road scene played before the first stage of a
+ * new region. It carries the keepsakes forward, explains the region rule in-story (HP restored, only the
+ * last guardian's relic keeps its light) and hands off to the stage's opening line without repeating it.
+ * Paintings: placeholders are the region maps until the requested art arrives (docs/codex-art-request-2026-11-13-region-crossings.md).
+ */
+type Frame={landscape:string,portrait:string};
+const REGION_ONE_MAP:Frame={landscape:'/prologue/iron-gate-village-map-portrait-v3.webp',portrait:'/prologue/iron-gate-village-map-portrait-v3.webp'};
+const regionMap=(region:number):Frame=>region===1?REGION_ONE_MAP:chapterArt(`region-${region}-map`);
+/** Add a key here once /story/<key>-portrait-v1.webp exists; until then the placeholder map is shown. */
+export const CROSSING_ART_READY=new Set<string>(['cross-4-depart','cross-4-border','cross-7-depart','cross-7-border','cross-10-depart','cross-10-border']);
+export const CROSSING_ART_SLOTS:Record<string,{placeholder:Frame,note:string}>={
+ 'cross-4-depart':{placeholder:regionMap(1),note:'철문의 영역을 떠나는 길 · 등 뒤로 멀어지는 성채와 노르문'},
+ 'cross-4-border':{placeholder:regionMap(2),note:'물안개 경계 · 안개 너머로 보이는 성화의 영역(폭포·구름다리·회랑)'},
+ 'cross-7-depart':{placeholder:regionMap(2),note:'회랑을 나서는 길 · 달빛 아래 멀어지는 폭포와 구름다리'},
+ 'cross-7-border':{placeholder:regionMap(3),note:'달빛 경계 · 고목·성소·잿불 제단이 보이는 열쇠의 영역'},
+ 'cross-10-depart':{placeholder:regionMap(3),note:'잿불이 잦아든 제단을 떠나는 길 · 구름 속으로 가라앉는 고목과 성소'},
+ 'cross-10-border':{placeholder:regionMap(4),note:'구름 위 마지막 경계 · 붉은 세계수로 이어지는 하나뿐인 길'},
+};
+export function crossingArt(key:string):Frame{const slot=CROSSING_ART_SLOTS[key];if(!slot)throw Error(`Unknown crossing art: ${key}`);if(!CROSSING_ART_READY.has(key))return slot.placeholder;const path=`/story/${key}-portrait-v1.webp`;return {landscape:path,portrait:path};}
+const REGION_NAMES:Record<number,string>={2:'성화의 영역',3:'열쇠의 영역',4:'왕관의 영역'};
+type CrossBeat=Beat&{frame:string|Frame,focus?:string};
+const CROSSINGS:Record<number,(c:Ctx)=>(CrossBeat|false)[]>={
+ 4:c=>[
+  {...N('성채의 성벽이 등 뒤로 멀어졌다. 노르문의 지붕들은 어느새 발아래 작은 점이 되어 있었다.'),frame:'cross-4-depart',camera:'pan'},
+  {...N('품속에는 두 장의 패가 있었다. 주점에서 받은 붉은 왕관 2, 그리고 성채의 쌍둥이가 맡긴 검은 철문 2.'),frame:'cross-4-depart'},
+  {...S('방랑자','성채의 기록은 성화의 영역에서 끊겼어. 이 패들의 이야기도 거기서 이어지겠지.'),frame:'cross-4-depart'},
+  {...N('물소리를 따라 내려가자 짙은 안개가 길을 막아섰다. 그 너머로 폭포와 구름다리, 오래된 회랑이 어렴풋이 보였다.'),frame:'cross-4-border',camera:'pan',cue:'step'},
+  {...N('안개를 지나자 지친 숨이 가라앉고 상처가 아물었다. 대신 품속 유물들은 빛을 잃었다. 쌍둥이와의 마지막 승부에서 얻은 하나만이 온기를 지켰다.'),frame:'cross-4-border',camera:'push',cue:'heal'},
+  {...S('방랑자','새 땅에서는 새로 얻으라는 뜻인가. …좋아, 몸은 가볍군.'),frame:'cross-4-border'},
+  c.second&&{...N('안개 속 바위에, 누군가 같은 문양을 따라 새긴 흔적이 있었다.'),frame:'cross-4-border'},
+ ],
+ 7:c=>[
+  {...N('회랑의 문이 등 뒤에서 닫혔다. 폭포와 구름다리가 달빛 아래 멀어져 갔다.'),frame:'cross-7-depart',camera:'pan'},
+  {...N('성화 2는 아직 따뜻했다. 왕관, 철문, 성화. 세 장의 패가 품속에서 나란히 잠들어 있었다.'),frame:'cross-7-depart'},
+  {...S('방랑자','“뒤에 남은 자에게 맡긴다.” 카르덴은 누구를 기다리며 그 자리를 지킨 걸까.'),frame:'cross-7-depart'},
+  {...N('달빛이 가리킨 길은 고목과 별빛 성소, 그리고 잿불이 타는 제단으로 이어졌다. 사람들은 그곳을 열쇠의 영역이라 불렀다.'),frame:'cross-7-border',camera:'pan',cue:'step'},
+  {...S('방랑자','왕관, 철문, 성화… 그리고 열쇠. 남은 문양은 하나야.'),frame:'cross-7-border'},
+  {...N('달빛의 경계를 넘자 몸이 다시 가벼워졌다. 회랑의 수호자에게 받은 유물 하나만이 빛을 잃지 않았다.'),frame:'cross-7-border',camera:'push',cue:'heal'},
+  c.second&&{...S('방랑자','…이 달빛 길, 처음 걷는 것 같지 않아.'),frame:'cross-7-border'},
+  {...N('고목 아래, 누군가 등불을 켜 둔 채 낡은 승부 기록을 넘기고 있었다.'),frame:'st7-before'},
+ ],
+ 10:c=>[
+  {...N('제단의 잿불이 잦아들었다. 고목과 성소가 발아래 구름 속으로 가라앉았다.'),frame:'cross-10-depart',camera:'pan'},
+  {...S('방랑자','주점의 작은 기념품이 네 장이 됐어. 왕관, 철문, 성화, 열쇠. 모두 숫자 2.'),frame:'cross-10-depart'},
+  {...S('방랑자','가장 약한 숫자만 골라 흩어 놓은 사람이 있다면… 이유도 남겨 두었겠지.'),frame:'cross-10-depart'},
+  {...N('구름 위로 붉은 세계수가 솟아 있었다. 그곳으로 가는 길은 하나뿐이었다.'),frame:'cross-10-border',camera:'pan',cue:'step'},
+  {...N('마지막 경계를 넘자 상처가 모두 아물었다. 잿불의 제단에서 얻은 유물 하나만이 품속에서 희미하게 빛났다.'),frame:'cross-10-border',camera:'push',cue:'heal'},
+  c.second&&{...N('세계수 뿌리에 감긴 낡은 끈. 지난 여정에서 묶어 둔 매듭이 그대로였다.'),frame:'cross-10-border'},
+  {...N('세계수 뿌리 사이, 빈 테이블 하나가 누군가를 기다리고 있었다.'),frame:'st10-before'},
+ ],
+};
+function crossingCuts(stage:number,c:Ctx):PrologueCut[]{
+ const script=CROSSINGS[stage];if(!script)return [];
+ return script(c).filter((beat):beat is CrossBeat=>!!beat).map((beat,index)=>({
+  id:`ST${stage}_CROSS_${index+1}`,scene:'road',audio:'quiet',speaker:beat.speaker,line:beat.line,duration:storyReadingDuration(beat.line),
+  art:typeof beat.frame!=='string'?beat.frame:CROSSING_ART_SLOTS[beat.frame]?crossingArt(beat.frame):chapterArt(beat.frame),focus:beat.focus||'50% 45%',
+  ...(beat.cue?{cue:beat.cue}:{}),...(beat.camera?{camera:beat.camera}:{}),location:`${REGION_NAMES[stageRegion(stage)]}으로 가는 길`,
+ }));
+}
+/** First entry into a region's opening stage plays the crossing; retries and replays of the single stage skip it. */
+const crossingDue=(stage:number,run:RpgRun)=>!!CROSSINGS[stage]&&!run.journey?.startedStages.includes(stage);
+
 function context(run:RpgRun):Ctx{
  const story=storyState(run);
  return {second:story.runNumber>=2,read:id=>story.quests[id as keyof typeof story.quests]==='read',visited:id=>story.quests[id as keyof typeof story.quests]!==undefined,solved:id=>story.events?.[id]==='solved',secondPlace:!!story.secondPlaceSeen,letterReturned:run.journey?.letterQuest?.step==='complete'};
@@ -135,9 +198,11 @@ function sceneKey(stage:number,run:RpgRun){const c=context(run),story=storyState
 /** Event results only change later lines; the opening list keeps its identity so recording the ST7 ledger mid-scene never restarts it. */
 const beforeCache=new Map<string,readonly PrologueCut[]>();
 const eventKey=(run:RpgRun)=>Object.entries(storyState(run).events||{}).sort().map(([id,result])=>`${id}:${result}`).join(',');
-export function journeyScenes(stage:number,run:RpgRun):Scenes{
- const base=sceneKey(stage,run),key=`${base}|${eventKey(run)}`,hit=sceneCache.get(key);if(hit)return hit;
- const built=buildScenes(stage,run),before=beforeCache.get(base)??built.before;beforeCache.set(base,before);
+/** crossing: 'due' adds the region crossing only on the first entry (map play); 'always' is for story replays. */
+export function journeyScenes(stage:number,run:RpgRun,crossing:'due'|'always'|'never'='due'):Scenes{
+ const withCrossing=crossing==='always'?!!CROSSINGS[stage]:crossing==='due'&&crossingDue(stage,run);
+ const base=`${sceneKey(stage,run)}|${withCrossing?'x':''}`,key=`${base}|${eventKey(run)}`,hit=sceneCache.get(key);if(hit)return hit;
+ const built=buildScenes(stage,run),before=beforeCache.get(base)??(withCrossing?[...crossingCuts(stage,context(run)),...built.before]:built.before);beforeCache.set(base,before);
  const scenes={before,after:built.after};sceneCache.set(key,scenes);return scenes;
 }
 function buildScenes(stage:number,run:RpgRun):Scenes{
@@ -149,5 +214,5 @@ function buildScenes(stage:number,run:RpgRun):Scenes{
 /** Full story reel for the replay menu: every scene the run has reached. */
 export function journeyStoryReel(run:RpgRun,upTo:number):readonly PrologueCut[]{
  const key=`${upTo}|${sceneKey(0,run)}|${eventKey(run)}`,hit=reelCache.get(key);if(hit)return hit;
- const reel=[1,2,3,4,5,6,7,8,9,10].filter(stage=>stage<=upTo).flatMap(stage=>{const s=journeyScenes(stage,run);return [...s.before,...s.after];});reelCache.set(key,reel);return reel;
+ const reel=[1,2,3,4,5,6,7,8,9,10].filter(stage=>stage<=upTo).flatMap(stage=>{const s=journeyScenes(stage,run,'always');return [...s.before,...s.after];});reelCache.set(key,reel);return reel;
 }
