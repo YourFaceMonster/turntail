@@ -556,7 +556,7 @@ function readJSON<T>(key:string,fallback:T):T{try{return JSON.parse(safeGet(key)
   finally{pending.current=false;setBusy(false);}
   const date=claim.date||dailyDate(),p=player(name||"나");p.avatar=avatar;const g=room("DAILY-"+uid().slice(0,6).toUpperCase(),p,true,DAILY_SIZE);
   g.daily={date,ranked:!!(claim.ranked&&claim.code),...claim.code?{attempt:claim.code}:{}};for(const ai of DAILY_AI_NAMES)g.players.push(player(ai,true));start(g);
-  if(!g.daily.ranked)setToast(claim.code?'오늘 순위 판은 이미 끝났어요. 이번 판은 연습판이에요.':'서버에 연결하지 못해 연습판으로 시작해요.');
+  if(!g.daily.ranked)setToast(claim.code?'오늘 순위 도전 2번을 모두 했어요. 이번 판은 연습판이에요.':'서버에 연결하지 못해 연습판으로 시작해요.');
   launchPreparedGame(g);
  }
  /** Send a finished ranked 오늘의 판 score once; the table stays playable whatever the answer. */

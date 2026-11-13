@@ -54,10 +54,14 @@ test('API: daily board, first table is ranked, later ones are practice, finished
  assert.equal((await dailyFinishStatement(db as any,key,dailyDate(),first.game.code,99,true,Date.now(),revOf(first.game.code)).run()).meta.changes,0,'the replaced first table can no longer write a score');
  const s=dailyFinishStatement(db as any,key,dailyDate(),again.game.code,7,true,Date.now(),revOf(again.game.code));
  assert.equal((await s.run()).meta.changes,1);assert.equal((await s.run()).meta.changes,0,'filled in once');
- const third=await post({action:'create',daily:true,name:'나',profileToken:me});assert.equal(third.game.daily.ranked,false,'after a finished ranked round, later tables are practice');
- assert.equal((await dailyFinishStatement(db as any,key,dailyDate(),third.game.code,99,true,Date.now(),revOf(third.game.code)).run()).meta.changes,0,'a practice table cannot overwrite it');
+ board=await post({action:'dailyBoard',profileToken:me});assert.equal(board.attempt,'again');assert.equal(board.tries,1);assert.equal(board.maxTries,2);
+ // 2026-11-13: a second ranked try; a lower score does not replace the best one but the try still counts.
+ const third=await post({action:'create',daily:true,name:'나',profileToken:me});assert.equal(third.game.daily.ranked,true,'the second try is ranked');
+ assert.equal((await dailyFinishStatement(db as any,key,dailyDate(),third.game.code,3,false,Date.now(),revOf(third.game.code)).run()).meta.changes,1);
+ const fourth=await post({action:'create',daily:true,name:'나',profileToken:me});assert.equal(fourth.game.daily.ranked,false,'after two finished tries, later tables are practice');
+ assert.equal((await dailyFinishStatement(db as any,key,dailyDate(),fourth.game.code,99,true,Date.now(),revOf(fourth.game.code)).run()).meta.changes,0,'a practice table cannot overwrite it');
  board=await post({action:'dailyBoard',profileToken:me});
- assert.equal(board.attempt,'done');assert.equal(board.rows.length,1);assert.equal(board.rows[0].score,7);assert.equal(board.rows[0].isMe,true);assert.equal(board.mine.rank,1);
+ assert.equal(board.attempt,'done');assert.equal(board.rows.length,1);assert.equal(board.rows[0].score,7);assert.equal(board.rows[0].win,true,'the best round keeps its own win flag');assert.equal(board.rows[0].tries,2);assert.equal(board.rows[0].isMe,true);assert.equal(board.mine.rank,1);
  assert.ok(!JSON.stringify(board).includes(key),'device keys stay private');
  // A lost round records its minus score too, ranked below the plus score.
  const friendKey=await deviceKeyFor(friend),friendRev=(sqlite.prepare('SELECT revision FROM rooms WHERE code=?').get(other.game.code) as any).revision;
@@ -73,9 +77,25 @@ test('API: daily board, first table is ranked, later ones are practice, finished
  assert.equal((await post({action:'dailyFinish',profileToken:third2,code:c2.code,score:500,win:true})).status,400,'impossible scores are refused');
  assert.equal((await post({action:'dailyFinish',profileToken:third2,code:c2.code,score:12,win:true})).recorded,true);
  assert.equal((await post({action:'dailyFinish',profileToken:third2,code:c2.code,score:40,win:true})).recorded,false,'recorded once');
- assert.equal((await post({action:'dailyClaim',name:'셋째',profileToken:third2})).ranked,false,'after the ranked round, later tables are practice');
- board=await post({action:'dailyBoard',profileToken:third2});assert.deepEqual(board.rows.map((r:any)=>r.score),[12,7,-5]);assert.equal(board.mine.rank,1);
+ const c3=await post({action:'dailyClaim',name:'셋째',profileToken:third2});assert.equal(c3.ranked,true,'second try');
+ assert.equal((await post({action:'dailyFinish',profileToken:third2,code:c3.code,score:20,win:true})).recorded,true,'a better second score replaces the first');
+ assert.equal((await post({action:'dailyClaim',name:'셋째',profileToken:third2})).ranked,false,'after two tries, later tables are practice');
+ // Tie on 7: one try ranks above two tries.
+ const fourthP=crypto.randomUUID(),c5=await post({action:'dailyClaim',name:'넷째',profileToken:fourthP});
+ assert.equal((await post({action:'dailyFinish',profileToken:fourthP,code:c5.code,score:7,win:false})).recorded,true);
+ board=await post({action:'dailyBoard',profileToken:third2});
+ assert.deepEqual(board.rows.map((r:any)=>[r.name,r.score,r.tries,r.rank]),[['셋째',20,2,1],['넷째',7,1,2],['나',7,2,3],['친구',-5,1,4]]);
+ assert.equal(board.mine.rank,1);assert.equal(board.mine.tries,2);
  assert.equal((await post({action:'dailyFinish',code:c2.code,score:1})).status,400,'no device, no score');
+});
+
+test('daily table: rows from before the try count get tries/open filled in', async () => {
+ const {ensureDailyTable}=await import('../lib/daily-server');
+ const sqlite=new DatabaseSync(':memory:');
+ sqlite.exec("CREATE TABLE daily_scores (id TEXT PRIMARY KEY NOT NULL,device TEXT NOT NULL,name TEXT NOT NULL,date TEXT NOT NULL,code TEXT NOT NULL,score INTEGER NOT NULL DEFAULT 0,win INTEGER NOT NULL DEFAULT 0,at INTEGER NOT NULL,done INTEGER NOT NULL DEFAULT 0);INSERT INTO daily_scores VALUES('a','a','A','2026-11-13','C1',5,1,1,1),('b','b','B','2026-11-13','C2',0,0,1,0);");
+ const db={prepare:(sql:string)=>({run:async()=>({meta:{changes:Number(sqlite.prepare(sql).run().changes)}})}),batch:async()=>[]};
+ await ensureDailyTable(db as any);await ensureDailyTable(db as any);
+ assert.deepEqual(sqlite.prepare('SELECT id,tries,open FROM daily_scores ORDER BY id').all().map((r:any)=>[r.id,r.tries,r.open]),[['a',1,0],['b',0,1]]);
 });
 
 test('relic activation counts: each activation once per run, cursors kept small', () => {

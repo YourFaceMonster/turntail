@@ -16,6 +16,7 @@
 .daily-rows li.is-me{background:#e6c97a26;outline:1px solid #e6c97a77}
 .daily-rows b{text-align:center;color:#e6c97a}
 .daily-rows em{margin-left:6px;padding:0 6px;border-radius:8px;background:#e6c97a33;font-style:normal;font-size:10px}
+.daily-rows .daily-tries{margin-left:6px;font-size:11px;opacity:.7;white-space:nowrap}
 .daily-rows strong{font-variant-numeric:tabular-nums}
 .daily-empty,.daily-error{padding:18px 0;text-align:center;opacity:.8}
 .daily-mine{margin:8px 0 12px;font-size:13px;text-align:center;color:#e6d8b4}

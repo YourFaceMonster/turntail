@@ -21,6 +21,15 @@ export function shuffleDaily<T>(deck:T[],date:string){const random=seededRandom(
  */
 export const DAILY_TABLE_SQL="CREATE TABLE IF NOT EXISTS daily_scores (id TEXT PRIMARY KEY NOT NULL,device TEXT NOT NULL,name TEXT NOT NULL,date TEXT NOT NULL,code TEXT NOT NULL,score INTEGER NOT NULL DEFAULT 0,win INTEGER NOT NULL DEFAULT 0,at INTEGER NOT NULL,done INTEGER NOT NULL DEFAULT 0)";
 export const DAILY_INDEX_SQL="CREATE INDEX IF NOT EXISTS daily_scores_date_score ON daily_scores (date,score DESC,at)";
+/**
+ * 2026-11-13 user request: up to DAILY_TRIES ranked tries a day. `tries` = finished ranked tries, `open` = a ranked
+ * try is in progress (it can still be taken over, like before). The best score stays; ties rank fewer tries first.
+ */
+export const DAILY_TRIES=2;
+export const DAILY_TRIES_SQL="ALTER TABLE daily_scores ADD COLUMN tries INTEGER NOT NULL DEFAULT 0";
+export const DAILY_OPEN_SQL="ALTER TABLE daily_scores ADD COLUMN open INTEGER NOT NULL DEFAULT 0";
+/** Rows written before the columns existed: a finished row used one try, an unfinished one is still open. */
+export const DAILY_MIGRATE_SQL="UPDATE daily_scores SET tries=CASE WHEN done=1 THEN 1 ELSE 0 END,open=CASE WHEN done=1 THEN 0 ELSE 1 END";
 /** Keep about two weeks of daily boards. */
 export const DAILY_PRUNE_SQL="DELETE FROM daily_scores WHERE date < ?";
 export function dailyPruneBefore(now=Date.now()){return dailyDate(now-14*24*60*60*1000);}
