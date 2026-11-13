@@ -133,9 +133,9 @@ test('saves reject corrupt story data and the map only shows the current region'
   assert.equal(art.landscape,art.portrait,'wide screens use the portrait painting (framed) until the wide painting arrives');
   const special=['st6-flame-two','st6-flame-two-back','st9-key-two','st9-key-two-back','true-ending-record','true-ending-village','ending-handoff'].includes(key);
   // v2: region maps (1024×1600) and the emblem-colour repaints of ST4/6/7/8/9 scenes.
-  const v2=/^region-[234]-map$|^st[46789]-(after|before)$|^quest-9$/.test(key)&&!['st4-before','st7-before','st8-before','st9-before','st6-after'].includes(key);
+  const v2=/^region-4-map$|^st[46789]-(after|before)$|^quest-9$/.test(key)&&!['st4-before','st7-before','st8-before','st9-before','st6-after'].includes(key);
   // v3: ST9 after-victory tabletop tiles now carry their four suits.
-  assert.equal(art.portrait,`/story/${key}-portrait-${special?'special-v2':`v${key==='st9-after'?3:v2?2:1}`}.webp`);
+  assert.equal(art.portrait,`/story/${key}-portrait-${special?'special-v2':`v${key==='st9-after'||/^region-[23]-map$/.test(key)?3:v2?2:1}`}.webp`);
   assert.ok(existsSync(new URL(`../public${art.portrait}`,import.meta.url)),key);
  }
  assert.match(html,/--map-portrait-x:78%;--map-portrait-y:83%/,'the dice den follows the boathouse in the portrait map');

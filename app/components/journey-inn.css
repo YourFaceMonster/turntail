@@ -1,0 +1,27 @@
+/* 2026-11-13 region inns: offering list, prize card, house game frame. */
+.inn-offer{display:grid;gap:8px;margin-top:8px}
+.inn-offer-hp{margin:0;font-size:13px;color:#f1e3c2}.inn-offer-hp b{color:#ffe39a;font-size:16px}
+.inn-offer ul{display:grid;gap:6px;margin:0;padding:0;list-style:none;max-height:min(38dvh,300px);overflow:auto}
+.inn-offer li{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:10px;padding:6px 8px;border:1px solid #d9b56f33;border-radius:10px;background:#00000045}
+.inn-offer li img{width:40px;height:40px;object-fit:contain}
+.inn-offer li span{display:grid;gap:2px}.inn-offer li b{font-size:13px;color:#fff0cf}.inn-offer li small{font-size:11px;color:#d6c39b}
+.inn-offer li button{min-height:36px;padding:0 10px;font-size:12px;white-space:nowrap}
+.inn-offer-empty,.inn-offer-note{margin:0;font-size:12px;line-height:1.5;color:#cdb98d}
+.inn-prize{display:flex;align-items:center;gap:10px;margin:8px 0 0;padding:8px 10px;border:1px solid #f0cf86aa;border-radius:10px;background:#f0cf8618}
+.inn-prize img{width:44px;height:44px;object-fit:contain}.inn-prize span{display:grid;gap:2px}.inn-prize b{color:#ffe7b0}.inn-prize small{font-size:11px;color:#e6d3a6}
+.journey-inn-game{position:relative;z-index:2;align-self:center;justify-self:center;width:min(440px,calc(100% - 32px));max-height:calc(100dvh - 180px);overflow:auto;margin:auto;padding:16px 18px 20px;border:1px solid #d9b56f;border-radius:16px;background:linear-gradient(180deg,#221a13,#120f0c);box-shadow:0 0 0 3px #120f0c,0 0 0 4px #d9b56f55,0 16px 40px #000b}
+.journey-inn-game header{margin-bottom:10px;text-align:center}.journey-inn-game header small{color:#d9b56f;font-size:11px;letter-spacing:.2em}.journey-inn-game h3{margin:2px 0 0;color:#fff1cf;font-size:22px}
+
+/* Inn menu / offering / game panel over the inn painting. */
+.journey-inn-panel{position:absolute;inset:0;z-index:2;display:grid;place-items:center;padding:clamp(120px,18dvh,150px) 14px calc(84px + env(safe-area-inset-bottom));background:linear-gradient(180deg,#0b0907aa,#0b0907d9),var(--inn-art) center/cover no-repeat;overflow:auto}
+.journey-inn-card{width:min(440px,100%);max-height:100%;overflow:auto;padding:16px 18px 18px;border:1px solid #d9b56f;border-radius:16px;background:linear-gradient(180deg,#241b13f2,#120f0cf5);box-shadow:0 0 0 3px #120f0c,0 0 0 4px #d9b56f55,0 16px 40px #000b;color:#f1e3c2}
+.journey-inn-card>header{margin-bottom:10px;text-align:center}.journey-inn-card>header small{color:#d9b56f;font-size:11px;letter-spacing:.2em}.journey-inn-card>header h3{margin:2px 0 0;color:#fff1cf;font-size:22px}
+.inn-line{margin:0 0 8px;font-size:14px;line-height:1.6;color:#f1e3c2}.inn-line b{display:block;font-size:12px;color:#f0cf86;margin-bottom:1px}
+.inn-people{display:flex;gap:8px;margin:0 0 12px;padding:0;list-style:none}.inn-people li{flex:1;display:grid;grid-template-columns:44px 1fr;align-items:center;gap:8px;padding:7px 10px;border:1px solid #d9b56f33;border-radius:10px;background:#00000040}.inn-people b{color:#ffe7b0;font-size:14px}.inn-people small{font-size:11px;color:#cdb98d}
+.inn-menu-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.inn-menu-actions button{display:grid;gap:3px;justify-items:start;min-height:62px;padding:9px 12px!important;text-align:left;border:1px solid #d9b56f55!important;border-radius:12px!important;background:linear-gradient(180deg,#3a2b1c,#241b13)!important;color:#fff0cf!important}
+.inn-menu-actions button b{font-size:14px}.inn-menu-actions button small{font-size:11px;color:#d6c39b;font-weight:400}
+.journey-inn-card .primary.full{width:100%;min-height:46px;background:linear-gradient(180deg,#f2d38f,#c99a4a)!important;color:#2a1c08!important;border:1px solid #fff0c4aa!important;font-weight:800}
+.inn-error{margin:6px 0;color:#ffbfa8;font-size:12px}
+
+.inn-people img{width:44px;height:44px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px #d9b56f,0 2px 6px #0008}.inn-people li>span{display:grid;gap:2px;min-width:0}

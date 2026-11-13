@@ -12,14 +12,15 @@ import {player,room,start,uid,type Game} from './game.ts';
 import {JOURNEY_STAGE_NAMES,journeyRegion,journeyTargetStage,isStoryEventId,isStoryQuestId,storyQuest,storyState,type JourneyRegion,type StoryQuestChoice,type StoryQuestState} from './rpg-chapters.ts';
 export {JOURNEY_STAGE_NAMES};
 import type {RpgRun} from './rpg.ts';
+import {isInnNode,validInnState,type InnNode,type InnRegion,type InnState} from './rpg-inns.ts';
 
-export type JourneyNode='battle-1'|'tavern'|'letter-alley'|'wayfarer-stop'|'watchtower'|'battle-2'|'battle-3'|'battle-4'|'battle-5'|'battle-6'|'battle-7'|'battle-8'|'battle-9'|'battle-10'|'quest-4'|'quest-5'|'quest-6'|'quest-8'|'quest-9'|'dice-den';
+export type JourneyNode='battle-1'|'tavern'|'letter-alley'|'wayfarer-stop'|'watchtower'|'battle-2'|'battle-3'|'battle-4'|'battle-5'|'battle-6'|'battle-7'|'battle-8'|'battle-9'|'battle-10'|'quest-4'|'quest-5'|'quest-6'|'quest-8'|'quest-9'|'dice-den'|InnNode;
 /** ST4~6 Yacht Dice side quest: one saved match, HP stake on loss, relic on first win. */
 export type DiceDenState={match?:YachtMatch,result?:'win'|'lose'|'draw'|'forfeit',losses:number,relicClaimed?:boolean};
 export type JourneyMini={game:Game,roundIds:string[],lastReward:number};
 export type LetterQuest={step:'alley'|'recovered'|'complete'|'failed',defeated?:boolean};
 export type VillageRequestReward='coins'|'heal';
-export type RpgJourneyState={version:1,livesVersion?:1,retryStage?:number,seenScenes?:string[],location:'map'|'tavern'|'market-alley'|'wayfarer-stop'|'watchtower'|'battle'|'mini-game'|'story-quest'|'dice-den',diceDen?:DiceDenState,currentNode:JourneyNode,story?:StoryQuestState,startedStages:number[],completedNodes:JourneyNode[],villageRequestReward?:VillageRequestReward,letterQuest?:LetterQuest,wayfarerHerbGiven?:boolean,watchtowerRelicFound?:boolean,watchtowerRelicClaimed?:boolean,rumors:string[],/** Recipes Pio taught this journey (set once he has spoken). */pioRecipes?:string[],tavernRewardPaid:boolean,miniSummary?:{roundIndex:number,finished:boolean},mini?:JourneyMini,letterMini?:JourneyMini,miniKind?:'tavern'|'letter'};
+export type RpgJourneyState={version:1,livesVersion?:1,retryStage?:number,seenScenes?:string[],location:'map'|'tavern'|'market-alley'|'wayfarer-stop'|'watchtower'|'battle'|'mini-game'|'story-quest'|'dice-den'|'inn',diceDen?:DiceDenState,/** Region inns (ST4~6, ST7~9). */inns?:Partial<Record<InnRegion,InnState>>,currentNode:JourneyNode,story?:StoryQuestState,startedStages:number[],completedNodes:JourneyNode[],villageRequestReward?:VillageRequestReward,letterQuest?:LetterQuest,wayfarerHerbGiven?:boolean,watchtowerRelicFound?:boolean,watchtowerRelicClaimed?:boolean,rumors:string[],/** Recipes Pio taught this journey (set once he has spoken). */pioRecipes?:string[],tavernRewardPaid:boolean,miniSummary?:{roundIndex:number,finished:boolean},mini?:JourneyMini,letterMini?:JourneyMini,miniKind?:'tavern'|'letter'};
 /** Trial values for this three-stage prototype; never used by normal or HP item play. */
 export const JOURNEY_TRIAL={villageRequestHeal:5,villageRequestCoins:5,miniRounds:3,miniRewards:[12,8,4]} as const;
 export const JOURNEY_RUMOR={id:'sheltered-light',title:'모르의 등불 이야기',text:'금이 간 심장 곁에 회복의 등불을 장착해 보게. 둘을 함께 지니고 싸우면, 승부를 마친 뒤 등불이 조금 더 힘을 내지.'};
@@ -41,12 +42,14 @@ export const JOURNEY_NODES:{id:JourneyNode,name:string,x:number,y:number,portrai
  {id:'battle-5',name:'ST5 · 구름다리 쉼터',x:56,y:50,portrait:{x:48,y:42},kind:'battle',region:2},
  {id:'quest-6',name:'잊힌 맹세',x:28,y:30,portrait:{x:18,y:19},kind:'event',region:2},
  {id:'dice-den',name:'안개 나루 주사위판',x:82,y:32,portrait:{x:78,y:83},kind:'event',region:2},
+ {id:'inn-2',name:'안개 나루 주점',x:12,y:84,portrait:{x:24,y:79},kind:'place',region:2},
  {id:'battle-6',name:'ST6 · 수호자의 회랑',x:58,y:20,portrait:{x:60,y:14},kind:'battle',region:2},
  {id:'battle-7',name:'ST7 · 달빛 고목',x:40,y:78,portrait:{x:52,y:84},kind:'battle',region:3},
  {id:'quest-8',name:'전해지지 못한 편지',x:76,y:58,portrait:{x:83,y:53},kind:'event',region:3},
  {id:'battle-8',name:'ST8 · 별빛 성소',x:56,y:50,portrait:{x:60,y:31},kind:'battle',region:3},
  {id:'quest-9',name:'마지막 불씨',x:28,y:32,portrait:{x:14,y:21},kind:'event',region:3},
  {id:'battle-9',name:'ST9 · 잿불 제단',x:58,y:20,portrait:{x:56,y:9},kind:'battle',region:3},
+ {id:'inn-3',name:'달빛 등불 주점',x:16,y:70,portrait:{x:22,y:76},kind:'place',region:3},
  {id:'battle-10',name:'ST10 · 붉은 세계수',x:50,y:42,portrait:{x:50,y:48},kind:'battle',region:4},
 ];
 export function initRpgJourney(game:Game){
@@ -62,6 +65,7 @@ export function journeyNodeState(run:RpgRun,id:JourneyNode):'available'|'complet
  if(isStoryQuestId(id)){const quest=storyQuest(id)!;if(storyState(run).quests[quest.id])return 'completed';return run.status==='ready'&&run.stage+1===quest.stage&&!j.retryStage?'available':run.stage>=quest.stage?'closed':'locked';}
  if(id==='dice-den'){if(j.diceDen?.relicClaimed)return 'completed';return run.status==='ready'&&!j.retryStage&&(DICE_DEN_STAGES as readonly number[]).includes(run.stage)?'available':run.stage>DICE_DEN_STAGES[1]?'closed':'locked';}
  if(id==='tavern')return run.status==='ready'?'available':'locked';
+ if(isInnNode(id))return run.status==='ready'&&!j.retryStage?'available':'locked';
  if(id==='letter-alley')return letterQuestView(j)?.step==='alley'&&run.status==='ready'?'available':j.completedNodes.includes(id)?'completed':'locked';
  if(id==='wayfarer-stop')return j.wayfarerHerbGiven?'completed':run.status==='ready'?'available':'locked';
  if(id==='watchtower')return j.watchtowerRelicClaimed?'completed':j.wayfarerHerbGiven&&run.status==='ready'?'available':'locked';
@@ -85,9 +89,10 @@ export function visitJourneyNode(game:Game,id:JourneyNode):number|undefined{
  else if(id==='watchtower'){j.location='watchtower';}
  else if(isStoryQuestId(id)){j.location='story-quest';}
  else if(id==='dice-den'){j.location='dice-den';}
+ else if(isInnNode(id)){j.location='inn';if(!j.completedNodes.includes(id))j.completedNodes.push(id);}
  run.updatedAt=Date.now();
 }
-export function returnJourneyMap(game:Game){const {run,j}=journeyGame(game);if(j.location!=='tavern'&&j.location!=='market-alley'&&j.location!=='wayfarer-stop'&&j.location!=='watchtower'&&j.location!=='story-quest'&&j.location!=='dice-den')throw Error('지도로 돌아갈 수 있는 장소가 아니에요.');if(j.location==='dice-den'&&j.diceDen?.match?.status==='playing')throw Error('주사위 승부 중에는 자리를 뜰 수 없어요. 끝까지 두거나 기권해 주세요.');if(j.location==='dice-den'&&j.diceDen)j.diceDen={...j.diceDen,match:undefined,result:undefined};j.location='map';run.updatedAt=Date.now();}
+export function returnJourneyMap(game:Game){const {run,j}=journeyGame(game);if(j.location!=='tavern'&&j.location!=='market-alley'&&j.location!=='wayfarer-stop'&&j.location!=='watchtower'&&j.location!=='story-quest'&&j.location!=='dice-den'&&j.location!=='inn')throw Error('지도로 돌아갈 수 있는 장소가 아니에요.');if(j.location==='dice-den'&&j.diceDen?.match?.status==='playing')throw Error('주사위 승부 중에는 자리를 뜰 수 없어요. 끝까지 두거나 기권해 주세요.');if(j.location==='dice-den'&&j.diceDen)j.diceDen={...j.diceDen,match:undefined,result:undefined};j.location='map';run.updatedAt=Date.now();}
 /* ---------- 안개 나루 주사위판 (Yacht Dice side quest) ---------- */
 function diceDen(run:RpgRun){const j=run.journey;if(!j||j.location!=='dice-den'||run.status!=='ready')throw Error('안개 나루 주사위판에서만 할 수 있어요.');return {j,den:j.diceDen||{losses:0}};}
 export function startDiceDuel(run:RpgRun):RpgRun{
@@ -273,7 +278,7 @@ export function validateJourneySave(game:Game){
  const invalid=()=>{throw Error('탐험 여정의 저장 형식이 올바르지 않거나 지원하지 않는 버전이에요. 기존 데이터는 보존했어요.');};
  if(!unique(run.relics)||!unique(run.equipped)||run.equipped.length>3||run.equipped.some(id=>!run.relics.includes(id))||!Array.isArray(run.consumables))invalid();
  if(j.livesVersion===undefined){if(!run.rework&&run.fate===0&&!['game-over','complete','abandoned'].includes(run.status))run.fate=3;j.livesVersion=1;}if(j.livesVersion!==1||!Number.isInteger(run.fate)||run.fate<0||run.fate>3||j.retryStage!==undefined&&(!Number.isInteger(j.retryStage)||j.retryStage!==run.stage||j.location!=='map'||run.status!=='playing'))invalid();
- if(!run.phaseOne||j.version!==1||!['map','tavern','market-alley','wayfarer-stop','watchtower','battle','mini-game','story-quest','dice-den'].includes(j.location)||!nodes.has(j.currentNode)||!unique(j.startedStages)||!j.startedStages.every(stage=>Number.isInteger(stage)&&stage>=1&&stage<=10)||!unique(j.completedNodes)||!j.completedNodes.every(node=>nodes.has(node))||!Array.isArray(j.rumors)||!j.rumors.every(id=>typeof id==='string')||typeof j.tavernRewardPaid!=='boolean'||j.wayfarerHerbGiven!==undefined&&typeof j.wayfarerHerbGiven!=='boolean'||j.watchtowerRelicFound!==undefined&&typeof j.watchtowerRelicFound!=='boolean'||j.watchtowerRelicClaimed!==undefined&&typeof j.watchtowerRelicClaimed!=='boolean'||j.watchtowerRelicClaimed&&!j.watchtowerRelicFound)invalid();
+ if(!run.phaseOne||j.version!==1||!['map','tavern','market-alley','wayfarer-stop','watchtower','battle','mini-game','story-quest','dice-den','inn'].includes(j.location)||!nodes.has(j.currentNode)||!unique(j.startedStages)||!j.startedStages.every(stage=>Number.isInteger(stage)&&stage>=1&&stage<=10)||!unique(j.completedNodes)||!j.completedNodes.every(node=>nodes.has(node))||!Array.isArray(j.rumors)||!j.rumors.every(id=>typeof id==='string')||typeof j.tavernRewardPaid!=='boolean'||j.wayfarerHerbGiven!==undefined&&typeof j.wayfarerHerbGiven!=='boolean'||j.watchtowerRelicFound!==undefined&&typeof j.watchtowerRelicFound!=='boolean'||j.watchtowerRelicClaimed!==undefined&&typeof j.watchtowerRelicClaimed!=='boolean'||j.watchtowerRelicClaimed&&!j.watchtowerRelicFound)invalid();
  if(j.location==='mini-game'&&(j.miniKind!==undefined&&!['tavern','letter'].includes(j.miniKind)||j.miniKind==='letter'&&!j.letterMini||j.miniKind!=='letter'&&!j.mini))invalid();
  if(j.letterQuest!==undefined&&(!['alley','recovered','complete','failed'].includes(j.letterQuest.step)||j.letterQuest.defeated!==undefined&&typeof j.letterQuest.defeated!=='boolean'))invalid();
  if(j.villageRequestReward!==undefined&&j.villageRequestReward!=='coins'&&j.villageRequestReward!=='heal')invalid();
@@ -281,6 +286,7 @@ export function validateJourneySave(game:Game){
  if(j.location==='story-quest'&&!isStoryQuestId(j.currentNode))invalid();
  const den=j.diceDen;if(den!==undefined&&(!den||typeof den!=='object'||!Number.isInteger(den.losses)||den.losses<0||den.relicClaimed!==undefined&&typeof den.relicClaimed!=='boolean'||den.result!==undefined&&!['win','lose','draw','forfeit'].includes(den.result)||den.match!==undefined&&!validYachtMatch(den.match)))invalid();
  if(j.location==='dice-den'&&j.currentNode!=='dice-den')invalid();
+ if(j.location==='inn'&&!isInnNode(j.currentNode)||!validInnState(j.inns))invalid();
  for(const mini of [j.mini,j.letterMini].filter((value):value is JourneyMini=>!!value)){const child=mini.game,meta=child?.rpgMini;
   if(!child||!child.practice||child.rpgRun||child.hpItemMode||child.stageRun||child.itemRun||!Array.isArray(child.players)||child.players.length!==3||!child.players.every(p=>Array.isArray(p.hand)&&typeof p.id==='string'&&typeof p.token==='string')||!Array.isArray(child.stacks)||!['playing','ended'].includes(child.phase)||!unique(mini.roundIds)||mini.roundIds.length>3||!mini.roundIds.every(id=>typeof id==='string')||!meta||meta.journeyId!==run.id||meta.totalRounds!==3||!Number.isInteger(meta.roundIndex)||meta.roundIndex<1||meta.roundIndex>3||!Number.isFinite(meta.reward)||meta.reward<0||!Number.isFinite(mini.lastReward)||mini.lastReward<0)invalid();
  }

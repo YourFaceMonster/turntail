@@ -1,0 +1,22 @@
+/* 2026-11-13 region inn house games (High-Low, Memory). */
+.inn-game{display:grid;gap:12px;color:#f1e3c2}
+.inn-game-rule{margin:0;font-size:13px;line-height:1.55;color:#e6d8b4}
+.inn-game-rule b{color:#ffe39a}
+.inn-hl-table{display:flex;justify-content:center;gap:22px;padding:14px;border:1px solid #d9b56f44;border-radius:12px;background:radial-gradient(circle at 50% 30%,#4a3420,#1c1510)}
+.inn-hl-card{display:grid;justify-items:center;gap:6px;width:clamp(76px,22vw,104px)}
+.inn-hl-card small{font-size:11px;color:#cdb98d}
+.inn-hl-card .tile,.inn-hl-card>svg,.inn-hl-card>*:first-child{width:100%}
+.inn-card-back{display:block;width:100%;aspect-ratio:.72;border-radius:8px;border:2px solid #d9b56f;background:repeating-linear-gradient(45deg,#3a2614 0 6px,#4a3119 6px 12px);box-shadow:inset 0 0 0 3px #1c1510,0 3px 8px #0008}
+.inn-game-score{margin:0;text-align:center;font-size:14px}
+.inn-game-score b{font-size:20px;color:#ffe39a}
+.inn-game-note{margin:0;text-align:center;font-size:13px;color:#f3b7a0}
+.inn-game-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.inn-game-actions button{flex:1 1 40%;min-height:44px}
+.inn-memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px;border:1px solid #d9b56f44;border-radius:12px;background:radial-gradient(circle at 50% 30%,#1d2a3c,#0e131c)}
+.inn-memory-card{display:grid;place-items:center;padding:0;border:0;background:none;cursor:pointer;aspect-ratio:.72}
+.inn-memory-card>*{width:100%}
+/* Face-up tiles fill the card slot (the table's .tile widths are fixed per breakpoint). */
+.inn-memory-card .tile,.inn-hl-card .tile{width:100%!important;max-width:none!important;height:auto!important;min-width:0!important}
+.inn-memory-card[data-found]{opacity:.55;cursor:default}
+.inn-memory-card:focus-visible{outline:2px solid #ffe39a;outline-offset:2px;border-radius:8px}
+@media (orientation:landscape) and (max-height:520px){.inn-memory-grid{grid-template-columns:repeat(6,1fr)}}

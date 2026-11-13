@@ -25,7 +25,7 @@
 /* 2026-11-13 decoration: tavern banner, warm panel, medals, ornament divider */
 body .modal.daily-board{padding:0 20px 20px;background:radial-gradient(120% 60% at 50% 0%,#3a2a1a 0%,transparent 70%),linear-gradient(180deg,#221a13 0%,#17130f 100%);border:1px solid #d6b06e;box-shadow:0 0 0 3px #17130f,0 0 0 4px #d6b06e55,0 18px 50px #000a,inset 0 0 40px #0008}
 .daily-hero{position:relative;margin:0 -20px;height:clamp(120px,34vw,168px);overflow:hidden;border-radius:21px 21px 0 0}
-.daily-hero img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.daily-hero img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 62%}
 .daily-hero:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#0000 35%,#221a13cc 75%,#221a13 100%),radial-gradient(ellipse at 50% 40%,#0000 50%,#0007 100%)}
 .daily-head{position:relative;margin-top:-34px;text-align:center}
 .daily-head .eyebrow{display:inline-flex;align-items:center;gap:8px;color:#f0cf86;letter-spacing:.24em;text-shadow:0 1px 3px #000}

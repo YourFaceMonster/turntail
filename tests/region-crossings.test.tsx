@@ -28,7 +28,7 @@ test('second journeys add a variant line and every crossing painting exists',()=
 
 test('the next-battle dialog dresses region gates with the map, ribbon and road',()=>{
  const gate=renderToStaticMarkup(<JourneyDestinationHead stage={7} title="ST7 · 달빛 고목"/>);
- assert.match(gate,/data-gate="true"/);assert.match(gate,/새 영역 · 열쇠의 영역/);assert.match(gate,/region-3-map-portrait-v2\.webp/);
+ assert.match(gate,/data-gate="true"/);assert.match(gate,/새 영역 · 열쇠의 영역/);assert.match(gate,/region-3-map-portrait-v3\.webp/);
  assert.match(gate,/ST8<\/b><span>별빛 성소/);assert.match(gate,/루엔/);
  const plain=renderToStaticMarkup(<JourneyDestinationHead stage={8} title="ST8 · 별빛 성소"/>);
  assert.doesNotMatch(plain,/새 영역/);assert.match(plain,/st8-before-portrait/);

@@ -86,7 +86,8 @@ export function storyState(run:Pick<RpgRun,'journey'>):StoryQuestState{return ru
  */
 /** Region maps were redrawn at 1024×1600 (v2) to fill the space between the map HUD and dock on phones. */
 /** v2 recolours the painted emblems to the game tile colours (crown red, iron navy, flame orange, key green). */
-const ART_VERSION:Record<string,number>={'region-2-map':2,'region-3-map':2,'region-4-map':2,'st4-after':2,'st6-before':2,'st7-after':2,'st8-after':2,'st9-after':3,'quest-9':2};
+/** v3 (2026-11-13): region 2·3 maps gain the inn buildings (local patch only; every other pixel unchanged). */
+const ART_VERSION:Record<string,number>={'region-2-map':3,'region-3-map':3,'region-4-map':2,'st4-after':2,'st6-before':2,'st7-after':2,'st8-after':2,'st9-after':3,'quest-9':2};
 const FINAL=(key:string)=>STORY_CARD_CHAPTER_ART[key]||({landscape:`/story/${key}-wide-v1.webp`,portrait:`/story/${key}-portrait-v${ART_VERSION[key]||1}.webp`});
 const ENV=(stage:number)=>({landscape:`/environments/stage-${stage}-055.webp`,portrait:`/environments/stage-${stage}-055.webp`});
 const TAVERN={landscape:'/prologue/tavern-interior-v2.webp',portrait:'/prologue/tavern-interior-portrait-v1.webp'};
