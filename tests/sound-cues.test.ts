@@ -6,7 +6,7 @@ import {CUE_ASSETS,preloadCues,playCue,setCuePlayer,cue,cueOnce,isCueKind,type C
 import {effectOutput} from '../lib/audio-mixer';
 
 test('picked cue files match the recorded manifest',()=>{
- const manifest=JSON.parse(readFileSync('docs/assets/sound-261108.json','utf8'));
+ const manifest=JSON.parse(readFileSync('docs/assets/sound-261114.json','utf8'));
  assert.deepEqual(Object.entries(CUE_ASSETS).map(([kind,a])=>`${kind}:${a.src}`).sort(),manifest.files.map((f:{kind:string,src:string})=>`${f.kind}:${f.src}`).sort());
  for(const file of manifest.files){
   // Served file: compressed MP3 (ID3 tag or MPEG frame sync).
