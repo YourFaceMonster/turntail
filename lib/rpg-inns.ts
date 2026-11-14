@@ -19,7 +19,7 @@ export const isInnNode=(id:unknown):id is InnNode=>id==='inn-2'||id==='inn-3';
 export const innRegionOf=(id:InnNode):InnRegion=>id==='inn-2'?2:3;
 /** Inn paintings: add the region here once /story/inn-<region>-portrait-v1.webp exists. Until then the region's crossing painting (no faces to mistake for the owner). */
 export const INN_ART_READY=new Set<InnRegion>([2,3]);
-export function innArt(region:InnRegion){const path=INN_ART_READY.has(region)?`/story/inn-${region}-portrait-v1.webp`:region===2?'/story/cross-4-border-portrait-v1.webp':'/story/cross-7-border-portrait-v1.webp';return {landscape:path,portrait:path};}
+export function innArt(region:InnRegion){if(INN_ART_READY.has(region))return {landscape:`/story/inn-${region}-wide-v1.webp`,portrait:`/story/inn-${region}-portrait-v1.webp`};const path=region===2?'/story/cross-4-border-portrait-v1.webp':'/story/cross-7-border-portrait-v1.webp';return {landscape:path,portrait:path};}
 
 /** Offering heal per relic grade (user approved: common 15 · rare 25 · legendary 40). */
 export const OFFERING_HEAL:Record<RelicGrade,number>={common:15,rare:25,legendary:40};

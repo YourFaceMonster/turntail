@@ -111,17 +111,17 @@ export const CHAPTER_ART_SLOTS:Record<string,{placeholder:{landscape:string,port
  'true-ending-record':{placeholder:ENV(10),note:'진엔딩 · 낡은 테이블 위 최초의 승부사의 기록'},
  'true-ending-village':{placeholder:TAVERN,note:'진엔딩 · 노르문 주점에서 이야기를 전하는 새 방랑자'},
 };
-/** Portraits are ready. Landscape art continues to use the existing placeholders. */
+/** Portrait and wide (2026-11-14, 1672×941) paintings are both ready for every slot. */
 export const CHAPTER_ART_READY=new Set<string>(Object.keys(CHAPTER_ART_SLOTS));
-/** Ready ST4~10 art is portrait-only for now: wide screens get the same portrait painting, shown framed (see story-motion.css). */
-export function chapterArt(key:string){const slot=CHAPTER_ART_SLOTS[key];if(!slot)throw Error(`Unknown chapter art: ${key}`);return CHAPTER_ART_READY.has(key)?{landscape:FINAL(key).portrait,portrait:FINAL(key).portrait}:slot.placeholder;}
+/** Wide screens get the wide painting, tall screens the portrait one. */
+export function chapterArt(key:string){const slot=CHAPTER_ART_SLOTS[key];if(!slot)throw Error(`Unknown chapter art: ${key}`);return CHAPTER_ART_READY.has(key)?FINAL(key):slot.placeholder;}
 export function chapterArtFinalPaths(key:string){return FINAL(key);}
 /**
  * Paintings the player will most likely see next from the map: the stage's "before" scene, its quest
- * (if any) and its "after" scene. Wide and narrow screens use the same portrait files now, so one list fits both.
+ * (if any) and its "after" scene, in the orientation the screen shows.
  */
-export function stageArtToPreload(stage:number):string[]{
+export function stageArtToPreload(stage:number,wide=false):string[]{
  if(stage<4||stage>10)return [];
  const keys=[`st${stage}-before`,...STORY_QUESTS.filter(quest=>quest.stage===stage).map(quest=>quest.id),`st${stage}-after`];
- return [...new Set(keys.filter(key=>CHAPTER_ART_SLOTS[key]).map(key=>chapterArt(key).portrait))];
+ return [...new Set(keys.filter(key=>CHAPTER_ART_SLOTS[key]).map(key=>wide?chapterArt(key).landscape:chapterArt(key).portrait))];
 }

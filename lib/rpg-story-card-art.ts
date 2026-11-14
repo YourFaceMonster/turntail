@@ -22,7 +22,7 @@ export const STORY_CARD_SCENE_ART={
  ironHandoff:prologue('st3-keepsake-handoff-wide','st3-keepsake-handoff-portrait'),
  ironComparison:prologue('st3-keepsake-compare-wide','st3-keepsake-compare-portrait'),
 };
-const chapter=(key:string):StoryFrame=>({landscape:`/story/${key}-portrait-special-v2.webp`,portrait:`/story/${key}-portrait-special-v2.webp`});
+const chapter=(key:string):StoryFrame=>({landscape:`/story/${key}-wide-special-v1.webp`,portrait:`/story/${key}-portrait-special-v2.webp`});
 export const STORY_CARD_CHAPTER_ART:Partial<Record<string,StoryFrame>>=Object.fromEntries([
  'st6-flame-two','st6-flame-two-back','st9-key-two','st9-key-two-back','true-ending-record','true-ending-village','ending-handoff',
 ].map(key=>[key,chapter(key)]));

@@ -261,14 +261,18 @@
 
 @media(max-aspect-ratio:1/1){.journey-map-scene .rpg-map-node[data-node='wayfarer-stop']{left:20%;top:34%}}
 
-/* ST4~10 regions have portrait paintings only. Every orientation shows the whole portrait map framed between the HUD
-   and the dock (portrait node coordinates and route); on wide screens the sides show the same painting blurred. */
-.journey-map-scene[data-region]:not([data-region='1']) .rpg-map-paint{background:linear-gradient(#101c2655,#13242133),var(--region-map-tall) center/cover;filter:saturate(.9)}
+/* 2026-11-14 ST4~10 regions have wide maps (1672×941, Codex centres in lib/rpg-journey.ts x/y). Wide screens use them like
+   region 1 (landscape coordinates and route); tall screens keep the whole portrait map framed between the HUD and the dock. */
 .journey-map-scene[data-region]:not([data-region='1']) .map-snow-drift{display:none}
-.journey-map-scene[data-region]:not([data-region='1']) .map-route-landscape{display:none}
-.journey-map-scene[data-region]:not([data-region='1']) .map-route-portrait{display:block}
-.journey-map-scene[data-region]:not([data-region='1']) .rpg-node-map{box-shadow:0 0 0 1px #d9b97933,0 18px 50px #000a}
-@media all{
+@media(min-aspect-ratio:1/1){
+ .journey-map-scene[data-region]:not([data-region='1']) .rpg-map-paint{background:linear-gradient(#101c2622,#13242122),var(--region-map-wide) center/100% 100%;filter:none}
+}
+@media(max-aspect-ratio:1/1){
+ .journey-map-scene[data-region]:not([data-region='1']) .rpg-map-paint{background:linear-gradient(#101c2655,#13242133),var(--region-map-tall) center/cover;filter:saturate(.9)}
+ .journey-map-scene[data-region]:not([data-region='1']) .map-route-landscape{display:none}
+ .journey-map-scene[data-region]:not([data-region='1']) .map-route-portrait{display:block}
+ .journey-map-scene[data-region]:not([data-region='1']) .rpg-node-map{box-shadow:0 0 0 1px #d9b97933,0 18px 50px #000a}
+
  .journey-map-scene[data-region]:not([data-region='1']) .rpg-node-map{
   width:min(100cqw,calc(100cqh * 1024 / 1600));
   height:min(100cqh,calc(100cqw * 1600 / 1024));

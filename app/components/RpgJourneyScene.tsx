@@ -88,7 +88,7 @@ export function JourneyMapView({run,busy,error,action,exit,save,settings,playerA
  const region=journeyRegion(run),regionArt=region>1?chapterArt(`region-${region}-map`):null,reached=Math.max(1,...j.startedStages,run.stage),destinationStage=destination?Number(destination.slice(7)):0;
  // Warm the browser cache for the next stage's paintings while the player is on the map (idle time, low priority).
  const nextStage=journeyTargetStage(run);
- useEffect(()=>{const urls=stageArtToPreload(nextStage);if(!urls.length)return;let cancelled=false;const images:HTMLImageElement[]=[];
+ useEffect(()=>{const urls=stageArtToPreload(nextStage,!matchMedia('(max-aspect-ratio:1/1)').matches);if(!urls.length)return;let cancelled=false;const images:HTMLImageElement[]=[];
   const run=()=>{if(cancelled)return;for(const src of urls){const image=new Image();image.decoding='async';(image as HTMLImageElement&{fetchPriority?:string}).fetchPriority='low';image.src=src;images.push(image);}};
   const idle=(window as Window&{requestIdleCallback?:(cb:()=>void,o?:{timeout:number})=>number}).requestIdleCallback;
   const handle=idle?idle(run,{timeout:2500}):window.setTimeout(run,1200);

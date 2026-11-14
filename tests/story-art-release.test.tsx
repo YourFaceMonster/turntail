@@ -38,8 +38,10 @@ test('flame and key discoveries switch to a back painting when the narration tur
   assert.equal(cuts[index].art!.portrait,`/story/${stem}-back-portrait-special-v2.webp`);
   assert.notEqual(prologueSceneGroup(cuts,index-1).key,prologueSceneGroup(cuts,index).key);
   assert.equal(storyPictureTransition(cuts[index-1],cuts[index]),'overlap');
+  // 2026-11-14: wide screens get the wide repaint (1672×941), tall screens the portrait one.
+  assert.equal(cuts[index].art!.landscape,`/story/${stem}-back-wide-special-v1.webp`);
   for(const orientation of ['landscape','portrait'] as const){
-   const size=imageSize(readFileSync('public'+cuts[index].art![orientation]));assert.ok(size.height>size.width);
+   const size=imageSize(readFileSync('public'+cuts[index].art![orientation]));assert.ok(orientation==='portrait'?size.height>size.width:size.width>size.height);
   }
  }
 });

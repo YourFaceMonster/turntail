@@ -129,8 +129,8 @@ test('saves reject corrupt story data and the map only shows the current region'
  assert.ok(JOURNEY_NODES.filter(n=>n.region>1).every(n=>n.x>0&&n.x<100&&n.y>0&&n.y<100));
  for(const [key,slot] of Object.entries(CHAPTER_ART_SLOTS)){
   const art=chapterArt(key);
-  // 2026-11-11 user choice: until wide paintings exist, wide screens show the new portrait painting framed.
-  assert.equal(art.landscape,art.portrait,'wide screens use the portrait painting (framed) until the wide painting arrives');
+  // 2026-11-14: every slot has its wide repaint (1672×941) beside the portrait painting.
+  assert.ok(art.landscape.includes('-wide-')&&existsSync('public'+art.landscape),art.landscape);
   const special=['st6-flame-two','st6-flame-two-back','st9-key-two','st9-key-two-back','true-ending-record','true-ending-village','ending-handoff'].includes(key);
   // v2: region maps (1024×1600) and the emblem-colour repaints of ST4/6/7/8/9 scenes.
   const v2=/^region-4-map$|^st[46789]-(after|before)$|^quest-9$/.test(key)&&!['st4-before','st7-before','st8-before','st9-before','st6-after'].includes(key);

@@ -127,7 +127,7 @@ export const CROSSING_ART_SLOTS:Record<string,{placeholder:Frame,note:string}>={
  'cross-10-depart':{placeholder:regionMap(3),note:'잿불이 잦아든 제단을 떠나는 길 · 구름 속으로 가라앉는 고목과 성소'},
  'cross-10-border':{placeholder:regionMap(4),note:'구름 위 마지막 경계 · 붉은 세계수로 이어지는 하나뿐인 길'},
 };
-export function crossingArt(key:string):Frame{const slot=CROSSING_ART_SLOTS[key];if(!slot)throw Error(`Unknown crossing art: ${key}`);if(!CROSSING_ART_READY.has(key))return slot.placeholder;const path=`/story/${key}-portrait-v1.webp`;return {landscape:path,portrait:path};}
+export function crossingArt(key:string):Frame{const slot=CROSSING_ART_SLOTS[key];if(!slot)throw Error(`Unknown crossing art: ${key}`);if(!CROSSING_ART_READY.has(key))return slot.placeholder;return {landscape:`/story/${key}-wide-v1.webp`,portrait:`/story/${key}-portrait-v1.webp`};}
 const REGION_NAMES:Record<number,string>={2:'성화의 영역',3:'열쇠의 영역',4:'왕관의 영역'};
 type CrossBeat=Beat&{frame:string|Frame,focus?:string};
 const CROSSINGS:Record<number,(c:Ctx)=>(CrossBeat|false)[]>={
