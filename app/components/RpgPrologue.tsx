@@ -54,8 +54,8 @@ export function CrossfadePicture({cut,duration=cut.duration,hiddenLight=false}:{
  return <div className="story-painting-stack" data-transition={frame.transition}>{frame.previous&&<div key={frame.previous.key} className="story-painting-out"><ProloguePicture cut={frame.previous.cut} duration={frame.previous.duration} hiddenLight={frame.previous.hiddenLight}/></div>}<div key={frame.key} className={frame.previous?'story-painting-in':'story-painting-current'}><ProloguePicture cut={frame.cut} duration={frame.duration} hiddenLight={frame.hiddenLight}/></div></div>;
 }
 
-type Props={onEvent?:(id:StoryEventId,result:StoryEventResult)=>void,enter:()=>void,context?:AudioContext|null,music?:boolean,sound?:boolean,musicVolume?:number,cuts?:readonly PrologueCut[],label?:string,skipLabel?:string,chrome?:import('react').ReactNode};
-export default function RpgPrologue({onEvent,enter,context,music=true,sound=true,musicVolume=40,cuts=FIRST_PROLOGUE,label='턴테일 프롤로그',skipLabel='건너뛰기',chrome}:Props){
+type Props={onEvent?:(id:StoryEventId,result:StoryEventResult)=>void,enter:()=>void,context?:AudioContext|null,music?:boolean,sound?:boolean,musicVolume?:number,cuts?:readonly PrologueCut[],label?:string,skipLabel?:string,chrome?:import('react').ReactNode,track?:string};
+export default function RpgPrologue({onEvent,enter,context,music=true,sound=true,musicVolume=40,cuts=FIRST_PROLOGUE,label='턴테일 프롤로그',skipLabel='건너뛰기',chrome,track}:Props){
  const finish=useRef(enter),[closing,setClosing]=useState(false);const finishTimer=useRef<ReturnType<typeof setTimeout>|null>(null);const complete=()=>{if(finishTimer.current)return;setClosing(true);finishTimer.current=setTimeout(()=>finish.current(),240);};useEffect(()=>()=>{if(finishTimer.current)clearTimeout(finishTimer.current);},[]);
  useEffect(()=>{finish.current=enter;},[enter]);
  const clock=useRef<PrologueClock|null>(null);
@@ -76,6 +76,14 @@ export default function RpgPrologue({onEvent,enter,context,music=true,sound=true
  },[cuts]);
  // Cutscenes are silent of music for now: pause page BGM and skip the synthesized tavern motif (ambient sounds stay).
  useEffect(()=>holdCutsceneSilence(),[]);
+ // Only scenes with their own track (the endings) play music: once, no loop, fading out when the scene closes.
+ const trackVolume=useRef(musicVolume/100);trackVolume.current=Math.min(1,Math.max(0,musicVolume/100));
+ const trackAudio=useRef<HTMLAudioElement|null>(null);
+ useEffect(()=>{if(trackAudio.current)trackAudio.current.volume=trackVolume.current;},[musicVolume]);
+ useEffect(()=>{if(!track||!music)return;const audio=new Audio(track);audio.volume=trackVolume.current;trackAudio.current=audio;
+  const sync=()=>{if(document.hidden)audio.pause();else if(!audio.ended)void audio.play().catch(()=>{});};sync();document.addEventListener('visibilitychange',sync);
+  return()=>{document.removeEventListener('visibilitychange',sync);trackAudio.current=null;const start=audio.volume,steps=12;let step=0;const fade=setInterval(()=>{step++;audio.volume=Math.max(0,start*(1-step/steps));if(step>=steps){clearInterval(fade);audio.pause();audio.removeAttribute('src');audio.load();}},50);};
+ },[track,music]);
  useEffect(()=>{if(!artReady||!visible||!context||context.state!=='running')return;return prologueAmbience(context,cut,false,musicVolume,sound);},[context,cut,visible,artReady,musicVolume,sound]);
  const [auto,setAuto]=useDialogueAuto(true),[logOpen,setLogOpen]=useState(false),[handled,setHandled]=useState<readonly string[]>([]);
  // A hands-on cut holds the clock until its event is solved or skipped.

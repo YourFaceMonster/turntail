@@ -9,7 +9,13 @@ html[data-dice-skin]:not([data-dice-skin="ivory"]) :is(.yacht-die-face i.is-ace,
 
 /* Picker inside the achievements window. */
 .dice-skin-picker{margin:10px 0 0;padding:12px 14px;border-top:1px solid #e6d8b433}
-.dice-skin-picker h3{margin:0 0 8px;font-size:14px}
+.dice-skin-picker h3{margin:0;font-size:14px}
+.dice-skin-picker summary{display:flex;align-items:baseline;justify-content:space-between;gap:8px;cursor:pointer;list-style:none}
+.dice-skin-picker summary::-webkit-details-marker{display:none}
+.dice-skin-picker summary::after{content:'▾';opacity:.7;font-size:12px}
+.dice-skin-picker[open] summary::after{content:'▴'}
+.dice-skin-picker summary small{margin-left:auto}
+.dice-skin-picker[open] ul{margin-top:8px}
 .dice-skin-picker ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
 .dice-skin-picker li button{width:100%;display:grid;justify-items:center;gap:4px;padding:8px 4px;border:1px solid #e6d8b433;border-radius:6px;background:#ffffff08;color:inherit;font-size:11px;cursor:pointer}
 .dice-skin-picker li button[aria-pressed=true]{border-color:#e6c97a;box-shadow:0 0 0 2px #e6c97a55}

@@ -15,7 +15,11 @@ import SeatPortrait from './SeatPortrait';
 import {RpgHpBar} from './RpgHpBar';
 import {seatPanelTheme} from '../../lib/seat-presentation';
 
-export default function RpgReworkResult({game,busy,choose,next,newRun,exit,markSeen,equip}:{
+// Ending BGM after ST10. The true ending (second journey) reuses the normal ending track until its own arrives.
+function endingTrack(run:{journey?:{story?:{runNumber?:number}}}){return (run.journey?.story?.runNumber||1)>=2?'/audio/ending-suno-0726.mp3':'/audio/ending-suno-0726.mp3';}
+
+export default function RpgReworkResult({game,busy,choose,next,newRun,exit,markSeen,equip,music,musicVolume}:{
+ music?:boolean,musicVolume?:number,
  game:ReturnType<typeof view>,busy:boolean,choose:(choice:RpgStageReward,replace?:string,decline?:boolean,id?:string)=>void,
  next:()=>void,newRun:()=>void,exit:()=>void,markSeen?:(id:string)=>void,equip?:(id:string,replace?:string)=>void,playerAvatar?:ReactNode}){
  const run=game.rpgRun!,clear=run.phaseOne?.clear,report=run.roundHealth;
@@ -55,5 +59,5 @@ export default function RpgReworkResult({game,busy,choose,next,newRun,exit,markS
   {(failed||complete)&&<button className="primary full" disabled={busy} onClick={newRun}>새 여정 시작</button>}
   {clear&&!failed&&<button className="text-btn full" onClick={()=>setReplay(true)}>승리 이야기 다시 보기</button>}
   <button className="text-btn full" disabled={busy} onClick={()=>{cue('back');exit();}}>저장하고 나가기</button>
- </section></div>{story&&<RpgPrologue cuts={journeyScenes(run.stage,run).after} chrome={<JourneyStoryChrome run={run} busy={busy} error="" action={(action,extra)=>{if(action==='rpg-journey-equip')equip?.(String(extra?.id),extra?.replace as string|undefined);}} exit={exit} playerName={game.players[0].name}/>} label={run.stage===10?'여정의 끝':'스테이지 승리 후 장면'} enter={()=>{if(replay)setReplay(false);else{setSeen(true);markSeen?.(storySceneKey(run.stage));}}}/>}</>;
+ </section></div>{story&&<RpgPrologue cuts={journeyScenes(run.stage,run).after} chrome={<JourneyStoryChrome run={run} busy={busy} error="" action={(action,extra)=>{if(action==='rpg-journey-equip')equip?.(String(extra?.id),extra?.replace as string|undefined);}} exit={exit} playerName={game.players[0].name}/>} label={run.stage===10?'여정의 끝':'스테이지 승리 후 장면'} track={run.stage===10?endingTrack(run):undefined} music={music} musicVolume={musicVolume} enter={()=>{if(replay)setReplay(false);else{setSeen(true);markSeen?.(storySceneKey(run.stage));}}}/>}</>;
 }

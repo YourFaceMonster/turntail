@@ -8,13 +8,14 @@ const SWATCH_PIPS=[0,2,4,6,8];
 function DiceSkinPicker({state}:{state:AchievementState}){
  const [chosen,setChosen]=useState<DiceSkinId>('ivory');
  useEffect(()=>{setChosen(readDiceSkin(state));},[state]);
- return <section className="dice-skin-picker" aria-label="업적 보상 · 요트다이스 주사위">
-  <h3>업적 보상 · 요트다이스 주사위</h3>
+ const current=DICE_SKINS.find(skin=>skin.id===chosen);
+ return <details className="dice-skin-picker" aria-label="업적 보상 · 요트다이스 주사위">
+  <summary><h3>업적 보상 · 요트다이스 주사위</h3><small>{current?.name||'기본'} 사용 중 · 눌러서 바꾸기</small></summary>
   <ul>{DICE_SKINS.map(skin=>{const open=diceSkinOpen(skin,state);return <li key={skin.id}><button type="button" disabled={!open} aria-pressed={chosen===skin.id} onClick={()=>{saveDiceSkin(skin.id);setChosen(skin.id);}}>
    <span className={`dice-skin-swatch is-${skin.id}`} aria-hidden="true">{Array.from({length:9},(_,i)=><i key={i} style={SWATCH_PIPS.includes(i)?undefined:{visibility:'hidden'}}/>)}</span>
    <span>{open?skin.name:'잠김'}</span><small>{chosen===skin.id?'사용 중':open?'눌러서 사용':skin.note}</small>
   </button></li>;})}</ul>
- </section>;
+ </details>;
 }
 import {Check} from 'lucide-react';
 import {ACHIEVEMENTS,achievementValue,orderedAchievements,type Achievement,type AchievementState} from '../../lib/achievements';
@@ -32,6 +33,6 @@ export default function Achievements({state,close}:{state:AchievementState,close
   <header className="achievement-header"><AchievementMedal id="all-achievements" earned={!!state.unlocked['all-achievements']}/><div><span className="eyebrow">TURNTALE · ACHIEVEMENTS</span><h2 className="turntale-menu-lettering">업적</h2><p>한 장의 선택이 남기는 작은 전설</p></div><div className="achievement-total"><strong>{count}<small> / {ACHIEVEMENTS.length}</small></strong><span>달성</span></div></header>
   <div ref={listRef} className="achievement-list" tabIndex={0} role="region" aria-label="업적 목록 · 달성한 업적부터 표시">{list.map(a=>{const at=state.unlocked[a.id],secret=a.hidden&&!at,value=Math.min(a.goal,achievementValue(a,state));return <article key={a.id} data-achievement={a.id} className={`achievement-card ${at?'unlocked':''} ${secret?'secret':''} ${a.completion?'completion-achievement':''}`}><AchievementMedal id={a.id} earned={!!at} secret={!!secret}/><div><div className="achievement-name"><h3>{secret?'??? · 숨겨진 업적':a.title}</h3>{at?<Check aria-label="달성"/>:null}</div><p>{secret?'아직 알려지지 않은 이야기입니다. 플레이하며 발견해 보세요.':a.description}</p>{at?<time dateTime={new Date(at).toISOString()}>{new Date(at).toLocaleDateString('ko-KR')} 달성</time>:!secret&&<div className="achievement-progress"><progress value={value} max={a.goal} aria-label={`${a.title} 진행률`}/><small>{value} / {a.goal}</small></div>}</div></article>;})}</div>
   <DiceSkinPicker state={state}/>
-  <footer>달성한 업적이 위에 표시됩니다 · 이 기기·브라우저에 저장<br/>일반전 유효 라운드 기준 · 아이템전·시간 초과 대체 판 제외</footer>
+  <footer>달성한 업적이 위에 표시됩니다 · 이 기기·브라우저에 저장<br/>유효 라운드 기준 · 시간 초과로 대체된 판은 제외</footer>
  </section></div>;
 }

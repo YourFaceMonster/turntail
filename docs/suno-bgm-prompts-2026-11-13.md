@@ -81,7 +81,33 @@ moonlit ancient forest fantasy exploration, celesta, soft strings, wooden flute,
 
 ---
 
+- 왕관의 영역 (구름 위 붉은 세계수 · ST10 직전 지도) — 2026-11-13 추가
+```
+sacred approach to a giant red world tree above the clouds, slow strings, soft horns, wind chimes, solemn awe and anticipation, 78 bpm, seamless loop, instrumental
+```
+
+### ⑬ 일반 대결 추가 3곡 (2026-11-14 추가 · 기존 `duel-suno-0710`과 돌려 씀)
+보스가 아닌 스테이지(ST1·2·4·5·7·8)에서 스테이지마다 정해진 곡이 나온다. 같은 스테이지는 다시 해도 같은 곡이다.
+- 대결 B · 성화의 영역 느낌 (ST4·5)
+```
+upbeat fantasy card duel, fast celtic fiddle and bodhran, plucked harp, playful rivalry, bright and energetic, 128 bpm, seamless loop, instrumental
+```
+- 대결 C · 열쇠의 영역 느낌 (ST7·8)
+```
+mysterious fantasy card duel, staccato strings, hammered dulcimer, low hand drums, sly and focused, minor key, 116 bpm, seamless loop, instrumental
+```
+- 대결 D · 눈길·초반 느낌 (ST2)
+```
+lively tavern card game duel, bouncy lute and accordion, frame drum, friendly competitive tension, medieval folk, 124 bpm, seamless loop, instrumental
+```
+
 ## 3순위 · 분위기 보강
+
+### ⑫ 결과 화면 (판·스테이지가 끝난 뒤 정산) — 2026-11-13 추가
+지금은 예전 합성 음원을 쓰고 있다. 짧게 한 번 흐르는 곡이다.
+```
+warm victory jingle for a fantasy card game round result, lute and fiddle flourish, light hand drums, satisfied and cozy, 20 seconds, gentle ending, no loop, instrumental
+```
 
 ### ⑨ 컷씬 배경 (지금은 무음 · 넣을지 결정 필요)
 대사를 가리지 않도록 아주 작고 단순해야 한다.

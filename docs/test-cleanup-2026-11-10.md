@@ -49,3 +49,6 @@
 - pickup-0637
 - turntale-0626
 - rpg-stage-ui
+
+## 2026-11-14 삭제
+사용자 지시("삭제하자")로 위 18개 파일과 아이템전 로비 전용 테스트 2개(hp-mode-retirement, hp-item-original-base)를 지웠다. 이후 전체 418개 통과, 건너뜀 0.

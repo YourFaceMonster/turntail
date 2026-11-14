@@ -122,3 +122,11 @@ body>.journey-popup-shade>.journey-popup:has(.village-market){background:radial-
 .single-mode-cards .mode-yacht .is-yacht .menu-yacht-die:nth-child(4){grid-column:2/span 2;transform:rotate(7deg)}.single-mode-cards .mode-yacht .is-yacht .menu-yacht-die:nth-child(5){grid-column:4/span 2;transform:rotate(-8deg)}
 .menu-yacht-die i{display:block;margin:auto;width:70%;aspect-ratio:1;border-radius:50%}
 .menu-yacht-die i.is-pip{background:#2a1d12}.menu-yacht-die i.is-ace{width:100%;background:#b3201b}
+
+/* 2026-11-14 landscape phones: map on the left, info and buttons on the right so the primary button stays visible */
+@media (orientation:landscape) and (max-height:560px){
+ .journey-entry .rpg-hub-main{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);align-items:stretch}
+ .journey-entry .rpg-hub-main>picture{height:auto;min-height:150px}
+ .journey-entry .rpg-hub-main>picture img{object-position:50% 60%}
+ .journey-entry .rpg-hub-main>div{padding:10px 12px;align-self:center}
+}
