@@ -128,3 +128,11 @@ body>.journey-popup-shade>.journey-popup:has(.village-market){width:min(780px,ca
 .quest-cutscene .quest-scene-choices>button{font-size:15.5px!important;line-height:1.2}
 /* Balance dialogue lines so a page never leaves one short word alone on its last line (phones). */
 .quest-cutscene .quest-dialogue-text p,.quest-cutscene[data-painting] .quest-dialogue-text p{text-wrap:balance}
+
+/* Inn conversations: large bust of the speaking NPC over the dimmed room (2026-11-15). Busts are 512px on black. */
+.quest-cutscene.has-busts .prologue-picture,.quest-cutscene.has-busts picture{filter:brightness(.42) blur(1.5px)}
+.quest-cutscene .quest-bust{position:absolute;left:50%;bottom:clamp(210px,30dvh,300px);transform:translateX(-50%);width:min(78vw,420px,55dvh);aspect-ratio:1;object-fit:cover;z-index:3;pointer-events:none;
+ -webkit-mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent),linear-gradient(180deg,transparent,#000 14%,#000 80%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent),linear-gradient(180deg,transparent,#000 14%,#000 80%,transparent);mask-composite:intersect;animation:quest-bust-in .32s ease-out both}
+@keyframes quest-bust-in{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+@media (orientation:landscape) and (max-height:560px){.quest-cutscene .quest-bust{left:auto;right:4%;bottom:auto;top:12%;transform:none;width:min(42dvh*1.4,300px);animation:none}}
+@media(prefers-reduced-motion:reduce){.quest-cutscene .quest-bust{animation:none}}

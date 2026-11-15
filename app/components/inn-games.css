@@ -13,7 +13,8 @@
 .inn-game-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .inn-game-actions button{flex:1 1 40%;min-height:44px}
 .inn-memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px;border:1px solid #d9b56f44;border-radius:12px;background:radial-gradient(circle at 50% 30%,#1d2a3c,#0e131c)}
-.inn-memory-card{display:grid;place-items:center;padding:0;border:0;background:none;cursor:pointer;aspect-ratio:.72}
+.inn-memory-card{display:grid;place-items:center;padding:0;border:0;background:none;cursor:pointer;aspect-ratio:100/132;perspective:600px}
+.inn-hl-card{perspective:700px}
 .inn-memory-card>*{width:100%}
 /* Face-up tiles fill the card slot (the table's .tile widths are fixed per breakpoint). */
 .inn-memory-card .tile,.inn-hl-card .tile{width:100%!important;max-width:none!important;height:auto!important;min-width:0!important}

@@ -7,6 +7,7 @@ import {RELIC_GRADES,reworkRelic,rpgMaxHp} from '../../lib/rpg-rework';
 import {gameRelic,relicImage} from '../../lib/item-battle-relics';
 import type {RpgRun} from '../../lib/rpg';
 import {INN_TOURNAMENT,TOURNAMENT_TITLE} from '../../lib/inn-tournament';
+import SeatPortrait from './SeatPortrait';
 import './journey-inn.css';
 
 type Props={run:RpgRun,busy:boolean,error:string,action:(action:string,extra?:Record<string,unknown>)=>void};
@@ -16,6 +17,8 @@ const GRADE_NAME={common:'일반',rare:'희귀',legendary:'전설'} as const;
 /** Menu card faces (Codex 2026-11-13, 512px WebP). */
 const PORTRAIT_KEYS:Record<string,string>={모란:'moran',도칸:'dokan',모로:'moro',리네:'rine'};
 const innPortrait=(name:string)=>`/story/inn-portrait-${PORTRAIT_KEYS[name]}-v1.webp`;
+/** Conversation paintings (Codex 2026-11-15): the speaker alone, large, with the bottom kept dark for the dialogue box. */
+const innTalk=(name:string)=>({landscape:`/story/inn-talk-${PORTRAIT_KEYS[name]}-wide-v1.webp`,portrait:`/story/inn-talk-${PORTRAIT_KEYS[name]}-portrait-v1.webp`});
 const relicName=(id:string)=>reworkRelic(id)?.name||gameRelic(id)?.name||id;
 
 export default function JourneyInnView({run,busy,error,action}:Props){
@@ -26,7 +29,7 @@ export default function JourneyInnView({run,busy,error,action}:Props){
  const back=()=>{setMode('menu');setLast(null);};
  const meet=()=>{if(!inn.met)action('rpg-inn',{op:'meet'});};
  const scene=(key:string,pairs:readonly (readonly [string,string])[],choices:{label:string,choose:()=>void,disabled?:boolean}[],details?:ReactNode)=>
-  <QuestCutscene key={key} title={def.name} speaker={def.owner} speakers={pairs.map(p=>p[0])} lines={pairs.map(p=>p[1])} scene="room" art={art} busy={busy} error={error} close={()=>{meet();back();}} choices={choices} details={details}/>;
+  <QuestCutscene key={key} title={def.name} speaker={def.owner} speakers={pairs.map(p=>p[0])} lines={pairs.map(p=>p[1])} scene="room" art={art} busts={{[def.owner]:innPortrait(def.owner),[def.regular]:innPortrait(def.regular)}} speakerArt={{[def.owner]:innTalk(def.owner),[def.regular]:innTalk(def.regular)}} busy={busy} error={error} close={()=>{meet();back();}} choices={choices} details={details}/>;
  const toMenu={label:'주점 안을 둘러본다',choose:back};
 
  if(mode==='result'&&last?.kind==='game'){
@@ -45,15 +48,20 @@ export default function JourneyInnView({run,busy,error,action}:Props){
  if(mode==='game')return panel(def.gameName,def.game==='high-low'?<HighLowGame finish={score=>{setLast({kind:'game',score,before:inn.gameRelic});action('rpg-inn',{op:'game',score});setMode('result');}} quit={back}/>:<MemoryGame finish={score=>{setLast({kind:'game',score,before:inn.gameRelic});action('rpg-inn',{op:'game',score});setMode('result');}} quit={back}/>);
  if(mode==='cup'){
   const cup=j.tournament,ready=run.status==='ready';
-  return panel('여관 토너먼트',<div className="inn-cup">
-   <p className="inn-line"><b>{def.owner}</b>눈길의 주점 피오부터 모란, 모로까지 차례로 한 판씩 붙는 세 판 승부야. 세 판 중 두 판을 1등으로 마치면 우승!</p>
-   <ol className="inn-cup-rounds">{INN_TOURNAMENT.map((c,i)=><li key={c.name}><b>{i+1}판 · {c.name}</b><small>{c.title}</small><small className="inn-cup-goal">특별 목표 · {c.goal}</small></li>)}</ol>
-   <p className="inn-offer-note">일반 대결 규칙으로 겨뤄요. HP·유물·주화·스테이지는 변하지 않고, 우승하면 칭호 <b>{TOURNAMENT_TITLE}</b>와 기록이 남아요.</p>
-   {cup?.finished&&<p className="inn-cup-last">지난 토너먼트 · {cup.champion?'우승':'준우승 이하'} · 1등 {cup.wins.length}판 · 특별 목표 {cup.goals.length}/3</p>}
-   {error&&<p role="alert" className="inn-error">{error}</p>}
-   <button className="primary full" disabled={busy||!ready} onClick={()=>action('rpg-tournament-start')}>{cup?.finished?'다시 도전':'토너먼트 시작'}</button>
-   <button className="secondary full" onClick={back}>주점 안을 둘러본다</button>
-  </div>);
+  // 2026-11-15 feedback: a poster-like bracket instead of a text list, and the buttons always visible.
+  return <section className="inn-cup-screen" aria-label="여관 토너먼트" style={{'--inn-art':`url('${art.portrait}')`} as CSSProperties}>
+   <div className="inn-cup-board">
+    <header className="inn-cup-head"><small>INN CUP · {def.name}</small><h3>여관 토너먼트</h3><p>세 판 중 <b>두 판을 1등</b>으로 마치면 우승</p></header>
+    <ol className="inn-cup-bracket">{INN_TOURNAMENT.map((c,i)=>{const won=cup?.finished&&cup.wins.includes(i+1),goal=cup?.finished&&cup.goals.includes(i+1);return <li key={c.name} data-won={won||undefined}>
+     <span className="inn-cup-round">{i+1}판</span><span className="inn-cup-face"><SeatPortrait avatar={c.avatar} seat={1}/></span><strong>{c.name}</strong><small>{c.title}</small>
+     <p className="inn-cup-goal"><span aria-hidden="true">{goal?'★':'☆'}</span>{c.goal}</p>
+    </li>;})}</ol>
+    <p className="inn-cup-rules">일반 대결 규칙 · HP·유물·주화는 그대로 · 우승하면 칭호 <b>{TOURNAMENT_TITLE}</b></p>
+    {cup?.finished&&<p className="inn-cup-last">지난 도전 · {cup.champion?'🏆 우승':'우승 못 함'} · 1등 {cup.wins.length}판 · 특별 목표 {cup.goals.length}/3</p>}
+    {error&&<p role="alert" className="inn-error">{error}</p>}
+   </div>
+   <footer className="inn-cup-actions"><button className="primary" disabled={busy||!ready} onClick={()=>action('rpg-tournament-start')}>{cup?.finished?'다시 도전':'토너먼트 시작'}</button><button className="secondary" onClick={back}>주점 안을 둘러본다</button></footer>
+  </section>;
  }
  if(mode==='offer'){
   const max=run.rework?rpgMaxHp(run):100,full=run.hp[0]>=max,list=offerableRelics(run);
@@ -77,10 +85,10 @@ export default function JourneyInnView({run,busy,error,action}:Props){
 /** Hotspots on the inn painting, in % of the image (portrait 1024×1600 / wide 1672×941), like 눈길의 주점. */
 type Spot={id:'owner'|'regular'|'offer'|'game'|'cup',x:number,y:number};
 const INN_SPOTS:Record<InnRegion,{portrait:Spot[],wide:Spot[]}>={
- 2:{portrait:[{id:'owner',x:60,y:23},{id:'regular',x:84,y:33},{id:'offer',x:46,y:57},{id:'game',x:27,y:39},{id:'cup',x:19,y:53}],
+ 2:{portrait:[{id:'owner',x:60,y:19},{id:'regular',x:84,y:29},{id:'offer',x:46,y:57},{id:'game',x:27,y:39},{id:'cup',x:19,y:53}],
     wide:[{id:'owner',x:54,y:19},{id:'regular',x:74,y:37},{id:'offer',x:48,y:62},{id:'game',x:32,y:41},{id:'cup',x:18,y:52}]},
- 3:{portrait:[{id:'owner',x:22,y:29},{id:'regular',x:80,y:29},{id:'offer',x:41,y:53},{id:'game',x:45,y:31},{id:'cup',x:19,y:57}],
-    wide:[{id:'owner',x:26,y:34},{id:'regular',x:73,y:35},{id:'offer',x:51,y:65},{id:'game',x:46,y:29},{id:'cup',x:12,y:62}]},
+ 3:{portrait:[{id:'owner',x:20,y:23},{id:'regular',x:80,y:24},{id:'offer',x:41,y:53},{id:'game',x:45,y:31},{id:'cup',x:19,y:57}],
+    wide:[{id:'owner',x:25,y:27},{id:'regular',x:73,y:29},{id:'offer',x:51,y:65},{id:'game',x:46,y:29},{id:'cup',x:12,y:62}]},
 };
 function InnRoom({region,busy,error,choose,leave,champion,gameWon}:{region:InnRegion,busy:boolean,error:string,choose:(mode:Mode)=>void,leave:()=>void,champion:boolean,gameWon:boolean}){
  const def=INNS[region],art=innArt(region);

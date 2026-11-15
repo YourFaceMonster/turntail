@@ -31,3 +31,8 @@
 .turntale .tutorial-modal .puzzle-actions{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .turntale .tutorial-modal .puzzle-actions button{min-height:40px}
 @media(prefers-reduced-motion:reduce){.turntale .tutorial-modal .puzzle-hand .puzzle-tiles>button{transition:none}}
+
+/* Three chapter tabs on one row. */
+.turntale .tutorial-modal .tutorial-chapters{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.turntale .tutorial-modal .tutorial-chapters button{min-width:0;padding:8px 4px;font-size:12px;white-space:nowrap}
+.turntale .tutorial-modal .tutorial-chapters button svg{width:15px;height:15px}

@@ -8,7 +8,7 @@ import type {RoundResult} from './game';
 export type TournamentChallenger={name:string,avatar:string,title:string,level:number,goal:string,intro:readonly string[],win:string,lose:string};
 export const TOURNAMENT_GUEST={name:'단골 손님',avatar:'animal:🐼',level:3};
 export const INN_TOURNAMENT:readonly TournamentChallenger[]=[
- {name:'피오',avatar:'animal:🦉',title:'눈길의 주점 이야기꾼',level:2,goal:'이 판을 1등으로 마치고, 두 상대 모두 6장 이상 남기기',
+ {name:'피오',avatar:'animal:🦊',title:'눈길의 주점 이야기꾼',level:2,goal:'이 판을 1등으로 마치고, 두 상대 모두 6장 이상 남기기',
   intro:['첫 판은 나야! 걱정 마, 살살 할게. 아마도.','작은 패부터 술술 내는 게 내 방식이야.'],win:'와, 한 장도 못 따라갔네. 다음 상대는 만만치 않을걸?',lose:'헤헤, 이번엔 내가 이겼다! 이야깃거리 하나 생겼네.'},
  {name:'모란',avatar:'/story/inn-portrait-moran-v1.webp',title:'안개 나루 주점 주인',level:5,goal:'모란을 3등으로 만들기',
   intro:['뱃사람들은 페어를 아껴 두지. 끝에 가서 한꺼번에 쏟아붓거든.','자, 둘째 판. 화로만큼 뜨겁게 해 보자.'],win:'흐음, 내 페어가 다 막혔네. 막내한테 가서도 이렇게 해 봐.',lose:'봤지? 아껴 둔 패가 마지막에 빛나는 법이야.'},

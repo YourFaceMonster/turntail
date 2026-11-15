@@ -67,10 +67,12 @@ function Knots({win}:Win){
 const LEDGER:readonly {first:string|null,second:string|null,third:string}[]=[
  {first:'브란',second:'모렌',third:'티사'},{first:'칼로',second:'세빈',third:'도르'},{first:null,second:null,third:'하스'},{first:'에반',second:'리온',third:'모렌'},
 ];
+/** Row tap zones on the painted ledger (Codex 2026-11-15, docs/st7-ledger-v2-hit-areas.json), % of the 900×1100 page. */
+const LEDGER_ROWS=[{y:32,h:8},{y:40.8,h:8.2},{y:49.8,h:8},{y:58.6,h:8}] as const;
 function Ledger({win}:Win){
  const [miss,setMiss]=useState(0);
  const pick=(i:number)=>{if(LEDGER[i].first){cue('back');setMiss(m=>m+1);return;}win('1등 칸은 비어 있고, 2등 칸에만 이름 없는 왕관 표식이 남아 있었다.');};
- return <Shake on={miss}><div className="story-ledger-page"><table className="story-ledger"><thead><tr><th>판</th><th>1등</th><th>2등</th><th>3등</th></tr></thead><tbody>{LEDGER.map((row,i)=><tr key={i}><td><button onClick={()=>pick(i)} aria-label={`${i+1}번째 기록 고르기`}>{i+1}</button></td><td>{row.first||<span className="story-ledger-blank" aria-label="빈칸"/>}</td><td>{row.second||<span className="story-ledger-crown" aria-label="왕관 표식"><SuitEmblem s={3}/></span>}</td><td>{row.third}</td></tr>)}</tbody></table></div>
+ return <Shake on={miss}><div className="story-ledger-page is-painted" role="group" aria-label="오래된 승부 기록 · 이상한 줄을 고르세요">{LEDGER.map((row,i)=><button key={i} type="button" className="story-ledger-row" style={{top:`${LEDGER_ROWS[i].y}%`,height:`${LEDGER_ROWS[i].h}%`}} onClick={()=>pick(i)} aria-label={`${i+1}번째 기록 · 1등 ${row.first||'빈칸'} · 2등 ${row.second||'왕관 표식'} · 3등 ${row.third}`}/>)}</div>
   {miss>0&&<small className="story-puzzle-note">그 판은 이름이 모두 적혀 있어요. 빈 곳이 있는 줄을 찾아보세요.</small>}</Shake>;
 }
 

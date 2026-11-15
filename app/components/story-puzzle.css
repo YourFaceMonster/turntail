@@ -61,3 +61,9 @@
 .story-emblems.is-locked .story-emblem:last-child{translate:-14px 0}
 .story-emblems.is-locked .story-emblem{border-color:#f2c166;box-shadow:0 0 18px #f2c16699}
 @media(prefers-reduced-motion:reduce){.story-puzzle-shake,.story-knot.is-holding i{animation:none}.story-emblem{transition:none}}
+
+/* Painted ledger v2 (2026-11-15): the page itself shows the four rows; transparent buttons sit on each row. */
+.story-ledger-page.is-painted{position:relative;width:min(400px,100%);padding:0;aspect-ratio:900/1100;background-image:url(/story-events/st7-ledger-v2.webp)}
+.story-ledger-row{position:absolute;left:9.2%;width:38.4%;padding:0;border:0;border-radius:6px;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.story-ledger-row:hover,.story-ledger-row:focus-visible{background:#ffe39a33;outline:2px solid #c58d2e;outline-offset:-2px}
+.story-ledger-row:active{background:#ffe39a55}

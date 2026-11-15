@@ -70,3 +70,13 @@ test('device title record and screens',()=>{
  const html=renderToStaticMarkup(<InnTournamentResult game={view(mini,mini.players[0].token)} cup={game.rpgRun!.journey!.tournament} busy={false} next={()=>{}} back={()=>{}}/>);
  assert.match(html,/INN CUP · 1\/3/);assert.match(html,/달성/);assert.match(html,/다음 상대 · <b>모란/);assert.ok(!html.includes(TOURNAMENT_TITLE+'로'),'no title before the final');
 });
+
+test('inn conversations use the speaker paintings; the painted ST7 ledger has four tappable rows',async()=>{
+ const {existsSync,readFileSync}=await import('node:fs');
+ for(const key of ['moran','dokan','moro','rine'])for(const kind of ['portrait','wide'])assert.ok(existsSync(`public/story/inn-talk-${key}-${kind}-v1.webp`),`${key} ${kind}`);
+ assert.match(readFileSync('app/components/JourneyInn.tsx','utf8'),/speakerArt=\{\{\[def\.owner\]:innTalk\(def\.owner\),\[def\.regular\]:innTalk\(def\.regular\)\}\}/);
+ assert.ok(existsSync('public/story-events/st7-ledger-v2.webp'));
+ const {default:StoryPuzzle}=await import('../app/components/StoryPuzzle');
+ const html=renderToStaticMarkup(<StoryPuzzle id="st7-ledger" done={()=>{}}/>);
+ assert.equal((html.match(/story-ledger-row/g)||[]).length,4);assert.match(html,/3번째 기록 · 1등 빈칸 · 2등 왕관 표식/);
+});

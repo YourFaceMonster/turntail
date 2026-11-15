@@ -61,7 +61,7 @@ test('Mor\'s quill teaches one more recipe at each inn, and the inn paintings an
  const game=regionTwo();enterJourneyNode(game,'inn-2' as never);let run=game.rpgRun!;run={...run,relics:[...new Set([...run.relics,'mor-quill'])]};
  const before=knownRecipes(run).length;run=innAction(run,{op:'recipe'});
  assert.equal(knownRecipes(run).length,Math.min(4,before+2));assert.equal(run.relicActivations?.at(-1)?.relicId,'mor-quill');
- for(const region of [2,3] as const){const art=innArt(region);assert.equal(art.portrait,`/story/inn-${region}-portrait-v1.webp`);assert.ok(existsSync(new URL(`../public${art.portrait}`,import.meta.url)));}
+ for(const region of [2,3] as const){const art=innArt(region);assert.equal(art.portrait,`/story/inn-${region}-portrait-v${region===3?2:1}.webp`);assert.ok(existsSync(new URL(`../public${art.landscape}`,import.meta.url)));assert.ok(existsSync(new URL(`../public${art.portrait}`,import.meta.url)));}
  for(const who of ['moran','dokan','moro','rine'])assert.ok(existsSync(new URL(`../public/story/inn-portrait-${who}-v1.webp`,import.meta.url)),who);
  const html=renderToStaticMarkup(<InnArrivalReplay run={run} node="inn-2" close={()=>{}}/>);assert.match(html,/안개 나루 주점 · 다시 보기|폭포 아래 나루터/);
 });

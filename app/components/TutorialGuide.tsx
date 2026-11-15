@@ -10,6 +10,7 @@ import {TUTORIAL_LESSONS as lessons,tutorialAnswer} from '../../lib/tutorial';
 import {rpgHandSettlement,rpgOverflowSettlement} from '../../lib/rpg-rework';
 import {relicImage} from '../../lib/item-battle-relics';
 import './tutorial-0647.css';
+import './flat-tiles.css';
 
 /** RPG journey rules (2026-11-10). Demo numbers come from the live settlement functions, never hand-typed. */
 const RPG_NAMES=['나','AI 1','AI 2'];
@@ -44,7 +45,7 @@ export default function TutorialGuide({close}:{close:()=>void}){
  }
  function submit(){if(busyRef.current)return;const ok=tutorialAnswer(l,selected,finish);if(!ok){setMessage('안내에 맞는 패를 골라 다시 내보세요.');return;}play(l.hand.filter(tile=>selected.includes(tile.id)),()=>{if(l.kind==='finish'&&!finish){setFinish(1);setSelected([]);setMessage('상대 두 명이 한 장씩 가져왔어요. 다시 내가 선! 이제 마지막 3을 내세요.');return;}setDone(true);setMessage('좋아요! 직접 한 수를 익혔어요.');});}
  const actionDisabled=animating||basic&&!done&&(['color','number'].includes(l.kind)|| (l.kind==='draw'?!picked:!selected.length));
- return <div className="modal-shade tutorial-shade"><section className="modal tutorial-modal menu-surface" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+ return <div className="modal-shade tutorial-shade"><section className="modal tutorial-modal menu-surface flat-tiles" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
   <button className="close" onClick={close} aria-label="튜토리얼 닫기">×</button>
   <header className="tutorial-heading"><span className="tutorial-book" aria-hidden="true"><BookOpen/></span><div><span className="eyebrow">TURNTALE GUIDE</span><h2 id="tutorial-title">한 수씩 배워볼까요?</h2><p>직접 눌러 익히는 턴테일</p></div></header>
   <div className="tutorial-chapters" role="group" aria-label="배울 내용"><button aria-pressed={basic} onClick={()=>{setChapter('basic');reset();}}><BookOpen/>패와 기본 규칙</button><button aria-pressed={chapter==='rpg'} onClick={()=>{setChapter('rpg');reset();}}><Sparkles/>스토리모드 규칙</button><button aria-pressed={chapter==='puzzle'} onClick={()=>{setChapter('puzzle');reset();}}><Puzzle/>한 수 퍼즐</button></div>

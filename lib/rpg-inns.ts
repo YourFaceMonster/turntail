@@ -19,7 +19,9 @@ export const isInnNode=(id:unknown):id is InnNode=>id==='inn-2'||id==='inn-3';
 export const innRegionOf=(id:InnNode):InnRegion=>id==='inn-2'?2:3;
 /** Inn paintings: add the region here once /story/inn-<region>-portrait-v1.webp exists. Until then the region's crossing painting (no faces to mistake for the owner). */
 export const INN_ART_READY=new Set<InnRegion>([2,3]);
-export function innArt(region:InnRegion){if(INN_ART_READY.has(region))return {landscape:`/story/inn-${region}-wide-v1.webp`,portrait:`/story/inn-${region}-portrait-v1.webp`};const path=region===2?'/story/cross-4-border-portrait-v1.webp':'/story/cross-7-border-portrait-v1.webp';return {landscape:path,portrait:path};}
+/** v2 (2026-11-15): 달빛 등불 주점 repainted so Moro's black cat is visible (rim light, yellow eyes). */
+const INN_ART_VERSION:Partial<Record<InnRegion,number>>={3:2};
+export function innArt(region:InnRegion){const v=INN_ART_VERSION[region]||1;if(INN_ART_READY.has(region))return {landscape:`/story/inn-${region}-wide-v${v}.webp`,portrait:`/story/inn-${region}-portrait-v${v}.webp`};const path=region===2?'/story/cross-4-border-portrait-v1.webp':'/story/cross-7-border-portrait-v1.webp';return {landscape:path,portrait:path};}
 
 /** Offering heal per relic grade (user approved: common 15 · rare 25 · legendary 40). */
 export const OFFERING_HEAL:Record<RelicGrade,number>={common:15,rare:25,legendary:40};

@@ -1,0 +1,95 @@
+{
+  "asset": "/story-events/st7-ledger-v2.webp",
+  "width": 900,
+  "height": 1100,
+  "coordinate_space": "percent of full image; top-left origin; use image content box excluding object-fit letterbox",
+  "table": {
+    "x_start": 9,
+    "x_end": 47.8,
+    "y_start": 31.5,
+    "y_end": 67.1
+  },
+  "columns": [
+    {
+      "role": "dots",
+      "x_start": 9,
+      "x_end": 17.1
+    },
+    {
+      "role": "first",
+      "x_start": 17.1,
+      "x_end": 27.3
+    },
+    {
+      "role": "second",
+      "x_start": 27.3,
+      "x_end": 37.2
+    },
+    {
+      "role": "third",
+      "x_start": 37.2,
+      "x_end": 47.8
+    }
+  ],
+  "rows": [
+    {
+      "row": 1,
+      "dots": 1,
+      "y_start": 31.5,
+      "y_end": 40.4
+    },
+    {
+      "row": 2,
+      "dots": 2,
+      "y_start": 40.4,
+      "y_end": 49.4
+    },
+    {
+      "row": 3,
+      "dots": 3,
+      "y_start": 49.4,
+      "y_end": 58.2,
+      "anomaly": true,
+      "first": "blank stained",
+      "second": "red crown",
+      "third": "signature"
+    },
+    {
+      "row": 4,
+      "dots": 4,
+      "y_start": 58.2,
+      "y_end": 67.1
+    }
+  ],
+  "suggested_click_rows": [
+    {
+      "row": 1,
+      "x": 9.5,
+      "y": 32,
+      "width": 37.8,
+      "height": 8
+    },
+    {
+      "row": 2,
+      "x": 9.5,
+      "y": 40.8,
+      "width": 37.8,
+      "height": 8.2
+    },
+    {
+      "row": 3,
+      "x": 9.5,
+      "y": 49.8,
+      "width": 37.8,
+      "height": 8
+    },
+    {
+      "row": 4,
+      "x": 9.5,
+      "y": 58.6,
+      "width": 37.8,
+      "height": 8
+    }
+  ],
+  "note": "Manually inspected final 900x1100 image. Validate click positions in actual StoryPuzzle after integration."
+}
