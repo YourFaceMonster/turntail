@@ -36,8 +36,8 @@ export function RogueTrapEffects({game,onHit,onHpPresentation}:{game:View,onHit:
   return()=>{clearTimeout(impact);clearTimeout(done);animations.forEach(animation=>animation.cancel());callbacks.current.onHpPresentation(null);};
  },[event?.id,game.me]);
  if(safe)return createPortal(<div className="trap-recovery-notice" role="status">내 함정을 안전하게 회수했어요 · 피해 없음</div>,document.body);
- if(!scene)return null;const {event:hit,impact}=scene,coin=game.floorCoins?.events.at(-1),discovery=game.floorCoins?.lastDiscovery,yieldsToCoin=[coin,discovery].some(value=>value&&value.index===hit.index&&value.at>=hit.at&&value.at<hit.at+1000),ownerNames=(hit.owners||[hit.owner]).map(owner=>game.players[owner].name).join(' · ');
- return <>{createPortal(<div className={`trap-presentation ${impact?'is-impact':'is-revealing'} ${yieldsToCoin?'yields-to-coin':''}`} data-trap-phase={impact?'impact':'revealing'}>
+ if(!scene)return null;const {event:hit,impact}=scene,ownerNames=(hit.owners||[hit.owner]).map(owner=>game.players[owner].name).join(' · ');
+ return <>{createPortal(<div className={`trap-presentation ${impact?'is-impact':'is-revealing'}`} data-trap-phase={impact?'impact':'revealing'}>
   <div className="trap-impact-title" style={{left:scene.center.x,top:scene.center.y}} role="status" aria-live="polite"><strong>{impact?'쾅! 함정 발동':'함정을 밟았다!'}</strong><span>{impact?`${game.players[hit.target].name} ${hit.damage?`HP −${hit.damage}`:'피해 방어'}`:`${ownerNames}의 숨겨둔 함정`}</span></div>
  </div>,document.body)}
  {scene.floor&&createPortal(<span className={`trap-floor-scene ${impact?'is-impact':''}`} aria-hidden="true"><i/><i/><img src="/item-battle-v1/trap-v1.webp" alt=""/><b>쾅!</b></span>,scene.floor)}

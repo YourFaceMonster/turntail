@@ -16,8 +16,8 @@ test('settlement preview matches the real round end, overflow included, from pub
  assert.deepEqual(rpgSettlementPreview({hp:[95,50,50],equipped:[]},[3,6,4]),[5,-15,0]);
  // A fallen seat neither pays nor receives.
  assert.deepEqual(rpgSettlementPreview({hp:[60,0,50],equipped:[]},[2,5,4]),[4,0,-4],'AI 2 pays its own 4 tiles; seat 1 is out');
- // Cracked heart raises the player's cap to 120, so nothing overflows here.
- assert.deepEqual(rpgSettlementPreview({hp:[110,50,50],equipped:['cracked-heart']},[0,6,4]),[10,-12,2]);
+ // Cracked heart raises the player's cap to 115: +10 caps at +5 and the overflow 5 returns as 3 and 2.
+ assert.deepEqual(rpgSettlementPreview({hp:[110,50,50],equipped:['cracked-heart']},[0,6,4]),[5,-15,0]);
 });
 
 test('fast pacing skips the combo announcement on local games only',()=>{

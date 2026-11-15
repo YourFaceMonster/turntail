@@ -98,6 +98,7 @@ export const CHAPTER_ART_SLOTS:Record<string,{placeholder:{landscape:string,port
  ...Object.fromEntries([4,5,6,7,8,9,10].flatMap(stage=>[
   [`st${stage}-before`,{placeholder:ENV(stage),note:`ST${stage} ${JOURNEY_STAGE_NAMES[stage]} · 승부 전`}],
   [`st${stage}-after`,{placeholder:ENV(stage),note:`ST${stage} ${JOURNEY_STAGE_NAMES[stage]} · 승리 후`}],
+  [`st${stage}-duel`,{placeholder:ENV(stage),note:`ST${stage} ${JOURNEY_STAGE_NAMES[stage]} · 승부 직전 클로즈업`}],
  ])),
  ...Object.fromEntries(STORY_QUESTS.map(quest=>[quest.id,{placeholder:ENV(quest.stage),note:`서브퀘스트 · ${quest.name} (${quest.speaker})`}])),
  'dice-den':{placeholder:ENV(4),note:'서브퀘스트 · 안개 나루 주사위판 (폭포 아래 나룻배 창고, 노름꾼 하로와 요트다이스)'},
@@ -122,6 +123,6 @@ export function chapterArtFinalPaths(key:string){return FINAL(key);}
  */
 export function stageArtToPreload(stage:number,wide=false):string[]{
  if(stage<4||stage>10)return [];
- const keys=[`st${stage}-before`,...STORY_QUESTS.filter(quest=>quest.stage===stage).map(quest=>quest.id),`st${stage}-after`];
+ const keys=[`st${stage}-before`,`st${stage}-duel`,...STORY_QUESTS.filter(quest=>quest.stage===stage).map(quest=>quest.id),`st${stage}-after`];
  return [...new Set(keys.filter(key=>CHAPTER_ART_SLOTS[key]).map(key=>wide?chapterArt(key).landscape:chapterArt(key).portrait))];
 }

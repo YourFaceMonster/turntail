@@ -6,10 +6,11 @@ import {INNS,innArt,innRegionOf,isInnNode,innRecipeLine,offerableRelics,offering
 import {RELIC_GRADES,reworkRelic,rpgMaxHp} from '../../lib/rpg-rework';
 import {gameRelic,relicImage} from '../../lib/item-battle-relics';
 import type {RpgRun} from '../../lib/rpg';
+import {INN_TOURNAMENT,TOURNAMENT_TITLE} from '../../lib/inn-tournament';
 import './journey-inn.css';
 
 type Props={run:RpgRun,busy:boolean,error:string,action:(action:string,extra?:Record<string,unknown>)=>void};
-type Mode='arrival'|'menu'|'rumor'|'recipe'|'offer'|'intro'|'game'|'result';
+type Mode='arrival'|'menu'|'rumor'|'recipe'|'offer'|'intro'|'game'|'result'|'cup'|'owner'|'regular';
 const GRADE_NAME={common:'일반',rare:'희귀',legendary:'전설'} as const;
 
 /** Menu card faces (Codex 2026-11-13, 512px WebP). */
@@ -25,7 +26,7 @@ export default function JourneyInnView({run,busy,error,action}:Props){
  const back=()=>{setMode('menu');setLast(null);};
  const meet=()=>{if(!inn.met)action('rpg-inn',{op:'meet'});};
  const scene=(key:string,pairs:readonly (readonly [string,string])[],choices:{label:string,choose:()=>void,disabled?:boolean}[],details?:ReactNode)=>
-  <QuestCutscene key={key} title={def.name} speaker={def.owner} speakers={pairs.map(p=>p[0])} lines={pairs.map(p=>p[1])} scene="room" art={art} busy={busy} error={error} close={()=>action('rpg-journey-map')} choices={choices} details={details}/>;
+  <QuestCutscene key={key} title={def.name} speaker={def.owner} speakers={pairs.map(p=>p[0])} lines={pairs.map(p=>p[1])} scene="room" art={art} busy={busy} error={error} close={()=>{meet();back();}} choices={choices} details={details}/>;
  const toMenu={label:'주점 안을 둘러본다',choose:back};
 
  if(mode==='result'&&last?.kind==='game'){
@@ -42,6 +43,18 @@ export default function JourneyInnView({run,busy,error,action}:Props){
  /** Menu and offering are panels over the inn painting: the cutscene box is sized for two choices only. */
  const panel=(label:string,body:ReactNode)=><section className="journey-inn-panel" aria-label={label} style={{'--inn-art':`url('${art.portrait}')`} as CSSProperties}><div className="journey-inn-card"><header><small>{label===def.name?'모르 삼남매의 주점':def.name}</small><h3>{label}</h3></header>{body}</div></section>;
  if(mode==='game')return panel(def.gameName,def.game==='high-low'?<HighLowGame finish={score=>{setLast({kind:'game',score,before:inn.gameRelic});action('rpg-inn',{op:'game',score});setMode('result');}} quit={back}/>:<MemoryGame finish={score=>{setLast({kind:'game',score,before:inn.gameRelic});action('rpg-inn',{op:'game',score});setMode('result');}} quit={back}/>);
+ if(mode==='cup'){
+  const cup=j.tournament,ready=run.status==='ready';
+  return panel('여관 토너먼트',<div className="inn-cup">
+   <p className="inn-line"><b>{def.owner}</b>눈길의 주점 피오부터 모란, 모로까지 차례로 한 판씩 붙는 세 판 승부야. 세 판 중 두 판을 1등으로 마치면 우승!</p>
+   <ol className="inn-cup-rounds">{INN_TOURNAMENT.map((c,i)=><li key={c.name}><b>{i+1}판 · {c.name}</b><small>{c.title}</small><small className="inn-cup-goal">특별 목표 · {c.goal}</small></li>)}</ol>
+   <p className="inn-offer-note">일반 대결 규칙으로 겨뤄요. HP·유물·주화·스테이지는 변하지 않고, 우승하면 칭호 <b>{TOURNAMENT_TITLE}</b>와 기록이 남아요.</p>
+   {cup?.finished&&<p className="inn-cup-last">지난 토너먼트 · {cup.champion?'우승':'준우승 이하'} · 1등 {cup.wins.length}판 · 특별 목표 {cup.goals.length}/3</p>}
+   {error&&<p role="alert" className="inn-error">{error}</p>}
+   <button className="primary full" disabled={busy||!ready} onClick={()=>action('rpg-tournament-start')}>{cup?.finished?'다시 도전':'토너먼트 시작'}</button>
+   <button className="secondary full" onClick={back}>주점 안을 둘러본다</button>
+  </div>);
+ }
  if(mode==='offer'){
   const max=run.rework?rpgMaxHp(run):100,full=run.hp[0]>=max,list=offerableRelics(run);
   const pairs=last?.kind==='offer'?def.offerThanks(last.heal):def.offerIntro;
@@ -55,18 +68,36 @@ export default function JourneyInnView({run,busy,error,action}:Props){
    <button className="primary full" onClick={back}>주점 안을 둘러본다</button>
   </div>);
  }
- if(mode==='arrival')return scene('arrival',def.arrival(letterDone,visitedOther),[{label:'주점 안으로 들어간다',choose:()=>{meet();setMode('menu');}}]); const [owner,line]=def.welcomeBack[0];
- return panel(def.name,<div className="inn-menu">
-  <p className="inn-line"><b>{owner}</b>{line}</p>
-  <ul className="inn-people"><li><img src={innPortrait(def.owner)} alt=""/><span><b>{def.owner}</b><small>{def.ownerTitle} · {def.pet}</small></span></li><li><img src={innPortrait(def.regular)} alt=""/><span><b>{def.regular}</b><small>{def.regularTitle}</small></span></li></ul>
-  <div className="inn-menu-actions">
-   <button className="secondary" onClick={()=>{if(!inn.rumor)action('rpg-inn',{op:'rumor'});setMode('rumor');}}><b>{def.owner}의 소문</b><small>{inn.rumor?'다시 듣기':'소문 수첩에 적어요'}</small></button>
-   <button className="secondary" onClick={()=>{if(!inn.recipeDone)action('rpg-inn',{op:'recipe'});setMode('recipe');}}><b>{def.regular}의 조합법</b><small>{inn.recipeDone?'다시 듣기':'합성 조합법 1개'}</small></button>
-   <button className="secondary" onClick={()=>setMode('offer')}><b>유물 바치기</b><small>{def.offerLabel} · HP 회복</small></button>
-   <button className="secondary" onClick={()=>setMode('intro')}><b>{def.gameName}</b><small>{inn.gameWon?'연습 · 보상은 받았어요':'처음 달성하면 유물 1개'}</small></button>
-  </div>
-  <button className="primary full" onClick={()=>action('rpg-journey-map')}>지도로 돌아간다</button>
- </div>);
+ if(mode==='arrival')return scene('arrival',def.arrival(letterDone,visitedOther),[{label:'주점 안으로 들어간다',choose:()=>{meet();setMode('menu');}}]);
+ if(mode==='owner')return scene('owner',def.welcomeBack,[{label:`${def.owner}의 소문 듣기`,choose:()=>{if(!inn.rumor)action('rpg-inn',{op:'rumor'});setMode('rumor');}},{label:'대화를 마친다',choose:back}]);
+ if(mode==='regular')return scene('regular',[[def.regular,`${def.regularTitle}라네. 합성 조합법이 궁금한가?`]],[{label:inn.recipeDone?'조합법 다시 듣기':'조합법 듣기',choose:()=>{if(!inn.recipeDone)action('rpg-inn',{op:'recipe'});setMode('recipe');}},toMenu]);
+ return <InnRoom region={region} busy={busy} error={error} choose={setMode} leave={()=>action('rpg-journey-map')} champion={!!j.tournament?.champion} gameWon={!!inn.gameWon}/>;
+}
+
+/** Hotspots on the inn painting, in % of the image (portrait 1024×1600 / wide 1672×941), like 눈길의 주점. */
+type Spot={id:'owner'|'regular'|'offer'|'game'|'cup',x:number,y:number};
+const INN_SPOTS:Record<InnRegion,{portrait:Spot[],wide:Spot[]}>={
+ 2:{portrait:[{id:'owner',x:60,y:23},{id:'regular',x:84,y:33},{id:'offer',x:46,y:57},{id:'game',x:27,y:39},{id:'cup',x:19,y:53}],
+    wide:[{id:'owner',x:54,y:19},{id:'regular',x:74,y:37},{id:'offer',x:48,y:62},{id:'game',x:32,y:41},{id:'cup',x:18,y:52}]},
+ 3:{portrait:[{id:'owner',x:22,y:29},{id:'regular',x:80,y:29},{id:'offer',x:41,y:53},{id:'game',x:45,y:31},{id:'cup',x:19,y:57}],
+    wide:[{id:'owner',x:26,y:34},{id:'regular',x:73,y:35},{id:'offer',x:51,y:65},{id:'game',x:46,y:29},{id:'cup',x:12,y:62}]},
+};
+function InnRoom({region,busy,error,choose,leave,champion,gameWon}:{region:InnRegion,busy:boolean,error:string,choose:(mode:Mode)=>void,leave:()=>void,champion:boolean,gameWon:boolean}){
+ const def=INNS[region],art=innArt(region);
+ const label=(id:Spot['id'])=>id==='owner'?{name:def.owner,small:`${def.ownerTitle} · 소문`,mode:'owner' as Mode}
+  :id==='regular'?{name:def.regular,small:`${def.regularTitle} · 조합법`,mode:'regular' as Mode}
+  :id==='game'?{name:region===2?'카운터':'장부 서랍',small:gameWon?`${def.gameName} · 연습`:def.gameName,mode:'intro' as Mode}
+  :id==='offer'?{name:region===2?'화로':'기록 상자',small:'유물 바치기',mode:'offer' as Mode}
+  :{name:'승부 탁자',small:champion?TOURNAMENT_TITLE:'여관 토너먼트',mode:'cup' as Mode};
+ const layer=(kind:'portrait'|'wide')=><div className={`inn-room-art inn-room-${kind}`} style={{'--inn-room-art':`url('${kind==='wide'?art.landscape:art.portrait}')`} as CSSProperties}>
+  {INN_SPOTS[region][kind].map(spot=>{const l=label(spot.id),person=spot.id==='owner'||spot.id==='regular';return <button key={spot.id} type="button" className={`inn-spot ${person?'is-person':'is-object'}`} style={{left:`${spot.x}%`,top:`${spot.y}%`}} disabled={busy} onClick={()=>choose(l.mode)} aria-label={`${l.name} · ${l.small}`}><strong>{l.name}</strong>{!person&&<small>{l.small}</small>}</button>;})}
+ </div>;
+ return <section className="inn-room" role="group" aria-label={`${def.name} · 사람이나 사물을 눌러 보세요`} style={{'--inn-room-fill':`url('${art.portrait}')`} as CSSProperties}>
+  {layer('portrait')}{layer('wide')}
+  <button className="tavern-door inn-room-door" disabled={busy} onClick={leave}>문 밖으로 →<small>여정 지도로 돌아가기</small></button>
+  <p className="tavern-invitation inn-room-invitation">사람이나 사물을 눌러 보세요</p>
+  {error&&<p className="journey-error" role="alert">{error}</p>}
+ </section>;
 }
 /** "이야기 다시 보기": replays an inn's first-visit lines (read-only, nothing is recorded). */
 export function InnArrivalReplay({run,node,close}:{run:RpgRun,node:'inn-2'|'inn-3',close:()=>void}){

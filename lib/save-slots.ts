@@ -1,5 +1,4 @@
 import {hpLimit} from './hp-limit';
-import {readHpItemArchive} from './hp-item-mode.ts';
 import type {Game} from './game.ts';
 import {RPG_PHASE_ONE_STORAGE_KEY,readRpgArchive} from './rpg-storage.ts';
 import {readRpgTestGame} from './rpg-test-storage.ts';
@@ -16,7 +15,7 @@ export function readSaveSlots(storage:StoragePort){
  try{const g=readRpgArchive(storage).active;if(g)slots.push({mode:'rpg',title:'스토리모드',detail:`${g.players[0].name} · STAGE ${g.rpgRun!.stage}/${g.rpgRun!.phaseOne?3:10} · HP ${g.rpgRun!.hp[0]} · 운명력 ${g.rpgRun!.fate}${g.rpgRun!.journey?'/3':''}${g.rpgRun!.journey?.location==='mini-game'?` · 주점 승부 ${g.rpgRun!.journey.mini?.game.rpgMini?.roundIndex}/3`:g.rpgRun!.journey?.location==='tavern'?' · 주점':g.rpgRun!.journey?.location==='map'?' · 지도':''}`,game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push('스토리 여정 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
  try{const g=readRpgTestGame(storage);if(g&&['playing','allocation','relic','ready'].includes(g.rpgRun!.status))slots.push({mode:'rpg-test',title:'이전 RPG 장비 테스트',detail:`${g.players[0].name} · STAGE ${g.rpgRun!.stage}/3 · 유물 ${g.rpgRun!.relics.length}개 · 아이템 ${g.rpgRun!.consumables.length}개`,game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push('RPG 테스트 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
  // Retired item-mode-1 archives remain untouched and never produce a resume slot.
- try{const g=readHpItemArchive(storage,2).active;if(g)slots.push({mode:'hp-item-2',title:`아이템전 · ${g.hpItemRules===4?'포인트 상점·전투·스킬':'이전 규칙'}`,detail:`${g.players[0].name} · 라운드 ${g.round} · HP ${g.rpgRun!.hp[0]}/${hpLimit(g.rpgRun)}`,game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push('HP 아이템전 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
+ try{const g=(JSON.parse(storage.getItem('turntale-hp-items-2-v1')||'null') as {active?:Game}|null)?.active;if(g?.code&&g.players?.[0]&&g.rpgRun)slots.push({mode:'hp-item-2',title:'아이템전 · 종료된 모드',detail:`${g.players[0].name} · 라운드 ${g.round} · HP ${g.rpgRun!.hp[0]}/${hpLimit(g.rpgRun)}`,game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push('HP 아이템전 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
  try{const s=json<Session>(storage,'jangseong-session');if(s&&!s.local&&s.code&&s.token)slots.push({mode:'multi',title:'멀티플레이',detail:`방 코드 ${s.code} · 방 상태 확인 후 이어하기`,session:s});}catch{errors.push('멀티플레이 연결 정보를 읽지 못했어요.');}
  return {slots,errors};
 }

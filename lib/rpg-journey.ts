@@ -13,6 +13,7 @@ import {JOURNEY_STAGE_NAMES,journeyRegion,journeyTargetStage,isStoryEventId,isSt
 export {JOURNEY_STAGE_NAMES};
 import type {RpgRun} from './rpg.ts';
 import {isInnNode,validInnState,type InnNode,type InnRegion,type InnState} from './rpg-inns.ts';
+import {INN_TOURNAMENT,TOURNAMENT_GUEST,TOURNAMENT_ROUNDS,tournamentGoalMet,tournamentMatchWon,type TournamentState} from './inn-tournament.ts';
 
 export type JourneyNode='battle-1'|'tavern'|'letter-alley'|'wayfarer-stop'|'watchtower'|'battle-2'|'battle-3'|'battle-4'|'battle-5'|'battle-6'|'battle-7'|'battle-8'|'battle-9'|'battle-10'|'quest-4'|'quest-5'|'quest-6'|'quest-8'|'quest-9'|'dice-den'|InnNode;
 /** ST4~6 Yacht Dice side quest: one saved match, HP stake on loss, relic on first win. */
@@ -20,7 +21,7 @@ export type DiceDenState={match?:YachtMatch,result?:'win'|'lose'|'draw'|'forfeit
 export type JourneyMini={game:Game,roundIds:string[],lastReward:number};
 export type LetterQuest={step:'alley'|'recovered'|'complete'|'failed',defeated?:boolean};
 export type VillageRequestReward='coins'|'heal';
-export type RpgJourneyState={version:1,livesVersion?:1,retryStage?:number,seenScenes?:string[],location:'map'|'tavern'|'market-alley'|'wayfarer-stop'|'watchtower'|'battle'|'mini-game'|'story-quest'|'dice-den'|'inn',diceDen?:DiceDenState,/** Region inns (ST4~6, ST7~9). */inns?:Partial<Record<InnRegion,InnState>>,currentNode:JourneyNode,story?:StoryQuestState,startedStages:number[],completedNodes:JourneyNode[],villageRequestReward?:VillageRequestReward,letterQuest?:LetterQuest,wayfarerHerbGiven?:boolean,watchtowerRelicFound?:boolean,watchtowerRelicClaimed?:boolean,rumors:string[],/** Recipes Pio taught this journey (set once he has spoken). */pioRecipes?:string[],tavernRewardPaid:boolean,miniSummary?:{roundIndex:number,finished:boolean},mini?:JourneyMini,letterMini?:JourneyMini,miniKind?:'tavern'|'letter'};
+export type RpgJourneyState={version:1,livesVersion?:1,retryStage?:number,seenScenes?:string[],location:'map'|'tavern'|'market-alley'|'wayfarer-stop'|'watchtower'|'battle'|'mini-game'|'story-quest'|'dice-den'|'inn',diceDen?:DiceDenState,/** Region inns (ST4~6, ST7~9). */inns?:Partial<Record<InnRegion,InnState>>,currentNode:JourneyNode,story?:StoryQuestState,startedStages:number[],completedNodes:JourneyNode[],villageRequestReward?:VillageRequestReward,letterQuest?:LetterQuest,wayfarerHerbGiven?:boolean,watchtowerRelicFound?:boolean,watchtowerRelicClaimed?:boolean,rumors:string[],/** Recipes Pio taught this journey (set once he has spoken). */pioRecipes?:string[],tavernRewardPaid:boolean,miniSummary?:{roundIndex:number,finished:boolean},mini?:JourneyMini,letterMini?:JourneyMini,miniKind?:'tavern'|'letter'|'tournament',/** 여관 토너먼트 (region inns). */tournamentMini?:JourneyMini,tournament?:TournamentState};
 /** Trial values for this three-stage prototype; never used by normal or HP item play. */
 export const JOURNEY_TRIAL={villageRequestHeal:5,villageRequestCoins:5,miniRounds:3,miniRewards:[12,8,4]} as const;
 export const JOURNEY_RUMOR={id:'sheltered-light',title:'모르의 등불 이야기',text:'금이 간 심장 곁에 회복의 등불을 장착해 보게. 둘을 함께 지니고 싸우면, 승부를 마친 뒤 등불이 조금 더 힘을 내지.'};
@@ -53,7 +54,7 @@ export const JOURNEY_NODES:{id:JourneyNode,name:string,x:number,y:number,portrai
  {id:'battle-10',name:'ST10 · 붉은 세계수',x:52,y:39,portrait:{x:50,y:48},kind:'battle',region:4},
 ];
 export function initRpgJourney(game:Game){
- const run=game.rpgRun;if(!run?.phaseOne||game.hpItemMode||game.rpgTest)throw Error('새 스토리 여정에서 시작해 주세요.');
+ const run=game.rpgRun;if(!run?.phaseOne||game.rpgTest)throw Error('새 스토리 여정에서 시작해 주세요.');
  run.storyCards=['crown-two'];run.fate=3;run.journey={version:1,livesVersion:1,location:'map',currentNode:'battle-1',startedStages:[],completedNodes:[],rumors:[],tavernRewardPaid:false};
  game.phase='ended';game.turnDeadline=0;
 }
@@ -73,7 +74,7 @@ export function journeyNodeState(run:RpgRun,id:JourneyNode):'available'|'complet
  const next=j.retryStage|| (j.startedStages.length===0&&run.stage===1&&run.status==='playing'?1:run.status==='ready'?run.stage+1:0);
  return id===`battle-${next}`?'available':'locked';
 }
-function journeyGame(game:Game){const run=game.rpgRun;if(!run?.journey||!run.phaseOne||game.hpItemMode||game.rpgTest)throw Error('탐험형 스토리 여정이 아니에요.');return {run,j:run.journey};}
+function journeyGame(game:Game){const run=game.rpgRun;if(!run?.journey||!run.phaseOne||game.rpgTest)throw Error('탐험형 스토리 여정이 아니에요.');return {run,j:run.journey};}
 /** Returns a stage for the caller to enter through the existing combat factory. */
 export function visitJourneyNode(game:Game,id:JourneyNode):number|undefined{
  const {run,j}=journeyGame(game);
@@ -221,8 +222,15 @@ export function equipJourneyRelic(run:RpgRun,id:string,replace?:string):RpgRun{
  else{if(equipped.length>=rpgRelicSlots(run)){if(!replace||!equipped.includes(replace))throw Error('교체할 장착 유물을 선택해 주세요.');equipped=equipped.filter(relic=>relic!==replace);}equipped.push(id);}
  return activateRpgRelics({...run,equipped,updatedAt:Date.now()});
 }
-function createJourneyMini(game:Game,now:number,purpose:'tavern'|'letter'){
+function createJourneyMini(game:Game,now:number,purpose:'tavern'|'letter'|'tournament'){
  const run=game.rpgRun!,j=run.journey!;
+ if(purpose==='tournament'){
+  const human=player(game.players[0].name);human.avatar=game.players[0].avatar;
+  const child=room('INN-CUP-'+uid(),human,true,3),first=INN_TOURNAMENT[0],challenger=player(first.name,true),guest=player(TOURNAMENT_GUEST.name,true);challenger.avatar=first.avatar;guest.avatar=TOURNAMENT_GUEST.avatar;
+  child.players.push(challenger,guest);child.rpgMini={storyOnly:true,journeyId:run.id,roundIndex:1,totalRounds:3,reward:0,purpose,aiLevels:[0,first.level,TOURNAMENT_GUEST.level]};start(child,now);
+  j.tournamentMini={game:child,roundIds:[],lastReward:0};j.tournament={wins:[],goals:[],played:j.tournament?.played||0};
+  j.miniKind=purpose;j.location='mini-game';run.updatedAt=now;return;
+ }
  const existing=purpose==='letter'?j.letterMini:j.mini;
  if(!existing||existing.roundIds.length===JOURNEY_TRIAL.miniRounds){
   const human=player(game.players[0].name);human.avatar=game.players[0].avatar;
@@ -244,12 +252,21 @@ export function startLetterDuel(game:Game,now=Date.now()){
  const {run,j}=journeyGame(game);if(j.location!=='market-alley'||letterQuestView(j)?.step!=='alley'||run.status!=='ready')throw Error('시장 뒤 골목에서 편지 내기를 시작할 수 있어요.');
  j.letterQuest=letterQuestView(j);createJourneyMini(game,now,'letter');
 }
-export function activeJourneyMini(game:Game){const j=game.rpgRun?.journey;if(j?.location!=='mini-game')return undefined;return (j.miniKind==='letter'?j.letterMini:j.mini)?.game;}
-function activeMiniState(j:RpgJourneyState){return j.miniKind==='letter'?j.letterMini:j.mini;}
+export function activeJourneyMini(game:Game){const j=game.rpgRun?.journey;if(j?.location!=='mini-game')return undefined;return activeMiniState(j)?.game;}
+export function activeMiniState(j:RpgJourneyState){return j.miniKind==='letter'?j.letterMini:j.miniKind==='tournament'?j.tournamentMini:j.mini;}
+/** 여관 토너먼트 · opened from a region inn between stages. */
+export function startInnTournament(game:Game,now=Date.now()){const {run,j}=journeyGame(game);if(j.location!=='inn'||!isInnNode(j.currentNode)||run.status!=='ready')throw Error('지역 주점에서 스테이지 사이에만 토너먼트를 열 수 있어요.');createJourneyMini(game,now,'tournament');}
 export function settleJourneyMini(game:Game,now=Date.now()){
  const {run,j}=journeyGame(game),mini=activeMiniState(j),child=mini?.game;
  if(j.location!=='mini-game'||!mini||!child||child.phase!=='ended'||!child.result||mini.roundIds.includes(child.result.id))return;
  mini.roundIds.push(child.result.id);
+ if(j.miniKind==='tournament'){
+  const round=mini.roundIds.length,cup=j.tournament||{wins:[],goals:[],played:0};
+  if(tournamentMatchWon(child.result))cup.wins=[...cup.wins,round];
+  if(tournamentGoalMet(round,child.result))cup.goals=[...cup.goals,round];
+  if(round===TOURNAMENT_ROUNDS){cup.finished=true;cup.champion=cup.wins.length>=2;cup.played+=1;child.rpgMini!.won=cup.champion;}
+  j.tournament=cup;run.updatedAt=now;return;
+ }
  if(mini.roundIds.length===JOURNEY_TRIAL.miniRounds){
   if(j.miniKind==='letter'){
    const outcome=letterDuelOutcome(child.players),won=outcome==='win';
@@ -265,9 +282,10 @@ export function settleJourneyMini(game:Game,now=Date.now()){
 export function nextJourneyMiniRound(game:Game,now=Date.now()){
  const {j}=journeyGame(game),mini=activeMiniState(j);
  if(j.location!=='mini-game'||!mini||mini.game.phase!=='ended'||mini.roundIds.length>=JOURNEY_TRIAL.miniRounds||!mini.game.result||!mini.roundIds.includes(mini.game.result.id))throw Error('이번 승부의 결과를 먼저 확인해 주세요.');
+ if(j.miniKind==='tournament'){const next=INN_TOURNAMENT[mini.roundIds.length],seat=mini.game.players[1];seat.name=next.name;seat.avatar=next.avatar;mini.game.rpgMini!.aiLevels=[0,next.level,TOURNAMENT_GUEST.level];}
  start(mini.game,now);mini.game.rpgMini!.roundIndex=mini.roundIds.length+1;
 }
-export function leaveJourneyMini(game:Game){const {run,j}=journeyGame(game);if(j.location!=='mini-game')throw Error('진행 중인 승부가 없어요.');if(j.miniKind==='letter'){const resolved=['recovered','failed'].includes(letterQuestView(j)?.step||'');j.location=resolved?'tavern':'market-alley';if(resolved){j.completedNodes=[...new Set<JourneyNode>([...j.completedNodes,'letter-alley'])];j.currentNode='tavern';}}else j.location='tavern';j.miniKind=undefined;run.updatedAt=Date.now();}
+export function leaveJourneyMini(game:Game){const {run,j}=journeyGame(game);if(j.location!=='mini-game')throw Error('진행 중인 승부가 없어요.');if(j.miniKind==='tournament'){j.location='inn';j.miniKind=undefined;run.updatedAt=Date.now();return;}if(j.miniKind==='letter'){const resolved=['recovered','failed'].includes(letterQuestView(j)?.step||'');j.location=resolved?'tavern':'market-alley';if(resolved){j.completedNodes=[...new Set<JourneyNode>([...j.completedNodes,'letter-alley'])];j.currentNode='tavern';}}else j.location='tavern';j.miniKind=undefined;run.updatedAt=Date.now();}
 /** Journey locations drawn by RpgJourneyScene (map and every hub); the table/result stays hidden while one is open. */
 export const JOURNEY_SCENE_LOCATIONS:readonly string[]=['map','tavern','market-alley','wayfarer-stop','watchtower','story-quest','dice-den','inn'] satisfies readonly RpgJourneyState['location'][];
 export function journeyDisplayGame(game:Game){return activeJourneyMini(game)||game;}
@@ -281,7 +299,7 @@ export function validateJourneySave(game:Game){
  if(!unique(run.relics)||!unique(run.equipped)||run.equipped.length>3||run.equipped.some(id=>!run.relics.includes(id))||!Array.isArray(run.consumables))invalid();
  if(j.livesVersion===undefined){if(!run.rework&&run.fate===0&&!['game-over','complete','abandoned'].includes(run.status))run.fate=3;j.livesVersion=1;}if(j.livesVersion!==1||!Number.isInteger(run.fate)||run.fate<0||run.fate>3||j.retryStage!==undefined&&(!Number.isInteger(j.retryStage)||j.retryStage!==run.stage||j.location!=='map'||run.status!=='playing'))invalid();
  if(!run.phaseOne||j.version!==1||!['map','tavern','market-alley','wayfarer-stop','watchtower','battle','mini-game','story-quest','dice-den','inn'].includes(j.location)||!nodes.has(j.currentNode)||!unique(j.startedStages)||!j.startedStages.every(stage=>Number.isInteger(stage)&&stage>=1&&stage<=10)||!unique(j.completedNodes)||!j.completedNodes.every(node=>nodes.has(node))||!Array.isArray(j.rumors)||!j.rumors.every(id=>typeof id==='string')||typeof j.tavernRewardPaid!=='boolean'||j.wayfarerHerbGiven!==undefined&&typeof j.wayfarerHerbGiven!=='boolean'||j.watchtowerRelicFound!==undefined&&typeof j.watchtowerRelicFound!=='boolean'||j.watchtowerRelicClaimed!==undefined&&typeof j.watchtowerRelicClaimed!=='boolean'||j.watchtowerRelicClaimed&&!j.watchtowerRelicFound)invalid();
- if(j.location==='mini-game'&&(j.miniKind!==undefined&&!['tavern','letter'].includes(j.miniKind)||j.miniKind==='letter'&&!j.letterMini||j.miniKind!=='letter'&&!j.mini))invalid();
+ if(j.location==='mini-game'&&(j.miniKind!==undefined&&!['tavern','letter','tournament'].includes(j.miniKind)||j.miniKind==='letter'&&!j.letterMini||j.miniKind==='tournament'&&!j.tournamentMini||(j.miniKind===undefined||j.miniKind==='tavern')&&!j.mini))invalid();
  if(j.letterQuest!==undefined&&(!['alley','recovered','complete','failed'].includes(j.letterQuest.step)||j.letterQuest.defeated!==undefined&&typeof j.letterQuest.defeated!=='boolean'))invalid();
  if(j.villageRequestReward!==undefined&&j.villageRequestReward!=='coins'&&j.villageRequestReward!=='heal')invalid();
  if(j.story!==undefined&&(!Number.isInteger(j.story.runNumber)||j.story.runNumber<1||typeof j.story.quests!=='object'||!j.story.quests||Object.entries(j.story.quests).some(([key,value])=>!isStoryQuestId(key)||value!=='read'&&value!=='skip')||j.story.secondPlaceSeen!==undefined&&typeof j.story.secondPlaceSeen!=='boolean'||j.story.events!==undefined&&(typeof j.story.events!=='object'||!j.story.events||Object.entries(j.story.events).some(([key,value])=>!isStoryEventId(key)||value!=='solved'&&value!=='skipped'))))invalid();
@@ -290,6 +308,6 @@ export function validateJourneySave(game:Game){
  if(j.location==='dice-den'&&j.currentNode!=='dice-den')invalid();
  if(j.location==='inn'&&!isInnNode(j.currentNode)||!validInnState(j.inns))invalid();
  for(const mini of [j.mini,j.letterMini].filter((value):value is JourneyMini=>!!value)){const child=mini.game,meta=child?.rpgMini;
-  if(!child||!child.practice||child.rpgRun||child.hpItemMode||child.stageRun||child.itemRun||!Array.isArray(child.players)||child.players.length!==3||!child.players.every(p=>Array.isArray(p.hand)&&typeof p.id==='string'&&typeof p.token==='string')||!Array.isArray(child.stacks)||!['playing','ended'].includes(child.phase)||!unique(mini.roundIds)||mini.roundIds.length>3||!mini.roundIds.every(id=>typeof id==='string')||!meta||meta.journeyId!==run.id||meta.totalRounds!==3||!Number.isInteger(meta.roundIndex)||meta.roundIndex<1||meta.roundIndex>3||!Number.isFinite(meta.reward)||meta.reward<0||!Number.isFinite(mini.lastReward)||mini.lastReward<0)invalid();
+  if(!child||!child.practice||child.rpgRun||child.stageRun||child.itemRun||!Array.isArray(child.players)||child.players.length!==3||!child.players.every(p=>Array.isArray(p.hand)&&typeof p.id==='string'&&typeof p.token==='string')||!Array.isArray(child.stacks)||!['playing','ended'].includes(child.phase)||!unique(mini.roundIds)||mini.roundIds.length>3||!mini.roundIds.every(id=>typeof id==='string')||!meta||meta.journeyId!==run.id||meta.totalRounds!==3||!Number.isInteger(meta.roundIndex)||meta.roundIndex<1||meta.roundIndex>3||!Number.isFinite(meta.reward)||meta.reward<0||!Number.isFinite(mini.lastReward)||mini.lastReward<0)invalid();
  }
 }

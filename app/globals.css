@@ -2063,3 +2063,6 @@ main.turntale.active-table[data-rpg-mini="true"] .action-buttons{display:grid!im
 .result .trophy.daily-result-medal[data-medal="1"]:before{content:'♛';position:absolute;left:4px;top:-14px;transform:rotate(-20deg);font-size:24px;color:#f3c860;text-shadow:0 1px 3px #000}
 .daily-result .result-hands{border-top:1px solid #d6b06e33}
 .modal-shade .achievements-modal .achievement-list{scrollbar-color:#d6b06e #17130f}
+/* Hand-drawn default animal faces (0.7.30): fill the round seat frame like a photo. */
+.animal-face{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit;user-select:none;-webkit-user-drag:none}
+.mini-human-portrait>.animal-face{border-radius:50%}

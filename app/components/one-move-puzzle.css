@@ -1,0 +1,33 @@
+/* 한 수 퍼즐 (튜토리얼 세 번째 탭). Tile size follows the tutorial variables. */
+.turntale .tutorial-modal .puzzle-select,.turntale .tutorial-modal .puzzle-board{display:grid;gap:9px;color:#eadbc0}
+.turntale .tutorial-modal .puzzle-intro{margin:0;font-size:13px;line-height:1.55;color:#d9c7a3}
+.turntale .tutorial-modal .puzzle-intro b{color:#f3d68e}
+.turntale .tutorial-modal .puzzle-title-badge{margin:0;padding:7px 10px;border:1px solid #e3be6d88;border-radius:9px;background:#3a2a1088;font-size:13px;text-align:center}
+.turntale .tutorial-modal .puzzle-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.turntale .tutorial-modal .puzzle-list button{width:100%;display:grid;grid-template-columns:30px 1fr auto;align-items:center;gap:9px;padding:8px 10px;border:1px solid #a78c5752;border-radius:10px;background:linear-gradient(#2b221788,#10140f99);color:inherit;text-align:left;font:inherit;cursor:pointer}
+.turntale .tutorial-modal .puzzle-list button.is-cleared{border-color:#7fbf8a88}
+.turntale .tutorial-modal .puzzle-no{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#e3c27a;color:#2a1d0c;font-weight:800}
+.turntale .tutorial-modal .puzzle-name{display:grid;gap:2px;min-width:0}
+.turntale .tutorial-modal .puzzle-name small{font-size:11px;color:#bfae8c}
+.turntale .tutorial-modal .puzzle-count{margin:0;text-align:center;font-size:12px;color:#bfae8c}
+.turntale .tutorial-modal .puzzle-board-head{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#bfae8c}
+.turntale .tutorial-modal .puzzle-board h4{margin:0;font-size:17px;color:#f3d68e}
+.turntale .tutorial-modal .puzzle-lesson,.turntale .tutorial-modal .puzzle-goal{margin:0;font-size:13px;line-height:1.5}
+.turntale .tutorial-modal .puzzle-goal b{color:#f3d68e}
+.turntale .tutorial-modal .puzzle-row{display:grid;gap:5px;padding:8px 6px;border:1px solid #a78c5752;border-radius:10px;background:linear-gradient(#55432b40,#0b19138a)}
+.turntale .tutorial-modal .puzzle-row>small{font-size:11px;color:#bfae8c;text-align:center}
+.turntale .tutorial-modal .puzzle-table{background:linear-gradient(#37271455,#160f0a66),url('/turntale-walnut-051.webp') center/cover;min-height:86px}
+.turntale .tutorial-modal .puzzle-tiles{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:5px;min-height:46px}
+.turntale .tutorial-modal .puzzle-tiles .tile{width:var(--tutorial-tile-w,42px)!important;height:var(--tutorial-tile-h,58px)!important;flex:none}
+.turntale .tutorial-modal .puzzle-opponent .puzzle-tiles .tile{width:calc(var(--tutorial-tile-w,42px)*.8)!important;height:calc(var(--tutorial-tile-h,58px)*.8)!important}
+.turntale .tutorial-modal .puzzle-hand .puzzle-tiles>button{background:none;border:0;padding:0;border-radius:5px;touch-action:manipulation;cursor:pointer}
+.turntale .tutorial-modal .puzzle-hand .puzzle-tiles>button.selected{transform:translateY(-4px);outline:2px solid #f6d68c;outline-offset:2px}
+.turntale .tutorial-modal .puzzle-hand .puzzle-tiles>button:disabled{opacity:1;cursor:default}
+.turntale .tutorial-modal .puzzle-mark{color:#e3c27a88;font-size:20px}
+.turntale .tutorial-modal .puzzle-note{margin:0;padding:8px 10px;border-radius:9px;background:#0b0d0b99;font-size:13px;line-height:1.45;min-height:20px}
+.turntale .tutorial-modal .puzzle-note.won{background:#1f3a2299;color:#c7f0c8}
+.turntale .tutorial-modal .puzzle-note.lost{background:#3a1f1f99;color:#f3c4c0}
+.turntale .tutorial-modal .puzzle-hint{margin:0;font-size:12px;color:#e3c27a}
+.turntale .tutorial-modal .puzzle-actions{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.turntale .tutorial-modal .puzzle-actions button{min-height:40px}
+@media(prefers-reduced-motion:reduce){.turntale .tutorial-modal .puzzle-hand .puzzle-tiles>button{transition:none}}

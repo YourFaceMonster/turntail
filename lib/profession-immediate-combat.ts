@@ -7,7 +7,6 @@ import { itemBattleRelicWin } from './item-battle-relics';
 import { withRelicActivations } from './rpg-relic-feedback';
 import { recordRpgRoundHealth } from './rpg-round-health';
 import { isRpgPhaseOne, reconcileRpgEliminations } from './rpg-phase-one';
-import { finishHpItemMatch } from './hp-item-mode';
 import type { HpBattleEvent } from './hp-item-battle';
 import type { ProfessionEffect } from './rpg-profession-combat';
 const zeros = (g: Game) => g.players.map(() => 0);
@@ -52,24 +51,17 @@ export function finishImmediateCombat(g: Game, now = Date.now(), reason: 'battle
         return;
     }
     if (g.rpgRun!.hp.some(hp => hp <= 0)) {
-        if (g.hpItemMode) {
-            if (g.hpItemMatch)
-                g.hpItemMatch.endReason = reason;
-            finishHpItemMatch(g);
-        }
-        else {
-            g.phase = 'ended';
-            g.turnDeadline = 0;
-            g.winner = g.lastBy ?? g.rpgRun!.hp.findIndex(hp => hp > 0);
-            settle(g);
-        }
+        g.phase = 'ended';
+        g.turnDeadline = 0;
+        g.winner = g.lastBy ?? g.rpgRun!.hp.findIndex(hp => hp > 0);
+        settle(g);
     }
 }
 export function resolveImmediateProfessionBattle(g: Game, now = Date.now()): HpBattleEvent | null {
     const run = g.rpgRun, c = run?.combat;
     if (!run || !c || run.status !== 'playing' || c.round !== g.round || g.lastBy === null || !g.trick.length)
         return null;
-    const id = `${g.code}:${g.round}:${g.tablePlay?.id || g.lastEvent?.id || g.completedBattles || 0}`, prior = c.battles.find(e => e.id === id);
+    const id = `${g.code}:${g.round}:${g.tablePlay?.id || g.lastEvent?.id || g.roundActions || 0}`, prior = c.battles.find(e => e.id === id);
     if (prior)
         return prior;
     const actor = g.lastBy, label = combo(g.trick)?.label;
@@ -122,10 +114,6 @@ export function resolveImmediateProfessionBattle(g: Game, now = Date.now()): HpB
     c.battles.push(event);
     c.battleTiles = zeros(g);
     c.lastInstant = event;
-    if (g.hpItemMatch) {
-        g.hpItemMatch.battles = c.battles;
-        g.hpItemMatch.battleTiles = zeros(g);
-    }
     if (relic.effects.length)
         Object.assign(run, withRelicActivations(run, relic.effects, now));
     g.log = [`${g.players[actor].name} · ${label} 승리 · ${label === '싱글' ? '패 피해 1 정산 예정' : role === 'rogue' ? `바닥 ${effects[0]?.revealed || 0}장 확인 · 함정 설치` : role === 'cleric' ? `HP +${result.healing[actor]}` : g.players.flatMap((p, i) => result.damage[i] ? [`${p.name} HP −${result.damage[i]}`] : []).join(' · ') || '피해 방어'}`, ...g.log].slice(0, 40);
@@ -155,7 +143,5 @@ export function settleImmediateCardRound(g: Game, now = Date.now()) {
     s.settled = true;
     const summary: HpBattleEvent = { id: `${g.code}:${g.round}:settlement`, round: g.round, actor: g.winner!, label: '패 정산', damage: result.damage.reduce((a, b) => a + b, 0), maxHp: hpLimit(run), damageTaken: result.damage, blockedDamage: result.blocked, hpBefore: before, hpAfter: [...run.hp], roundFinal: true, roundSettlement: true, at: now };
     c.lastBattle = summary;
-    if (g.hpItemMatch)
-        g.hpItemMatch.lastBattle = summary;
     g.log = ['판 종료 · 패 피해 정산 · 스킬 중복 적용 없음', ...g.log].slice(0, 40);
 }

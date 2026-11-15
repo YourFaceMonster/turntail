@@ -19,9 +19,12 @@ const X=(beat:Beat,extra:Pick<Beat,'cue'|'camera'|'interaction'>):Beat=>({...bea
 type Ctx={second:boolean,read:(id:string)=>boolean,visited:(id:string)=>boolean,solved:(id:StoryEventId)=>boolean,secondPlace:boolean,letterReturned:boolean};
 
 function cuts(stage:number,phase:'before'|'after'|'ending',beats:readonly (Beat|false|undefined)[],defaultArt:string):PrologueCut[]{
- return beats.filter((beat):beat is Beat=>!!beat).map((beat,index)=>({
+ const list=beats.filter((beat):beat is Beat=>!!beat);
+ /** The line that calls the match ("한 판 하자", "패를 내라") cuts to the close-up of the table (2026-11-15). */
+ const duel=phase==='before'&&stage>=4&&stage<=10?`st${stage}-duel`:'';
+ return list.map((beat,index)=>({
   id:`ST${stage}_${phase==='before'?'PRE':phase==='after'?'POST':'END'}_${index+1}`,scene:'stone',audio:'quiet',
-  speaker:beat.speaker,line:beat.line,duration:storyReadingDuration(beat.line),art:chapterArt(beat.art||defaultArt),focus:'50% 45%',...(beat.keepsake?{keepsakeCard:beat.keepsake[0],keepsakeFace:beat.keepsake[1]}:{}),...(beat.cue?{cue:beat.cue}:{}),...(beat.camera?{camera:beat.camera}:{}),...(beat.interaction?{interaction:beat.interaction}:{}),
+  speaker:beat.speaker,line:beat.line,duration:storyReadingDuration(beat.line),art:chapterArt(beat.art||(duel&&index===list.length-1?duel:defaultArt)),focus:'50% 45%',...(beat.keepsake?{keepsakeCard:beat.keepsake[0],keepsakeFace:beat.keepsake[1]}:{}),...(beat.cue?{cue:beat.cue}:{}),...(beat.camera?{camera:beat.camera}:{}),...(beat.interaction?{interaction:beat.interaction}:{}),
   location:stage<=10?`STAGE ${stage} · ${JOURNEY_STAGE_NAMES[stage]}`:undefined,
  }));
 }

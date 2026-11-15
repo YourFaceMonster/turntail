@@ -3,8 +3,8 @@ export const DICE_DEN_STAKE=10;
 /** Available after ST4 is cleared and before ST6 starts, so the relic is not lost to the ST4 chapter reset. */
 export const DICE_DEN_STAGES=[4,5] as const;
 export const DICE_RELIC_ID='haro-ivory-die';
-export const DICE_RELIC={id:DICE_RELIC_ID,name:'하로의 상아 주사위',effect:'매 판 시작 시 HP 50 이하면 HP +2'};
-export const DICE_RELIC_HEAL={threshold:50,amount:2} as const;
+export const DICE_RELIC={id:DICE_RELIC_ID,name:'하로의 상아 주사위',effect:'매 판 시작 시 HP 50 이하면 HP +3'};
+export const DICE_RELIC_HEAL={threshold:50,amount:3} as const;
 export const DICE_NPC='노름꾼 하로';
 export const DICE_DEN_DIALOGUE={
  intro:[

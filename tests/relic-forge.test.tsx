@@ -32,11 +32,11 @@ test('grades: legendaries exist only through forging and never appear in reward 
 });
 
 test('forging merges two known materials into one slot without repaying the heart bonus',()=>{
- const run=hearts();assert.equal(run.hp[0],90);assert.equal(rpgMaxHp(run),135,'two hearts + heart synergy');
+ const run=hearts();assert.equal(run.hp[0],85);assert.equal(rpgMaxHp(run),130,'two hearts + heart synergy');
  const forged=forgeRelic(run,'whole-heart');
  assert.ok(forged.relics.includes('whole-heart')&&!forged.relics.includes('cracked-heart')&&!forged.relics.includes('second-heart'));
  assert.deepEqual(forged.equipped,['gamblers-gloves','whole-heart'],'takes the first material slot and frees the other');
- assert.equal(rpgMaxHp(forged),135);assert.equal(forged.hp[0],95,'only the 5 missing from 35 − (20+10)');
+ assert.equal(rpgMaxHp(forged),135);assert.equal(forged.hp[0],95,'only the 10 missing from 35 − (15+10)');
  assert.ok(forged.discovered.includes('whole-heart'));assert.equal(forged.relicActivations?.at(-1)?.message,'합성 완료');
  // Re-equipping the forged heart in the same chapter grants nothing more.
  const off=equipJourneyRelic(forged,'whole-heart'),on=equipJourneyRelic(off,'whole-heart');assert.equal(on.hp[0],95);
@@ -80,7 +80,7 @@ test('synergies: two of a tag wake a bonus; owned-only relics never count',()=>{
  assert.deepEqual(reworkSynergies({...run,equipped:['gamblers-gloves','stopped-hourglass','cracked-heart']}),['scout']);
  assert.deepEqual(reworkSynergies({...run,equipped:['whole-heart']}),[],'a forged relic counts once');
  const mend=fresh();mend.rpgRun!.hp=[60,1,40];mend.rpgRun!.equipped=['recovery-lantern','final-knot'];mend.rpgRun!.relics=[...mend.rpgRun!.equipped];finish(mend,[0,5,3]);
- assert.deepEqual(mend.rpgRun!.rework!.relicHeals?.map(h=>h.amount),[5,3],'lantern +5 then mend synergy +3');
+ assert.deepEqual(mend.rpgRun!.rework!.relicHeals?.map(h=>h.amount),[10,3],'lantern +10 then mend synergy +3');
 });
 
 test('a held material makes its partner more likely without breaking stable offers',()=>{

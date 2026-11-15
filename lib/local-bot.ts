@@ -3,7 +3,6 @@ import {scoutBotDraw} from './items';
 import {act,rpgTwinBotView,chooseBotAction,type Game} from './game';
 import {tryBotProfessionActive} from './profession-actives.ts';
 import {itemTurnReadyAt} from './rpg-item-motion.ts';
-import {runItemBattleBotTurn} from './item-battle-bot.ts';
 import {chooseStrategicAction} from './bot.ts';
 /** One long-lived search worker: avoids re-loading the module graph on every AI turn. */
 let shared:Worker|undefined;
@@ -25,12 +24,11 @@ export function runLocalBot(game:Game,signal:AbortSignal):Promise<Game>{
   const abort=()=>{if(settled)return;cleanup(true);reject(new DOMException('Paused','AbortError'));};
   // A timed-out search is abandoned for a cheap heuristic so the UI thread never repeats it.
   const fallback=(light=false)=>{if(settled)return;if(signal.aborted){abort();return;}cleanup(light);try{
-   if(runItemBattleBotTurn(game)){resolve(game);return;}
    if(tryBotProfessionActive(game)){resolve(game);return;}const lastItem=game.rpgRun?.lastItem?.id;tryRpgBotItem(game);
    if(game.rpgRun?.lastItem&&game.rpgRun.lastItem.id!==lastItem){game.turnReadyAt=Math.max(game.turnReadyAt||0,itemTurnReadyAt(game.rpgRun.lastItem));resolve(game);return;}
    if(game.rpgRun?.status==='complete'){resolve(game);return;}
    const position=rpgTwinBotView(game,game.turn);
-   let decision=light&&!position.hpItemMode?chooseStrategicAction(position,3):chooseBotAction(position);
+   let decision=light?chooseStrategicAction(position,3):chooseBotAction(position);
    if(game.rpgRun&&decision.type==='draw')decision={type:'draw',index:scoutRpgBotDraw(game,game.turn,decision.index)};
    if(game.itemRun&&decision.type==='draw')decision={type:'draw',index:scoutBotDraw(game,game.turn,decision.index)};
    act(game,game.turn,decision.type,decision.type==='play'?decision.tiles.map(t=>t.id):[],decision.type==='draw'?decision.index:-1,Date.now(),true);

@@ -15,7 +15,7 @@ export const isOptimisticEvent=(id?:string|null)=>!!id&&id.startsWith(OPTIMISTIC
  * `seenSizes` = combo sizes already announced this round (no mutation here).
  */
 export function optimisticPlay(g:View,ids:number[],seenSizes:ReadonlySet<number>,now=Date.now()):View|null{
- if(!g.practice||g.phase!=='playing'||g.turn!==g.me||g.rpgRun||g.hpItemMode||g.stageRun||g.challenge||g.rpgMini||g.items)return null;
+ if(!g.practice||g.phase!=='playing'||g.turn!==g.me||g.rpgRun||g.stageRun||g.challenge||g.rpgMini||g.items)return null;
  const me=g.players[g.me],hand=me?.hand;if(!hand||!ids.length||new Set(ids).size!==ids.length)return null;
  const tiles=ids.map(id=>hand.find(t=>t.id===id));if(tiles.some(t=>!t))return null;
  const played=tiles as NonNullable<typeof tiles[number]>[],label=combo(played)?.label;

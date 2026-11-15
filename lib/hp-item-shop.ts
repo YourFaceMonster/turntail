@@ -1,85 +1,22 @@
 import {hasRoundCombat,hasImmediateSkills} from './profession-round-rules';
 import {hpLimit} from './hp-limit';
-import {chargeProfessionActives} from './profession-actives.ts';
-import {expireHpSkills,resetHpSkills,type HpSkillState,type HpSkillUse} from './hp-item-skills.ts';
-import {view,type Game} from './game.ts';
-import {chooseItemBattlePurchases} from './item-battle-shopping';
-import {RPG_SHOP_ITEMS,type RpgTacticalItem} from './rpg-items.ts';
-import {isBattleItemMode,usesOriginalItemShop,type HpBattleEvent} from './hp-item-battle.ts';
+import type {Game} from './game.ts';
+import type {HpBattleEvent} from './hp-item-battle.ts';
 
-export type HpItemVariant=1|2;
-export type HpItemRoundReport={settlementDamage?:number[],settlementHealing?:number[],floorCoinMoney?:number[],activeDamage?:number[],activeHealing?:number[],ambushDamage?:number[],trapDamage?:number[],relicHealing?:number[],professionHealing?:number[],round:number,hpBefore:number[],hpAfter:number[],earned:number[],skills?:HpSkillUse[],skillMoney?:number[],battleDamage?:number[],battlePoints?:number[],moneyDamage?:number[],moneyDelta?:number[],moneyBefore?:number[],moneyAfter?:number[],moneySkipped?:boolean,endReason?:'battle'|'item'|'trap'|'ambush'|'active'|'bankruptcy',itemDamage?:number[],itemHealing?:number[],cardDamage?:number[],itemPoints?:number[],cardPoints?:number[],items:{actor:number,target:number,id:string,kind:string,amount?:number}[]};
-export type HpItemMatchState={visualStage?:number,tileSet?:number,publicRelicIntel?:Record<number,string[]>,points:number[],skills?:HpSkillState,shopRound:number,roundStartHp:number[],roundItems:HpItemRoundReport['items'],roundEarned:number[],pendingItemDelta?:number[],pendingItemPoints?:number[],battleTiles?:number[],battles?:HpBattleEvent[],lastBattle?:HpBattleEvent,roundMoneyBefore?:number[],moneyBefore?:number[],moneyDelta?:number[],moneyDamage?:number[],moneySkipped?:boolean,endReason?:'battle'|'item'|'trap'|'ambush'|'active'|'bankruptcy',moneySettlementId?:string,report?:HpItemRoundReport};
-export const HP_ITEM_PRICES:Record<string,number>={'whisper-eye':4,'spark-dart':4,'scout-lens':3,'swapped-fate':6,'ward-seal':6,'ember-bomb':10,'emergency-herb':5};
-export const HP_ITEM_START_POINTS=20;
-// Keep starter data independent of the item/game import cycle.
-export const HP_ITEM_STARTER_ITEMS:readonly RpgTacticalItem[]=['scout-lens','swapped-fate','ward-seal','ember-bomb','emergency-herb','whisper-eye'];
-export const HP_ITEM_ROUND_ALLOWANCE=0;
-export function hpItemShopAfterResult(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'>){return isBattleItemMode(game)&&!usesOriginalItemShop(game);}
-export function hpItemShopPending(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'|'round'|'result'>){
- if(usesOriginalItemShop(game))return game.phase==='playing'&&game.rpgRun?.status==='playing'&&game.hpItemMatch?.shopRound!==game.round;
- if(isBattleItemMode(game))return game.phase==='ended'&&game.rpgRun?.status==='playing'&&!!game.result&&game.hpItemMatch?.shopRound!==game.round;
- return !!game.hpItemMode&&game.hpItemVariant===2&&game.hpItemMatch?.shopRound!==game.round;
+/**
+ * HP shown for story seats. The item-battle mode (shop, wallets, queued item HP) was removed 2026-11-15;
+ * only the story presentation rules remain.
+ */
+export function hpItemEffectiveHp(game:Pick<Game,'rpgRun'>,seat:number){
+ const pending=game.rpgRun?.combat?.pendingRound,queued=hasRoundCombat(game)&&!hasImmediateSkills(game)&&!pending?.settled?(pending?.healing[seat]||0)-(pending?.damage[seat]||0):0;
+ return Math.max(0,Math.min(hpLimit(game.rpgRun),(game.rpgRun?.hp[seat]||0)+queued));
 }
-/** Any affordable cart, including an empty cart. Existing items survive the purchase. */
-export function buyHpItemLoadout(game:Game,cart:string[]){
- const state=game.hpItemMatch,run=game.rpgRun;
- if(!state||!run||!hpItemShopPending(game)||!hpItemShopAfterResult(game)&&(game.phase!=='playing'||game.roundActions))throw Error('지금은 아이템 구매 시간이 아니에요.');
- if(!Array.isArray(cart)||cart.some(id=>!RPG_SHOP_ITEMS.includes(id as RpgTacticalItem)))throw Error('구매할 아이템을 확인해 주세요.');
- if(new Set(cart).size!==cart.length)throw Error('한 판에 같은 종류는 1개씩만 구매할 수 있어요.');
- const price=cart.reduce((sum,id)=>sum+HP_ITEM_PRICES[id],0);
- if(price>state.points[0])throw Error('구매 포인트가 부족해요.');
- const kits:string[][]=[cart];
- for(let seat=1;seat<game.players.length;seat++){
-  if(game.hpItemRules===4&&run.combat?.itemBattle){kits.push(chooseItemBattlePurchases(view(game,game.players[seat].token),state.points[seat]));continue;}
-  const held=run.enemyConsumables?.[seat]||[],kit:string[]=[],preferred=[...(run.hp[seat]<=85?['emergency-herb']:[]),...(run.itemGuards?.[seat]?[]:['ward-seal']),'ember-bomb','whisper-eye','swapped-fate','scout-lens'];let budget=state.points[seat];
-  for(const id of preferred){
-   if(kit.length>=2||held.includes(id)||HP_ITEM_PRICES[id]>budget)continue;
-   kit.push(id);budget-=HP_ITEM_PRICES[id];
-  }
-  kits.push(kit);
- }
- kits.forEach((kit,seat)=>{state.points[seat]-=kit.reduce((sum,id)=>sum+HP_ITEM_PRICES[id],0);});
- run.consumables=run.consumables.concat(cart);run.enemyConsumables=Object.fromEntries(kits.slice(1).map((kit,index)=>[index+1,[...(run.enemyConsumables?.[index+1]||[]),...kit]]));
- state.shopRound=game.round;run.updatedAt=Date.now();
-}
-export function finishHpItemRoundReport(game:Game,hpBeforeSettlement?:number[]){
- const run=game.rpgRun,state=game.hpItemMatch;if(!game.hpItemMode||!run||!state||state.report?.round===game.round)return;
- if(isBattleItemMode(game)){
-  chargeProfessionActives(game);expireHpSkills(game);
-  const amounts=(kind:string)=>game.players.map((_,seat)=>state.roundItems.filter(item=>item.target===seat&&item.kind===kind).reduce((sum,item)=>sum+(item.amount||0),0));
-  const battles=game.players.map((_,seat)=>hasRoundCombat(game)?Math.max(0,(run.combat?.pendingRound?.damage[seat]||0)-(run.combat?.pendingRound?.trapDamage[seat]||0)-(run.combat?.pendingRound?.itemDamage[seat]||0)-(run.combat?.lastBattle?.blockedDamage?.[seat]||0)):(state.battles||[]).reduce((sum,battle)=>sum+Math.max(0,battle.hpBefore[seat]-battle.hpAfter[seat]),0)),money=state.moneyDelta||game.players.map(()=>0);
-  const battlePoints=game.players.map((_,seat)=>(state.battles||[]).filter(battle=>battle.actor===seat).reduce((sum,battle)=>sum+(battle.pointsEarned||0),0));
-  state.report={settlementDamage:hasRoundCombat(game)?run.combat?.pendingRound?.appliedDamage:undefined,settlementHealing:hasRoundCombat(game)?run.combat?.pendingRound?.appliedHealing:undefined,activeDamage:game.players.map((_,seat)=>(run.combat?.actives?.events||[]).reduce((sum,event)=>sum+(event.damage[seat]||0),0)),activeHealing:game.players.map((_,seat)=>(run.combat?.actives?.events||[]).reduce((sum,event)=>sum+(event.healing[seat]||0),0)),ambushDamage:game.players.map((_,seat)=>(run.combat?.itemBattle?.ambushEvents||[]).reduce((sum,event)=>sum+(event.damage[seat]||0),0)),floorCoinMoney:game.floorCoins?.round===game.round?[...game.floorCoins.earned]:game.players.map(()=>0),round:game.round,trapDamage:game.players.map((_,seat)=>hasRoundCombat(game)?run.combat?.pendingRound?.trapDamage[seat]||0:(run.combat?.itemBattle?.trapEvents||[]).filter(event=>event.target===seat).reduce((sum,event)=>sum+event.damage,0)),relicHealing:game.players.map((_,seat)=>(state.battles||[]).filter(battle=>battle.actor===seat).reduce((sum,battle)=>sum+(battle.relicHealing||0),0)),hpBefore:[...state.roundStartHp],hpAfter:[...run.hp],earned:money.map(value=>Math.max(0,value)),skills:state.skills?.uses.map(use=>({...use})),skillMoney:game.players.map((_,seat)=>(state.skills?.uses||[]).filter(use=>use.actor===seat&&use.outcome==='money').reduce((sum,use)=>sum+(use.amount||0),0)),professionHealing:game.players.map((_,seat)=>(state.battles||[]).flatMap(battle=>battle.professions||[]).filter(effect=>effect.actor===seat).reduce((sum,effect)=>sum+effect.heal,0)),battleDamage:battles,battlePoints,cardDamage:battles,moneyDamage:state.moneyDamage||game.players.map(()=>0),moneyDelta:[...money],moneyBefore:[...(state.moneyBefore||state.roundMoneyBefore||state.points)],moneyAfter:[...state.points],moneySkipped:!!state.moneySkipped,endReason:state.endReason,itemDamage:amounts('damage'),itemHealing:amounts('heal'),itemPoints:usesOriginalItemShop(game)?[...state.roundEarned]:game.players.map(()=>0),cardPoints:money.map(value=>Math.max(0,value)),items:[...state.roundItems]};return;
- }
- const earned=[...state.roundEarned],loss=(hpBeforeSettlement||run.hp).map((hp,index)=>Math.max(0,hp-run.hp[index])),cardPoints=game.players.map(()=>0);
- if(game.hpItemVariant===2)state.points=state.points.map((points,index)=>points+(state.pendingItemPoints?.[index]||0));
- // Only HP actually lost is converted, with the card winner receiving the settlement pool.
- if(game.hpItemVariant===2&&game.result&&game.winner!==null){
-  const cardLoss=game.result.players.map((player,index)=>Math.min(Math.max(0,-player.delta),loss[index]));
-  const reward=cardLoss.reduce((sum,value,index)=>sum+(index===game.winner?0:value),0);
-  earned[game.winner]+=reward;state.points[game.winner]+=reward;cardPoints[game.winner]=reward;
- }
- const amounts=(kind:string)=>game.players.map((_,seat)=>state.roundItems.filter(item=>item.target===seat&&item.kind===kind).reduce((sum,item)=>sum+(item.amount||0),0));
- state.report={round:game.round,hpBefore:[...state.roundStartHp],hpAfter:[...run.hp],earned,itemDamage:amounts('damage'),itemHealing:amounts('heal'),cardDamage:loss,itemPoints:[...state.roundEarned],cardPoints,items:[...state.roundItems]};
-}
-export function beginHpItemRound(game:Game){
- const state=game.hpItemMatch,run=game.rpgRun;if(!game.hpItemMode||!state||!run)return;
- // No automatic round allowance. Existing wallets and unused items carry over.
- state.roundStartHp=[...run.hp];state.roundItems=[];state.roundEarned=game.players.map(()=>0);state.pendingItemDelta=game.players.map(()=>0);state.pendingItemPoints=game.players.map(()=>0);
- if(isBattleItemMode(game)){resetHpSkills(game);state.battleTiles=game.players.map(()=>0);state.battles=[];state.lastBattle=undefined;state.roundMoneyBefore=[...state.points];state.moneyBefore=undefined;state.moneyDelta=undefined;state.moneyDamage=undefined;state.moneySkipped=false;state.endReason=undefined;}
-}
-export function hpItemEffectiveHp(game:Pick<Game,'hpItemMode'|'hpItemMatch'|'rpgRun'>,seat:number){return Math.max(0,Math.min(hpLimit(game.rpgRun),(game.rpgRun?.hp[seat]||0)+(hasRoundCombat(game)&&!hasImmediateSkills(game)&&!game.rpgRun?.combat?.pendingRound?.settled?(game.rpgRun?.combat?.pendingRound?.healing[seat]||0)-(game.rpgRun?.combat?.pendingRound?.damage[seat]||0):0)+(game.hpItemMode?game.hpItemMatch?.pendingItemDelta?.[seat]||0:0)));}
-/** Apply queued HP once, immediately before the card settlement. */
-export function applyPendingHpItems(game:Game){if(!game.hpItemMode||!game.hpItemMatch||!game.rpgRun)return;game.rpgRun.hp=game.rpgRun.hp.map((_,seat)=>hpItemEffectiveHp(game,seat));game.hpItemMatch.pendingItemDelta=game.players.map(()=>0);}
-export function hpItemDisplayHp(game:Pick<Game,'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'rpgRun'|'phase'>&{round?:number},seat:number,reveal=false,heldBattle:HpBattleEvent|null=null,heldItem:{id:string,target:number,before:number}|null=null){
+export function hpItemDisplayHp(game:Pick<Game,'rpgRun'|'phase'>&{round?:number},seat:number,reveal=false,heldBattle:HpBattleEvent|null=null,heldItem:{id:string,target:number,before:number}|null=null){
  if(heldItem&&game.rpgRun?.lastItem?.id===heldItem.id&&heldItem.target===seat)return heldItem.before;
  // Story mode: the round's HP change shows only once the settlement screen opens; until then keep the round-start HP.
- const health=game.rpgRun?.rework&&!game.hpItemMode&&game.phase==='ended'&&!reveal?game.rpgRun.roundHealth:undefined;
+ const health=game.rpgRun?.rework&&game.phase==='ended'&&!reveal?game.rpgRun.roundHealth:undefined;
  if(health&&(game.round===undefined||health.round===game.round)&&Number.isFinite(health.before[seat]))return health.before[seat];
  // Presentation only: the authoritative HP remains immediate for all game decisions.
- if(heldBattle&&(game.hpItemMatch?.lastBattle||game.rpgRun?.combat?.lastBattle)?.id===heldBattle.id)return heldBattle.hpBefore[seat];
- const finalBattle=game.hpItemMatch?.lastBattle||game.rpgRun?.combat?.lastBattle;
- if(isBattleItemMode(game)&&game.phase==='ended'&&!reveal&&finalBattle?.roundFinal)return finalBattle.hpAfter[seat];
- return !isBattleItemMode(game)&&game.hpItemMode&&game.phase==='ended'&&!reveal?game.hpItemMatch?.report?.hpBefore[seat]??game.rpgRun?.hp[seat]??0:game.rpgRun?.hp[seat]??0;
+ if(heldBattle&&game.rpgRun?.combat?.lastBattle?.id===heldBattle.id)return heldBattle.hpBefore[seat];
+ return game.rpgRun?.hp[seat]??0;
 }

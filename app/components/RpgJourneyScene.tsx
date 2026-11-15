@@ -43,6 +43,7 @@ import {rpgRelicSlots} from '../../lib/rpg-trials';
 import {JOURNEY_REGIONS,JOURNEY_STAGE_NAMES,chapterArt,journeyRegion,journeyTargetStage,stageArtToPreload,storyQuest,storyState,rpgStageCast,RPG_GUARDIANS,STORY_EVENT_RESULT_LINES,isStoryEventId} from '../../lib/rpg-chapters.ts';
 import StoryPuzzle from './StoryPuzzle';
 import {holdMinigameMusic} from '../../lib/minigame-music';
+import AnimalFace from './AnimalFace';
 type View=ReturnType<typeof view>;
 type Props={run:RpgRun,busy:boolean,error:string,action:(action:string,extra?:Record<string,unknown>)=>void,exit:()=>void,playerName?:string,playerAvatar?:ReactNode,save?:()=>string,settings?:()=>void};
 const labels={available:'이동 가능',completed:'방문 완료',locked:'잠김',closed:'선택으로 닫힘'};
@@ -184,7 +185,7 @@ export default function RpgJourneyScene(props:Props){
  const viewProps={...props,action};
  return createPortal(<div className="journey-scene-shade" data-location={location} data-moving={moving||undefined}>{location==='tavern'?<JourneyTavernView {...viewProps}/>:['market-alley','wayfarer-stop','watchtower','story-quest','dice-den','inn'].includes(location||'')?<JourneyEventView {...viewProps}/>:<JourneyMapView {...viewProps}/>}<div className={`journey-location-fade ${fade}`} aria-hidden="true"/></div>,document.body);
 }
-function MiniPortrait({photo,name}:{photo?:string,name:string}){return name==='세린'?<TavernPortrait/>:photo?.startsWith('stage-portrait:')?<RpgCastPortrait index={Number(photo.split(':')[1])}/>:photo?<img src={photo} alt={name}/>:<span className="mini-human-portrait" aria-label={name}>🦊</span>;}
+function MiniPortrait({photo,name}:{photo?:string,name:string}){return name==='세린'?<TavernPortrait/>:photo?.startsWith('stage-portrait:')?<RpgCastPortrait index={Number(photo.split(':')[1])}/>:photo?.startsWith('animal:')?<span className="mini-human-portrait" aria-label={name}><AnimalFace emoji={photo.slice(7)} label=""/></span>:photo?<img src={photo} alt={name}/>:<span className="mini-human-portrait" aria-label={name}><AnimalFace emoji="🦊" label=""/></span>;}
 export function RpgMiniResult({game,busy,next,back,exit,playerAvatar}:{game:View,busy:boolean,next:()=>void,back:()=>void,exit:()=>void,playerAvatar?:ReactNode}){
  const [step,setStep]=useState<'standings'|'speech'|'reward'>('standings'),mini=game.rpgMini!,complete=mini.roundIndex===3,letter=mini.purpose==='letter',outcome=letterDuelOutcome(game.players),tiedFirst=game.players.slice(1).some(p=>p.points===game.players[0].points)&&game.players.every(p=>p.points<=game.players[0].points);
  const rank=1+game.players.slice(1).filter(p=>p.points>game.players[0].points).length,reaction=letter?THIEF_RESULTS[outcome]:tiedFirst?'좋은 승부였어. 다음에도 한 판 하자.':outcome==='win'?SERIN_RESULTS.win:SERIN_RESULTS.loss;

@@ -37,7 +37,6 @@ export function createRpgTestGame(name:string,avatar='',now=Date.now()):Game{
 export function startRpgRound(game:Game,now=Date.now()){
  const run=game.rpgRun;if(!run||!game.practice||game.phase!=='ended')throw Error('스토리 여정의 판 결과를 먼저 확인해 주세요.');
  if(run.journey&&run.journey.location!=='battle')throw Error('지도에서 다음 승부를 선택해 주세요.');
- if(game.hpItemMode&&run.status!=='playing')throw Error('아이템전이 종료됐어요. 새 대전을 시작해 주세요.');
  if(run.status==='ready'){
   if(run.pendingRework){enableRpgRework(run);run.pendingRework=false;}
   game.rpgRun=run.rework?advanceReworkStage(run):isRpgPhaseOne(game)?advanceRpgPhaseOne(run):advanceRpgStage(run);game.rpgRun.itemGuards={0:!!run.itemGuards?.[0]};

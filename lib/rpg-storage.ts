@@ -18,14 +18,14 @@ export function readRpgArchive(storage:StoragePort):RpgArchive{
  if(saved?.version!==1||!Array.isArray(saved.records)||saved.active&&(!saved.active.rpgRun||saved.active.players?.length!==3))throw Error('RPG 저장 형식을 확인해 주세요. 기존 데이터는 보존했어요.');
  if(saved.storyCards!==undefined)validateStoryCards(saved.storyCards);
  if(saved.active?.rpgRun?.rework&&saved.active.rpgRun.rework.version!==2)throw Error('지원하지 않는 RPG 규칙 버전이에요. 원본 저장을 보존했어요.');
- if(saved.active){validateJourneySave(saved.active);refundLegacyEmbers(saved.active);if(saved.active.rpgRun&&!saved.active.rpgRun.rework&&!saved.active.hpItemMode&&!saved.active.rpgTest)saved.active.rpgRun.pendingRework=true;}
+ if(saved.active){validateJourneySave(saved.active);refundLegacyEmbers(saved.active);if(saved.active.rpgRun&&!saved.active.rpgRun.rework&&!saved.active.rpgTest)saved.active.rpgRun.pendingRework=true;}
  if(saved.storyProgress!==undefined&&(typeof saved.storyProgress!=='object'||!saved.storyProgress||Object.values(saved.storyProgress).some(value=>typeof value!=='boolean')))throw Error('RPG 이야기 진행 기록을 읽지 못했어요. 기존 데이터는 보존했어요.');
  return {...saved,storyCards:[...new Set([...(saved.storyCards||[]),...(saved.active?.rpgRun?.storyCards||[])])],rumors:Array.isArray(saved.rumors)?saved.rumors:[],discovered:Array.isArray(saved.discovered)?saved.discovered:[],unlocked:Array.isArray(saved.unlocked)?saved.unlocked:[]};
 }
 /** Which traveller starts the next journey: 2 once the normal ending was seen. */
 export function nextJourneyRunNumber(archive:Pick<RpgArchive,'storyProgress'>){return archive.storyProgress?.normalEnding?2:1;}
 export function saveRpgGame(storage:StoragePort,game:Game,replace=false):RpgArchive{
- const run=game.rpgRun;if(!run||game.hpItemMode)throw Error('스토리 여정 데이터가 없어요.');
+ const run=game.rpgRun;if(!run)throw Error('스토리 여정 데이터가 없어요.');
  validateJourneySave(game);
  const old=readRpgArchive(storage);
  if(old.active&&!old.active.rpgRun?.rework&&!storage.getItem(RPG_REWORK_BACKUP_KEY)){

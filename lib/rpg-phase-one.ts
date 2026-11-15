@@ -17,9 +17,9 @@ export const RPG_PHASE_ONE={maxHp:100,duelsPerGauge:3,enemyHp:[[70,70],[75,75],[
 export type RpgStageReward='relic'|'coins'|'heal'|'all';
 export type RpgPhaseOneState={version:1,eliminated:number[],chargedBattles:string[],clearedStages:number[],rewardHistory?:{stage:number,choice:RpgStageReward,relicId?:string,replaced?:string,declined?:boolean}[],
  clear?:{relicOffers?:string[],stage:number,hpBefore:number,baseHeal:number,relicHeal:number,synergyHeal:number,relicId:string,chosen?:RpgStageReward,replaced?:string,declined?:boolean}};
-export function isRpgPhaseOne(game:{hpItemMode?:boolean,rpgTest?:boolean,rpgRun?:{phaseOne?:RpgPhaseOneState}|null}){return !!game.rpgRun?.phaseOne&&!game.hpItemMode&&!game.rpgTest;}
-export function rpgAlive(game:Pick<Game,'rpgRun'|'hpItemMode'|'rpgTest'|'players'>,seat:number){return !isRpgPhaseOne(game)||!!game.players[seat]&&game.rpgRun!.hp[seat]>0;}
-export function nextRpgSeat(game:Pick<Game,'rpgRun'|'hpItemMode'|'rpgTest'|'players'>,seat:number){for(let step=1;step<=game.players.length;step++){const next=(seat+step)%game.players.length;if(rpgAlive(game,next))return next;}return 0;}
+export function isRpgPhaseOne(game:{rpgTest?:boolean,rpgRun?:{phaseOne?:RpgPhaseOneState}|null}){return !!game.rpgRun?.phaseOne&&!game.rpgTest;}
+export function rpgAlive(game:Pick<Game,'rpgRun'|'rpgTest'|'players'>,seat:number){return !isRpgPhaseOne(game)||!!game.players[seat]&&game.rpgRun!.hp[seat]>0;}
+export function nextRpgSeat(game:Pick<Game,'rpgRun'|'rpgTest'|'players'>,seat:number){for(let step=1;step<=game.players.length;step++){const next=(seat+step)%game.players.length;if(rpgAlive(game,next))return next;}return 0;}
 export function rpgSynergies(run:Pick<RpgRun,'relics'|'phaseOne'|'journey'|'equipped'|'rework'>){return !run.rework&&run.phaseOne&&RPG_PHASE_ONE.synergy.requires.every(id=>(run.journey?run.equipped:run.relics).includes(id))?[RPG_PHASE_ONE.synergy]:[];}
 export function initRpgPhaseOne(run:RpgRun){
  run.phaseOne={version:1,eliminated:[],chargedBattles:[],clearedStages:[],rewardHistory:[]};run.maxHp=RPG_PHASE_ONE.maxHp;

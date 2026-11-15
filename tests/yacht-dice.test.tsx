@@ -116,12 +116,12 @@ test('HP stake on a loss, draw returns the stake, a win grants the relic once',(
  lost.journey!.diceDen!.match=undefined;lost={...lost,hp:[DICE_DEN_STAKE,...lost.hp.slice(1)]};assert.throws(()=>startDiceDuel(lost),/HP/);
 });
 
-test('ivory die: +2 HP at round start at 50 HP or less, never in stage reward offers',()=>{
+test('ivory die: +3 HP at round start at 50 HP or less, never in stage reward offers',()=>{
  assert.ok(RPG_REWORK_RELICS.some(relic=>relic.id===DICE_RELIC_ID));
  for(let stage=1;stage<=9;stage++){const run=readyAfter(1).rpgRun!;run.stage=stage;run.relics=[];assert.ok(!reworkRewardOffers(run).includes(DICE_RELIC_ID));}
  const game=readyAfter(4);game.rpgRun!.relics=[...game.rpgRun!.relics,DICE_RELIC_ID];game.rpgRun!.equipped=[DICE_RELIC_ID];
  enterJourneyNode(game,'battle-5' as never,9000);
- game.rpgRun!.hp=[40,50,50];beginReworkRound(game);assert.equal(game.rpgRun!.hp[0],42);assert.equal(game.rpgRun!.roundHealth!.before[0],42);assert.equal(game.rpgRun!.relicActivations?.at(-1)?.relicId,DICE_RELIC_ID);
+ game.rpgRun!.hp=[40,50,50];beginReworkRound(game);assert.equal(game.rpgRun!.hp[0],43);assert.equal(game.rpgRun!.roundHealth!.before[0],43);assert.equal(game.rpgRun!.relicActivations?.at(-1)?.relicId,DICE_RELIC_ID);
  game.rpgRun!.hp=[60,50,50];beginReworkRound(game);assert.equal(game.rpgRun!.hp[0],60);
  game.rpgRun!.equipped=[];game.rpgRun!.hp=[30,50,50];beginReworkRound(game);assert.equal(game.rpgRun!.hp[0],30,'only while equipped');
 });

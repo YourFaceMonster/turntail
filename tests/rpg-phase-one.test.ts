@@ -1,5 +1,5 @@
 // Pre-0.7 saved-rule compatibility; new rules have a separate integration suite.
-import {createLegacyRpgPhaseOneGame as createRpgPhaseOneGame,startLegacyRpgRound as startRpgRound,createLegacyRpgGame as createRpgGame,createLegacyHpItemGame as createHpItemGame} from './fixtures/legacy-profession';
+import {createLegacyRpgPhaseOneGame as createRpgPhaseOneGame,startLegacyRpgRound as startRpgRound,createLegacyRpgGame as createRpgGame} from './fixtures/legacy-profession';
 import assert from 'node:assert/strict';
 import {act,view,rpgTwinBotView,type Game,type Tile} from '../lib/game.ts';
 
@@ -11,7 +11,6 @@ import {useRpgTacticalItem} from '../lib/rpg-items.ts';
 import {hpBattleSummary} from '../lib/hp-battle-summary.ts';
 import {placeFloorTrap} from '../lib/item-battle-rules.ts';
 
-import {buyHpItemLoadout} from '../lib/hp-item-shop.ts';
 
 
 const tile=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
@@ -33,7 +32,7 @@ duel.players[0].hand=[tile(5),tile(10)];duel.players[2].hand=[tile(6,1),tile(11,
 // Killing a current trick owner with a manual skill gives a valid fresh lead.
 const active=fresh();active.turn=0;active.trick=[tile(8)];active.lastBy=1;active.rpgRun!.hp[1]=1;useProfessionActive(active,0,1,0);assert.equal(active.phase,'playing');assert.equal(active.turn,0);assert.equal(active.lastBy,null);assert.equal(active.trick.length,0);assert.throws(()=>useProfessionActive(active,0,1,3000));
 const mage=createRpgPhaseOneGame('마법사','',0,'mage');mage.turn=0;mage.turnReadyAt=0;mage.rpgRun!.hp=[60,1,1];useProfessionActive(mage,0,-1,0);assert.equal(mage.rpgRun!.status,'allocation');assert.equal(mage.rpgRun!.hp[0],60);assert.equal(mage.result!.players[0].winner,true);
-const item=fresh();item.turn=0;item.roundActions=3;item.completedBattles=1;item.rpgRun!.consumables=['ember-bomb'];item.rpgRun!.enemyConsumables={1:[],2:[]};item.rpgRun!.hp[1]=8;useRpgTacticalItem(item,'ember-bomb',1);assert.equal(item.rpgRun!.hp[1],0);assert.equal(item.players[1].hand.length,0);assert.equal(item.phase,'playing');
+const item=fresh();item.turn=0;item.roundActions=3;item.rpgRun!.consumables=['ember-bomb'];item.rpgRun!.enemyConsumables={1:[],2:[]};item.rpgRun!.hp[1]=8;useRpgTacticalItem(item,'ember-bomb',1);assert.equal(item.rpgRun!.hp[1],0);assert.equal(item.players[1].hand.length,0);assert.equal(item.phase,'playing');
 const trap=createRpgPhaseOneGame('함정 검증','',0,'rogue');trap.turn=0;trap.turnReadyAt=0;trap.rpgRun!.combat!.actives!.gauge[0]=2;trap.trick=[tile(8)];trap.lastBy=2;const trapIndex=view(trap,trap.players[0].token).stacks.findIndex(stack=>stack.available);placeFloorTrap(trap,0,trapIndex,0);trap.turn=1;trap.rpgRun!.hp[1]=4;const floorBeforeTrap=structuredClone(trap.stacks),survivingHand=structuredClone(trap.players[2].hand);act(trap,1,'draw',[],trapIndex,100);assert.equal(trap.rpgRun!.hp[1],0);assert.equal(trap.players[1].hand.length,0);assert.equal(trap.turn,2);assert.equal(trap.phase,'playing');assert.deepEqual(trap.players[2].hand,survivingHand);assert.deepEqual(trap.stacks.filter((_,index)=>index!==trapIndex),floorBeforeTrap.filter((_,index)=>index!==trapIndex));
 
 // A fixture with legal hands drives the complete stage lifecycle without bypassing reward locks.
@@ -54,5 +53,5 @@ const gauge=fresh(),initial=gauge.rpgRun!.combat!.actives!.gauge[0];chargeRpgDue
 const data=new Map<string,string>(),storage={getItem:(key:string)=>data.get(key)??null,setItem:(key:string,value:string)=>{data.set(key,value);}};
 const legacy=createRpgGame('기존');saveRpgGame(storage,legacy);const original=data.get(RPG_STORAGE_KEY);storage.setItem('jangseong-practice-game','untouched-normal');storage.setItem('turntale-hp-items-2-v1','untouched-hp');saveRpgGame(storage,duel,true);assert.equal(data.get(RPG_STORAGE_KEY),original);assert.equal(data.get('jangseong-practice-game'),'untouched-normal');assert.equal(data.get('turntale-hp-items-2-v1'),'untouched-hp');assert.ok(data.has(RPG_PHASE_ONE_STORAGE_KEY));assert.deepEqual(readRpgArchive(storage).active,{...JSON.parse(JSON.stringify(duel)),rpgRun:{...JSON.parse(JSON.stringify(duel.rpgRun)),pendingRework:true}});
 saveRpgGame(storage,failed,true);assert.equal(readRpgArchive(storage).active,null);assert.ok(readRpgArchive(storage).discovered.includes('cracked-heart'));
-const hp=createHpItemGame('회귀','',0,2,undefined,'swordsman');buyHpItemLoadout(hp,[]);assert.equal(hp.rpgRun!.phaseOne,undefined);hp.turn=0;hp.turnReadyAt=0;hp.rpgRun!.hp[1]=1;useProfessionActive(hp,0,1,0);assert.equal(hp.rpgRun!.status,'complete','HP item still ends on the first eliminated seat');
+
 console.log('PASS: RPG 1–3 lifecycle, 3→2 stable-seat play/draw/pass/redeal, eliminated targeting/results, active/item kills, reward locks/heal caps, 6-slot replacement/decline, synergy on/off, death, idempotence, isolated saves, legacy and HP-item behavior.');

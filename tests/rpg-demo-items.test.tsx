@@ -15,18 +15,17 @@ import {resolveProfessionRpgBattle} from '../lib/rpg-profession-combat.ts';
 import {chooseRpgStageReward,reconcileRpgEliminations,rpgSynergies} from '../lib/rpg-phase-one.ts';
 import {saveRpgGame,readRpgArchive} from '../lib/rpg-storage.ts';
 import {equipJourneyRelic} from '../lib/rpg-journey.ts';
-import {HP_ITEM_PRICES} from '../lib/hp-item-shop.ts';
 import JourneyVillageShop from '../app/components/JourneyVillageShop.tsx';
 const t=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s});
 const ready=()=>{const g=createRpgJourneyGame('데모 정리');g.rpgRun!.status='ready';g.rpgRun!.coins=1000;g.rpgRun!.shops=[{area:1,stock:RPG_CONSUMABLES.map(i=>({id:i.id,kind:'consumable',price:i.price,quantity:1}))}];return g;};
-function combat(profession:'swordsman'|'mage'|'rogue'|'cleric'='swordsman'){const g=createRpgJourneyGame('전술 검사','',0,profession);enterJourneyNode(g,'battle-1',0);g.turn=0;g.turnReadyAt=0;g.roundActions=3;g.completedBattles=1;g.rpgRun!.equipped=[];return g;}
+function combat(profession:'swordsman'|'mage'|'rogue'|'cleric'='swordsman'){const g=createRpgJourneyGame('전술 검사','',0,profession);enterJourneyNode(g,'battle-1',0);g.turn=0;g.turnReadyAt=0;g.roundActions=3;g.rpgRun!.equipped=[];return g;}
 test('demo shop has six consumables, normalizes legacy lens price to 10 and excludes quest/retired relic sales without deleting possessions',()=>{
  const g=ready(),run=g.rpgRun!;run.consumables=['red-vial','moonlight-soup','guardian-bandage','fates-scales','scout-lens','scout-lens'];run.relics.push('final-knot',BLUE_GLASS_ID);run.equipped=['final-knot'];run.unlocked.push(BLUE_GLASS_ID);const before=JSON.stringify(run);
  const stock=currentRpgShop(run)!.stock;assert.deepEqual(stock.filter(i=>i.kind==='consumable').map(i=>i.id).sort(),Object.keys(RPG_DEMO_PRICES).sort());assert.equal(stock.find(i=>i.id==='scout-lens')!.price,10);assert.ok(stock.filter(i=>i.kind==='relic').every(i=>i.id!==BLUE_GLASS_ID&&(RPG_DEMO_RELICS as readonly string[]).includes(i.id)));
  assert.equal(JSON.stringify(run),before);const bought=buyRpgItem(run,'scout-lens');assert.equal(bought.coins,990);assert.equal(bought.consumables.filter(id=>id==='scout-lens').length,3);assert.deepEqual(bought.equipped,['final-knot']);assert.ok(run.consumables.every(id=>bought.consumables.includes(id)));assert.throws(()=>buyRpgItem(run,'red-vial'));assert.throws(()=>buyRpgItem(run,BLUE_GLASS_ID));
  const cart=buyRpgCart(run,['scout-lens','scout-lens']);assert.equal(cart.coins,980);
  const html=render(h(JourneyVillageShop,{run,busy:false,error:'',action:()=>{}}));assert.match(html,/소비 아이템<small>6종/);assert.ok(html.includes('10주화'));assert.ok(!html.includes('붉은 약병 구매 목록에 담기'));
- const other=createRpgGame('이전 모드').rpgRun!;other.status='ready';other.shops=[{area:1,stock:[]}];assert.equal(currentRpgShop(other)!.stock.find(i=>i.id==='scout-lens')!.price,45);assert.equal(RPG_CONSUMABLES.find(i=>i.id==='scout-lens')!.price,45);assert.equal(HP_ITEM_PRICES['scout-lens'],3);
+ const other=createRpgGame('이전 모드').rpgRun!;other.status='ready';other.shops=[{area:1,stock:[]}];assert.equal(currentRpgShop(other)!.stock.find(i=>i.id==='scout-lens')!.price,45);assert.equal(RPG_CONSUMABLES.find(i=>i.id==='scout-lens')!.price,45);
 });
 test('preparation and combat herbs share 10/15 healing, caps and exact one-item consumption',()=>{
  for(const equipped of [[],[BLUE_GLASS_ID]])for(const hp of [60,96]){

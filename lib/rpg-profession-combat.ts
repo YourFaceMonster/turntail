@@ -26,15 +26,15 @@ export function newProfessionCombat(profession:RpgProfessionId,avatars:string[],
  return {version:1,roundRules:true,immediateSkills:true,round,professions:avatars.map((avatar,index)=>index===0?profession:npcProfession(avatar,index)),activeUsed:avatars.map(()=>false),battleTiles:avatars.map(()=>0),battles:[],effects:[],privateReveals:{},avatars};
 }
 export function hasProfessionCombat(game:{rpgRun?:{combat?:RpgProfessionCombat}|null}){return game.rpgRun?.combat?.version===1;}
-export function lastCombatBattle(game:{hpItemMatch?:{lastBattle?:HpBattleEvent},rpgRun?:{combat?:RpgProfessionCombat}|null}){if(hasRoundCombat(game))return undefined;return game.hpItemMatch?.lastBattle||game.rpgRun?.combat?.lastBattle;}
+export function lastCombatBattle(game:{rpgRun?:{combat?:RpgProfessionCombat}|null}){if(hasRoundCombat(game))return undefined;return game.rpgRun?.combat?.lastBattle;}
 export function resetProfessionCombat(game:Game){
  const state=game.rpgRun?.combat;if(!state)return;
  const avatars=game.players.map(player=>player.avatar||'');
  if(avatars.slice(1).join('|')!==state.avatars.slice(1).join('|'))state.professions=avatars.map((avatar,index)=>index===0?state.professions[0]:npcProfession(avatar,index));
  Object.assign(state,{roundRules:true,immediateSkills:true,lastInstant:undefined,pendingRound:undefined,round:game.round,activeUsed:game.players.map(()=>false),battleTiles:game.players.map(()=>0),battles:[],lastBattle:undefined,effects:[],privateReveals:{},avatars});
- resetItemBattle(game);if(state.actives){state.actives.events=[];state.actives.lastEvent=undefined;state.actives.lastUsedTurn=game.players.map(()=>null);}resetProfessionActiveEvents(game);if(!game.hpItemMode)beginRpgRoundHealth(game.rpgRun!,game.round);
+ resetItemBattle(game);if(state.actives){state.actives.events=[];state.actives.lastEvent=undefined;state.actives.lastUsedTurn=game.players.map(()=>null);}resetProfessionActiveEvents(game);beginRpgRoundHealth(game.rpgRun!,game.round);
 }
-export function recordProfessionBattlePlay(game:Game,who:number,count:number){if(game.rpgRun?.combat&&!game.hpItemMode)game.rpgRun.combat.battleTiles[who]+=count;}
+export function recordProfessionBattlePlay(game:Game,who:number,count:number){if(game.rpgRun?.combat)game.rpgRun.combat.battleTiles[who]+=count;}
 function take<T>(pool:readonly T[],count:number):T[]{const choices=[...pool],picked:T[]=[];while(choices.length&&picked.length<count){const random=new Uint32Array(1);crypto.getRandomValues(random);picked.push(choices.splice(random[0]%choices.length,1)[0]);}return picked;}
 /** This runs only after the fight winner is known, once for that fight. Never consumes items. */
 export function resolveProfessionWin(game:Game,actor:number,label:string,now:number){
@@ -46,7 +46,7 @@ export function resolveProfessionWin(game:Game,actor:number,label:string,now:num
   if(kind==='active'&&profession!=='mage')state.activeUsed[actor]=true;
   const event:ProfessionEffect={id:uid(),round:game.round,actor,profession,kind,label,damage:trigger.damage,heal:Math.min(trigger.heal,hpLimit(game.rpgRun)-game.rpgRun!.hp[actor]),revealed:0,at:now};
   damage+=event.damage;heal[actor]+=event.heal;
-  if(trigger.reveal&&state.itemBattle&&(game.hpItemMode||isRpgPhaseOne(game))&&profession==='rogue'){
+  if(trigger.reveal&&state.itemBattle&&isRpgPhaseOne(game)&&profession==='rogue'){
    event.floorScout=true;event.revealed=scoutProfessionFloor(game,actor,trigger.reveal);
   }else if(trigger.reveal){
    const target=take(game.players.flatMap((player,seat)=>seat!==actor&&rpgAlive(game,seat)&&player.hand.length?[seat]:[]),1)[0];
@@ -68,14 +68,6 @@ export function resolveProfessionWin(game:Game,actor:number,label:string,now:num
   }
   effects.push(event);state.effects.push(event);
  }
- const extra=state.itemBattle;
- if(extra&&game.hpItemMode){
-  let extraDamage=0,extraHeal=0,trait='';
-  if(profession==='swordsman'&&label==='싱글'){extraDamage=1;trait='날카로운 한 수';}
-  if(profession==='cleric'&&label==='페어'){extra.pairWins[actor]++;if(extra.pairWins[actor]===2){extraHeal=2;trait='이어지는 기도';}}
-  if(profession==='mage'&&game.trick.length===5){extraDamage=4;trait='5장 족보 강화';}
-  if(trait){const event:ProfessionEffect={id:uid(),round:game.round,actor,profession,kind:'passive',label,damage:extraDamage,heal:Math.min(extraHeal,Math.max(0,hpLimit(game.rpgRun)-game.rpgRun!.hp[actor]-heal[actor])),revealed:0,trait,at:now};damage+=event.damage;heal[actor]+=event.heal;effects.push(event);state.effects.push(event);}
- }
  return {effects,heal,damage};
 }
 /** Private snapshots describe the instant of the trigger, including a tile subsequently exchanged. */
@@ -90,9 +82,9 @@ export function professionCombatView(state:RpgProfessionCombat|undefined,me:numb
 export function professionEffectText(effect:ProfessionEffect){if(effect.immediate)return `${rpgProfession(effect.profession).name} · ${effect.label} · ${[effect.damage?`${effect.profession==='mage'?'상대 각각':'무작위 상대 1명'} 즉시 공격 ${effect.damage}`:'',effect.heal?`HP +${effect.heal}`:'',effect.profession==='cleric'&&!effect.heal?'회복 한도 도달':'',effect.floorScout?`바닥 패 ${effect.revealed}장 확인`:'',effect.trapDamage?`함정 피해 ${effect.trapDamage} 설치`:'',effect.trapFallback?'기습 피해 1 적용':''].filter(Boolean).join(' · ')}`;if(effect.trait==='족보 자동 스킬')return `${rpgProfession(effect.profession).name} · ${effect.label} · ${[effect.damage?`${effect.profession==='mage'?'상대 각각':effect.target!==undefined?'무작위 상대 1명':'공격'} 피해 ${effect.damage} 적립`:'',effect.heal?`회복 +${effect.heal} 적립`:'',effect.floorScout?`바닥 패 ${effect.revealed}장 확인`:'',effect.trapDamage?`함정 피해 ${effect.trapDamage} 설치`:'',effect.trapFallback?'함정 대기 피해 1 적립':''].filter(Boolean).join(' · ')}`;return `${rpgProfession(effect.profession).name} ${(effect.trait==='비전 증폭'?'5장 족보 강화':effect.trait)|| (effect.kind==='active'?'자동 스킬':'패시브')} · ${[effect.damage?`추가 피해 +${effect.damage}`:'',effect.heal?`HP +${effect.heal}`:'',effect.revealed?`${effect.floorScout?'바닥':'상대'} 패 ${effect.revealed}장 확인`:'',effect.floorScout&&!effect.revealed?'숨겨진 바닥패 없음':'',effect.exchange==='done'?'패 1장 교환':effect.exchange==='blocked'?'패 교환 · 수호의 봉인으로 방어':effect.exchange==='unavailable'?'교환할 수 없습니다':''].filter(Boolean).join(' · ')||'회복 한도 도달'}`;}
 /** RPG fight damage replaces score-based HP loss for new profession journeys only. */
 export function resolveProfessionRpgBattle(game:Game,now=Date.now(),roundEnding=false):HpBattleEvent|null{
- if(hasRoundCombat(game)&&!game.hpItemMode)return queueProfessionRoundBattle(game,now);
- const run=game.rpgRun,state=run?.combat;if(!run||!state||game.hpItemMode||run.status!=='playing'||game.lastBy===null||!game.trick.length)return null;
- const id=`${game.code}:${game.round}:${game.tablePlay?.id||game.lastEvent?.id||game.completedBattles||0}`,prior=state.battles.find(event=>event.id===id);if(prior)return prior;
+ if(hasRoundCombat(game))return queueProfessionRoundBattle(game,now);
+ const run=game.rpgRun,state=run?.combat;if(!run||!state||run.status!=='playing'||game.lastBy===null||!game.trick.length)return null;
+ const id=`${game.code}:${game.round}:${game.tablePlay?.id||game.lastEvent?.id||game.roundActions||0}`,prior=state.battles.find(event=>event.id===id);if(prior)return prior;
  const actor=game.lastBy,label=combo(game.trick)?.label;if(!label||!rpgAlive(game,actor))return null;
  const playedCount=Math.max(game.trick.length,state.battleTiles[actor]||0),hpBefore=[...run.hp],profession=resolveProfessionWin(game,actor,label,now),damageTaken=game.players.map((_,seat)=>seat===actor||!rpgAlive(game,seat)?0:playedCount+profession.damage),relics:RpgRelicEffect[]=[],blockedDamage=game.players.map(()=>0);
  const relic=isRpgPhaseOne(game)&&actor===0?itemBattleRelicWin(run.equipped,label,game.trick):{damage:0,heal:0,effects:[]};

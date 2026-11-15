@@ -4,7 +4,6 @@ import {createPortal} from 'react-dom';
 import {gameRelic} from '../../lib/item-battle-relics.ts';
 import type {view} from '../../lib/game.ts';
 import {lastCombatBattle,professionEffectText} from '../../lib/rpg-profession-combat.ts';
-import {hpSkillUseText} from '../../lib/hp-item-skills.ts';
 import {HP_BATTLE_REVIEW_MS,type HpBattleEvent} from '../../lib/hp-item-battle.ts';
 import {seatPanelTheme} from '../../lib/seat-presentation';
 import SeatPortrait from './SeatPortrait';
@@ -16,7 +15,7 @@ export function BattleEffectText({text}:{text:string}){
 }
 export function DuelResultBody({event,players}:{event:HpBattleEvent,players:ReturnType<typeof view>['players']}){
  if(event.roundSettlement)return <><h2 id="battle-review-title">판 전체 정산</h2><p>{players[event.actor].name} 손패 소진 · 이번 판 승리</p><div className="compact-battle-hp-rows">{players.map((player,seat)=><div className="battle-hp-row" key={player.id}><RpgHpBar maxHp={event.maxHp||100} hp={event.hpAfter[seat]} owner={player.name} identity={<><SeatPortrait avatar={player.avatar} seat={seat}/><strong>{player.name}</strong></>} detail={<span>받은 피해 {event.damageTaken?.[seat]||0} · 회복 {event.roundHealing?.[seat]||0} · 방어 {event.blockedDamage?.[seat]||0}</span>} change={<em>{event.hpBefore[seat]} → {event.hpAfter[seat]}</em>}/></div>)}</div></>;
- const summary=hpBattleSummary(event,players),effects=[...(event.professions||[]).map(effect=>`${players[effect.actor].name} · ${professionEffectText(effect).replace(/바닥 패 (\d+)장 확인/,'투시 스킬 발동 · $1장')}`),...(event.skills||[]).map(skill=>`${players[skill.actor].name} · ${hpSkillUseText(skill)}`),...(event.relics||[]).map(effect=>`${gameRelic(effect.relicId)?.name||effect.relicId} · ${effect.message}`)];
+ const summary=hpBattleSummary(event,players),effects=[...(event.professions||[]).map(effect=>`${players[effect.actor].name} · ${professionEffectText(effect).replace(/바닥 패 (\d+)장 확인/,'투시 스킬 발동 · $1장')}`),...(event.relics||[]).map(effect=>`${gameRelic(effect.relicId)?.name||effect.relicId} · ${effect.message}`)];
  const row=(value:typeof summary.rows[number])=>{const player=players[value.seat],theme=seatPanelTheme(value.seat),winner=value.seat===event.actor;return <div className={`battle-hp-row ${winner?'duel-winner-row':'duel-loser-row'}`} key={player.id} data-duel-seat={value.seat} data-duel-role={winner?'winner':'loser'} style={{'--battle-light':theme.light,'--battle-dark':theme.dark,'--battle-border':theme.border} as CSSProperties}><RpgHpBar maxHp={event.maxHp||100} hp={value.hp} persistentChange owner={player.name} identity={<><SeatPortrait avatar={player.avatar} seat={value.seat}/><strong>{player.name}{winner?' 승리!':''}</strong></>} detail={value.note&&!winner?<span className="battle-row-effects"><BattleEffectText text={value.note}/></span>:undefined} change={value.damage?<em className="negative">−{value.damage}</em>:value.healed?<em className="positive">+{value.healed}</em>:undefined}/></div>;};
  return <><h2 className="compact-battle-heading duel-ordinal" id="battle-review-title">{event.ordinal||1}번째 결투</h2><div className="duel-winner">{row(summary.rows[0])}</div><p className="battle-final-formula">{event.label} 전투 · {event.damage}점 피해</p><div className="compact-battle-hp-rows duel-losers">{summary.rows.slice(1).map(row)}</div>{!!effects.length&&<div className="battle-inline-effects">{effects.map((text,index)=><p key={index}><BattleEffectText text={text}/></p>)}</div>}</>;
 }
@@ -42,7 +41,7 @@ export default function HpBattleReview({game,paused=false,onHit,onReviewChange,o
   document.addEventListener('keydown',keyboard);return()=>{document.removeEventListener('keydown',keyboard);if(previous instanceof HTMLElement&&previous.isConnected)previous.focus({preventScroll:true});};
  },[shown?.id,ready]);
  if(!shown)return null;
- const history=game.hpItemMatch?.battles||game.rpgRun?.combat?.battles||[],presentation={...shown,ordinal:shown.ordinal||Math.max(1,history.findIndex(event=>event.id===shown.id)+1)};
+ const history=game.rpgRun?.combat?.battles||[],presentation={...shown,ordinal:shown.ordinal||Math.max(1,history.findIndex(event=>event.id===shown.id)+1)};
  return createPortal(<div className="battle-review-shade" onClick={dismiss}><section ref={notice} className="battle-win-notice battle-damage-review compact-battle-review battle-review-0641" style={position} role="dialog" aria-modal="true" aria-labelledby="battle-review-title">
   <DuelResultBody event={presentation} players={game.players}/>
   <div className="compact-battle-footer"><button ref={confirm} className="battle-review-confirm" type="button" disabled={!ready} onClick={e=>{e.stopPropagation();dismiss();}}>클릭해서 계속</button></div>

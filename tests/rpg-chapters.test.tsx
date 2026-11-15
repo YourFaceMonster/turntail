@@ -50,8 +50,8 @@ function playJourney(runNumber=1,choices:Record<string,'read'|'skip'>={}){
 test('the journey runs ST1→ST10 with region maps, chapter HP resets, stage casts and story cards',()=>{
  const {game,seen}=playJourney();
  assert.deepEqual(seen.map(s=>s.opponents),[['로웬','루미'],['포코','밀라'],['첫째','둘째'],['수리','네아'],['타래','하온'],['카르덴','세라'],['루엔','시온'],['엘라','아스텔'],['재온','오닉'],['첫 번째 수호자','두 번째 수호자']]);
- // Chapter start resets to 100; an inherited heart relic may add its first-equip bonus (+10/+20).
- for(const stage of [4,7,10])assert.ok([100,110,120].includes(seen[stage-1].hp),`chapter start ST${stage} restores HP (got ${seen[stage-1].hp})`);
+ // Chapter start resets to 100; an inherited heart relic may add its first-equip bonus (+10/+15, +35 forged).
+ for(const stage of [4,7,10])assert.ok([100,110,115,125,135].includes(seen[stage-1].hp),`chapter start ST${stage} restores HP (got ${seen[stage-1].hp})`);
  assert.deepEqual(seen.map(s=>s.region),[1,1,1,2,2,2,3,3,3,4]);
  assert.deepEqual(game.rpgRun!.storyCards,['crown-two','iron-gate-two','sacred-flame-two','secret-key-two']);
  assert.equal(game.rpgRun!.stage,10);
@@ -152,11 +152,11 @@ test('saves reject corrupt story data and the map only shows the current region'
  assert.ok(rpgMaxHp(mid.rpgRun!)>=100);
 });
 
-test('the map warms the next stage paintings: before, its quest, after; nothing outside ST4~10', async () => {
+test('the map warms the next stage paintings: before, close-up, its quest, after; nothing outside ST4~10', async () => {
  const {stageArtToPreload}=await import('../lib/rpg-chapters');
  assert.deepEqual(stageArtToPreload(3),[]);assert.deepEqual(stageArtToPreload(11),[]);
  const five=stageArtToPreload(5);
- assert.deepEqual(five,['/story/st5-before-portrait-v1.webp','/story/quest-5-portrait-v1.webp','/story/st5-after-portrait-v1.webp']);
- assert.equal(stageArtToPreload(7).length,2,'ST7 has no side quest');
+ assert.deepEqual(five,['/story/st5-before-portrait-v1.webp','/story/st5-duel-portrait-v1.webp','/story/quest-5-portrait-v1.webp','/story/st5-after-portrait-v1.webp']);
+ assert.equal(stageArtToPreload(7).length,3,'ST7 has no side quest');
  for(const stage of [4,5,6,7,8,9,10])for(const src of stageArtToPreload(stage))assert.ok(existsSync('public'+src),src);
 });

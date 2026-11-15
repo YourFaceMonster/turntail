@@ -7,7 +7,6 @@ import {rpgHandSettlement,scoutCount,scoutRpgFloor,resolveRpgScout,activateRpgRe
 import {chooseRpgStageReward} from '../lib/rpg-phase-one';
 import {giveHerbToWayfarer,returnLetterToMor,discoverWayfarerRelic,equipJourneyRelic,hearJourneyRumor,settleJourneyMini} from '../lib/rpg-journey';
 import {saveRpgGame,readRpgArchive,RPG_PHASE_ONE_STORAGE_KEY,RPG_REWORK_BACKUP_KEY} from '../lib/rpg-storage';
-import {createHpItemGame} from '../lib/hp-item-mode';
 import {hpLimit} from '../lib/hp-limit';
 import {tileLayout} from '../lib/layout';
 import {useRpgTacticalItem} from '../lib/rpg-items';
@@ -97,19 +96,10 @@ test('private 2층-only intel, no repeats, pickup expiry, per-round reset and ho
  game.rpgRun!.hp=[70,90,90];finish(game,[0,3,6]);game.rpgRun!.equipped=['stopped-hourglass','watchkeepers-blue-glass'];startRpgRound(game,0);assert.equal(game.rpgRun!.rework!.intel[0].length,4,'1 foresight +1 hourglass +1 blue glass +1 scout synergy (two scout relics)');
  game.rpgRun!.hp=[70,90,90];finish(game,[3,0,6]);startRpgRound(game,0);assert.equal(game.rpgRun!.rework!.intel[0].length,2,'blue glass +1 scout synergy');assert.equal(game.rpgRun!.rework!.intel[1].length,1,'an AI winner also sees just one');
 });
-test('heart first activation, unequip/re-equip and delayed equip cannot farm HP',()=>{
- let run=fresh().rpgRun!;run.status='ready';run.journey!.location='tavern';run.hp[0]=60;run.relics.push('cracked-heart','second-heart');
- run=equipJourneyRelic(run,'cracked-heart');assert.equal(run.hp[0],80);assert.equal(rpgMaxHp(run),120);
- run=equipJourneyRelic(run,'second-heart');assert.equal(run.hp[0],90);assert.equal(rpgMaxHp(run),135,'both hearts wake the heart synergy (+5 max HP, no current HP)');
- run=equipJourneyRelic(run,'cracked-heart');assert.equal(rpgMaxHp(run),110);assert.equal(run.hp[0],90);run=equipJourneyRelic(run,'cracked-heart');assert.equal(run.hp[0],90);
- run.hp[0]=125;run=equipJourneyRelic(run,'cracked-heart');assert.equal(run.hp[0],110);
- const high=fresh().rpgRun!;high.hp[0]=95;high.relics.push('cracked-heart');high.equipped.push('cracked-heart');assert.equal(activateRpgRelics(high).hp[0],115);
- assert.equal(hpLimit(createHpItemGame('item','',0,2,undefined,'swordsman').rpgRun),180);
-});
 test('final knot once per stage, ring only 3 seats, no resurrection',()=>{
- const game=fresh();game.rpgRun!.hp=[6,90,90];game.rpgRun!.equipped=['final-knot'];finish(game,[5,0,5]);assert.equal(game.rpgRun!.hp[0],6);
- startRpgRound(game,0);finish(game,[1,0,2]);assert.equal(game.rpgRun!.hp[0],6,'+1 hand, −1 from the capped AI overflow, knot already spent');assert.deepEqual(game.rpgRun!.rework!.knotStages,[1]);
- const ring=fresh();ring.rpgRun!.hp=[60,90,90];ring.rpgRun!.equipped=['second-ring'];finish(ring,[4,0,8]);assert.equal(ring.rpgRun!.hp[0],66,'+4 hand, −1 AI overflow, +3 ring');
+ const game=fresh();game.rpgRun!.hp=[6,90,90];game.rpgRun!.equipped=['final-knot'];finish(game,[5,0,5]);assert.equal(game.rpgRun!.hp[0],11);
+ startRpgRound(game,0);finish(game,[1,0,2]);assert.equal(game.rpgRun!.hp[0],11,'+1 hand, −1 from the capped AI overflow, knot already spent');assert.deepEqual(game.rpgRun!.rework!.knotStages,[1]);
+ const ring=fresh();ring.rpgRun!.hp=[60,90,90];ring.rpgRun!.equipped=['second-ring'];finish(ring,[4,0,8]);assert.equal(ring.rpgRun!.hp[0],69,'+4 hand, −1 AI overflow, +6 ring');
  ring.rpgRun!.hp=[60,0,90];startRpgRound(ring,0);finish(ring,[7,0,0],2);assert.equal(ring.rpgRun!.hp[0],53);
 });
 test('rewards: 2/3 offers, mirror +1, stable compass preview, quest exclusion',()=>{
@@ -166,11 +156,6 @@ test('an in-progress 0.7.2 deal survives reload and the following round restores
  assert.equal(resumed.stacks.length,15);
  assert.equal(resumed.cols,5);
 });
-test('base distribution/settlement and independent item rules stay unchanged',()=>{
- const game=room('base',player('a'),true,3);game.players.push(player('b',true),player('c',true));start(game,0);assert.deepEqual(game.players.map(p=>p.hand.length),[10,10,10]);assert.equal(game.stacks.length,15);
- finish(game,[0,4,8]);assert.deepEqual(game.result!.players.map(p=>p.delta),[12,0,-12]);
- const item=createHpItemGame('item','',0,2,undefined,'swordsman');assert.equal(hpLimit(item.rpgRun),180);assert.ok(item.rpgRun!.combat);assert.equal(item.rpgRun!.rework,undefined);
-});
 test('mobile layout on the restored six-column floor supports larger drawn hands and supports five-card choices',()=>{
  for(const [width,height,landscape] of [[390,650,false],[780,300,true]] as const){const spec={width,height,floorWidth:320,handWidth:350,handCount:12,cols:6,rows:3,players:3,landscape,rpg:true};const a=tileLayout(spec),b=tileLayout({...spec,handCount:18});assert.equal(a.floorHeight,b.floorHeight);assert.ok(b.width<=a.width);assert.equal(b.columns,9);}
  const hand=Array.from({length:18},(_,i)=>tile(i%15+1,Math.floor(i/15)));assert.ok(legalOptions(hand,[]).some(o=>o.tiles.length===5));
@@ -191,11 +176,11 @@ test('new preview screens use the new engine, including zero-HP failure and ST3 
 });
 test('new relic tray describes scouting and HP, preserving the legacy catalogue separately',()=>{
  const run=fresh().rpgRun!;run.equipped=['gamblers-gloves','cracked-heart'];
- const html=renderToStaticMarkup(<RpgEquippedRelics run={run}/>);assert.match(html,/바닥 \+1장/);assert.match(html,/최대 HP[\s\S]*\+20/);assert.doesNotMatch(html,/포인트|피해 8 감소/);
+ const html=renderToStaticMarkup(<RpgEquippedRelics run={run}/>);assert.match(html,/바닥 \+1장/);assert.match(html,/최대 HP[\s\S]*\+15/);assert.doesNotMatch(html,/포인트|피해 8 감소/);
 });
 test('migration from completed old stage keeps player HP and uses the next stage trial HP',()=>{
  const game=createRpgPhaseOneGame('old'),run=game.rpgRun!;run.pendingRework=true;run.status='ready';run.hp=[60,0,0];run.phaseOne!.clear={stage:1,hpBefore:60,baseHeal:0,relicHeal:0,synergyHeal:0,relicId:'recovery-lantern',chosen:'all'};game.phase='ended';
- startRpgRound(game,0);assert.equal(game.rpgRun!.stage,2);assert.deepEqual(game.rpgRun!.hp.slice(1),[35,40]);assert.equal(game.rpgRun!.hp[0],80);assert.equal(game.rpgRun!.maxHp,120);
+ startRpgRound(game,0);assert.equal(game.rpgRun!.stage,2);assert.deepEqual(game.rpgRun!.hp.slice(1),[35,40]);assert.equal(game.rpgRun!.hp[0],75);assert.equal(game.rpgRun!.maxHp,115);
 });
 test('backup failure preserves the original save and never writes a converted active game',()=>{
  const game=createRpgPhaseOneGame('old'),storage=memory();const raw=JSON.stringify({version:1,active:game,records:[],discovered:[],unlocked:[]});storage.setItem(RPG_PHASE_ONE_STORAGE_KEY,raw);

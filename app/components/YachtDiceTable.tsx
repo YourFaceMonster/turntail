@@ -4,6 +4,7 @@ import {Settings2} from 'lucide-react';
 import './yacht-dice.css';
 import {YACHT_CATEGORIES,YACHT_LABELS,YACHT_HINTS,YACHT_UPPER,YACHT_BONUS,YACHT_JOKER_BONUS,upperSubtotal,yachtBonus,seatTotal,boxScore,allowedCategories,yachtJoker,yachtJokerBonus,isYachtRoll,yachtAiPlan,openCategories,yachtShape,type YachtMatch,type YachtCategory} from '../../lib/yacht-dice';
 import {DICE_DEN_DIALOGUE,DICE_DEN_STAKE,DICE_NPC,DICE_RELIC} from '../../lib/rpg-dice-den';
+import AnimalFace from './AnimalFace';
 import {relicImage} from '../../lib/item-battle-relics';
 import {cue} from '../../lib/sound-cues';
 import {haptic,DICE_HAPTICS} from '../../lib/haptics';
@@ -191,7 +192,7 @@ export default function YachtDiceTable({den,match,hp,equipped,busy,error,play,re
     <section className="hand-panel panel yacht-hand">
      <div className="hand-heading">
       <div><span className={`turn-dot ${myTurn?'on':''}`}/><strong>{status}</strong></div>
-      <button type="button" className="own-status-card persona-coral" aria-label={`${playerName} ${mine}점`}><span className="own-status-fill" aria-hidden="true"/>{playerAvatar||<span className="avatar portrait persona-coral">🦊</span>}<span className="own-status-info"><strong>{playerName}</strong><small className="own-hp-line">{practice?`${mine}점`:`${mine}점 · HP ${hp}`}</small></span></button>
+      <button type="button" className="own-status-card persona-coral" aria-label={`${playerName} ${mine}점`}><span className="own-status-fill" aria-hidden="true"/>{playerAvatar||<span className="avatar portrait persona-coral"><AnimalFace emoji="🦊" label=""/></span>}<span className="own-status-info"><strong>{playerName}</strong><small className="own-hp-line">{practice?`${mine}점`:`${mine}점 · HP ${hp}`}</small></span></button>
       <div className="hand-tools yacht-bonus" aria-label="숫자 보너스 진행"><span>보너스 {upperSubtotal(own)}/{YACHT_BONUS.threshold}{yachtBonus(own)?' ✓':''}</span>{!!match.yachtBonuses?.[0]&&<small>요트 보너스 ×{match.yachtBonuses[0]}</small>}</div>
      </div>
      <div className={`yacht-score-hand ${canPick?'is-picking':''}`} role="group" aria-label="점수 칸">{YACHT_CATEGORIES.map(tile)}</div>

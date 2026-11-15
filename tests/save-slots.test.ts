@@ -3,7 +3,6 @@ import {readSaveSlots,saveSingleGame} from '../lib/save-slots.ts';
 import {createStageGame} from '../lib/stage-game.ts';
 import {saveStageGame,readStageArchive,STAGE_STORAGE_KEY} from '../lib/stage-storage.ts';
 import {player,room,start} from '../lib/game.ts';
-import {createHpItemGame,saveHpItemGame} from '../lib/hp-item-mode.ts';
 import {createRpgGame} from '../lib/rpg-game.ts';
 import {saveRpgGame} from '../lib/rpg-storage.ts';
 const memory=new Map<string,string>(),storage={getItem:(key:string)=>memory.get(key)??null,setItem:(key:string,value:string)=>{memory.set(key,value);}};
@@ -29,7 +28,8 @@ memory.set(STAGE_STORAGE_KEY,oldStage!);memory.set('jangseong-practice-game',JSO
 assert.deepEqual(readSaveSlots(storage).slots.map(s=>s.mode),['multi'],'a legacy 10-round game cannot return through the classic slot');
 saveSingleGame(storage,normal);
 saveRpgGame(storage,createRpgGame('RPG 저장'));
-for(const variant of [1,2] as const)saveHpItemGame(storage,createHpItemGame('아이템 저장','',Date.now(),variant));
+// An old item-battle save (the mode was removed 2026-11-15) is still listed so it can be deleted.
+storage.setItem('turntale-hp-items-2-v1',JSON.stringify({version:1,records:[],active:createRpgGame('아이템 저장')}));
 const retainedBefore=[...memory.entries()];
 assert.deepEqual(readSaveSlots(storage).slots.map(s=>s.mode),['single','rpg','hp-item-2','multi']);
 assert.deepEqual([...memory.entries()],retainedBefore,'reading available modes cannot rewrite their saved state');

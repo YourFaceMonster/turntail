@@ -45,9 +45,9 @@ test('owned-only relics work from the bag and never take an equip slot',()=>{
 
 test('settlement relic heals are recorded for notices and the result line; full HP shows nothing',()=>{
  const ring=fresh();ring.rpgRun!.hp=[60,90,90];ring.rpgRun!.equipped=['second-ring'];finish(ring,[4,0,8]);
- assert.equal(ring.rpgRun!.hp[0],66);assert.deepEqual(ring.rpgRun!.rework!.relicHeals,[{relicId:'second-ring',amount:3}]);assert.equal(procs(ring,'second-ring').at(-1)?.message,'2등 · HP +3');
+ assert.equal(ring.rpgRun!.hp[0],69);assert.deepEqual(ring.rpgRun!.rework!.relicHeals,[{relicId:'second-ring',amount:6}]);assert.equal(procs(ring,'second-ring').at(-1)?.message,'2등 · HP +6');
  const html=renderToStaticMarkup(<RpgReworkResult game={view(ring,ring.players[0].token)} busy={false} choose={()=>{}} next={()=>{}} newRun={()=>{}} exit={()=>{}}/>);
- assert.ok(html.includes('rpg-relic-heal-line')&&html.includes('두 번째 반지 HP +3'));
+ assert.ok(html.includes('rpg-relic-heal-line')&&html.includes('두 번째 반지 HP +6'));
  const knot=fresh();knot.rpgRun!.hp=[12,90,90];knot.rpgRun!.equipped=['final-knot'];finish(knot,[5,0,5]);
  assert.equal(procs(knot,'final-knot').length,1);assert.equal(knot.rpgRun!.rework!.relicHeals?.[0].relicId,'final-knot');
  const capped=fresh();capped.rpgRun!.hp=[100,90,90];capped.rpgRun!.equipped=['second-ring'];finish(capped,[4,0,8]);
@@ -64,7 +64,7 @@ test('lantern and mirror proc on clear; reward screen explains how long relics l
 
 test('hearts, quill and the tooltip all explain themselves',()=>{
  const game=fresh(),run=game.rpgRun!;run.relics=[...run.relics,'cracked-heart'];run.equipped=[...run.equipped,'cracked-heart'];run.hp[0]=80;
- const hearted=activateRpgRelics(run);assert.equal(hearted.hp[0],100);assert.equal(hearted.relicActivations?.at(-1)?.message,'최대 HP 120 · HP +20');
+ const hearted=activateRpgRelics(run);assert.equal(hearted.hp[0],95);assert.equal(hearted.relicActivations?.at(-1)?.message,'최대 HP 115 · HP +15');
  assert.equal(activateRpgRelics(hearted).relicActivations?.length,hearted.relicActivations?.length,'once per chapter');
  const tavern=structuredClone(hearted);tavern.status='ready';tavern.journey!.location='tavern';tavern.relics.push('mor-quill');
  assert.equal(hearJourneyRumor(tavern).relicActivations?.at(-1)?.relicId,'mor-quill');

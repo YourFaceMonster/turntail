@@ -4,8 +4,6 @@ import {isRpgPhaseOne,reconcileRpgEliminations,RPG_PHASE_ONE} from './rpg-phase-
 import {hpLimit} from './hp-limit';
 import {uid,view,type Game} from './game.ts';
 import type {RpgProfessionId} from './rpg-professions.ts';
-import {hpItemShopPending} from './hp-item-shop.ts';
-import {finishHpItemMatch} from './hp-item-mode.ts';
 import {blockItemBattleDamage,placeFloorTrap,tryBotFloorTrap} from './item-battle-rules.ts';
 
 export const PROFESSION_ACTIVES={
@@ -17,9 +15,9 @@ export const PROFESSION_ACTIVES={
 export const ACTIVE_IMPACT_MS=1050,ACTIVE_PRESENTATION_MS=2400;
 export type ProfessionActiveEvent={id:string,round:number,actor:number,profession:RpgProfessionId,spent:number,gaugeBefore:number,gaugeAfter:number,target?:number,damage:number[],healing:number[],hpBefore:number[],hpAfter:number[],at:number};
 export type ProfessionActiveState={version:1,gauge:number[],lastUsedTurn:(string|null)[],chargedRounds:number[],events:ProfessionActiveEvent[],lastEvent?:ProfessionActiveEvent};
-export type ActiveContext=Pick<Game,'phase'|'turn'|'rpgRun'|'round'|'turnReadyAt'|'hpItemMode'|'hpItemVariant'|'hpItemRules'|'hpItemMatch'|'roundActions'|'result'>;
+export type ActiveContext=Pick<Game,'phase'|'turn'|'rpgRun'|'round'|'turnReadyAt'|'roundActions'|'result'>;
 export function newProfessionActives(size:number):ProfessionActiveState{return {version:1,gauge:Array(size).fill(1),lastUsedTurn:Array(size).fill(null),chargedRounds:[],events:[]};}
-export function hasProfessionActives(game:ActiveContext){return !hasRoundCombat(game)&&(isRpgPhaseOne(game)||!!game.hpItemMode&&game.hpItemVariant===2&&game.hpItemRules===4)&&!!game.rpgRun?.combat?.itemBattle;}
+export function hasProfessionActives(game:ActiveContext){return !hasRoundCombat(game)&&isRpgPhaseOne(game)&&!!game.rpgRun?.combat?.itemBattle;}
 /** Old saves receive the starting one cell, never retroactive round charges. */
 export function ensureProfessionActives(game:ActiveContext){
  if(!hasProfessionActives(game))return;const combat=game.rpgRun!.combat!,state=combat.actives??=newProfessionActives(combat.professions.length);
@@ -32,7 +30,6 @@ export function professionActiveAvailability(game:ActiveContext,who:number,enabl
  const combat=game.rpgRun?.combat,profession=combat?.professions[who];if(!hasProfessionActives(game)||!profession)return {usable:false,reason:'아이템전 직업 스킬'};
  const config=PROFESSION_ACTIVES[profession],gauge=activeGauge(game,who);
  if(game.phase!=='playing'||game.rpgRun!.status!=='playing'||game.rpgRun!.hp[who]<=0)return {usable:false,reason:'대전 종료'};
- if(hpItemShopPending(game))return {usable:false,reason:'상점 준비를 마쳐 주세요'};
  if(!enabled||game.turn!==who)return {usable:false,reason:'내 차례에 사용 가능'};
  if(now<(game.turnReadyAt||0))return {usable:false,reason:'연출이 끝나면 사용 가능'};
  if(combat?.actives?.lastUsedTurn[who]===professionTurnKey(game))return {usable:false,reason:'이번 턴 스킬 사용 완료'};
@@ -59,11 +56,11 @@ export function useProfessionActive(game:Game,who:number,target=-1,now=Date.now(
  if(profession==='mage'&&!run.hp.some((hp,seat)=>seat!==who&&hp>0))throw Error('공격할 상대가 없어요.');
  const value=PROFESSION_ACTIVES[profession].values[activeGauge(game,who)],hpBefore=[...run.hp],damage=game.players.map((_,seat)=>seat!==who&&run.hp[seat]>0&&(profession==='mage'||profession==='swordsman'&&seat===target)?Math.min(run.hp[seat],blockItemBattleDamage(game,seat,value,now)):0),healing=game.players.map((_,seat)=>profession==='cleric'&&seat===who?Math.min(value,hpLimit(run)-run.hp[seat]):0);
  const {state,before,spent,after}=consumeProfessionGauge(game,who,now);run.hp=run.hp.map((hp,seat)=>Math.max(0,Math.min(hpLimit(run),hp-damage[seat]+healing[seat])));
- if(!game.hpItemMode)recordRpgRoundHealth(run,hpBefore);
+ recordRpgRoundHealth(run,hpBefore);
  const event:ProfessionActiveEvent={id:uid(),round:game.round,actor:who,profession,spent,gaugeBefore:before,gaugeAfter:after,...(profession==='swordsman'?{target}:{}),damage,healing,hpBefore,hpAfter:[...run.hp],at:now+ACTIVE_IMPACT_MS};state.lastEvent=event;state.events.push(event);
  game.turnReadyAt=Math.max(game.turnReadyAt||0,now+ACTIVE_PRESENTATION_MS);game.log=[`${game.players[who].name} · ${PROFESSION_ACTIVES[profession].name} · ${spent}칸 소비 · ${profession==='cleric'?`HP +${healing[who]}`:game.players.flatMap((player,seat)=>seat!==who&&(profession==='mage'||seat===target)?[`${player.name} HP −${damage[seat]}`]:[]).join(' · ')}`,...game.log].slice(0,40);
  if(isRpgPhaseOne(game)){reconcileRpgEliminations(game,now);return event;}
- if(run.hp.some(hp=>hp<=0)){game.hpItemMatch!.endReason='active';finishHpItemMatch(game);}return event;
+ return event;
 }
 /** Decisions use only public HP, own gauge/hand, and the bot's filtered floor view. */
 export function tryBotProfessionActive(game:Game,now=Date.now()){
