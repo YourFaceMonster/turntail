@@ -42,6 +42,7 @@ import {journeyScenes,journeyStoryReel} from '../../lib/rpg-chapter-scenes.ts';
 import {rpgRelicSlots} from '../../lib/rpg-trials';
 import {JOURNEY_REGIONS,JOURNEY_STAGE_NAMES,chapterArt,journeyRegion,journeyTargetStage,stageArtToPreload,storyQuest,storyState,rpgStageCast,RPG_GUARDIANS,STORY_EVENT_RESULT_LINES,isStoryEventId} from '../../lib/rpg-chapters.ts';
 import StoryPuzzle from './StoryPuzzle';
+import {holdMinigameMusic} from '../../lib/minigame-music';
 type View=ReturnType<typeof view>;
 type Props={run:RpgRun,busy:boolean,error:string,action:(action:string,extra?:Record<string,unknown>)=>void,exit:()=>void,playerName?:string,playerAvatar?:ReactNode,save?:()=>string,settings?:()=>void};
 const labels={available:'이동 가능',completed:'방문 완료',locked:'잠김',closed:'선택으로 닫힘'};
@@ -142,9 +143,10 @@ export function JourneyWatchtowerView({run,busy,error,action}:Props){
  return <QuestCutscene title="검은 소나무 파수탑" speaker={found?'파수꾼의 푸른 유리':'무너진 봉화 자리'} scene="stone" paintings={[found?'blue-glass-discovery':'watchtower-arrival']} busy={busy} error={error} close={()=>action('rpg-journey-map')} reward={found?{id:BLUE_GLASS_ID,status:claimed?(run.equipped.includes(BLUE_GLASS_ID)?'획득 · 자동 장착됨':'획득 · 여행 가방에서 장착하세요'):'발견한 유물을 받아 주세요.'}:undefined} lines={found?[claimed?'발견한 푸른 유리를 챙겼다.':'돌틈 속 낡은 등잔에서 푸른 유리를 조심스럽게 꺼냈다.']:['성벽 안쪽의 오래된 안뜰. 검은 소나무 곁에 파수탑이 서 있다.','무너진 돌계단 옆, 겹친 돌틈에서 푸른 빛이 샌다. 몸을 낮춰 안쪽을 살펴보자.']} choices={found?claimed?[{label:'지도로 돌아간다',choose:()=>action('rpg-journey-map')}]:[...claimChoices,{label:'나중에 받는다 · 지도로',choose:()=>action('rpg-journey-map')}]:[{label:'푸른 빛을 조사한다',choose:()=>action('rpg-watchtower-discover')},{label:'나중에 조사한다',choose:()=>action('rpg-journey-map')}]}/>;
 }
 /** ST4~6 side quest: Yacht Dice against the gambler Haro (HP stake, relic on first win). */
+function MinigameMusic(){useEffect(()=>holdMinigameMusic(),[]);return null;}
 export function JourneyDiceDenView({run,busy,error,action,playerName,playerAvatar,settings,exit}:Props){
  const den=run.journey!.diceDen||{losses:0},art=chapterArt('dice-den');
- if(den.match)return <YachtDiceTable den={den} match={den.match} hp={run.hp[0]} equipped={run.equipped} busy={busy} error={error} play={dice=>action('rpg-dice',{dice})} retry={()=>action('rpg-dice-start')} leave={()=>action('rpg-journey-map')} playerName={playerName} playerAvatar={playerAvatar} settings={settings} exit={exit}/>;
+ if(den.match)return <><MinigameMusic/><YachtDiceTable den={den} match={den.match} hp={run.hp[0]} equipped={run.equipped} busy={busy} error={error} play={dice=>action('rpg-dice',{dice})} retry={()=>action('rpg-dice-start')} leave={()=>action('rpg-journey-map')} playerName={playerName} playerAvatar={playerAvatar} settings={settings} exit={exit}/></>;
  const done=!!den.relicClaimed,low=run.hp[0]<=DICE_DEN_STAKE;
  const lines:string[]=done?[...DICE_DEN_DIALOGUE.done]:[...(den.losses?DICE_DEN_DIALOGUE.retry:DICE_DEN_DIALOGUE.intro),...(low?[DICE_DEN_DIALOGUE.lowHp]:[])];
  return <QuestCutscene key={done?'done':'open'} title="안개 나루 주사위판" speaker={DICE_NPC} speakers={lines.map((_,i)=>!done&&!den.losses&&i===0||done&&i===0?'':DICE_NPC)} scene="stone" art={art} busy={busy} error={error} close={()=>action('rpg-journey-map')} lines={lines} choices={done?[{label:'지도로 돌아간다',choose:()=>action('rpg-journey-map')}]:[{label:`HP ${DICE_DEN_STAKE}을 걸고 요트다이스 한 판`,choose:()=>action('rpg-dice-start'),disabled:low},{label:'지금은 돌아간다',choose:()=>action('rpg-journey-map')}]}/>;

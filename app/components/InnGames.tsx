@@ -1,5 +1,6 @@
 'use client';
-import {useMemo,useState} from 'react';
+import {useEffect,useMemo,useState} from 'react';
+import {holdMinigameMusic} from '../../lib/minigame-music';
 import TileFace from './TileFace';
 import {rank,suitRank,type Tile} from '../../lib/game';
 import {HIGH_LOW_GOAL,MEMORY_GOAL,MEMORY_PAIRS} from '../../lib/rpg-inns';
@@ -13,6 +14,7 @@ const stronger=(a:Tile,b:Tile)=>rank(a)-rank(b)||suitRank(a.s)-suitRank(b.s);
 
 /** 안개 나루 주점 · 높을까 낮을까. Stop any time to keep the streak; a miss ends the play with nothing (score 0). */
 export function HighLowGame({finish,quit}:{finish:(streak:number)=>void,quit:()=>void}){
+ useEffect(()=>holdMinigameMusic(),[]);
  const [deck]=useState(()=>shuffle(fullDeck())),[index,setIndex]=useState(0),[streak,setStreak]=useState(0),[miss,setMiss]=useState<Tile|null>(null);
  const current=deck[index],next=deck[index+1];
  const guess=(up:boolean)=>{if(miss||!next)return;const right=up?stronger(next,current)>0:stronger(next,current)<0;if(right){setStreak(streak+1);setIndex(index+1);}else setMiss(next);};
@@ -28,6 +30,7 @@ export function HighLowGame({finish,quit}:{finish:(streak:number)=>void,quit:()=
 
 /** 달빛 등불 주점 · 기록 맞추기. Six pairs of identical tiles; the score is the number of flips (perfect = 12). */
 export function MemoryGame({finish,quit}:{finish:(flips:number)=>void,quit:()=>void}){
+ useEffect(()=>holdMinigameMusic(),[]);
  const cards=useMemo(()=>{const picks=shuffle(fullDeck()).slice(0,MEMORY_PAIRS);return shuffle(picks.flatMap((tile,i)=>[{key:`${i}a`,pair:i,tile},{key:`${i}b`,pair:i,tile}]));},[]);
  const [open,setOpen]=useState<number[]>([]),[found,setFound]=useState<number[]>([]),[flips,setFlips]=useState(0),[lock,setLock]=useState(false);
  const done=found.length===MEMORY_PAIRS;

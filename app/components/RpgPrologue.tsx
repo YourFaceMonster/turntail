@@ -6,7 +6,7 @@ import {createPortal} from 'react-dom';
 import DialogueText from './DialogueText';
 import {cue} from '../../lib/sound-cues';
 import {FIRST_PROLOGUE,PrologueClock,type PrologueCut} from '../../lib/rpg-prologue';
-import {prologueAmbience} from '../../lib/rpg-prologue-audio';
+import {prologueAmbience,prologueBed,prologueBedOf} from '../../lib/rpg-prologue-audio';
 import {holdCutsceneSilence} from '../../lib/cutscene-music';
 import '../story-motion.css';
 import {DialogueTools,useDialogueAuto} from './DialogueTools';
@@ -84,7 +84,10 @@ export default function RpgPrologue({onEvent,enter,context,music=true,sound=true
   const sync=()=>{if(document.hidden)audio.pause();else if(!audio.ended)void audio.play().catch(()=>{});};sync();document.addEventListener('visibilitychange',sync);
   return()=>{document.removeEventListener('visibilitychange',sync);trackAudio.current=null;const start=audio.volume,steps=12;let step=0;const fade=setInterval(()=>{step++;audio.volume=Math.max(0,start*(1-step/steps));if(step>=steps){clearInterval(fade);audio.pause();audio.removeAttribute('src');audio.load();}},50);};
  },[track,music]);
- useEffect(()=>{if(!artReady||!visible||!context||context.state!=='running')return;return prologueAmbience(context,cut,false,musicVolume,sound);},[context,cut,visible,artReady,musicVolume,sound]);
+ // The wind/hearth bed lives across cuts of the same kind so it does not restart (and click) on every cut.
+ const bed=prologueBedOf(cut);
+ useEffect(()=>{if(!artReady||!visible||!context||context.state!=='running')return;return prologueBed(context,bed,sound);},[context,bed,visible,artReady,sound]);
+ useEffect(()=>{if(!artReady||!visible||!context||context.state!=='running')return;return prologueAmbience(context,cut,false,musicVolume,sound,false);},[context,cut,visible,artReady,musicVolume,sound]);
  const [auto,setAuto]=useDialogueAuto(true),[logOpen,setLogOpen]=useState(false),[handled,setHandled]=useState<readonly string[]>([]);
  // A hands-on cut holds the clock until its event is solved or skipped.
  const interactive=artReady&&!!cut.interaction&&!handled.includes(cut.id);

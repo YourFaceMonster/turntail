@@ -268,6 +268,8 @@ export function nextJourneyMiniRound(game:Game,now=Date.now()){
  start(mini.game,now);mini.game.rpgMini!.roundIndex=mini.roundIds.length+1;
 }
 export function leaveJourneyMini(game:Game){const {run,j}=journeyGame(game);if(j.location!=='mini-game')throw Error('진행 중인 승부가 없어요.');if(j.miniKind==='letter'){const resolved=['recovered','failed'].includes(letterQuestView(j)?.step||'');j.location=resolved?'tavern':'market-alley';if(resolved){j.completedNodes=[...new Set<JourneyNode>([...j.completedNodes,'letter-alley'])];j.currentNode='tavern';}}else j.location='tavern';j.miniKind=undefined;run.updatedAt=Date.now();}
+/** Journey locations drawn by RpgJourneyScene (map and every hub); the table/result stays hidden while one is open. */
+export const JOURNEY_SCENE_LOCATIONS:readonly string[]=['map','tavern','market-alley','wayfarer-stop','watchtower','story-quest','dice-den','inn'] satisfies readonly RpgJourneyState['location'][];
 export function journeyDisplayGame(game:Game){return activeJourneyMini(game)||game;}
 /** Reject unsupported/corrupt new journey data without rewriting the original storage. */
 export function validateJourneySave(game:Game){

@@ -7,7 +7,7 @@ import {FIRST_PROLOGUE,PROLOGUE_STORYBOARD,SECOND_PROLOGUE,PrologueClock,prologu
 import {ProloguePicture,StoryTile} from '../app/components/RpgPrologue.tsx';
 import {createRpgJourneyGame,enterJourneyNode} from './fixtures/legacy-rpg-journey';
 import {saveRpgGame,readRpgArchive} from '../lib/rpg-storage.ts';
-import {prologueAmbience} from '../lib/rpg-prologue-audio.ts';
+import {prologueAmbience,prologueBed,prologueBedOf} from '../lib/rpg-prologue-audio.ts';
 import {prologueArt,prologueArtSources} from '../lib/rpg-prologue-art.ts';
 import {readFileSync} from 'node:fs';
 import {imageSize} from './helpers/image-size';
@@ -70,6 +70,19 @@ test('muting both buses creates no sources; music-only and effects-only stay ind
  const musicStop=prologueAmbience(ctx,cut,true,40,false);assert.ok(created>0);musicStop();assert.ok(stopped>0);assert.ok(disconnected>0);
  const prior=created,stop=prologueAmbience(ctx,cut,false,40,true);assert.equal(created-prior,1);stop();stop();
  assert.doesNotThrow(()=>prologueAmbience({createBuffer(){throw Error('audio blocked');}} as unknown as AudioContext,cut,true,40)());
+});
+test('wind bed loops without a seam and stays one bed across consecutive wind cuts',()=>{
+ const wind=FIRST_PROLOGUE.filter(c=>c.audio==='wind');assert.ok(wind.length>1);assert.ok(wind.every(c=>prologueBedOf(c)==='wind'));
+ assert.equal(prologueBedOf(FIRST_PROLOGUE.find(c=>c.audio==='tile')!),'hearth','tile cuts keep the hearth bed running');
+ const param=()=>({value:0,setValueAtTime(){},linearRampToValueAtTime(){},exponentialRampToValueAtTime(){}});
+ const node=()=>({gain:param(),frequency:param(),Q:param(),connect(){},disconnect(){},start(){},stop(){}});
+ let samples=new Float32Array(0);
+ const ctx={sampleRate:8000,currentTime:0,destination:{},createGain:node,createOscillator:node,createBufferSource:node,createBiquadFilter:node,
+  createBuffer:(_c:number,n:number)=>{samples=new Float32Array(n);return {getChannelData:()=>samples};}} as unknown as AudioContext;
+ prologueBed(ctx,'wind',true)();
+ const steps=samples.slice(1).map((v,i)=>Math.abs(v-samples[i])),typical=steps.reduce((a,b)=>a+b,0)/steps.length;
+ assert.ok(Math.abs(samples[0]-samples[samples.length-1])<typical*8,'loop end flows into loop start');
+ let created=0;prologueBed({...ctx,createBufferSource:()=>{created++;return node();}} as unknown as AudioContext,'quiet',true)();assert.equal(created,0);
 });
 
 test('opening narration ends each page at a complete sentence within two lines',()=>{
