@@ -137,8 +137,8 @@ test('saves reject corrupt story data and the map only shows the current region'
   assert.equal(art.portrait,`/story/${key}-portrait-${special?'special-v2':`v${version[key]||1}`}.webp`);
   assert.ok(existsSync(new URL(`../public${art.portrait}`,import.meta.url)),key);
  }
- assert.match(html,/--map-portrait-x:78%;--map-portrait-y:83%/,'the dice den follows the boathouse in the portrait map');
- assert.match(html,/class="map-route-portrait" d="M67 59L55 62L40 61L28 55L16 48L8 44L17 41L30 43L48 42L64 41L82 37L80 30L77 25L71 21L64 18L60 14"/);
+ assert.match(html,/--map-portrait-x:78%;--map-portrait-y:85.1%/,'the dice den follows the boathouse on the tall (1820px) portrait map');
+ assert.match(html,/class="map-route-portrait" d="M67 64L55 66.6L40 65.7L28 60.4L16 54.3L8 50.8L17 48.1L30 49.9L48 49L64 48.1L82 44.6L80 38.5L77 34.1L71 30.5L64 27.9L60 24.4"/);
  for(const id of ['sacred-flame-two','secret-key-two'] as const){
   for(const side of ['front','back'] as const){
    assert.equal(STORY_CARD_ART[id][side],`/story-cards/${id}-${side}-special-v1.webp`);

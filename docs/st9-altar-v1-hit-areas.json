@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "event_id": "quest-9",
+  "coordinate_space": "Percent of full image, origin top-left. Map all areas through the same image object-fit transform, including crop offsets; do not apply these percentages directly to an unrelated viewport. Portrait and wide layouts are separate.",
+  "sprites": {
+    "crown": "/story-events/st9-disc-crown-v1.webp",
+    "gate": "/story-events/st9-disc-gate-v1.webp",
+    "width": 512,
+    "height": 512,
+    "rotation_origin": "50% 50%",
+    "upright_degrees": 0
+  },
+  "placement": "diameter_x is visible stone-disc diameter as % of full image width, diameter_y as % of full image height; these produce a physical circle. PNG has transparent padding: size sprite canvas from measured alpha_bbox_128 in validation.json (about90% occupied), centered at socket. Do not stretch into ellipses. Hide sprites when swapping to lit background, which already contains discs.",
+  "layouts": {
+    "portrait": {
+      "asset": "/story-events/st9-altar-scene-portrait-v1.webp",
+      "lit_asset": "/story-events/st9-altar-lit-portrait-v1.webp",
+      "width": 1024,
+      "height": 1536,
+      "sockets": [
+        {
+          "id": "crown",
+          "center_x": 27.4,
+          "center_y": 55,
+          "diameter_x": 33,
+          "diameter_y": 22
+        },
+        {
+          "id": "gate",
+          "center_x": 72.1,
+          "center_y": 55,
+          "diameter_x": 33,
+          "diameter_y": 22
+        }
+      ]
+    },
+    "wide": {
+      "asset": "/story-events/st9-altar-scene-wide-v1.webp",
+      "lit_asset": "/story-events/st9-altar-lit-wide-v1.webp",
+      "width": 1672,
+      "height": 941,
+      "sockets": [
+        {
+          "id": "crown",
+          "center_x": 35.8,
+          "center_y": 58.8,
+          "diameter_x": 18.5,
+          "diameter_y": 32.87
+        },
+        {
+          "id": "gate",
+          "center_x": 63.6,
+          "center_y": 58.8,
+          "diameter_x": 18.5,
+          "diameter_y": 32.87
+        }
+      ]
+    }
+  }
+}

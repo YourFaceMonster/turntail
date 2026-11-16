@@ -2050,19 +2050,44 @@ main.turntale.active-table[data-rpg-mini="true"] .action-buttons{display:grid!im
 .modal-shade .achievements-modal .achievement-card.secret{background:linear-gradient(130deg,#2a2119,#1a1510)}
 .modal-shade .achievements-modal .achievement-card p{color:#d8c7a6!important}
 /* 2026-11-14 daily table result: banner, place medal, warm frame */
-.modal.result.daily-result{position:relative;overflow-x:hidden;background:radial-gradient(120% 40% at 50% 0%,#3a2a1a 0%,transparent 70%),linear-gradient(180deg,#221a13 0%,#17130f 100%)!important;border:1px solid #d6b06e!important;box-shadow:0 0 0 3px #17130f,0 0 0 4px #d6b06e55,0 18px 50px #000a,inset 0 0 40px #0008!important}
-.modal.result.daily-result{padding-top:118px!important}.daily-result>*{position:relative;z-index:1}.daily-result>.daily-result-hero{position:absolute;z-index:0;top:0;left:0;right:0;height:150px;overflow:hidden;border-radius:inherit;border-bottom-left-radius:0;border-bottom-right-radius:0;pointer-events:none}
+.modal.result:is(.daily-result,.dressed-result){position:relative;overflow-x:hidden;background:radial-gradient(120% 40% at 50% 0%,#3a2a1a 0%,transparent 70%),linear-gradient(180deg,#221a13 0%,#17130f 100%)!important;border:1px solid #d6b06e!important;box-shadow:0 0 0 3px #17130f,0 0 0 4px #d6b06e55,0 18px 50px #000a,inset 0 0 40px #0008!important}
+.modal.result:is(.daily-result,.dressed-result){padding-top:118px!important}.result:is(.daily-result,.dressed-result)>*{position:relative;z-index:1}.result:is(.daily-result,.dressed-result)>.daily-result-hero{position:absolute;z-index:0;top:0;left:0;right:0;height:150px;overflow:hidden;border-radius:inherit;border-bottom-left-radius:0;border-bottom-right-radius:0;pointer-events:none}
 .daily-result-hero img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
 .daily-result-hero:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#17130f00 35%,#221a13 100%)}
-.daily-result>.eyebrow{position:relative;letter-spacing:.18em;color:#f3d48e!important}
+.result:is(.daily-result,.dressed-result)>.eyebrow{position:relative;letter-spacing:.18em;color:#f3d48e!important}
 .result .trophy.daily-result-medal{position:relative;display:grid!important;place-items:center;grid-auto-flow:column;align-items:baseline;gap:1px;width:78px;height:78px;margin:10px auto 2px;border-radius:50%;font:800 34px/1 inherit;color:#2a1c08;text-shadow:0 1px 0 #fff6;animation:none;background:radial-gradient(circle at 35% 30%,#f1e6d0,#a8977c 55%,#5e5140);box-shadow:inset 0 -4px 0 #0003,0 0 0 3px #17130f,0 0 0 5px #d6b06e88,0 6px 18px #000a}
 .result .trophy.daily-result-medal small{font-size:15px;font-weight:800}
 .result .trophy.daily-result-medal[data-medal="1"]{background:radial-gradient(circle at 35% 30%,#fff2b8,#e8b542 55%,#a8761c);box-shadow:inset 0 -4px 0 #0003,0 0 0 3px #17130f,0 0 0 5px #f3c860,0 0 34px #f3c86066}
 .result .trophy.daily-result-medal[data-medal="2"]{background:radial-gradient(circle at 35% 30%,#ffffff,#c9ced6 55%,#868d98)}
 .result .trophy.daily-result-medal[data-medal="3"]{background:radial-gradient(circle at 35% 30%,#ffd9b0,#c9864a 55%,#874e22)}
 .result .trophy.daily-result-medal[data-medal="1"]:before{content:'♛';position:absolute;left:4px;top:-14px;transform:rotate(-20deg);font-size:24px;color:#f3c860;text-shadow:0 1px 3px #000}
-.daily-result .result-hands{border-top:1px solid #d6b06e33}
+.result:is(.daily-result,.dressed-result) .result-hands{border-top:1px solid #d6b06e33}
 .modal-shade .achievements-modal .achievement-list{scrollbar-color:#d6b06e #17130f}
 /* Hand-drawn default animal faces (0.7.30): fill the round seat frame like a photo. */
 .animal-face{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit;user-select:none;-webkit-user-drag:none}
 .mini-human-portrait>.animal-face{border-radius:50%}
+
+/* 2026-11-16 user request "설정창 꾸며줘": tavern-table header, wooden badge icons per row, dark plank texture (Codex public/ui/settings-*). */
+.modal-shade .unified-settings.is-dressed{padding:0 20px 20px!important;background:linear-gradient(180deg,#1b140ed9,#120e0bf0),url('/ui/settings-panel-texture-v1.webp') center/256px repeat!important}
+.unified-settings.is-dressed>.close{z-index:3;background:#120d0acc;border:1px solid #d6b06e88;color:#f6dfaa;border-radius:50%;width:36px;height:36px;top:12px;right:12px}
+.unified-settings .settings-hero{position:relative;margin:0 -20px 4px;aspect-ratio:1200/420;max-height:190px;overflow:hidden;border-bottom:1px solid #d6b06e66}
+.unified-settings .settings-hero>img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 40%}
+.unified-settings .settings-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,#120e0b 100%);pointer-events:none}
+.unified-settings .settings-hero-text{position:absolute;left:20px;right:20px;bottom:6px;z-index:1}
+.unified-settings .settings-hero-text .eyebrow{color:#e8c98b;text-shadow:0 1px 3px #000}
+.unified-settings .settings-hero-text h2{margin:2px 0 0}
+.unified-settings .settings-section-title{display:flex;align-items:center;gap:8px;border-top:0;padding-top:0;margin:16px 0 8px}
+.unified-settings .settings-section-title::before,.unified-settings .settings-section-title::after{content:'';height:1px;flex:1;background:linear-gradient(90deg,transparent,#d6b06e66)}
+.unified-settings .settings-section-title::after{background:linear-gradient(90deg,#d6b06e66,transparent)}
+.unified-settings .settings-card{display:flex;align-items:center;gap:12px;margin:0 0 8px;padding:10px 12px;border:1px solid #d6b06e33;border-radius:12px;background:linear-gradient(180deg,#2a1f16cc,#1a1410cc);box-shadow:inset 0 1px 0 #ffe7b41a,0 2px 8px #0006}
+.unified-settings .settings-card-body{flex:1;min-width:0}
+.unified-settings .settings-icon{flex:none;width:46px;height:46px;filter:drop-shadow(0 2px 3px #0009)}
+.unified-settings .volume-setting.settings-card{padding:10px 12px}
+.unified-settings .volume-setting input[type=range]{margin-top:4px;height:26px}
+.unified-settings .setting-row.settings-card{padding:10px 12px}
+.unified-settings .setting-row.settings-card>span{flex:1;min-width:0}
+.unified-settings .screen-card .screen-choice:first-child{margin-top:0}
+.unified-settings .volume-heading button,.unified-settings .setting-row button[role=switch]{border-color:#7a6448;background:#2c2219;color:#d8c6a6}
+.unified-settings .volume-heading button[aria-checked=true],.unified-settings .setting-row button[role=switch][aria-checked=true]{background:linear-gradient(180deg,#d9ad5c,#a8772f);color:#24170b;border-color:#f3d48f}
+.unified-settings.is-dressed .settings-save-note{color:#b9a88c}
+@media(max-width:420px){.unified-settings .settings-icon{width:38px;height:38px}.unified-settings .settings-card{gap:9px;padding:9px 10px}}

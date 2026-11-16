@@ -5,7 +5,7 @@ import {createRpgJourneyGame,enterJourneyNode} from '../lib/rpg-game';
 import {settle,chooseBotAction,view,type Game,type Tile} from '../lib/game';
 import {chooseRpgStageReward} from '../lib/rpg-phase-one';
 import {activeJourneyMini,leaveJourneyMini,nextJourneyMiniRound,settleJourneyMini,startInnTournament,validateJourneySave} from '../lib/rpg-journey';
-import {INN_TOURNAMENT,TOURNAMENT_TITLE,noteTournament,readTournamentRecord,tournamentGoalMet} from '../lib/inn-tournament';
+import {INN_TOURNAMENTS,innTournament,TOURNAMENT_TITLE,noteTournament,readTournamentRecord,tournamentGoalMet} from '../lib/inn-tournament';
 import JourneyInnView from '../app/components/JourneyInn';
 import InnTournamentResult from '../app/components/InnTournamentResult';
 
@@ -23,12 +23,12 @@ test('the tournament opens only from a region inn between stages and never touch
  const game=regionTwoInn(),before=structuredClone(game.rpgRun!);
  startInnTournament(game);const j=game.rpgRun!.journey!;
  assert.equal(j.location,'mini-game');assert.equal(j.miniKind,'tournament');validateJourneySave(game);
- const mini=activeJourneyMini(game)!;assert.equal(mini.players[1].name,'피오');assert.deepEqual(mini.rpgMini!.aiLevels,[0,INN_TOURNAMENT[0].level,3]);
+ const INN_TOURNAMENT=INN_TOURNAMENTS[2],mini=activeJourneyMini(game)!;assert.equal(mini.players[1].name,'수달');assert.equal(mini.players[2].name,'도칸','the guest seat is another member of the same inn');assert.deepEqual(mini.rpgMini!.aiLevels,[0,INN_TOURNAMENT[0].level,INN_TOURNAMENT[0].guest.level]);
  assert.equal(mini.rpgMini!.purpose,'tournament');
  playMatch(game,[0,6,7]);nextJourneyMiniRound(game);
- assert.equal(activeJourneyMini(game)!.players[1].name,'모란','the challenger seat changes each match');assert.equal(activeJourneyMini(game)!.rpgMini!.aiLevels![1],INN_TOURNAMENT[1].level);
+ assert.equal(activeJourneyMini(game)!.players[1].name,'도칸','the challenger seat changes each match');assert.equal(activeJourneyMini(game)!.players[2].name,'수달');assert.equal(activeJourneyMini(game)!.rpgMini!.aiLevels![1],INN_TOURNAMENT[1].level);
  playMatch(game,[3,9,0]);nextJourneyMiniRound(game);
- assert.equal(activeJourneyMini(game)!.players[1].name,'모로');
+ assert.equal(activeJourneyMini(game)!.players[1].name,'모란');
  playMatch(game,[0,2,4]);
  const cup=game.rpgRun!.journey!.tournament!;
  assert.deepEqual(cup.wins,[1,3]);assert.deepEqual(cup.goals,[1,2,3]);assert.ok(cup.finished&&cup.champion);assert.equal(cup.played,1);
@@ -43,7 +43,7 @@ test('one match won is not enough; a replay starts fresh and counts tournaments 
  playMatch(game,[0,6,7]);nextJourneyMiniRound(game);playMatch(game,[5,0,3]);nextJourneyMiniRound(game);playMatch(game,[4,0,2]);
  const cup=game.rpgRun!.journey!.tournament!;assert.deepEqual(cup.wins,[1]);assert.equal(cup.champion,false);
  leaveJourneyMini(game);startInnTournament(game);assert.deepEqual(game.rpgRun!.journey!.tournament,{wins:[],goals:[],played:1});
- assert.equal(activeJourneyMini(game)!.players[1].name,'피오');
+ assert.equal(activeJourneyMini(game)!.players[1].name,'수달');
 });
 
 test('special goals read only the public result',()=>{
@@ -68,7 +68,7 @@ test('device title record and screens',()=>{
  const menu=renderToStaticMarkup(<JourneyInnView run={game.rpgRun!} busy={false} error="" action={()=>{}}/>);assert.match(menu,/여관 토너먼트/);
  startInnTournament(game);playMatch(game,[0,6,7]);const mini=activeJourneyMini(game)!;
  const html=renderToStaticMarkup(<InnTournamentResult game={view(mini,mini.players[0].token)} cup={game.rpgRun!.journey!.tournament} busy={false} next={()=>{}} back={()=>{}}/>);
- assert.match(html,/INN CUP · 1\/3/);assert.match(html,/달성/);assert.match(html,/다음 상대 · <b>모란/);assert.ok(!html.includes(TOURNAMENT_TITLE+'로'),'no title before the final');
+ assert.match(html,/INN CUP · 1\/3/);assert.match(html,/달성/);assert.match(html,/다음 상대 · <b>도칸/);assert.ok(!html.includes(TOURNAMENT_TITLE+'로'),'no title before the final');
 });
 
 test('inn conversations use the speaker paintings; the painted ST7 ledger has four tappable rows',async()=>{
@@ -79,4 +79,14 @@ test('inn conversations use the speaker paintings; the painted ST7 ledger has fo
  const {default:StoryPuzzle}=await import('../app/components/StoryPuzzle');
  const html=renderToStaticMarkup(<StoryPuzzle id="st7-ledger" done={()=>{}}/>);
  assert.equal((html.match(/story-ledger-row/g)||[]).length,4);assert.match(html,/3번째 기록 · 1등 빈칸 · 2등 왕관 표식/);
+});
+
+test('each inn hosts its own painted people: pet, regular, then owner, with portraits on disk',async()=>{
+ const {existsSync}=await import('node:fs');
+ assert.deepEqual(INN_TOURNAMENTS[2].map(c=>c.name),['수달','도칸','모란']);assert.deepEqual(INN_TOURNAMENTS[3].map(c=>c.name),['검은 고양이','리네','모로']);
+ assert.equal(innTournament('inn-3'),INN_TOURNAMENTS[3]);assert.equal(innTournament(undefined),INN_TOURNAMENTS[2]);
+ for(const region of [2,3] as const)for(const c of INN_TOURNAMENTS[region]){
+  assert.notEqual(c.guest.name,c.name);assert.ok([...INN_TOURNAMENTS[region].map(x=>x.name)].includes(c.guest.name),'the guest belongs to the same inn');
+  for(const src of [c.avatar,c.guest.avatar])assert.ok(existsSync('public'+src),src);
+ }
 });

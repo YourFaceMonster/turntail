@@ -6,7 +6,7 @@ import {INNS,innArt,innRegionOf,isInnNode,innRecipeLine,offerableRelics,offering
 import {RELIC_GRADES,reworkRelic,rpgMaxHp} from '../../lib/rpg-rework';
 import {gameRelic,relicImage} from '../../lib/item-battle-relics';
 import type {RpgRun} from '../../lib/rpg';
-import {INN_TOURNAMENT,TOURNAMENT_TITLE} from '../../lib/inn-tournament';
+import {INN_TOURNAMENTS,TOURNAMENT_TITLE} from '../../lib/inn-tournament';
 import SeatPortrait from './SeatPortrait';
 import './journey-inn.css';
 
@@ -52,7 +52,7 @@ export default function JourneyInnView({run,busy,error,action}:Props){
   return <section className="inn-cup-screen" aria-label="여관 토너먼트" style={{'--inn-art':`url('${art.portrait}')`} as CSSProperties}>
    <div className="inn-cup-board">
     <header className="inn-cup-head"><small>INN CUP · {def.name}</small><h3>여관 토너먼트</h3><p>세 판 중 <b>두 판을 1등</b>으로 마치면 우승</p></header>
-    <ol className="inn-cup-bracket">{INN_TOURNAMENT.map((c,i)=>{const won=cup?.finished&&cup.wins.includes(i+1),goal=cup?.finished&&cup.goals.includes(i+1);return <li key={c.name} data-won={won||undefined}>
+    <ol className="inn-cup-bracket">{INN_TOURNAMENTS[def.region].map((c,i)=>{const won=cup?.finished&&cup.wins.includes(i+1),goal=cup?.finished&&cup.goals.includes(i+1);return <li key={c.name} data-won={won||undefined}>
      <span className="inn-cup-round">{i+1}판</span><span className="inn-cup-face"><SeatPortrait avatar={c.avatar} seat={1}/></span><strong>{c.name}</strong><small>{c.title}</small>
      <p className="inn-cup-goal"><span aria-hidden="true">{goal?'★':'☆'}</span>{c.goal}</p>
     </li>;})}</ol>

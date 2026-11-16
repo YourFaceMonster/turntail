@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "event_id": "quest-8",
+  "coordinate_space": "Percent of full image, origin top-left. Map all areas through the same image object-fit transform, including crop offsets; do not apply these percentages directly to an unrelated viewport. Portrait and wide layouts are separate.",
+  "closeups": {
+    "letters": "/story-events/st8-trace-letters-v1.webp",
+    "stars": "/story-events/st8-trace-stars-v1.webp",
+    "box": "/story-events/st8-trace-box-v1.webp"
+  },
+  "layouts": {
+    "portrait": {
+      "asset": "/story-events/st8-sanctuary-scene-portrait-v1.webp",
+      "width": 1024,
+      "height": 1536,
+      "objects": [
+        {
+          "id": "letters",
+          "x": 8,
+          "y": 49,
+          "width": 34,
+          "height": 22
+        },
+        {
+          "id": "stars",
+          "x": 57.5,
+          "y": 28,
+          "width": 30.7,
+          "height": 21.5
+        },
+        {
+          "id": "box",
+          "x": 50,
+          "y": 62,
+          "width": 42,
+          "height": 21.5
+        }
+      ]
+    },
+    "wide": {
+      "asset": "/story-events/st8-sanctuary-scene-wide-v1.webp",
+      "width": 1672,
+      "height": 941,
+      "objects": [
+        {
+          "id": "letters",
+          "x": 13,
+          "y": 43,
+          "width": 19,
+          "height": 25
+        },
+        {
+          "id": "stars",
+          "x": 39.5,
+          "y": 28,
+          "width": 20.5,
+          "height": 36
+        },
+        {
+          "id": "box",
+          "x": 67,
+          "y": 51.5,
+          "width": 23.5,
+          "height": 32
+        }
+      ]
+    }
+  }
+}

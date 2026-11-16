@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "event_id": "quest-5",
+  "coordinate_space": "Percent of full image, origin top-left. Map all areas through the same image object-fit transform, including crop offsets; do not apply these percentages directly to an unrelated viewport. Portrait and wide layouts are separate.",
+  "sprites": {
+    "loose": "/story-events/st5-knot-loose-v1.webp",
+    "tight": "/story-events/st5-knot-tight-v1.webp",
+    "width": 512,
+    "height": 512
+  },
+  "placement": "Use equal square sprite canvas for both states. Rope enters at local y=50%; preserve canvas and do not auto-trim by alpha. Increase hit area if rendered narrower than60 CSS px.",
+  "layouts": {
+    "portrait": {
+      "asset": "/story-events/st5-knots-scene-portrait-v1.webp",
+      "width": 1024,
+      "height": 1536,
+      "anchors": [
+        {
+          "id": "knot-1",
+          "center_x": 18.5,
+          "center_y": 54.8,
+          "width": 27,
+          "height": 18
+        },
+        {
+          "id": "knot-2",
+          "center_x": 50,
+          "center_y": 54.8,
+          "width": 27,
+          "height": 18
+        },
+        {
+          "id": "knot-3",
+          "center_x": 81.2,
+          "center_y": 54.8,
+          "width": 27,
+          "height": 18
+        }
+      ]
+    },
+    "wide": {
+      "asset": "/story-events/st5-knots-scene-wide-v1.webp",
+      "width": 1672,
+      "height": 941,
+      "anchors": [
+        {
+          "id": "knot-1",
+          "center_x": 25,
+          "center_y": 60.8,
+          "width": 20,
+          "height": 35.54
+        },
+        {
+          "id": "knot-2",
+          "center_x": 50,
+          "center_y": 60.8,
+          "width": 20,
+          "height": 35.54
+        },
+        {
+          "id": "knot-3",
+          "center_x": 75,
+          "center_y": 60.8,
+          "width": 20,
+          "height": 35.54
+        }
+      ]
+    }
+  }
+}

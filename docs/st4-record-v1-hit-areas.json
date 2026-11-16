@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "event_id": "quest-4",
+  "coordinate_space": "Percent of full image, origin top-left. Map all areas through the same image object-fit transform, including crop offsets; do not apply these percentages directly to an unrelated viewport. Portrait and wide layouts are separate.",
+  "fragments": [
+    "/story-events/st4-fragment-1.webp",
+    "/story-events/st4-fragment-2.webp",
+    "/story-events/st4-fragment-3.webp"
+  ],
+  "placement": "Fit fragment inside matching slot with object-fit:contain, preserving 900:280 aspect. Slots are blank by design.",
+  "layouts": {
+    "portrait": {
+      "asset": "/story-events/st4-record-scene-portrait-v1.webp",
+      "width": 1024,
+      "height": 1536,
+      "slots": [
+        {
+          "id": "fragment-1",
+          "x": 17.5,
+          "y": 34.7,
+          "width": 65.5,
+          "height": 11.4
+        },
+        {
+          "id": "fragment-2",
+          "x": 17.5,
+          "y": 49,
+          "width": 65.5,
+          "height": 11.5
+        },
+        {
+          "id": "fragment-3",
+          "x": 17.5,
+          "y": 63.6,
+          "width": 65.5,
+          "height": 11.3
+        }
+      ]
+    },
+    "wide": {
+      "asset": "/story-events/st4-record-scene-wide-v1.webp",
+      "width": 1672,
+      "height": 941,
+      "slots": [
+        {
+          "id": "fragment-1",
+          "x": 51.5,
+          "y": 28,
+          "width": 36.3,
+          "height": 14.5
+        },
+        {
+          "id": "fragment-2",
+          "x": 51.5,
+          "y": 46.5,
+          "width": 36.3,
+          "height": 14.1
+        },
+        {
+          "id": "fragment-3",
+          "x": 51.5,
+          "y": 64,
+          "width": 36.3,
+          "height": 13.8
+        }
+      ]
+    }
+  }
+}

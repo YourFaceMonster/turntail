@@ -1,13 +1,13 @@
 'use client';
 import {useEffect,useRef,type ReactNode} from 'react';
 import type {view} from '../../lib/game';
-import {INN_TOURNAMENT,TOURNAMENT_TITLE,noteTournament,tournamentGoalMet,tournamentMatchWon,type TournamentState} from '../../lib/inn-tournament';
+import {innTournament,TOURNAMENT_TITLE,noteTournament,tournamentGoalMet,tournamentMatchWon,type TournamentState} from '../../lib/inn-tournament';
 import SeatPortrait from './SeatPortrait';
 
 type View=ReturnType<typeof view>;
 /** Result panel after each inn-tournament match; the last one crowns (or not) and stores the device record once. */
-export default function InnTournamentResult({game,cup,busy,next,back,playerAvatar}:{game:View,cup?:TournamentState,busy:boolean,next:()=>void,back:()=>void,playerAvatar?:ReactNode}){
- const round=game.rpgMini!.roundIndex,challenger=INN_TOURNAMENT[round-1],result=game.result,final=round===INN_TOURNAMENT.length;
+export default function InnTournamentResult({game,cup,busy,next,back,playerAvatar,inn}:{game:View,cup?:TournamentState,busy:boolean,next:()=>void,back:()=>void,playerAvatar?:ReactNode,/** Journey node of the inn hosting the cup (inn-2 / inn-3). */inn?:string}){
+ const INN_TOURNAMENT=innTournament(inn),round=game.rpgMini!.roundIndex,challenger=INN_TOURNAMENT[round-1],result=game.result,final=round===INN_TOURNAMENT.length;
  const won=!!result&&tournamentMatchWon(result),goal=!!result&&tournamentGoalMet(round,result),champion=!!cup?.champion;
  const noted=useRef(false);
  useEffect(()=>{if(final&&cup?.finished&&!noted.current){noted.current=true;try{noteTournament(localStorage,cup);}catch{}}},[final,cup]);

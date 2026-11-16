@@ -31,7 +31,7 @@ test('each region inn opens only in its own region and keeps the save valid',()=
 test('rumour, recipe, offering and house game each work once with the approved numbers',()=>{
  const game=regionTwo();enterJourneyNode(game,'inn-2' as never);let run=game.rpgRun!;
  run=innAction(run,{op:'rumor'});assert.ok(run.journey!.rumors.includes('inn-rumor-2'));assert.equal(run.journey!.inns![2]!.met,true);
- const before=knownRecipes(run).length;run=innAction(run,{op:'recipe'});assert.equal(knownRecipes(run).length,before+1);
+ const before=knownRecipes(run).length;run=innAction(run,{op:'recipe'});assert.equal(knownRecipes(run).length,before+(run.relics.includes('mor-quill')?2:1),"Mor's quill (a random stage reward) teaches one more");
  assert.equal(innAction(run,{op:'recipe'}),run,'the regular teaches once');
  // Offering: bag relics only, heal by grade, never above max HP.
  const free=(r:typeof run)=>['second-ring','final-knot','second-heart','recovery-lantern','split-mirror','twin-needle-compass'].filter(x=>!r.relics.includes(x));

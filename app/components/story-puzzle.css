@@ -67,3 +67,87 @@
 .story-ledger-row{position:absolute;left:9.2%;width:38.4%;padding:0;border:0;border-radius:6px;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .story-ledger-row:hover,.story-ledger-row:focus-visible{background:#ffe39a33;outline:2px solid #c58d2e;outline-offset:-2px}
 .story-ledger-row:active{background:#ffe39a55}
+
+/* 2026-11-16 painted scene events (ST4·5·8·9): full-screen Codex paintings, touch the things in the picture.
+   .story-scene keeps the image ratio, so the hit areas in % of the image stay true at any size. */
+.story-puzzle-shade.is-scene{padding:0;background:#05070b;backdrop-filter:none}
+.story-puzzle.is-scene{position:relative;width:100%;height:100%;max-height:none;max-width:none;display:flex;flex-direction:column;gap:0;padding:0;border:0;border-radius:0;background:#05070b;overflow:hidden;box-shadow:none}
+.story-puzzle.is-scene>header{position:relative;z-index:3;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;text-align:center;background:linear-gradient(#05070bf2,#05070b99 70%,transparent)}
+.story-puzzle.is-scene>header strong{font-family:'Noto Serif KR','Batang',Georgia,serif;font-weight:900;font-size:19px;letter-spacing:-.4px;text-shadow:0 2px 6px #000}
+.story-puzzle.is-scene>header small{display:block;margin-top:2px}
+.story-scene-frame{position:relative;flex:1;min-height:0;display:grid;place-items:center;container-type:size;overflow:hidden}
+.story-scene-frame::before{content:'';position:absolute;inset:-30px;background:var(--scene-blur) center/cover no-repeat;filter:blur(18px) brightness(.4) saturate(.9);pointer-events:none}
+.story-scene{position:relative;width:min(100cqw,calc(100cqh * var(--scene-w) / var(--scene-h)));height:auto;container-type:inline-size;box-shadow:0 0 0 1px #f2c16633,0 10px 40px #000c;user-select:none;-webkit-user-select:none}
+.story-scene-art{display:block;width:100%;height:auto;pointer-events:none}
+.story-puzzle.is-scene>.story-puzzle-shake{flex:1;min-height:0;display:flex}
+.story-puzzle.is-scene>.story-puzzle-shake>.story-scene-frame{flex:1}
+.story-puzzle.is-scene>.story-puzzle-note{position:relative;z-index:3;text-align:center;padding:6px 16px 0;opacity:.9}
+.story-scene-foot{position:relative;z-index:3;display:grid;gap:8px;padding:8px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,#05070bcc 30%)}
+.story-puzzle.is-scene .story-puzzle-skip{justify-self:center;opacity:.75}
+.story-puzzle.is-scene .story-puzzle-result{width:min(520px,100%);justify-self:center;padding:14px 16px;border:1px solid #f2c16688;border-radius:14px;background:linear-gradient(#2a2119f2,#17120ef2);box-shadow:0 10px 30px #000c;animation:story-result-rise .35s ease-out}
+@keyframes story-result-rise{from{opacity:0;translate:0 14px}}
+
+/* ST4 · torn strips onto the leather board */
+.story-record-board{position:absolute;inset:0}
+.story-record-slot{position:absolute;display:grid;place-items:center;border-radius:6px;outline:2px dashed #f2c16655;outline-offset:-4px;transition:outline-color .3s}
+.story-record-slot.is-filled{outline-color:transparent}
+.story-strip.is-placed{width:100%;height:100%;aspect-ratio:auto;padding:0 10%;display:grid;place-items:center;background-size:contain;background-position:center;font-size:clamp(12px,5cqw,26px);animation:story-strip-press .35s ease-out}
+@keyframes story-strip-press{from{scale:1.18;opacity:0;rotate:-4deg}}
+.story-scene-tray{position:relative;z-index:3;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:10px 12px 0}
+.story-scene-tray .story-strip{width:100%;font-size:clamp(10px,3.1vw,15px);padding:0 5%;white-space:nowrap;cursor:pointer}
+.story-scene-tray .story-strip:not(:disabled):active{scale:.95}
+
+/* ST5 · knots on the bridge posts */
+.story-knot{position:absolute;display:block;min-height:0;padding:0;border:0;border-radius:50%;background:transparent;color:#f4ead8;touch-action:none;-webkit-touch-callout:none;cursor:pointer;gap:0}
+.story-knot>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 5px #000a);transition:scale .2s;pointer-events:none}
+.story-knot:not(.is-tied)>img{animation:story-knot-sway 2.4s ease-in-out infinite}
+.story-knot.is-holding>img{animation:story-knot-pull var(--hold) ease-in forwards}
+.story-knot.is-tied>img{animation:story-knot-set .5s ease-out;filter:drop-shadow(0 0 10px #f2c166cc) drop-shadow(0 4px 5px #000a)}
+.story-knot-hold{position:absolute;left:22%;right:22%;bottom:16%;height:6px;border-radius:3px;background:#0009;overflow:hidden;opacity:0}
+.story-knot-hold::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#d9a24f,#ffe2a0);transform-origin:left;scale:0 1}
+.story-knot.is-holding .story-knot-hold{opacity:1}
+.story-knot.is-holding .story-knot-hold::after{animation:story-knot-fill var(--hold) linear forwards}
+.story-knot>small{position:absolute;left:50%;bottom:2%;translate:-50% 0;white-space:nowrap;font-size:clamp(10px,3cqw,13px);font-weight:800;padding:2px 8px;border-radius:999px;background:#05070bb3;color:#ffe7b0}
+.story-knot.is-tied>small{color:#a6f0b5}
+.story-knot:focus-visible{outline:2px solid #ffe39a;outline-offset:2px}
+@keyframes story-knot-sway{50%{rotate:3deg;translate:0 2px}}
+@keyframes story-knot-pull{to{scale:.82}}
+@keyframes story-knot-fill{to{scale:1 1}}
+@keyframes story-knot-set{from{scale:1.25}}
+.story-scene.is-steady{animation:story-bridge-steady .6s ease-out}
+@keyframes story-bridge-steady{30%{translate:0 3px}}
+
+/* ST8 · sanctuary objects and close-ups */
+.story-trace-spot{position:absolute;padding:0;border:0;border-radius:14px;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.story-trace-spot::before{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 2px #ffe39a88,0 0 18px #ffd77a55;animation:story-spot-glow 2.2s ease-in-out infinite}
+.story-trace-spot.is-seen::before{animation:none;box-shadow:none}
+.story-trace-spot>span{position:absolute;left:50%;bottom:-4px;translate:-50% 0;white-space:nowrap;font-size:clamp(11px,3.4cqw,14px);font-weight:800;padding:3px 9px;border-radius:999px;background:#05070bcc;color:#ffe7b0;border:1px solid #f2c16666}
+.story-trace-spot.is-seen>span{color:#a6f0b5;border-color:#a6f0b566}
+.story-trace-spot:focus-visible{outline:2px solid #ffe39a}
+@keyframes story-spot-glow{50%{box-shadow:inset 0 0 0 2px #ffe39a22,0 0 6px #ffd77a22}}
+.story-closeup{position:absolute;inset:0;z-index:4;display:grid;place-content:center;justify-items:center;gap:12px;padding:6%;background:#05070bd9;animation:story-closeup-in .3s ease-out}
+.story-closeup figure{margin:0;display:grid;gap:10px;width:min(78cqw,420px)}
+.story-closeup img{width:100%;height:auto;border-radius:14px;border:2px solid #d6b06e;box-shadow:0 12px 30px #000c}
+.story-closeup figcaption{font-size:clamp(13px,3.8cqw,16px);line-height:1.5;color:#f4ead8;text-align:center}
+.story-closeup figcaption strong{display:block;color:#f2c166;font-size:1.1em;margin-bottom:2px}
+@keyframes story-closeup-in{from{opacity:0}to{opacity:1}}
+.story-closeup figure{animation:story-closeup-zoom .35s ease-out}
+@keyframes story-closeup-zoom{from{scale:.7}}
+
+/* ST9 · altar discs */
+.story-altar-lit{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity 1s ease .25s;pointer-events:none}
+.story-altar.is-locked .story-altar-lit{opacity:1}
+.story-disc{position:absolute;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;transition:opacity .6s ease .6s}
+.story-disc>img{width:100%;height:100%;display:block;transition:rotate .35s cubic-bezier(.3,1.4,.5,1);filter:drop-shadow(0 4px 6px #000b);pointer-events:none}
+.story-disc:not(:disabled):hover>img{filter:drop-shadow(0 0 10px #ff6a5a88) drop-shadow(0 4px 6px #000b)}
+.story-disc:focus-visible{outline:2px solid #ffe39a;outline-offset:-6%}
+.story-altar.is-locked .story-disc{opacity:0}
+.story-altar.is-locked{animation:story-altar-thud .5s ease-out .2s}
+@keyframes story-altar-thud{30%{translate:0 4px}60%{translate:0 -2px}}
+
+@media(prefers-reduced-motion:reduce){.story-knot>img,.story-trace-spot::before,.story-scene.is-steady,.story-altar.is-locked,.story-closeup,.story-closeup figure,.story-strip.is-placed{animation:none!important}.story-disc>img{transition:none}}.story-scene-shake{flex:1;min-height:0;display:flex}
+.story-scene-shake>.story-scene-frame{flex:1}
+.story-knot.is-tied{background:transparent;border:0}.story-puzzle.is-scene .story-knot:disabled{opacity:1;cursor:default}
+.story-puzzle.is-scene .story-altar.is-locked .story-disc:disabled{opacity:0;cursor:default}
+.story-puzzle.is-scene .story-puzzle-skip{width:auto;margin:0 auto;text-align:center}.story-scene-tray{justify-content:center;grid-template-columns:repeat(3,minmax(0,170px))}
+@media(max-height:500px){.story-puzzle.is-scene>header{padding:6px 16px 4px}.story-puzzle.is-scene>header strong{font-size:16px}.story-puzzle.is-scene>header small{font-size:12px}.story-scene-tray{grid-template-columns:repeat(3,minmax(0,130px));padding-top:6px}.story-scene-foot{padding:4px 16px 6px}.story-puzzle.is-scene>.story-puzzle-note{padding-top:2px}}
