@@ -64,3 +64,11 @@
 .prologue-keepsake-preview[data-card="sacred-flame-two"][data-face="back"]{animation:keepsake-flame-glow 1.6s ease-in-out infinite alternate}
 @keyframes keepsake-flame-glow{from{filter:drop-shadow(0 12px 22px #0009) drop-shadow(0 0 10px #ee8b2366)}to{filter:drop-shadow(0 12px 22px #0009) drop-shadow(0 0 26px #ee8b23cc)}}
 @media(prefers-reduced-motion:reduce){.rpg-prologue .prologue-picture[data-camera] .prologue-camera,.prologue-keepsake-preview{animation:none!important}}
+
+/* 2026-11-16 presentation boost: a revealed clue flashes once; lanterns (ST5) and lamps (ST8) flicker softly. */
+.story-fx-flash{position:absolute;inset:0;pointer-events:none;background:radial-gradient(70% 55% at 50% 45%,#fff6dcd9,#ffe6a066 45%,transparent 75%);mix-blend-mode:screen;opacity:0;animation:story-fx-flash 900ms ease-out both}
+@keyframes story-fx-flash{0%{opacity:0}18%{opacity:1}100%{opacity:0}}
+.rpg-prologue:is([data-cut^="ST5_"],[data-cut^="ST8_"]) .prologue-picture::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(55% 40% at 50% 38%,#ffb85a33,transparent 70%);mix-blend-mode:screen;animation:story-lamp 3.4s steps(1,end) infinite,story-lamp-soft 1.7s ease-in-out infinite alternate}
+@keyframes story-lamp{0%{opacity:.75}22%{opacity:.55}24%{opacity:.85}61%{opacity:.6}63%{opacity:.9}100%{opacity:.75}}
+@keyframes story-lamp-soft{from{filter:brightness(.92)}to{filter:brightness(1.12)}}
+@media(prefers-reduced-motion:reduce){.story-fx-flash{animation:none;opacity:0}.rpg-prologue .prologue-picture::before{animation:none!important}}

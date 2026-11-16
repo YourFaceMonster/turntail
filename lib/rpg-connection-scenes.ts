@@ -410,5 +410,13 @@ for(const cut of RPG_CONNECTION_SCENES[3].after){
  if(beat===14){cut.art=sceneFrame('iron-gate-village-map-wide-v3','iron-gate-village-map-portrait-v3');cut.focus='57% 18%';}
 }
 
+/** 2026-11-16 presentation boost for ST1~3 (same effects as ST4~10, `lib/story-fx.ts`). */
+const CONNECTION_FX:Record<string,NonNullable<PrologueCut['fx']>>={
+ ST1_PRE_1:'zoom',ST1_PRE_3:'slam',ST1_PRE_4:'tile',ST1_POST_1:'tile',ST1_POST_3:'shake',
+ ST2_PRE_1:'zoom',ST2_PRE_4:'tile',ST2_POST_1:'zoom',
+ ST3_PRE_2:'zoom',ST3_PRE_5:'slam',ST3_POST_1:'tile',ST3_POST_5:'zoom',ST3_POST_7:'flash',
+};
+for(const stage of [1,2,3])for(const cut of [...RPG_CONNECTION_SCENES[stage].before,...RPG_CONNECTION_SCENES[stage].after]){const fx=CONNECTION_FX[cut.id];if(fx)cut.fx=fx;}
+
 /** Viewing only: no combat, save, settlement or reward callbacks are part of this reel. */
 export const RPG_STORY_REEL:readonly PrologueCut[]=[...FIRST_PROLOGUE,...[1,2,3].flatMap(stage=>[...RPG_CONNECTION_SCENES[stage].before,...RPG_CONNECTION_SCENES[stage].after])];

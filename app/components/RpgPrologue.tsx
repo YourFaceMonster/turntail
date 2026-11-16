@@ -5,6 +5,8 @@ import {useEffect,useRef,useState,type CSSProperties} from 'react';
 import {createPortal} from 'react-dom';
 import DialogueText from './DialogueText';
 import {cue} from '../../lib/sound-cues';
+import {playTileSound} from '../../lib/tile-audio';
+import {storyFxMotion,storyFxSound} from '../../lib/story-fx';
 import {FIRST_PROLOGUE,PrologueClock,type PrologueCut} from '../../lib/rpg-prologue';
 import {prologueAmbience,prologueBed,prologueBedOf} from '../../lib/rpg-prologue-audio';
 import {holdCutsceneSilence} from '../../lib/cutscene-music';
@@ -93,13 +95,21 @@ export default function RpgPrologue({onEvent,enter,context,music=true,sound=true
  const interactive=artReady&&!!cut.interaction&&!handled.includes(cut.id);
  useEffect(()=>{clock.current?.hold(!auto||logOpen||interactive);},[auto,logOpen,artReady,interactive]);
  useEffect(()=>{if(artReady&&visible&&sound&&cut.cue)cue(cut.cue);},[cut.id,artReady]);
+ // One-shot effect on entering a cut: table knock and a small move of the painting only (captions stay still).
+ useEffect(()=>{
+  if(!artReady||!visible||!cut.fx)return;
+  const tone=storyFxSound(cut.fx);if(tone&&sound&&context&&context.state==='running'){try{playTileSound(context,tone,{seed:cut.id});}catch{}}
+  const motion=storyFxMotion(cut.fx),stack=root.current?.querySelector<HTMLElement>('.story-painting-stack');
+  if(!motion||!stack||typeof stack.animate!=='function'||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const animation=stack.animate(motion.frames,motion.options);return()=>animation.cancel();
+ },[cut.id,artReady,visible]);
  const settle=(result:StoryEventResult)=>{if(cut.interaction)onEvent?.(cut.interaction,result);setHandled(list=>[...list,cut.id]);clock.current?.hold(!auto||logOpen);clock.current?.next();if(clock.current)setIndex(clock.current.index);};
  const backlog=cuts.slice(0,index+1).filter((item,i,list)=>item.line&&(i===0||item.line!==list[i-1].line||item.speaker!==list[i-1].speaker)).map(item=>({speaker:item.speaker,text:item.line}));
  function advance(){if(!artReady||logOpen||interactive)return;const now=performance.now();if(now-lastTap.current<350)return;lastTap.current=now;cue('dialogue');clock.current!.next();setIndex(clock.current!.index);}
  if(typeof document==='undefined')return null;
  return createPortal(<section ref={root} tabIndex={-1} className={`rpg-prologue ${closing?'is-story-closing':''}`} role="dialog" aria-modal="true" aria-label={label} data-cut={cut.id} data-storyboard={cut.storyboard} data-paused={!visible} onKeyDown={event=>{event.stopPropagation();if(event.key==='Escape'){event.preventDefault();clock.current!.complete();}if(event.target===event.currentTarget&&(event.key===' '||event.key==='Enter')){event.preventDefault();advance();}if(event.key==='Tab'){event.preventDefault();root.current?.querySelector<HTMLButtonElement>('.prologue-skip')?.focus();}}}>
   {chrome}
-  {artReady?<div className="prologue-tap-surface" onClick={advance}><div className="prologue-cut" data-scene={cut.scene} style={{'--cut-duration':`${cut.duration}ms`} as CSSProperties}><CrossfadePicture cut={{...cuts[sceneGroup.start],poseArt:cut.poseArt}} duration={sceneGroup.duration}/><div key={cut.id} className="prologue-caption" aria-live="polite">{cut.speaker&&<small>{cut.speaker}</small>}<p><DialogueText text={cut.line}/></p>{cuts===FIRST_PROLOGUE&&cut.storyboard==='P19'&&<small>시작 유물 · 금이 간 심장</small>}</div></div></div>:<p className="prologue-loading" role="status">이야기를 펼치는 중…</p>}
+  {artReady?<div className="prologue-tap-surface" onClick={advance}><div className="prologue-cut" data-scene={cut.scene} style={{'--cut-duration':`${cut.duration}ms`} as CSSProperties}><CrossfadePicture cut={{...cuts[sceneGroup.start],poseArt:cut.poseArt}} duration={sceneGroup.duration}/>{cut.fx==='flash'&&<div key={`fx-${cut.id}`} className="story-fx-flash" aria-hidden="true"/>}<div key={cut.id} className="prologue-caption" aria-live="polite">{cut.speaker&&<small>{cut.speaker}</small>}<p><DialogueText text={cut.line}/></p>{cuts===FIRST_PROLOGUE&&cut.storyboard==='P19'&&<small>시작 유물 · 금이 간 심장</small>}</div></div></div>:<p className="prologue-loading" role="status">이야기를 펼치는 중…</p>}
   {interactive&&<StoryPuzzle key={cut.id} inline id={cut.interaction!} done={settle}/>}
   {artReady&&<DialogueTools className="is-story" auto={auto} setAuto={setAuto} lines={backlog} onOpenChange={setLogOpen}/>}
   <button className="prologue-skip" onClick={()=>clock.current!.complete()}>{skipLabel} <span aria-hidden="true">↗</span></button><span className="prologue-touch-hint">화면을 누르면 다음 장면</span>

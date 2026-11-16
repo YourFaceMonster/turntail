@@ -2,8 +2,8 @@
 import type {StoryCardId} from './rpg-story-cards.ts';
 /** keepsakeCard picks the closeup overlay (default: the ST3 iron gate 2). */
 /** interaction: a short hands-on event that holds the cut until solved or skipped. cue: a sound on entering the cut. camera: per-cut framing motion. */
-export type PrologueCut={interaction?:import('./rpg-chapters.ts').StoryEventId,cue?:import('./sound-cues.ts').CueKind,camera?:'push'|'pan'|'still',keepsakeFace?:'front'|'back',keepsakeCard?:StoryCardId,storyboard?:string,id:string,scene:'dark'|'snow'|'inn'|'room'|'table'|'card'|'road'|'stone'|'gate',duration:number,line:string,speaker?:string,back?:boolean,audio:'wind'|'hearth'|'tile'|'quiet',art?:{landscape:string,portrait:string},poseArt?:{landscape:string,portrait:string},focus?:string,location?:string};
-type Storyboard={id:string,scene:PrologueCut['scene'],audio:PrologueCut['audio'],back?:boolean,art?:PrologueCut['art'],parts:{line:string,speaker?:string,poseArt?:PrologueCut['art']}[]};
+export type PrologueCut={interaction?:import('./rpg-chapters.ts').StoryEventId,cue?:import('./sound-cues.ts').CueKind,camera?:'push'|'pan'|'still',fx?:import('./story-fx.ts').StoryFx,keepsakeFace?:'front'|'back',keepsakeCard?:StoryCardId,storyboard?:string,id:string,scene:'dark'|'snow'|'inn'|'room'|'table'|'card'|'road'|'stone'|'gate',duration:number,line:string,speaker?:string,back?:boolean,audio:'wind'|'hearth'|'tile'|'quiet',art?:{landscape:string,portrait:string},poseArt?:{landscape:string,portrait:string},focus?:string,location?:string};
+type Storyboard={id:string,scene:PrologueCut['scene'],audio:PrologueCut['audio'],back?:boolean,art?:PrologueCut['art'],parts:{line:string,speaker?:string,poseArt?:PrologueCut['art'],fx?:PrologueCut['fx']}[]};
 import {STORY_CARD_SCENE_ART} from './rpg-story-card-art.ts';
 const speaking=STORY_CARD_SCENE_ART.wagerSpeaking;
 /** P01–P19 with moderate narration; only authored beats advance the prologue. */
@@ -13,9 +13,9 @@ export const PROLOGUE_STORYBOARD:readonly Storyboard[]=[
  {id:'P03',scene:'inn',audio:'wind',parts:[{line:'눈은 거세졌고, 날은 저물었다.\n다행히 길가의 주점에는 아직 불이 켜져 있었다.'}]},
  {id:'P04',scene:'room',audio:'hearth',parts:[{line:'따뜻한 불빛이 방랑자를 맞았다.\n늦은 밤에도 주점에서는 패 승부가 한창이었다.'}]},
  {id:'P05',scene:'table',audio:'hearth',art:{landscape:'/prologue/tavern-interior-v2.webp',portrait:'/prologue/tavern-interior-portrait-v1.webp'},parts:[{speaker:'상대',line:'길손이시오? 패를 다룰 줄 안다면, 한 판 어떻소?'}]},
- {id:'P06',scene:'table',audio:'hearth',parts:[{line:'사내는 낡은 패 한 장을 테이블에 올려놓았다.'},{speaker:'상대',poseArt:speaking,line:'대단한 물건은 아니오. 하지만 오래된 패지.\n이걸 걸겠소.'}]},
+ {id:'P06',scene:'table',audio:'hearth',parts:[{line:'사내는 낡은 패 한 장을 테이블에 올려놓았다.',fx:'tile'},{speaker:'상대',poseArt:speaking,line:'대단한 물건은 아니오. 하지만 오래된 패지.\n이걸 걸겠소.'}]},
  {id:'P07',scene:'table',audio:'hearth',parts:[{speaker:'방랑자',line:'낡은 패 한 장이라… 좋습니다. 어차피 긴 밤이니.'}]},
- {id:'P08',scene:'table',audio:'tile',art:{landscape:'/prologue/wager-playing-wide-v1.webp',portrait:'/prologue/wager-playing-portrait-v1.webp'},parts:[{line:'그렇게 두 사람의 작은 승부가 시작되었다.'}]},
+ {id:'P08',scene:'table',audio:'tile',art:{landscape:'/prologue/wager-playing-wide-v2.webp',portrait:'/prologue/wager-playing-portrait-v2.webp'},parts:[{line:'그렇게 두 사람의 작은 승부가 시작되었다.'}]},
  {id:'P09',scene:'table',audio:'tile',parts:[{speaker:'상대',poseArt:speaking,line:'제법이군. 약속대로, 이 패는 자네 것이오.'}]},
  {id:'P10',scene:'card',audio:'tile',parts:[{line:'앞면에는 붉은 숫자 2가 새겨져 있었다.\n승부를 아는 이에게는 익숙한, 가장 강한 패였다.'}]},
  {id:'P11',scene:'card',back:true,audio:'quiet',parts:[{line:'뒷면에는 두 왕관이 겹친 문양이 새겨져 있었다.'},{speaker:'방랑자',line:'이 표식은… 처음 보는군요.'}]},
@@ -34,7 +34,7 @@ const legacyIds:Record<string,string>={P01:'P01',P02:'P02',P03:'P03',P04:'P04',P
 export const FIRST_PROLOGUE:readonly PrologueCut[]=PROLOGUE_STORYBOARD.flatMap(board=>{
  let page=0;
  return board.parts.flatMap(part=>part.line.split('\n').filter(Boolean).map(text=>{
-  page++;return {id:page===1&&legacyIds[board.id]?legacyIds[board.id]:`PROLOGUE_${board.id}_${page}`,storyboard:board.id,scene:board.scene,audio:board.audio,back:board.back,art:board.art,speaker:part.speaker,poseArt:part.poseArt,line:text,duration:storyReadingDuration(text)};
+  page++;return {id:page===1&&legacyIds[board.id]?legacyIds[board.id]:`PROLOGUE_${board.id}_${page}`,storyboard:board.id,scene:board.scene,audio:board.audio,back:board.back,art:board.art,speaker:part.speaker,poseArt:part.poseArt,...(part.fx?{fx:part.fx}:{}),line:text,duration:storyReadingDuration(text)};
  }));
 });
 // Reserved for the real normal-ending flag and matching handoff art. The current

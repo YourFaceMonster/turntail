@@ -132,10 +132,9 @@ test('saves reject corrupt story data and the map only shows the current region'
   // 2026-11-14: every slot has its wide repaint (1672×941) beside the portrait painting.
   assert.ok(art.landscape.includes('-wide-')&&existsSync('public'+art.landscape),art.landscape);
   const special=['st6-flame-two','st6-flame-two-back','st9-key-two','st9-key-two-back','true-ending-record','true-ending-village','ending-handoff'].includes(key);
-  // v2: region maps (1024×1600) and the emblem-colour repaints of ST4/6/7/8/9 scenes.
-  const v2=/^region-4-map$|^st[46789]-(after|before)$|^quest-9$/.test(key)&&!['st4-before','st7-before','st8-before','st9-before','st6-after'].includes(key);
-  // v3: ST9 after-victory tabletop tiles now carry their four suits.
-  assert.equal(art.portrait,`/story/${key}-portrait-${special?'special-v2':`v${key==='st9-after'||/^region-[23]-map$/.test(key)?3:v2?2:1}`}.webp`);
+  // Region maps (1024×1600), emblem-colour repaints, and the 2026-11-16 tile repaint (numbers+emblems, stage backs).
+  const version:Record<string,number>={'region-2-map':3,'region-3-map':3,'region-4-map':2,'quest-9':2,'st4-after':2,'st7-after':2,'st8-after':2,'st6-before':3,'st9-after':4,'st4-before':2,'st5-before':2,'st7-before':2,'st8-before':2,'st9-before':2,'st10-after':2,...Object.fromEntries([4,5,6,7,8,9,10].map(s=>[`st${s}-duel`,2]))};
+  assert.equal(art.portrait,`/story/${key}-portrait-${special?'special-v2':`v${version[key]||1}`}.webp`);
   assert.ok(existsSync(new URL(`../public${art.portrait}`,import.meta.url)),key);
  }
  assert.match(html,/--map-portrait-x:78%;--map-portrait-y:83%/,'the dice den follows the boathouse in the portrait map');
@@ -156,7 +155,7 @@ test('the map warms the next stage paintings: before, close-up, its quest, after
  const {stageArtToPreload}=await import('../lib/rpg-chapters');
  assert.deepEqual(stageArtToPreload(3),[]);assert.deepEqual(stageArtToPreload(11),[]);
  const five=stageArtToPreload(5);
- assert.deepEqual(five,['/story/st5-before-portrait-v1.webp','/story/st5-duel-portrait-v1.webp','/story/quest-5-portrait-v1.webp','/story/st5-after-portrait-v1.webp']);
+ assert.deepEqual(five,['/story/st5-before-portrait-v2.webp','/story/st5-duel-portrait-v2.webp','/story/quest-5-portrait-v1.webp','/story/st5-after-portrait-v1.webp']);
  assert.equal(stageArtToPreload(7).length,3,'ST7 has no side quest');
  for(const stage of [4,5,6,7,8,9,10])for(const src of stageArtToPreload(stage))assert.ok(existsSync('public'+src),src);
 });
