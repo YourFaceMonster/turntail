@@ -1,0 +1,89 @@
+/*
+ * 2026-11-17 UI QA sweep (user approved "전부다 고쳐줘"). Numbers match docs/qa-ui-sweep-2026-11-17.md.
+ * Loaded last from page.tsx; selectors are prefixed with `html body` to win over the component CSS files.
+ */
+
+/* 1 · TEST badge: a small tab on the left edge, clear of the bottom action buttons and relic slots. */
+html body .rpg-preview-tools{inset:50% auto auto 0!important;transform:translateY(-50%)}
+html body .rpg-preview-tools>summary{border-left:0;border-radius:0 6px 6px 0;opacity:.72;padding:6px 5px;writing-mode:vertical-rl;letter-spacing:.12em}
+html body .rpg-preview-tools[open]>summary{opacity:1}
+html body .rpg-preview-popover{left:26px;right:auto;top:50%;bottom:auto;transform:translateY(-50%)}
+
+/* 2 · Yacht dice: the "best" star sits on the tile corner, off the category name. */
+html body .yacht-main .yacht-score-hand .yacht-cat.is-best::after{top:-9px!important;left:-6px!important;right:auto!important;display:grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#fff3cf;box-shadow:0 0 0 1px #d59a12;font-size:11px!important;line-height:1}
+
+/* 5 · Opponent names stay readable over any HP fill colour. */
+html body .opponent .seat-card .opponent-name,html body .opponent .seat-card .seat-hp-label{text-shadow:0 1px 2px #000,0 0 3px #000c,1px 0 1px #000}
+
+/* 9 · Hand: "can play" is a small green dot, not a check; only chosen tiles get the gold check. */
+html body .turntale .hand-tile.playable::after,html body .turntale.active-table .hand-tile.playable::after{content:''!important;top:auto!important;bottom:-6px!important;left:calc(50% - 3px)!important;right:auto!important;width:6px!important;height:6px!important;background:#9fe08a!important;box-shadow:0 0 6px #bfe293aa!important}
+html body .turntale .hand-tile.playable.selected::after{display:none!important}
+
+/* 11 · "내가 선!" shows big for a moment, then gets out of the way of the floor tiles. */
+html body .lead-turn-banner{animation:qa-lead-banner 2.4s ease-in forwards}
+@keyframes qa-lead-banner{0%,55%{opacity:1}100%{opacity:0;visibility:hidden}}
+@media (prefers-reduced-motion:reduce){html body .lead-turn-banner{animation:qa-lead-banner-still 2.4s steps(1,end) forwards}}
+@keyframes qa-lead-banner-still{0%{opacity:1}100%{opacity:0;visibility:hidden}}
+
+/* Relic activation notices: below the board on phones, not over the suit-order row. Solid enough to read. */
+@media (max-aspect-ratio:1/1){html body .rpg-relic-activation-notices{top:calc(50dvh - 30px)}}
+html body .rpg-relic-activation-notice{background:linear-gradient(135deg,#3e3523,#14231e)!important;backdrop-filter:none!important}
+
+/* 12 · 자동 선택 / 숫자순: finger-sized chips at the end of my status bar. */
+html body .hand-heading>.hand-tools{align-self:center;display:flex;gap:4px;margin-right:4px}
+html body .hand-heading>.hand-tools>.text-btn{min-width:44px;min-height:34px;padding:3px 5px;border:1px solid #e6c97a88;border-radius:8px;background:#120d0ae6;color:#f6e3b4;font-size:10px!important;line-height:1.15;white-space:normal;word-break:keep-all;text-align:center}
+
+/* 13 · Yacht dice top bar: the exit is its own framed button, apart from the settings icon. */
+html body .yacht-main .top-actions{gap:8px}
+html body .yacht-main .top-actions>.yacht-exit{padding:5px 10px;border:1px solid #e6c97a88;border-radius:999px;background:#120d0acc;font-size:11px}
+html body .yacht-main .top-actions>.yacht-exit.is-armed{border-color:#ff9b7a;color:#ffd2c2;background:#3a140ccc}
+/* 14 · Haro's seat: the number is labelled as the boxes he has left. */
+html body .yacht-main .rpg-seat-count.yacht-open-count{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1}
+html body .yacht-main .rpg-seat-count.yacht-open-count>small{font-size:8px;font-weight:700;letter-spacing:-.02em;opacity:.85}
+
+/* 17/18 · Classic + multiplayer setup windows: centred subtitle; nickname comes from the profile. */
+html body .modal.setup-modal>.setup-subtitle{text-align:center}
+html body .modal.setup-modal.menu-theme-classic>h2,html body .modal.setup-modal.menu-theme-classic>.eyebrow{padding-left:0!important;padding-right:0!important;text-align:center!important}
+html body .yacht-main .top-actions{padding-right:4px}
+html body .modal.setup-modal>.setup-nickname{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0 4px;padding:8px 10px;border:1px solid #d4b77555;border-radius:8px;background:#0e251dd9;font-size:12px;color:#e9dcbc}
+html body .modal.setup-modal>.setup-nickname>b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#ffe3a7}
+html body .modal.setup-modal>.setup-nickname>.text-btn{flex:none;font-size:11px;padding:4px 0}
+/* 18 · Settings title centred like every other menu window. */
+html body .modal-shade>.modal.unified-settings h2,html body .modal-shade>.modal.unified-settings .eyebrow{text-align:center!important}
+
+/* 19 · Story skip button: same pill as the 자동 / 지난 대사 buttons beside it. */
+html body .rpg-prologue .prologue-skip{min-height:34px;padding:6px 13px;border:1px solid #e6c97acc!important;border-radius:999px!important;background:#0b0905e6!important;color:#f3e6c2!important;font:700 11px system-ui,sans-serif!important;letter-spacing:.04em;box-shadow:0 2px 6px #000a}
+
+/* 20 · Journey dock: every item has a Korean name under it. */
+html body .journey-game-dock .journey-dock-bag{position:relative}
+html body .journey-game-dock .journey-dock-bag>small{top:-2px!important;bottom:auto!important;right:-3px!important}
+html body .journey-game-dock .journey-dock-bag>.journey-dock-label{position:absolute;left:50%;top:36px;transform:translateX(-50%);font-size:9px;font-weight:700;color:#f3e3bb;text-shadow:0 1px 2px #000;white-space:nowrap;pointer-events:none}
+html body .journey-game-dock .journey-dock-relics{position:relative}
+html body .journey-game-dock .journey-dock-relics::after{content:attr(data-label);position:absolute;left:58px;top:-12px;transform:translateX(-50%);font-size:9px;font-weight:700;color:#f3e3bb;text-shadow:0 1px 2px #000;white-space:nowrap;pointer-events:none}
+
+/* 21 · Home: a dark plate behind the four tool icons so the painted tiles behind them stop competing. */
+html body .title-screen .title-tools{padding:6px 10px;border:1px solid #d6b06e55;border-radius:16px;background:linear-gradient(180deg,#1a120ce6,#0f0a07f0);box-shadow:0 6px 18px #000a}
+
+/* 6 · Snow inn, portrait: the fireplace label sits on the brick hearth at the left edge. */
+@media (max-aspect-ratio:1/1){html body .journey-tavern-room .tavern-fire{left:14.5%!important;top:59%!important;transform:none!important}}
+
+/* 16 · Long menu windows: the close button stays at the top-right while the window scrolls. */
+html body .modal-shade>.modal:is(.unified-settings,.profile-modal,.journey-entry)>.close{position:sticky!important;top:0!important;right:auto!important;left:auto!important;float:right;margin:-10px -8px -34px 0!important;z-index:30}
+/* 8 · Profile: the sticky save button gets a solid band so the set cards slide under it cleanly. */
+html body .modal-shade>.modal.profile-modal>.primary.full{box-shadow:0 -14px 14px #17120f,0 3px #3d2d15!important}
+html body .modal-shade>.modal.profile-modal .profile-photo-actions .text-btn{color:#e8cf98}
+/* 23 · Achievements: reward row title on one line with its note under it; the 0 / 18 count in one typeface. */
+html body .achievements-modal .dice-skin-picker>summary{display:flex!important;flex-direction:column;align-items:flex-start;gap:3px;position:relative;padding-right:22px}
+html body .achievements-modal .dice-skin-picker>summary::after{position:absolute;right:4px;top:50%;transform:translateY(-50%)}
+html body .achievements-modal .dice-skin-picker>summary>h3{white-space:nowrap;font-size:14px!important;margin:0}
+html body .achievements-modal .dice-skin-picker>summary>small{text-align:left;margin-left:0!important;width:auto!important}
+html body .achievements-modal .achievement-total>strong>small{font-family:inherit!important;font-size:.62em}
+
+/* 22 · Tutorial title on one line on phones (the book icon no longer pushes it to two). */
+@media (max-width:420px){html body .modal-shade>.modal.tutorial-modal h2{font-size:clamp(20px,5.8vw,24px)!important;white-space:nowrap}}html body .tutorial-modal .tutorial-order i{white-space:nowrap}
+html body .tutorial-modal .tutorial-order{flex-wrap:nowrap;font-size:11px;gap:4px}
+/* 7 · Inn talk, phone held sideways: a narrower, shorter box centred low, so the characters stay in view. */
+@media (max-height:500px) and (min-aspect-ratio:1/1){
+ html body .journey-tavern-room .rpg-prologue.quest-cutscene .quest-dialogue,html body .rpg-prologue.quest-cutscene[data-painting] .quest-dialogue{width:min(600px,74vw)!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;height:98px!important;min-height:98px!important;grid-template-rows:54px 20px!important}
+ html body .rpg-prologue.quest-cutscene[data-painting] .quest-dialogue-text p{font-size:14px!important}
+}

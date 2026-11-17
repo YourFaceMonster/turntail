@@ -20,6 +20,7 @@ import {itemTurnReadyAt} from './rpg-item-motion.ts';
 import {twinIndex} from './rpg-twins.ts';
 import {applyPioneerDeal,itemBattleState,triggerFloorTrap,triggerScoutedPickup} from './item-battle-rules.ts';
 import {tryBotProfessionActive} from './profession-actives.ts';
+import {josa} from './josa.ts';
 export type Tile = {id:number,n:number,s:number};
 export type Player = {id:string,token:string,name:string,hand:Tile[],wins:number,bot?:boolean,points?:number,losses?:number,games?:number,profile?:string,avatar?:string,timeouts?:number,replaced?:boolean};
 export type RoundResult = {id:string,at:number,round:number,players:{id:string,name:string,count:number,place:number,delta:number,total:number,winner:boolean}[],transfers:{from:number,to:number,points:number}[],voided?:boolean,voidReason?:string,challenge?:Challenge|null,stageRun?:StageRun|null};
@@ -190,7 +191,7 @@ export function act(g:Game,who:number,action:string,ids:number[]=[],index=-1,now
  if(!automatic)p.timeouts=0;
  g.turn=nextRpgSeat(g,who);
  if(g.lastBy===g.turn){resolveRpgScout(g);const battleAt=Math.max(now,g.turnReadyAt||0);
-  const battle=resolveProfessionRpgBattle(g,battleAt);if(g.rpgRun&&g.rpgRun.status!=='playing')return;g.rally=0;g.trick=[];g.tablePlay=null;g.lastBy=null;if(!battle)g.turnReadyAt=Math.max(now,g.turnReadyAt||0)+LEAD_REVIEW_MS;note(g,`${g.players[g.turn].name}이 선을 잡았습니다.`);}
+  const battle=resolveProfessionRpgBattle(g,battleAt);if(g.rpgRun&&g.rpgRun.status!=='playing')return;g.rally=0;g.trick=[];g.tablePlay=null;g.lastBy=null;if(!battle)g.turnReadyAt=Math.max(now,g.turnReadyAt||0)+LEAD_REVIEW_MS;note(g,`${josa(g.players[g.turn].name,'이/가')} 선을 잡았습니다.`);}
  scheduleTurn(g,now);
 }
 /** Recent plays shown beside the RPG floor: the last three plays of this round (판), passes excluded. Kept across lead (선) changes; cleared only when a new round is dealt. */

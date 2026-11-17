@@ -71,7 +71,15 @@
 .inn-cup-bracket li:not(:last-child)::after{content:"›";position:absolute;right:-8px;top:38px;color:#d6b673;font-size:16px}
 .inn-cup-bracket li[data-won]{border-color:#9be3a4aa;box-shadow:0 0 12px #9be3a433}
 .inn-cup-round{font-size:11px;font-weight:700;color:#2a1d0c;background:#e3c27a;border-radius:999px;padding:1px 8px}
-.inn-cup-face .portrait,.inn-cup-face .avatar{display:block;width:58px;height:58px;border-radius:50%;overflow:hidden;border:2px solid #d9b56f}
+.inn-cup-bracket .inn-cup-face .portrait,.inn-cup-bracket .inn-cup-face .avatar{display:block;width:58px;height:58px;border-radius:50%;overflow:hidden;border:2px solid #d9b56f}
+/* 2026-11-17: result standings — the bracket's 58px face no longer spills over the rank column. */
+.inn-cup-places li{grid-template-columns:44px auto 1fr auto;gap:10px}
+.inn-cup-places .inn-cup-face{display:block;width:44px;height:44px}
+.inn-cup-places .inn-cup-face .portrait,.inn-cup-places .inn-cup-face .avatar{display:block;width:44px;height:44px;border-radius:50%;overflow:hidden;border:2px solid #c9a96a88}
+.inn-cup-places li>b{min-width:2.4em;color:#e6cf9c}
+.inn-cup-places li:first-child{border-color:#e7c46f;box-shadow:inset 0 0 0 1px #e7c46f55}
+.inn-cup-places li:first-child>b{color:#ffe39a}
+.inn-cup-places li:first-child .inn-cup-face .portrait,.inn-cup-places li:first-child .inn-cup-face .avatar{border-color:#ffd978}
 .inn-cup-bracket strong{font-size:15px;color:#ffe9b8}
 .inn-cup-bracket small{font-size:10px;color:#c9b48c;line-height:1.3}
 .inn-cup-bracket .inn-cup-goal{margin:4px 0 0;font-size:10.5px;line-height:1.35;color:#f0cf7f}

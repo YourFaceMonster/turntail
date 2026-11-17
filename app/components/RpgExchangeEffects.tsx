@@ -8,6 +8,7 @@ import {exchangePickerPlacement,type ExchangeRect} from '../../lib/rpg-exchange-
 import SeatPortrait from './SeatPortrait';
 import TileFace from './TileFace';
 import TileBack from './TileBack';
+import {josa} from '../../lib/josa';
 type View=ReturnType<typeof view>;
 export type ExchangeTarget={id:RpgExchangeItem,target:number};
 type Placement={x:number,y:number,controlsY:number,hand:ExchangeRect,opponent:ExchangeRect,destinations:Record<number,ExchangeRect>,colors:Record<number,{light:string,dark:string,border:string}>,elapsed:number};
@@ -47,6 +48,6 @@ export function RpgExchangeStage({game,target,selected,onReady,onConfirm,onCance
   {!running&&<div className="exchange-clean-controls" style={{left:x,top:placement.controlsY}}><strong>{(selected.length===count||noEligible)?'교환할 상대를 선택하세요':`내 손패 ${count}장을 먼저 선택하세요`}</strong>{(selected.length===count||noEligible)&&<div className="exchange-pick-targets">{game.players.map((player,seat)=>{if(seat===game.me)return null;const color=placement.colors[seat];return <button type="button" key={player.id} style={{'--target-light':color?.light,'--target-dark':color?.dark,'--target-border':color?.border} as CSSProperties} disabled={pending||!exchangeTargetAvailable(game,target!.id,seat)} onClick={()=>callbacks.current.onConfirm(noEligible?[]:selected.map(tile=>tile.id),seat)}><SeatPortrait avatar={player.avatar} seat={seat}/><strong>{player.name}</strong></button>;})}</div>}<button className="exchange-cancel" disabled={pending} onClick={()=>callbacks.current.onCancel()}>취소</button>{error&&<p className="exchange-stage-error" role="alert">{error}</p>}</div>}
   {running&&outgoing.map((tile,index)=><span key={`out:${tile.id}`} className="exchange-stage-tile stage-post-outgoing" style={style(sources.current[tile.id]||{left:hand.left+hand.width/2-30,top:hand.top,width:60,height:79},seatDestination,index)}><TileFace tile={tile}/></span>)}
   {running&&incoming.map((tile,index)=><span key={`in:${tile.id}`} className="exchange-stage-tile stage-post-incoming" style={style(seatDestination,destinations[tile.id]||{left:hand.left+hand.width/2-30,top:hand.top,width:60,height:79},index)}><span className="exchange-stage-flipper" style={{animationDuration:`${duration}ms`}}><span className="exchange-stage-back"><TileBack/></span><span className="exchange-stage-front"><TileFace tile={tile}/></span></span></span>)}
-  {running&&<div className="exchange-clean-receipt" style={{left:x,top:placement.controlsY}} role="status"><strong>{game.players[running.target]?.name}과 교환</strong><small>보낸 패 {describe(outgoing)} · 받은 패 {describe(incoming)}</small></div>}
+  {running&&<div className="exchange-clean-receipt" style={{left:x,top:placement.controlsY}} role="status"><strong>{josa(game.players[running.target]?.name??'','과/와')} 교환</strong><small>보낸 패 {describe(outgoing)} · 받은 패 {describe(incoming)}</small></div>}
  </div>,document.body);
 }

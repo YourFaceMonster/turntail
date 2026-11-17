@@ -5,6 +5,7 @@ import './yacht-dice.css';
 import {YACHT_CATEGORIES,YACHT_LABELS,YACHT_HINTS,YACHT_UPPER,YACHT_BONUS,YACHT_JOKER_BONUS,upperSubtotal,yachtBonus,seatTotal,boxScore,allowedCategories,yachtJoker,yachtJokerBonus,isYachtRoll,yachtAiPlan,openCategories,yachtShape,type YachtMatch,type YachtCategory} from '../../lib/yacht-dice';
 import {DICE_DEN_DIALOGUE,DICE_DEN_STAKE,DICE_NPC,DICE_RELIC} from '../../lib/rpg-dice-den';
 import AnimalFace from './AnimalFace';
+import {josa} from '../../lib/josa';
 import {relicImage} from '../../lib/item-battle-relics';
 import {cue} from '../../lib/sound-cues';
 import {haptic,DICE_HAPTICS} from '../../lib/haptics';
@@ -43,7 +44,7 @@ export function scatter(stamp:string){const r=seeded(stamp),cells=[...CELLS];for
  return cells.slice(0,5).map(([x,y])=>({x:x+(r()*2-1)*JITTER.x,y:y+(r()*2-1)*JITTER.y,rot:Math.round((r()-.5)*44),spin:Math.round(360+r()*540)*(r()<.5?-1:1)}));}
 function haroLine(last:YachtMatch['last']){if(!last||last.seat!==1)return '';const {category,score}=last;
  if(last.bonus)return '요트 보너스다! 오늘 운이 좋은데.';
- if(category==='yacht'&&score)return '요트다! 안개도 이건 못 가리지.';if(!score)return `${YACHT_LABELS[category]}은 버리지. 아깝지만.`;
+ if(category==='yacht'&&score)return '요트다! 안개도 이건 못 가리지.';if(!score)return `${josa(YACHT_LABELS[category],'은/는')} 버리지. 아깝지만.`;
  if(score>=25)return `${YACHT_LABELS[category]} ${score}점. 나쁘지 않군.`;return `${YACHT_LABELS[category]}에 ${score}점.`;}
 type Flash={key:string,tier:'combo'|'yacht'|'bonus',title:string,score:string,seat:0|1};
 /** What deserves a banner after a box is written: yachts, joker bonuses, combos, the 63 bonus. */
@@ -95,6 +96,9 @@ export default function YachtDiceTable({den,match,hp,equipped,busy,error,play,re
  const playRef=useRef(play);playRef.current=play;
  const stamp=`${match.round}-${match.turn}-${match.rollsLeft}`,positions=scatter(stamp);
  const [rolled,setRolled]=useState({stamp:'',set:[] as number[]}),[confirmForfeit,setConfirmForfeit]=useState(false),[sheetOpen,setSheetOpen]=useState(false);
+ // Practice games live in memory only: leaving mid-game needs a second tap (story games save on exit).
+ const [exitArmed,setExitArmed]=useState(false),started=match.status==='playing'&&(Object.keys(match.sheets[0]).length>0||match.round>1||match.rollsLeft<3);
+const leaveTable=()=>{if(practice&&started&&!exitArmed){setExitArmed(true);setTimeout(()=>setExitArmed(false),3000);return;}exit?.();};
  const [cup,setCup]=useState<'idle'|'shaking'|'pouring'>('idle'),[aiHeld,setAiHeld]=useState<boolean[]|null>(null),shakeStart=useRef(0),pendingThrow=useRef(false);
  const [flash,setFlash]=useState<Flash|null>(null),prevMatch=useRef<YachtMatch|null>(null);
  if(match.rollsLeft<3&&rolled.stamp!==stamp)setRolled({stamp,set:[0,1,2,3,4].filter(i=>match.rollsLeft===2||!match.held[i])});
@@ -156,7 +160,7 @@ export default function YachtDiceTable({den,match,hp,equipped,busy,error,play,re
    <a className="brand" href="/" onClick={event=>{event.preventDefault();exit?.();}}><TurntaleWordmark className="ingame-wordmark" plain/></a>
    <span className="ingame-table-theme" title="안개 나루 · 상아 주사위"><strong>안개 나루</strong><small>상아 주사위</small></span>
    <strong className="ingame-round" aria-label={`주사위 승부 ${Math.min(match.round,12)}라운드 / 12`}>주사위 {Math.min(match.round,12)}/12</strong>
-   <div className="top-actions">{settings&&<button className="display-trigger settings-trigger" aria-label="게임 설정" onClick={settings}><Settings2/></button>}{exit&&<button className="text-btn" onClick={exit}>{practice?'나가기':'저장·나가기'}</button>}<span className="alpha">{APP_VERSION}</span></div>
+   <div className="top-actions">{settings&&<button className="display-trigger settings-trigger" aria-label="게임 설정" onClick={settings}><Settings2/></button>}{exit&&<button className={`text-btn yacht-exit ${exitArmed?'is-armed':''}`} onClick={leaveTable}>{exitArmed?'정말 나가기?':practice?'나가기':'저장·나가기'}</button>}<span className="alpha">{APP_VERSION}</span></div>
   </header>
   <section className="game-layout">
    <div className="play-column">
@@ -165,7 +169,7 @@ export default function YachtDiceTable({den,match,hp,equipped,busy,error,play,re
      <div className="opponents"><RivalLog match={match} aiTurn={aiTurn} cup={cup} last={haroLast.current}/><div data-seat="1" className={`opponent persona-amber ${aiTurn?'is-turn':''}`}>
       <div className="seat-card" role="button" tabIndex={0} aria-expanded={sheetOpen} aria-label={`하로 ${theirs}점 · 점수표 보기`} onClick={()=>setSheetOpen(open=>!open)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();setSheetOpen(open=>!open);}}}><RpgCastPortrait index={HARO_PORTRAIT}/>
        <div className="op-info"><strong className="opponent-name" title={DICE_NPC}><span className="opponent-character-name">하로</span><small className="opponent-ai-label">AI</small></strong><span className="seat-hp-label">{theirs}점</span></div>
-       <span className="rpg-seat-count" aria-label={`하로 남은 칸 ${openCategories(match.sheets[1]).length}개`}><b>{openCategories(match.sheets[1]).length}</b></span>
+       <span className="rpg-seat-count yacht-open-count" aria-label={`하로 남은 칸 ${openCategories(match.sheets[1]).length}개`}><small aria-hidden="true">남은 칸</small><b>{openCategories(match.sheets[1]).length}</b></span>
       </div>
       <div className="opponent-status-row"><div className="seat-dialogue">{banter&&!sheetOpen&&<div className="seat-banter" role="status" aria-live="polite">{banter}</div>}</div></div>
       {sheetOpen&&<div className="yacht-rival-sheet" role="dialog" aria-label="하로의 점수표"><header><b>하로의 점수표</b><button type="button" aria-label="닫기" onClick={()=>setSheetOpen(false)}>×</button></header>

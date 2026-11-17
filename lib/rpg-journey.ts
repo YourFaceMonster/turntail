@@ -1,3 +1,4 @@
+import {josa} from './josa.ts';
 import {rpgRelicSlots} from './rpg-trials';
 import {activateRpgRelics,isPassiveRelic,learnRecipes,rpgMaxHp} from './rpg-rework';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
@@ -108,7 +109,7 @@ export function startDiceDuel(run:RpgRun):RpgRun{
  const {j,den}=diceDen(run);
  if(den.relicClaimed)throw Error('하로와의 승부는 이미 끝났어요.');
  if(den.match?.status==='playing')throw Error('진행 중인 주사위 승부가 있어요.');
- if(run.hp[0]<=DICE_DEN_STAKE)throw Error(`판돈 HP ${DICE_DEN_STAKE}를 걸려면 HP가 ${DICE_DEN_STAKE+1} 이상이어야 해요.`);
+ if(run.hp[0]<=DICE_DEN_STAKE)throw Error(`판돈 HP ${josa(String(DICE_DEN_STAKE),'을/를')} 걸려면 HP가 ${DICE_DEN_STAKE+1} 이상이어야 해요.`);
  return {...run,journey:{...j,diceDen:{...den,match:newYachtMatch(),result:undefined}},updatedAt:Date.now()};
 }
 /** Win: relic once. Loss or forfeit: HP stake. Draw: stake returned (nothing changes). */

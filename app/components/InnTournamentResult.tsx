@@ -3,6 +3,7 @@ import {useEffect,useRef,type ReactNode} from 'react';
 import type {view} from '../../lib/game';
 import {innTournament,TOURNAMENT_TITLE,noteTournament,tournamentGoalMet,tournamentMatchWon,type TournamentState} from '../../lib/inn-tournament';
 import SeatPortrait from './SeatPortrait';
+import {josa} from '../../lib/josa';
 
 type View=ReturnType<typeof view>;
 /** Result panel after each inn-tournament match; the last one crowns (or not) and stores the device record once. */
@@ -14,7 +15,7 @@ export default function InnTournamentResult({game,cup,busy,next,back,playerAvata
  const places=(result?.players||[]).map((p,seat)=>({...p,seat})).sort((a,b)=>a.place-b.place);
  return <div className="modal-shade result-shade journey-match-result-shade"><section className="modal rpg-result journey-mini-result-panel inn-cup-result" role="dialog" aria-modal="true" aria-label="여관 토너먼트 결과">
   <span className="eyebrow">INN CUP · {round}/{INN_TOURNAMENT.length}</span>
-  <h2>{final?(champion?`우승 · ${TOURNAMENT_TITLE}`:'토너먼트 종료'):`${round}판 · ${challenger.name}와의 승부`}</h2>
+  <h2>{final?(champion?`우승 · ${TOURNAMENT_TITLE}`:'토너먼트 종료'):`${round}판 · ${josa(challenger.name,'과/와')}의 승부`}</h2>
   <ol className="inn-cup-places">{places.map(p=><li key={p.id}><span className="inn-cup-face">{p.seat===game.me&&playerAvatar?playerAvatar:<SeatPortrait avatar={game.players[p.seat]?.avatar} seat={p.seat}/>}</span><b>{p.place}등</b><span>{p.name}</span><small>남은 패 {p.count}장</small></li>)}</ol>
   <blockquote className="journey-speech"><SeatPortrait avatar={challenger.avatar} seat={1}/><strong>{challenger.name}</strong><p>{won?challenger.win:challenger.lose}</p></blockquote>
   <p className={`inn-cup-goal-line ${goal?'is-met':''}`}>특별 목표 · {challenger.goal} · <b>{goal?'달성 ★':'실패'}</b></p>
