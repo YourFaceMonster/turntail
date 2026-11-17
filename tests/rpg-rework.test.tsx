@@ -71,8 +71,9 @@ test('one AI at 0 HP ends the stage at settlement; a legacy 1v1 save still deals
 });
 test('legacy two-seat +7/-7 settles and clears, player zero takes failure priority',()=>{
  const game=fresh();game.rpgRun!.hp=[70,0,10];start(game,0);finish(game,[0,0,7]);assert.deepEqual(game.rpgRun!.hp,[77,0,3]);assert.equal(game.rpgRun!.status,'allocation');
- const both=fresh();both.rpgRun!.hp=[4,30,4];finish(both,[8,0,8]);assert.equal(both.rpgRun!.hp[0],0);assert.equal(both.rpgRun!.hp[2],0);assert.equal(both.rpgRun!.status,'game-over','simultaneous zero is a failure');
- const failure=fresh();failure.rpgRun!.hp=[3,20,20];failure.rpgRun!.equipped=['final-knot'];finish(failure,[8,0,4]);
+ // 2026-11-17: journeys hold fate (stage retries); these two check the final failure, so no fate is left.
+ const both=fresh();both.rpgRun!.fate=0;both.rpgRun!.hp=[4,30,4];finish(both,[8,0,8]);assert.equal(both.rpgRun!.hp[0],0);assert.equal(both.rpgRun!.hp[2],0);assert.equal(both.rpgRun!.status,'game-over','simultaneous zero is a failure');
+ const failure=fresh();failure.rpgRun!.fate=0;failure.rpgRun!.hp=[3,20,20];failure.rpgRun!.equipped=['final-knot'];finish(failure,[8,0,4]);
  assert.equal(failure.rpgRun!.hp[0],0);assert.equal(failure.rpgRun!.status,'game-over');assert.equal(failure.rpgRun!.fate,0);assert.equal(failure.rpgRun!.journey!.retryStage,undefined);
 });
 const patterns=[['pair',[tile(7),tile(7,1)],1],['triple',[tile(7),tile(7,1),tile(7,2)],2],['straight',[tile(3),tile(4,1),tile(5,2),tile(6,3),tile(7)],3],['four',[tile(7),tile(7,1),tile(7,2),tile(7,3),tile(8)],4],['straight flush',[tile(3),tile(4),tile(5),tile(6),tile(7)],5]] as const;

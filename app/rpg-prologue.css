@@ -69,3 +69,6 @@
 .rpg-prologue .prologue-cut .prologue-caption p .dialogue-sentence{display:inline;text-wrap:wrap}
 /* Balance caption lines so a sentence never leaves one short word alone on its last line (phones). */
 .rpg-prologue .prologue-cut .prologue-caption p{text-wrap:balance}
+
+/* 2026-11-17: story cutscenes no longer carry the journey HUD, so the place name shows again; keep it under the auto/log buttons. */
+.rpg-prologue:has(.dialogue-tools) .prologue-location{top:calc(max(18px,env(safe-area-inset-top)) + 44px)}

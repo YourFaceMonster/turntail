@@ -8,9 +8,11 @@ import Face from '../app/components/TileFace';
 import Back from '../app/components/TileBack';
 import {StageVisuals} from '../app/components/StageVisuals';
 
-test('publication contains classic/Bomb/items/RPG menu without a pixel route or public assets',()=>{
+test('publication contains classic/yacht/RPG menu without a pixel route or public assets',()=>{
  const menu=renderToStaticMarkup(h(SinglePlayerMenu,{normal:()=>{},yacht:()=>{},rpg:()=>{},close:()=>{}}));
- for(const text of ['일반모드','폭탄시장전','요트다이스','스토리모드','/bomb-market'])assert.ok(menu.includes(text));
+ for(const text of ['일반모드','요트다이스','스토리모드'])assert.ok(menu.includes(text));
+ // 2026-11-17: Bomb Market left the menu; its route stays reachable by address.
+ assert.ok(!menu.includes('폭탄시장전'));assert.ok(!menu.includes('/bomb-market'));assert.ok(existsSync(new URL('../app/bomb-market/page.tsx',import.meta.url)));
  assert.ok(!menu.includes('픽셀'));assert.ok(!menu.includes('/classic-pixel'));
  for(const path of ['app/classic-pixel','public/pixel-classic','app/classic-pixel-menu.css'])assert.equal(existsSync(new URL('../'+path,import.meta.url)),false);
  for(const path of ['app/page.tsx','app/layout.tsx','app/components/TileFace.tsx','app/components/TileBack.tsx','app/components/MonsterPortrait.tsx','app/components/EntranceEnvironment.tsx','app/components/TableMaterialGrain.tsx'])assert.doesNotMatch(readFileSync(new URL('../'+path,import.meta.url),'utf8'),/ClassicPixel|classic-pixel|pixel-classic|classicEditionStorage/);

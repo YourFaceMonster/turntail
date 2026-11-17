@@ -143,7 +143,9 @@ export type RpgRework={version:2,chapter:number,activated:string[],knotStages:nu
  /** Player relic heals applied in the last settlement, for the result screen line. */
  relicHeals?:{relicId:string,amount:number}[],
  /** Recipe taught by the chapter boss just cleared (result screen line). */
- lastRecipe?:string};
+ lastRecipe?:string,
+ /** 2026-11-17: the player fell and spent one fate to retry this stage. hp = the HP at the fall (result screen shows it). */
+ retried?:{stage:number,left:number,hp:number[]}};
 export function isRpgRework(game:{rpgTest?:boolean,rpgRun?:{rework?:RpgRework}|null}){return !!game.rpgRun?.rework&&!game.rpgTest;}
 export function rpgMaxHp(run:RpgRun,seat=0){if(seat!==0)return 100;const on=(id:string)=>run.equipped.includes(id);return 100+(on('cracked-heart')?RELIC_VALUES.crackedHeart:0)+(on('second-heart')?10:0)+(on('whole-heart')?35:0)+(reworkSynergies(run).includes('heart')?5:0);}
 export function activateRpgRelics(run:RpgRun):RpgRun{
@@ -281,7 +283,7 @@ export function settleReworkRound(run:RpgRun,result:RpgResultLike):RpgRun{
  if(seats.length===3&&result.players[0].place===2&&next.equipped.includes('second-ring'))heal('second-ring',RELIC_VALUES.ring,'2등 ·');
  const knot=next.equipped.includes('undying-lantern')?{id:'undying-lantern',...RELIC_VALUES.undying}:next.equipped.includes('final-knot')?{id:'final-knot',...RELIC_VALUES.knot}:null;
  if(knot&&next.hp[0]>0&&next.hp[0]<=knot.limit&&!state.knotStages.includes(next.stage)){heal(knot.id,knot.amount,'위기 회복 ·');state.knotStages.push(next.stage);}
- state.lastRecipe=undefined;
+ state.lastRecipe=undefined;state.retried=undefined;
  next.rounds++;next.roundIds.push(result.id);next.updatedAt=result.at;state.intel={};state.lastScout=undefined;
  // ST7 optional observation: finishing a round in second place unlocks one extra line.
  if(next.stage===7&&next.journey&&result.players[0]?.place===2)next.journey={...next.journey,story:{runNumber:next.journey.story?.runNumber||1,quests:next.journey.story?.quests||{},secondPlaceSeen:true}};
@@ -302,6 +304,14 @@ export function settleReworkRound(run:RpgRun,result:RpgResultLike):RpgRun{
  }else state.nextForesight=result.players.findIndex(p=>p.winner);
  state.relicHeals=heals.length?heals:undefined;
  const before=run.roundHealth?.before||run.hp;next.roundHealth={round:result.round,before:[...before],damage:next.hp.map((hp,i)=>Math.max(0,before[i]-hp)),healing:next.hp.map((hp,i)=>Math.max(0,hp-before[i])),moneyDamage:next.hp.map(()=>0),coinsBefore:0};
+ // 2026-11-17 (user approved QA item 4): a fall on a journey spends one fate and retries the same stage at once,
+ // player HP back to the journey start value and every opponent back to the stage's starting HP. No fate left: the journey ends.
+ if(failed&&next.journey&&next.fate>0){
+  const fell=[...next.hp];next.fate--;
+  next.hp=[Math.min(rpgMaxHp(next),trialStartHp(next)),...trialEnemyHp(next,RPG_STAGE_HP[next.stage-1])];
+  next.status='playing';next.phaseOne!.eliminated=[];state.knotStages=state.knotStages.filter(stage=>stage!==next.stage);
+  state.retried={stage:next.stage,left:next.fate,hp:fell};
+ }
  return next;
 }
 type RpgResultLike=Pick<RoundResult,'id'|'round'|'at'|'players'>&{transfers?:RoundResult['transfers']};

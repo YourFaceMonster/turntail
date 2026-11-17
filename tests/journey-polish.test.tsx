@@ -28,7 +28,8 @@ test('tavern retains accessible character actions without the repeated conversat
  const game=createRpgJourneyGame('검증','',0,'cleric'),markup=renderToStaticMarkup(h(JourneyTavernView,{run:game.rpgRun!,busy:false,error:'',action:noop,exit:noop}));
  assert.ok(!markup.includes('<small>대화</small>'));assert.ok(markup.includes('피오 · 여우 여행자 · 이야기'));assert.equal((markup.match(/class="tavern-character-label label-/g)||[]).length,3);assert.ok(markup.includes('tavern-living-art'));
 });
-test('single menu exposes three match choices and a separate RPG entry',()=>{
+test('single menu exposes two match choices and a separate RPG entry (bomb market hidden 2026-11-17)',()=>{
  const markup=renderToStaticMarkup(h(SinglePlayerMenu,{normal:noop,yacht:noop,rpg:noop,close:noop}));
- for(const name of ['일반모드','요트다이스','폭탄시장전','스토리모드'])assert.ok(markup.includes(`aria-label="${name}"`));
+ for(const name of ['일반모드','요트다이스','스토리모드'])assert.ok(markup.includes(`aria-label="${name}"`));
+ assert.ok(!markup.includes('aria-label="폭탄시장전"'));
 });

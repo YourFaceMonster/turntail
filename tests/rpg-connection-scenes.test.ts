@@ -7,8 +7,9 @@ import {FIRST_PROLOGUE,PrologueClock} from '../lib/rpg-prologue.ts';
 import {prologueArt} from '../lib/rpg-prologue-art.ts';
 
 test('continuous reel follows prologue then ST1–3 before/after once, and completes with the expanded script',()=>{
- assert.equal(RPG_STORY_REEL.length,FIRST_PROLOGUE.length+25+DEMO_ENDING.length);
- assert.equal(RPG_STORY_REEL.reduce((sum,cut)=>sum+cut.duration,0),FIRST_PROLOGUE.reduce((n,c)=>n+c.duration,0)+136250+DEMO_ENDING.reduce((n,c)=>n+c.duration,0));
+ // 2026-11-17: ST1 opening gains Rumi's introduction (one 5 s line); ST3 after gains the twins' resemblance hint (6.25 s).
+ assert.equal(RPG_STORY_REEL.length,FIRST_PROLOGUE.length+27+DEMO_ENDING.length);
+ assert.equal(RPG_STORY_REEL.reduce((sum,cut)=>sum+cut.duration,0),FIRST_PROLOGUE.reduce((n,c)=>n+c.duration,0)+147500+DEMO_ENDING.reduce((n,c)=>n+c.duration,0));
  assert.equal(new Set(RPG_STORY_REEL.map(c=>c.id)).size,RPG_STORY_REEL.length);
  assert.deepEqual(RPG_STORY_REEL.filter(c=>/^ST\d_(PRE|POST)_1$/.test(c.id)).map(c=>c.id),['ST1_PRE_1','ST1_POST_1','ST2_PRE_1','ST2_POST_1','ST3_PRE_1','ST3_POST_1']);
  let finished=0;const clock=new PrologueClock(RPG_STORY_REEL,()=>finished++);
@@ -18,8 +19,8 @@ test('continuous reel follows prologue then ST1–3 before/after once, and compl
 
 test('handoff keeps five NPC sequences and adds the approved ST3 epilogue using existing art',()=>{
  const scenes=Object.values(RPG_CONNECTION_SCENES).flatMap(stage=>[stage.before,stage.after]);
- assert.deepEqual(scenes.map(cuts=>cuts.length),[4,3,4,4,5,5+DEMO_ENDING.length]);
- assert.equal(scenes.flat().reduce((sum,cut)=>sum+cut.duration,0),136250+DEMO_ENDING.reduce((n,c)=>n+c.duration,0));
+ assert.deepEqual(scenes.map(cuts=>cuts.length),[5,3,4,4,5,6+DEMO_ENDING.length],'ST1 opening: Rowen ×4 + Rumi; ST3 after: twins +1');
+ assert.equal(scenes.flat().reduce((sum,cut)=>sum+cut.duration,0),147500+DEMO_ENDING.reduce((n,c)=>n+c.duration,0));
  for(const cut of scenes.flat()){
   const art=prologueArt(cut)!;
   assert.ok(existsSync(`public${art.landscape}`));

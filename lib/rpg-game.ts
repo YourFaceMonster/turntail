@@ -53,7 +53,8 @@ export function createRpgPhaseOneGame(name:string,avatar='',now=Date.now(),profe
 
 export function createRpgJourneyGame(name:string,avatar='',now=Date.now(),profession:RpgProfessionId='swordsman',trials:readonly RpgTrialId[]=[]){
  const game=createRpgGame(name,avatar,now,profession,true,true);initRpgJourney(game);
- const run=game.rpgRun!;run.fate=0;
+ // 2026-11-17: three fates again, each one retries the stage the player fell on (settleReworkRound).
+ const run=game.rpgRun!;run.fate=3;run.journey!.reworkFate=true;
  const picked=cleanTrials(trials);
  if(picked.length){
   // Applied on top of the fresh journey start: harder start only, nothing is granted.

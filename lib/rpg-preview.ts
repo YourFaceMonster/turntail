@@ -55,7 +55,7 @@ export class RpgPreviewSession{
    next.rpgRun!.hp=[100,0,0];finishPreview(next);
    next.rpgRun=chooseRpgStageReward(next.rpgRun!,'all',undefined,false,next.rpgRun!.phaseOne?.clear?.relicOffers?.[0]);
   }
-  if(target==='failed'){enterJourneyNode(next,'battle-1');next.rpgRun!.fate=1;next.rpgRun!.hp[0]=0;finishPreview(next,true);}
+  if(target==='failed'){enterJourneyNode(next,'battle-1');next.rpgRun!.fate=0;next.rpgRun!.hp[0]=0;finishPreview(next,true);}
   else if(target.startsWith('reward-')){enterJourneyNode(next,`battle-${stage}` as JourneyNode);next.rpgRun!.hp=[70,0,0];finishPreview(next);next.rpgRun!.journey!.seenScenes=[`ST${stage}_POST`];}
   // Endings: clearing ST10 plays the ending on the result screen (first or second traveller).
   else if(target.startsWith('ending-')){enterJourneyNode(next,'battle-10');next.rpgRun!.hp=[70,0,0];finishPreview(next);}

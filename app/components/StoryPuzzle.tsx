@@ -86,11 +86,22 @@ function Fragments({win,layout,done}:SceneProps&{done:boolean}){
   {!done&&miss>0&&<small className="story-puzzle-note">조각이 흩어졌어요. 문장이 이어지는 순서를 떠올려 보세요.</small>}</>;
 }
 
-/** ST5: three knots on the bridge posts, each held for ~0.9 s. Letting go early lets the rope slip. */
+/** ST5: knots on the three bridge posts, each held for ~0.9 s. Letting go early lets the rope slip.
+ * 2026-11-16 user feedback ("연결되는 포인트가 어색해", "3개로 하고 어색하지 않게, 색깔도 안 맞아"): the knot sprite is sized so
+ * its rope is about as thick as the painted rope, centred on the post and on the rope line, and masked to the post face
+ * (`face`, % of the sprite width), so the painted rope goes behind the post and the knot wraps its front. The post's
+ * pale blank band is shaded to the post's own wood tone (`band`), and the sprite is tinted to the painted rope colour. */
 const HOLD_MS=900;
-const KNOT_ANCHORS:Record<Layout,readonly {center_x:number,center_y:number,width:number,height:number}[]>={
- portrait:[{center_x:18.5,center_y:54.8,width:27,height:18},{center_x:50,center_y:54.8,width:27,height:18},{center_x:81.2,center_y:54.8,width:27,height:18}],
- wide:[{center_x:25,center_y:60.8,width:20,height:35.54},{center_x:50,center_y:60.8,width:20,height:35.54},{center_x:75,center_y:60.8,width:20,height:35.54}],
+type KnotAnchor={center_x:number,center_y:number,width:number,height:number,face:number,band:{x:number,y:number,width:number,height:number}};
+const knotAt=(layout:Layout,x:number,post:number):KnotAnchor=>layout==='portrait'
+ // Portrait 1024×1536: rope at y 842 px, pale band y 785~948 px; sprite 389 px wide.
+ ?{center_x:x,center_y:54.8,width:38,height:25.33,face:post/38*100,band:{x:x-post/2,y:51,width:post,height:10.8}}
+ // Wide 1672×941: rope at y 572 px, pale band y 485~635 px; sprite 410 px wide.
+ :{center_x:x,center_y:60.8,width:24.5,height:43.55,face:post/24.5*100,band:{x:x-post/2,y:51.4,width:post,height:16.2}};
+const KNOT_ANCHORS:Record<Layout,readonly KnotAnchor[]>={
+ // Post centres and widths measured on the paintings (portrait 185/507/822 px, 165 px; wide 412/830/1248 px, 180 px).
+ portrait:[knotAt('portrait',18.1,16.6),knotAt('portrait',49.6,16.6),knotAt('portrait',80.3,16.6)],
+ wide:[knotAt('wide',24.7,11),knotAt('wide',49.6,11),knotAt('wide',74.6,11)],
 };
 function Knots({win,layout}:SceneProps){
  const [tied,setTied]=useState<boolean[]>([false,false,false]),[holding,setHolding]=useState<number|null>(null),[slip,setSlip]=useState(0),timer=useRef<ReturnType<typeof setTimeout>|null>(null);
@@ -98,11 +109,14 @@ function Knots({win,layout}:SceneProps){
  const start=(i:number)=>{if(tied[i]||timer.current)return;setHolding(i);timer.current=setTimeout(()=>{timer.current=null;setHolding(null);cue('guard');setTied(list=>{const next=list.map((v,j)=>v||j===i);if(next.every(Boolean))setTimeout(()=>win('세 매듭이 단단히 조여졌다. 다리가 한결 덜 흔들린다.'),500);return next;});},HOLD_MS);};
  const stop=()=>{if(!timer.current)return;clearTimeout(timer.current);timer.current=null;setHolding(null);cue('back');setSlip(s=>s+1);};
  return <><Shake on={slip} className="story-scene-shake"><Scene src={`/story-events/st5-knots-scene-${layout}-v1.webp`} layout={layout} className={tied.every(Boolean)?'is-steady':''}>
-  {KNOT_ANCHORS[layout].map((anchor,i)=>{const done=tied[i];return <button key={i} className={`story-knot ${done?'is-tied':''} ${holding===i?'is-holding':''}`} style={{...centred(anchor),'--hold':`${HOLD_MS}ms`} as CSSProperties} disabled={done} aria-label={done?`매듭 ${i+1} 완료`:`매듭 ${i+1} 길게 눌러 조이기`}
+  {/* Painted rope is cooler and paler than the sprite (scene ≈ 179,137,122 vs sprite ≈ 190,136,106). */}
+  <svg className="story-knot-defs" width="0" height="0" aria-hidden="true" focusable="false"><filter id="story-knot-tint" colorInterpolationFilters="sRGB"><feColorMatrix type="matrix" values="0.94 0 0 0 0  0 1 0 0 0  0 0 1.15 0 0  0 0 0 1 0"/></filter></svg>
+  {KNOT_ANCHORS[layout].map((anchor,i)=><i key={`band-${i}`} className="story-knot-band" style={box(anchor.band)} aria-hidden="true"/>)}
+  {KNOT_ANCHORS[layout].map((anchor,i)=>{const done=tied[i];return <button key={i} className={`story-knot ${done?'is-tied':''} ${holding===i?'is-holding':''}`} style={{...centred(anchor),'--hold':`${HOLD_MS}ms`,'--knot-face':`${anchor.face}%`} as CSSProperties} disabled={done} aria-label={done?`매듭 ${i+1} 완료`:`매듭 ${i+1} 길게 눌러 조이기`}
    onPointerDown={event=>{event.preventDefault();start(i);}} onPointerUp={stop} onPointerLeave={stop} onPointerCancel={stop} onContextMenu={event=>event.preventDefault()} onKeyDown={event=>{if((event.key===' '||event.key==='Enter')&&!event.repeat){event.preventDefault();start(i);}}} onKeyUp={event=>{if(event.key===' '||event.key==='Enter')stop();}}>
    <img src={`/story-events/st5-knot-${done?'tight':'loose'}-v1.webp`} alt="" aria-hidden="true" draggable={false}/><span className="story-knot-hold" aria-hidden="true"/><small>{done?'단단함':'길게 누르기'}</small></button>;})}
  </Scene></Shake>
-  <small className="story-puzzle-note">{slip>0&&!tied.every(Boolean)?'줄이 미끄러졌어요. 끝까지 눌러 조여 주세요.':`${tied.filter(Boolean).length}/3 매듭`}</small></>;
+  <small className="story-puzzle-note">{slip>0&&!tied.every(Boolean)?'줄이 미끄러졌어요. 끝까지 눌러 조여 주세요.':`${tied.filter(Boolean).length}/${tied.length} 매듭`}</small></>;
 }
 
 /** ST7: four old match records; the odd one has an empty first place and only a crown mark in second. */

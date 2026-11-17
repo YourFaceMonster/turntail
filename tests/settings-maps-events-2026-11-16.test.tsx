@@ -17,7 +17,7 @@ test('ST4~10 portrait maps use the taller paintings and every place stays below 
 test('scene events are played on the paintings: strips, knots, objects and discs sit on the picture',()=>{
  const html=(id:'quest-4'|'quest-5'|'quest-8'|'quest-9')=>renderToStaticMarkup(<StoryPuzzle id={id} inline done={()=>{}}/>);
  const record=html('quest-4');assert.match(record,/st4-record-scene-portrait-v1\.webp/);assert.equal((record.match(/story-record-slot/g)||[]).length,3);assert.equal((record.match(/data-piece="[123]"/g)||[]).length,3);
- const knots=html('quest-5');assert.match(knots,/st5-knots-scene-portrait-v1\.webp/);assert.equal((knots.match(/src="\/story-events\/st5-knot-loose-v1\.webp"/g)||[]).length,3);assert.match(knots,/left:5%;top:45.8%;width:27%;height:18%/);
+ const knots=html('quest-5');assert.match(knots,/st5-knots-scene-portrait-v1\.webp/);assert.equal((knots.match(/src="\/story-events\/st5-knot-loose-v1\.webp"/g)||[]).length,3,'one knot per post');assert.equal((knots.match(/width:38%;height:25.33%;--hold:900ms;--knot-face:43\.6\d*%/g)||[]).length,3,'knot cut to the post face');assert.equal((knots.match(/class="story-knot-band"/g)||[]).length,3,'pale post band shaded');assert.match(knots,/id="story-knot-tint"/);assert.match(knots,/0\/3 매듭/);
  const traces=html('quest-8');assert.equal((traces.match(/story-trace-spot/g)||[]).length,3);assert.match(traces,/편지함 살펴보기/);
  const altar=html('quest-9');assert.match(altar,/st9-altar-lit-portrait-v1\.webp/);assert.match(altar,/st9-disc-crown-v1\.webp/);assert.match(altar,/rotate:180deg/,'the crown starts upside down');
  for(const id of ['quest-4','quest-5','quest-8','quest-9'] as const)assert.match(html(id),/is-scene/);

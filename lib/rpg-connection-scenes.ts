@@ -45,6 +45,19 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "focus": "18% 55%"
    },
    {
+    "id": "ST1_PRE_3B",
+    "scene": "gate",
+    "duration": 5000,
+    "line": "로웬 혼자 두기엔 밤이 길지! 등불지기 루미도 끼워 줘. 셋이서 한 판이야.",
+    "speaker": "루미",
+    "audio": "quiet",
+    "art": {
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
+    },
+    "focus": "18% 55%"
+   },
+   {
     "id": "ST1_PRE_4",
     "scene": "gate",
     "duration": 5000,
@@ -318,6 +331,19 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
     "speaker": "둘째"
    },
    {
+    "id": "ST3_POST_3B",
+    "scene": "stone",
+    "duration": 6250,
+    "line": "우리 얼굴이 누굴 닮았는지도, 형은 끝까지 말 안 해 주겠지.",
+    "audio": "quiet",
+    "art": {
+     "landscape": "/prologue/moon-castle-map-v3.webp",
+     "portrait": "/prologue/moon-castle-map-v3.webp"
+    },
+    "focus": "88% 30%",
+    "speaker": "둘째"
+   },
+   {
     "id": "ST3_POST_4",
     "scene": "stone",
     "duration": 6250,
@@ -372,7 +398,7 @@ export const RPG_CONNECTION_SCENES:Record<string,{before:readonly PrologueCut[];
 };
 
 // Keep the twins' approved response, then connect the two story keepsakes.
-RPG_CONNECTION_SCENES[3].after=[...RPG_CONNECTION_SCENES[3].after.slice(0,5),...DEMO_ENDING];
+RPG_CONNECTION_SCENES[3].after=[...RPG_CONNECTION_SCENES[3].after.slice(0,6),...DEMO_ENDING];// 6: twins' dialogue incl. ST3_POST_3B (2026-11-17)
 
 // Reviewed distinct before/after paintings and dedicated portrait art.
 const sceneFrame=(wide:string,tall:string)=>({landscape:'/prologue/'+wide+'.webp',portrait:'/prologue/'+tall+'.webp'});

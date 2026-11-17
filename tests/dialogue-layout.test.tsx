@@ -43,7 +43,7 @@ test('both Serin and thief avatar handlers do nothing during the duel or its res
  make(null)();assert.deepEqual(calls,['profile']);calls.length=0;make({rpgRun:{}})();assert.deepEqual(calls,['audio','feel','rpg']);
 });
 test('moderate prologue retains all nineteen events and lore without automatic hard line breaks',()=>{
- assert.equal(PROLOGUE_STORYBOARD.length,19);assert.equal(FIRST_PROLOGUE.length,30);
+ assert.equal(PROLOGUE_STORYBOARD.length,19);assert.equal(FIRST_PROLOGUE.length,31,'2026-11-17: P10 gains one hint line');
  assert.ok(FIRST_PROLOGUE.every(c=>!c.line.includes('\n')));
  const text=FIRST_PROLOGUE.map(c=>c.line).join(' ');
  for(const fragment of ['노르문','붉은 숫자 2','가장 강한 패','두 왕관','어디서 만들어졌는지는 모르오','돌기둥','마음에 걸린'])assert.ok(text.includes(fragment),fragment);

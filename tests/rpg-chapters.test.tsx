@@ -151,11 +151,12 @@ test('saves reject corrupt story data and the map only shows the current region'
  assert.ok(rpgMaxHp(mid.rpgRun!)>=100);
 });
 
-test('the map warms the next stage paintings: before, close-up, its quest, after; nothing outside ST4~10', async () => {
+test('the map warms the next stage paintings: before, shuffle, close-up, its quest, result, after, talk faces; nothing outside ST4~10', async () => {
  const {stageArtToPreload}=await import('../lib/rpg-chapters');
  assert.deepEqual(stageArtToPreload(3),[]);assert.deepEqual(stageArtToPreload(11),[]);
  const five=stageArtToPreload(5);
- assert.deepEqual(five,['/story/st5-before-portrait-v2.webp','/story/st5-duel-portrait-v2.webp','/story/quest-5-portrait-v1.webp','/story/st5-after-portrait-v1.webp']);
- assert.equal(stageArtToPreload(7).length,3,'ST7 has no side quest');
+ assert.deepEqual(five,['/story/st5-before-portrait-v2.webp','/story/st5-shuffle-portrait-v1.webp','/story/st5-duel-portrait-v2.webp','/story/quest-5-portrait-v1.webp','/story/st5-result-portrait-v1.webp','/story/st5-after-portrait-v1.webp',
+  '/story/talk-tarae-calm-portrait-v1.webp','/story/talk-tarae-serious-portrait-v1.webp','/story/talk-haon-calm-portrait-v1.webp','/story/talk-haon-smile-portrait-v1.webp','/story/talk-haon-serious-portrait-v1.webp']);
+ assert.equal(stageArtToPreload(7).length,10,'ST7 has no side quest: 5 scenes + 루엔 3 + 시온 2 faces');
  for(const stage of [4,5,6,7,8,9,10])for(const src of stageArtToPreload(stage))assert.ok(existsSync('public'+src),src);
 });

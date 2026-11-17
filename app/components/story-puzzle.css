@@ -151,3 +151,26 @@
 .story-puzzle.is-scene .story-altar.is-locked .story-disc:disabled{opacity:0;cursor:default}
 .story-puzzle.is-scene .story-puzzle-skip{width:auto;margin:0 auto;text-align:center}.story-scene-tray{justify-content:center;grid-template-columns:repeat(3,minmax(0,170px))}
 @media(max-height:500px){.story-puzzle.is-scene>header{padding:6px 16px 4px}.story-puzzle.is-scene>header strong{font-size:16px}.story-puzzle.is-scene>header small{font-size:12px}.story-scene-tray{grid-template-columns:repeat(3,minmax(0,130px));padding-top:6px}.story-scene-foot{padding:4px 16px 6px}.story-puzzle.is-scene>.story-puzzle-note{padding-top:2px}}
+/* 2026-11-16 user feedback: ST5 knots sit on the two outer posts only and are cut to the post face, so the painted rope
+   runs behind the post and the knot wraps its front (no rope stubs hanging past the post edges). */
+.story-knot{border-radius:12px}
+.story-knot>img{-webkit-mask-image:linear-gradient(90deg,transparent calc(50% - var(--knot-face,100%)/2),#000 calc(50% - var(--knot-face,100%)/2 + 1.5%),#000 calc(50% + var(--knot-face,100%)/2 - 1.5%),transparent calc(50% + var(--knot-face,100%)/2));mask-image:linear-gradient(90deg,transparent calc(50% - var(--knot-face,100%)/2),#000 calc(50% - var(--knot-face,100%)/2 + 1.5%),#000 calc(50% + var(--knot-face,100%)/2 - 1.5%),transparent calc(50% + var(--knot-face,100%)/2));filter:drop-shadow(0 3px 3px #000b)}
+.story-knot.is-tied>img{filter:drop-shadow(0 0 5px #f2c16699) drop-shadow(0 3px 3px #000b)}
+.story-knot:not(.is-tied):not(.is-holding)>img{animation-name:story-knot-sway-soft}
+@keyframes story-knot-sway-soft{50%{translate:0 2px}}
+.story-knot-hold{left:30%;right:30%}
+
+/* The site-wide footer style (10px, 8px on phones, wide letter spacing) also reached the event's bottom bar, which made
+   the end-of-event box tiny. Reset it and give the result box readable sizes. */
+.story-puzzle.is-scene>footer.story-scene-foot{display:grid;justify-content:stretch;margin:0;border:0;color:#f4ead8;font-size:16px;letter-spacing:0}
+.story-puzzle.is-scene .story-puzzle-result{box-sizing:border-box;width:min(560px,100%);gap:14px;padding:18px 20px;text-align:center}
+.story-puzzle.is-scene .story-puzzle-result p{font-size:clamp(16px,4.4vw,19px);line-height:1.6;color:#f8eedb;font-family:'Noto Serif KR','Batang',Georgia,serif;font-weight:700}
+.story-puzzle.is-scene .story-puzzle-result .primary{width:100%;min-height:52px;font-size:18px;font-weight:900;letter-spacing:0}
+.story-puzzle.is-scene .story-puzzle-skip{font-size:15px;letter-spacing:0}
+
+/* 2026-11-16 follow-up: three knots again; knot rope tinted to the painted rope, and the pale blank band on each post
+   shaded down to the post's own wood tone so no light box shows around the knot. */
+.story-knot-defs{position:absolute;width:0;height:0;overflow:hidden}
+.story-knot-band{position:absolute;pointer-events:none;background:rgb(196,196,222);mix-blend-mode:multiply;-webkit-mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent)}
+.story-knot>img{filter:url(#story-knot-tint) drop-shadow(0 3px 3px #000b)}
+.story-knot.is-tied>img{filter:url(#story-knot-tint) drop-shadow(0 0 4px #f2c16688) drop-shadow(0 3px 3px #000b)}

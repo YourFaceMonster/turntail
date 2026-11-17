@@ -1,0 +1,30 @@
+/*
+ * 2026-11-17 QA item 3 (user approved): one look for the windows opened from the main menu.
+ * Plain windows (records, achievements, codex, profile) share the warm brown + gold frame of the records window.
+ * Painted windows (settings, tutorial, single-play menu, resume, story entry, daily board) keep their artwork.
+ * Every one of them gets the same round gold close button, centred eyebrow and the same gold title.
+ */
+.modal-shade>.modal:is(.highscore-modal,.achievements-modal,.rpg-codex,.profile-modal){
+ background:radial-gradient(120% 50% at 50% 0%,#3a2a1a 0%,#0000 70%),linear-gradient(180deg,#221a13,#14100c)!important;
+ border:1px solid #d6b06e!important;border-radius:18px!important;
+ box-shadow:0 0 0 3px #17130f,0 0 0 4px #d6b06e55,0 22px 60px #000b!important;color:#f3e6c9}
+
+.modal-shade>.modal:is(.highscore-modal,.achievements-modal,.rpg-codex,.profile-modal,.unified-settings,.tutorial-modal,.single-mode-menu,.resume-picker,.daily-board,.journey-entry,.new-game-confirm)>.close{
+ width:34px!important;height:34px!important;min-width:34px;padding:0!important;display:grid;place-items:center;
+ border-radius:50%!important;background:#120d0acc!important;border:1px solid #d6b06e88!important;color:#f6dfaa!important;
+ font-size:20px!important;line-height:1!important;box-shadow:0 2px 6px #0008}
+.modal-shade>.modal:is(.highscore-modal,.achievements-modal,.rpg-codex,.profile-modal,.unified-settings,.tutorial-modal,.single-mode-menu,.resume-picker,.daily-board,.journey-entry,.new-game-confirm)>.close:hover{border-color:#ffe0a7!important;color:#fff3d6!important}
+
+/* Titles: centred, one size, one gold. Settings keeps its left title over the painted header. */
+.modal-shade>.modal:is(.highscore-modal,.achievements-modal,.rpg-codex,.profile-modal,.tutorial-modal,.single-mode-menu,.resume-picker) .eyebrow{
+ display:block;text-align:center!important;font-size:10px!important;letter-spacing:2px;color:#e8c98b!important}
+.modal-shade>.modal:is(.highscore-modal,.achievements-modal,.rpg-codex,.profile-modal,.tutorial-modal,.single-mode-menu,.resume-picker) h2{
+ text-align:center!important;font-size:clamp(24px,6.6vw,28px)!important;line-height:1.25!important;color:#ffe3a7!important;margin-top:4px!important;padding-left:36px!important;padding-right:36px!important}
+/* Achievements: the medal / title / count row ran under the close button on phones; stack it in the centre. */
+.modal-shade>.modal.achievements-modal .achievement-header{display:grid!important;grid-template-columns:1fr!important;justify-items:center;text-align:center;gap:4px!important;padding:2px 40px 0!important}
+.modal-shade>.modal.achievements-modal .achievement-header>.achievement-medal{width:46px!important;height:54px!important}
+.modal-shade>.modal.achievements-modal .achievement-header>.achievement-total{position:static!important;display:flex!important;gap:6px;align-items:baseline;justify-content:center;margin:2px 0 0!important}
+.modal-shade>.modal.achievements-modal .achievement-header>div{width:100%;text-align:center!important}
+.modal-shade>.modal.achievements-modal .achievement-header>div>*{display:block;text-align:center!important;margin-left:auto!important;margin-right:auto!important}
+.modal-shade>.modal.achievements-modal .achievement-header h2{padding-left:0!important;padding-right:0!important}
+.modal-shade>.modal.unified-settings h2{color:#ffe3a7!important}

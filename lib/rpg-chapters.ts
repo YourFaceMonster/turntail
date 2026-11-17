@@ -91,6 +91,23 @@ export function storyState(run:Pick<RpgRun,'journey'>):StoryQuestState{return ru
 const ART_VERSION:Record<string,number>={'region-2-map':3,'region-3-map':3,'region-4-map':2,'st4-after':2,'st6-before':3,'st7-after':2,'st8-after':2,'st9-after':4,'quest-9':2,'st4-before':2,'st5-before':2,'st7-before':2,'st8-before':2,'st9-before':2,'st10-after':2,'st4-duel':2,'st5-duel':2,'st6-duel':2,'st7-duel':2,'st8-duel':2,'st9-duel':2,'st10-duel':2};
 const WIDE_VERSION:Record<string,number>={'st4-before':2,'st5-before':2,'st6-before':2,'st7-before':2,'st8-before':2,'st9-before':2,'st9-after':2,'st10-after':2,'st4-duel':2,'st5-duel':2,'st6-duel':2,'st7-duel':2,'st8-duel':2,'st9-duel':2,'st10-duel':2};
 const FINAL=(key:string)=>STORY_CARD_CHAPTER_ART[key]||({landscape:`/story/${key}-wide-v${WIDE_VERSION[key]||1}.webp`,portrait:`/story/${key}-portrait-v${ART_VERSION[key]||1}.webp`});
+/**
+ * 2026-11-17 Codex batch 4: one character alone, upper body, per mood (docs/codex-art-delivery-2026-11-17-cutscene-tiles-batch4.md).
+ * A spoken line by one of these speakers shows their own painting; a mood they have no painting for falls back to calm.
+ */
+export type TalkMood='calm'|'smile'|'serious';
+export const TALK_CAST:Record<string,{key:string,stage:number,moods:readonly TalkMood[]}>={
+ '네아':{key:'nea',stage:4,moods:['calm','smile']},'수리':{key:'suri',stage:4,moods:['calm','smile','serious']},
+ '타래':{key:'tarae',stage:5,moods:['calm','serious']},'하온':{key:'haon',stage:5,moods:['calm','smile','serious']},
+ '카르덴':{key:'karden',stage:6,moods:['calm','serious','smile']},'세라':{key:'sera',stage:6,moods:['calm','serious']},'태엽':{key:'taeyeop',stage:6,moods:['calm','serious']},
+ '루엔':{key:'ruen',stage:7,moods:['calm','smile','serious']},'시온':{key:'sion',stage:7,moods:['calm','smile']},
+ '엘라':{key:'ella',stage:8,moods:['calm','smile']},'아스텔':{key:'astel',stage:8,moods:['calm','smile','serious']},
+ '재온':{key:'jaeon',stage:9,moods:['calm','serious','smile']},'오닉':{key:'onik',stage:9,moods:['calm','serious']},
+ '첫 번째 수호자':{key:'guardian-1',stage:10,moods:['calm','serious','smile']},'두 번째 수호자':{key:'guardian-2',stage:10,moods:['calm','serious']},
+};
+export const talkArtKey=(key:string,mood:TalkMood)=>`talk-${key}-${mood}`;
+/** Art key for a spoken line, or undefined when the speaker has no talk painting. */
+export function talkArt(speaker:string|undefined,mood:TalkMood='calm'){const cast=speaker?TALK_CAST[speaker]:undefined;if(!cast)return undefined;return talkArtKey(cast.key,cast.moods.includes(mood)?mood:'calm');}
 const ENV=(stage:number)=>({landscape:`/environments/stage-${stage}-055.webp`,portrait:`/environments/stage-${stage}-055.webp`});
 const TAVERN={landscape:'/prologue/tavern-interior-v2.webp',portrait:'/prologue/tavern-interior-portrait-v1.webp'};
 export const CHAPTER_ART_SLOTS:Record<string,{placeholder:{landscape:string,portrait:string},note:string}>={
@@ -101,7 +118,10 @@ export const CHAPTER_ART_SLOTS:Record<string,{placeholder:{landscape:string,port
   [`st${stage}-before`,{placeholder:ENV(stage),note:`ST${stage} ${JOURNEY_STAGE_NAMES[stage]} · 승부 전`}],
   [`st${stage}-after`,{placeholder:ENV(stage),note:`ST${stage} ${JOURNEY_STAGE_NAMES[stage]} · 승리 후`}],
   [`st${stage}-duel`,{placeholder:ENV(stage),note:`ST${stage} ${JOURNEY_STAGE_NAMES[stage]} · 승부 직전 클로즈업`}],
+  [`st${stage}-shuffle`,{placeholder:ENV(stage),note:`ST${stage} ${JOURNEY_STAGE_NAMES[stage]} · 패 섞기·나누기`}],
+  [`st${stage}-result`,{placeholder:ENV(stage),note:`ST${stage} ${JOURNEY_STAGE_NAMES[stage]} · 승부 결과`}],
  ])),
+ ...Object.fromEntries(Object.entries(TALK_CAST).flatMap(([name,cast])=>cast.moods.map(mood=>[talkArtKey(cast.key,mood),{placeholder:ENV(cast.stage),note:`ST${cast.stage} ${name} · 대화 표정 ${mood}`}]))),
  ...Object.fromEntries(STORY_QUESTS.map(quest=>[quest.id,{placeholder:ENV(quest.stage),note:`서브퀘스트 · ${quest.name} (${quest.speaker})`}])),
  'dice-den':{placeholder:ENV(4),note:'서브퀘스트 · 안개 나루 주사위판 (폭포 아래 나룻배 창고, 노름꾼 하로와 요트다이스)'},
  'st6-flame-two':{placeholder:ENV(6),note:'ST6 받침대 위 성화 2 발견'},
@@ -125,6 +145,7 @@ export function chapterArtFinalPaths(key:string){return FINAL(key);}
  */
 export function stageArtToPreload(stage:number,wide=false):string[]{
  if(stage<4||stage>10)return [];
- const keys=[`st${stage}-before`,`st${stage}-duel`,...STORY_QUESTS.filter(quest=>quest.stage===stage).map(quest=>quest.id),`st${stage}-after`];
+ const talk=Object.values(TALK_CAST).filter(cast=>cast.stage===stage).flatMap(cast=>cast.moods.map(mood=>talkArtKey(cast.key,mood)));
+ const keys=[`st${stage}-before`,`st${stage}-shuffle`,`st${stage}-duel`,...STORY_QUESTS.filter(quest=>quest.stage===stage).map(quest=>quest.id),`st${stage}-result`,`st${stage}-after`,...talk];
  return [...new Set(keys.filter(key=>CHAPTER_ART_SLOTS[key]).map(key=>wide?chapterArt(key).landscape:chapterArt(key).portrait))];
 }

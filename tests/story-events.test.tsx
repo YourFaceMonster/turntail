@@ -43,7 +43,8 @@ test('saves reject unknown event ids or results',()=>{
 test('stage lines follow the approved changes: reasons to play, echoes and no early ending',()=>{
  const fresh=withStory({});
  assert.match(lines(journeyScenes(5,fresh).before),/누가 먼저 건너고 누가 남을지, 패로 정하자/);
- assert.match(lines(journeyScenes(6,fresh).before),/먼저 간 자와, 남은 자/);
+ // 2026-11-17 story draft (user approved): ST6 gives a concrete fact instead of repeating the theme.
+ assert.match(lines(journeyScenes(6,fresh).before),/한 왕의 기사들이 지키던 곳/);
  assert.match(lines(journeyScenes(8,fresh).before),/나를 이긴 사람에게만/);
  assert.match(lines(journeyScenes(8,fresh).after),/약속은 약속이지/);
  assert.doesNotMatch(lines(journeyScenes(9,fresh).after),/첫 번째 왕은|두 번째 왕은/,'the kings are revealed at ST10');
