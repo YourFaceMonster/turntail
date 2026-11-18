@@ -5,9 +5,12 @@ import {SOUND_ASSETS,preloadSoundAssets,playSoundAsset,type SoundAssetKind} from
 import {effectOutput,setEffectVolume} from '../lib/audio-mixer';
 import {playTileSound} from '../lib/tile-audio';
 
+/** Every cue in SOUND_ASSETS (the 10-28 pack plus the 11-18 fanfare). */
+const ASSETS=Object.keys(SOUND_ASSETS).length;
 const manifest=JSON.parse(readFileSync('docs/assets/sound-261028.json','utf8'));
 assert.equal(manifest.files.length,9);
-assert.deepEqual(Object.values(SOUND_ASSETS).map(asset=>asset.src).sort(),manifest.files.map((file:{src:string})=>file.src).sort());
+// The 2026-11-18 stage-clear fanfare is a Suno track outside the 10-28 effect pack manifest.
+assert.deepEqual(Object.values(SOUND_ASSETS).map(asset=>asset.src).filter(src=>src!=='/audio/fanfare-suno-0736.mp3').sort(),manifest.files.map((file:{src:string})=>file.src).sort());
 for(const file of manifest.files){
  const bytes=readFileSync(`public${file.src}`);
  assert.equal(bytes.length,file.bytes);
@@ -36,8 +39,8 @@ try{
  playTileSound(c.ctx,'draw');assert.equal(c.sources.length,0,'cold draw/flip is silent, without synth fallback');
  assert.equal(playSoundAsset(c.ctx,'tap'),false,'cold playback uses synth instead of a delayed cue');
  await Promise.all([preloadSoundAssets(c.ctx),preloadSoundAssets(c.ctx)]);
- assert.equal(fetches,9);assert.equal(c.decodes(),9,'concurrent gestures share decoding');
- await preloadSoundAssets(c.ctx);assert.equal(fetches,9,'decoded cues are cached');
+ assert.equal(fetches,ASSETS);assert.equal(c.decodes(),ASSETS,'concurrent gestures share decoding');
+ await preloadSoundAssets(c.ctx);assert.equal(fetches,ASSETS,'decoded cues are cached');
  for(const kind of Object.keys(SOUND_ASSETS) as SoundAssetKind[]){
   assert.equal(playSoundAsset(c.ctx,kind),true);
   const source=c.sources.at(-1)!;assert.equal(source.started,true);
@@ -47,12 +50,12 @@ try{
   source.onended?.();assert.ok(source.disconnected&&gain.disconnected);
  }
  const first=c.sources[0];playTileSound(c.ctx,'tap');
- assert.equal(c.sources.length,10,'tile playback uses one recording, no parallel synth');
+ assert.equal(c.sources.length,ASSETS+1,'tile playback uses one recording, no parallel synth');
  assert.equal(c.sources.at(-1)!.buffer,first.buffer,'repeat playback reuses buffer');
- playTileSound(c.ctx,'draw');assert.equal(c.sources.length,10,'decoded draw recording also stays silent');
+ playTileSound(c.ctx,'draw');assert.equal(c.sources.length,ASSETS+1,'decoded draw recording also stays silent');
  setEffectVolume(c.ctx,25);assert.equal(effectOutput(c.ctx).gain.value,.25);
  setEffectVolume(c.ctx,25,false);assert.equal(effectOutput(c.ctx).gain.value,0);
- c.raw.state='suspended';assert.equal(playSoundAsset(c.ctx,'victory'),false);assert.equal(c.sources.length,10);
+ c.raw.state='suspended';assert.equal(playSoundAsset(c.ctx,'victory'),false);assert.equal(c.sources.length,ASSETS+1);
  const broken=context();globalThis.fetch=(async ()=>{throw Error('offline');}) as typeof fetch;
  await preloadSoundAssets(broken.ctx);assert.equal(playSoundAsset(broken.ctx,'play'),false);
  const partial=context();globalThis.fetch=(async (url:unknown)=>({ok:!String(url).includes('09-red-two'),arrayBuffer:async ()=>new ArrayBuffer(4)}) as Response) as typeof fetch;

@@ -11,6 +11,8 @@ export const SOUND_ASSETS={
  win:{src:'/audio/sfx-261028/07-round-finish.mp3',gain:.6},
  redTwo:{src:'/audio/sfx-261028/09-red-two.mp3',gain:.55},
  victory:{src:'/audio/sfx-261028/15-victory.mp3',gain:.65},
+ /** 2026-11-18 Suno stage-clear fanfare (7.6s), played once when a story stage's settlement opens. */
+ fanfare:{src:'/audio/fanfare-suno-0736.mp3',gain:.6},
 } as const;
 export type SoundAssetKind=keyof typeof SOUND_ASSETS;
 const decoded=new WeakMap<AudioContext,Map<SoundAssetKind,{buffer:AudioBuffer,gain:number}>>();

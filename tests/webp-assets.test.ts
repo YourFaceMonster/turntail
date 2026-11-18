@@ -15,7 +15,8 @@ test('literal image paths in app/lib point at existing files and no served PNG r
   const text=readFileSync(file,'utf8');
   for(const [,path] of text.matchAll(/['"`(](\/[A-Za-z0-9_\-./]+\.(?:webp|png))(?=['"`)\s?#])/g)){
    if(!existsSync('public'+path))missing.push(`${file}: ${path}`);
-   if(path.endsWith('.png'))png.push(`${file}: ${path}`);
+   // Home-screen icons must be PNG (Apple touch icon); everything else uses WebP.
+   if(path.endsWith('.png')&&!['/icon-512.png','/apple-touch-icon.png'].includes(path))png.push(`${file}: ${path}`);
   }
  }
  assert.deepEqual(missing,[]);assert.deepEqual(png,[]);

@@ -13,7 +13,6 @@ import {APP_VERSION} from '../../lib/version';
 import type {DiceAction,DiceDenState} from '../../lib/rpg-journey';
 import TableSurface from './TableSurface';
 import TurntaleWordmark from './TurntaleWordmark';
-import RpgCastPortrait from './RpgCastPortrait';
 
 /*
  * Same chrome as the in-game card table (topbar, seat card, felt, hand panel, action bar, result modal),
@@ -21,8 +20,8 @@ import RpgCastPortrait from './RpgCastPortrait';
  * Press and hold the cup to shake, release to pour (a click or the main button shakes briefly).
  * Vibration goes through lib/haptics, so it follows the player's haptic setting.
  */
-/** Temporary portrait for Haro until his own art exists (an RPG-unused stage portrait). */
-export const HARO_PORTRAIT=26;
+/** Dedicated Haro portrait, matching his dice-den story scene. */
+export const HARO_PORTRAIT='/avatars/haro-v1.webp';
 const PIPS:Record<number,number[]>={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
 const KEEP_X=[16,33,50,67,84],KEEP_Y=14.5,CUP={x:89,y:90};
 /** Landing cells, ≥ 26 apart; with the small jitter below every pair stays ≥ DIE_GAP. Bottom-right stays clear for the cup. */
@@ -167,7 +166,7 @@ const leaveTable=()=>{if(practice&&started&&!exitArmed){setExitArmed(true);setTi
     <TableSurface stage={5}/>
     <section className="felt yacht-felt-area" onPointerDown={aiTurn&&!skipAi?event=>{if(!(event.target as HTMLElement).closest?.('.seat-card,.yacht-rival-sheet')){setSkipAi(true);setAiHeld(null);setCup('idle');}}:undefined}>
      <div className="opponents"><RivalLog match={match} aiTurn={aiTurn} cup={cup} last={haroLast.current}/><div data-seat="1" className={`opponent persona-amber ${aiTurn?'is-turn':''}`}>
-      <div className="seat-card" role="button" tabIndex={0} aria-expanded={sheetOpen} aria-label={`하로 ${theirs}점 · 점수표 보기`} onClick={()=>setSheetOpen(open=>!open)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();setSheetOpen(open=>!open);}}}><RpgCastPortrait index={HARO_PORTRAIT}/>
+      <div className="seat-card" role="button" tabIndex={0} aria-expanded={sheetOpen} aria-label={`하로 ${theirs}점 · 점수표 보기`} onClick={()=>setSheetOpen(open=>!open)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();setSheetOpen(open=>!open);}}}><span className="stage-portrait portrait" role="img" aria-label="하로 아바타" style={{backgroundImage:`url('${HARO_PORTRAIT}')`,backgroundSize:'cover',backgroundPosition:'center'}}/>
        <div className="op-info"><strong className="opponent-name" title={DICE_NPC}><span className="opponent-character-name">하로</span><small className="opponent-ai-label">AI</small></strong><span className="seat-hp-label">{theirs}점</span></div>
        <span className="rpg-seat-count yacht-open-count" aria-label={`하로 남은 칸 ${openCategories(match.sheets[1]).length}개`}><small aria-hidden="true">남은 칸</small><b>{openCategories(match.sheets[1]).length}</b></span>
       </div>

@@ -62,6 +62,8 @@ export default function RpgPrologue({onEvent,enter,context,music=true,sound=true
  useEffect(()=>{finish.current=enter;},[enter]);
  const clock=useRef<PrologueClock|null>(null);
  const [index,setIndex]=useState(0),[visible,setVisible]=useState(true),[artReady,setArtReady]=useState(false);
+ // Parents rebuild the cut list on every render; key the loader on the cut ids so a re-render never restarts it (the ending flashed "이야기를 펼치는 중…").
+ const cutsKey=cuts.map(c=>c.id).join('|');
  const root=useRef<HTMLElement>(null),lastTap=useRef(-Infinity),cut=cuts[index],sceneGroup=prologueSceneGroup(cuts,index);
  useEffect(()=>{
   const player=clock.current??new PrologueClock(cuts,complete);clock.current=player;
@@ -75,7 +77,7 @@ export default function RpgPrologue({onEvent,enter,context,music=true,sound=true
   loadArt();orientation.addEventListener('change',loadArt);
   document.addEventListener('visibilitychange',visibility);window.addEventListener('pagehide',hide);window.addEventListener('pageshow',visibility);
   return()=>{disposed=true;cancelAnimationFrame(frame);document.body.style.setProperty('overflow',previousOverflow,previousPriority);orientation.removeEventListener('change',loadArt);document.removeEventListener('visibilitychange',visibility);window.removeEventListener('pagehide',hide);window.removeEventListener('pageshow',visibility);if(previous instanceof HTMLElement&&previous.isConnected)previous.focus({preventScroll:true});};
- },[cuts]);
+ },[cutsKey]);
  // Cutscenes are silent of music for now: pause page BGM and skip the synthesized tavern motif (ambient sounds stay).
  useEffect(()=>holdCutsceneSilence(),[]);
  // Only scenes with their own track (the endings) play music: once, no loop, fading out when the scene closes.

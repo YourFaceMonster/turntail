@@ -34,5 +34,5 @@ test('tournament standings keep the 58px bracket face out of the rank column',()
 
 test('twin portrait rule outranks the shared stage-portrait sprite rule',()=>{
  const css=readFileSync('app/globals.css','utf8');
- assert.match(css,/\.stage-portrait\.portrait\.twin-portrait\{[^}]*rpg-twins-v1\.webp/);
+ assert.match(css,/\.stage-portrait\.portrait\.twin-portrait\{[^}]*rpg-twins-v2\.webp/);
 });

@@ -1656,7 +1656,7 @@ html[data-game-paused="true"] :is(.live-table-scene,.room-ambience,.endgame-atmo
 .rpg-story-scene[data-scene="camp"] img{object-position:center 69%;filter:saturate(.9) brightness(.58) sepia(.15)}
 .rpg-story-dialogue p{white-space:pre-line}
 /* 2026-11-17: three classes so the shared `.stage-portrait.portrait` sprite rule can no longer replace the twins' picture. */
-.twin-portrait,.stage-portrait.portrait.twin-portrait{display:inline-block;background-image:url('/rpg-twins-v1.webp');background-size:200% 100%;background-position:left center;background-repeat:no-repeat;border-color:#c1d4aa}
+.twin-portrait,.stage-portrait.portrait.twin-portrait{display:inline-block;background-image:url('/rpg-twins-v2.webp');background-size:200% 100%;background-position:left center;background-repeat:no-repeat;border-color:#c1d4aa}
 .twin-portrait[data-twin="1"],.stage-portrait.portrait.twin-portrait[data-twin="1"]{background-position:right center;border-color:#dcbb80}
 .rpg-boss-line{padding:10px 14px;border-left:3px solid #b7ceaa;background:#183327;color:#e5f0d6;font-weight:700}
 .rpg-story-close{position:absolute;z-index:3;top:14px;right:16px;display:grid;place-items:center;width:36px;height:36px;min-height:36px;padding:0;border:1px solid #e2cda888;border-radius:50%;background:#071521b8;color:#f8e6c6;font-size:25px;cursor:pointer}

@@ -87,3 +87,14 @@ html body .tutorial-modal .tutorial-order{flex-wrap:nowrap;font-size:11px;gap:4p
  html body .journey-tavern-room .rpg-prologue.quest-cutscene .quest-dialogue,html body .rpg-prologue.quest-cutscene[data-painting] .quest-dialogue{width:min(600px,74vw)!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;height:98px!important;min-height:98px!important;grid-template-rows:54px 20px!important}
  html body .rpg-prologue.quest-cutscene[data-painting] .quest-dialogue-text p{font-size:14px!important}
 }
+/* 2026-11-18 release QA (docs/qa-release-2026-11-18.md) */
+/* 9 · Portrait region maps: names of places at the painting's edge slide inward instead of running off screen. */
+@media (max-aspect-ratio:1/1){
+ html body .journey-map-scene .rpg-map-node[data-edge="left"]>strong{transform:translateX(var(--qa-edge-shift,34px))!important}
+ html body .journey-map-scene .rpg-map-node[data-edge="right"]>strong{transform:translateX(calc(-1 * var(--qa-edge-shift,34px)))!important}
+}
+/* 10 · Menu and result windows: a thin gold scrollbar instead of the white system one. */
+html body .modal-shade .modal,html body .modal-shade .modal *{scrollbar-width:thin;scrollbar-color:#a8844a #17120e}
+html body .modal-shade .modal::-webkit-scrollbar,html body .modal-shade .modal *::-webkit-scrollbar{width:6px;height:6px}
+html body .modal-shade .modal::-webkit-scrollbar-thumb,html body .modal-shade .modal *::-webkit-scrollbar-thumb{background:#a8844a;border-radius:6px}
+html body .modal-shade .modal::-webkit-scrollbar-track,html body .modal-shade .modal *::-webkit-scrollbar-track{background:#17120e}

@@ -13,6 +13,6 @@ for(const count of [1,2,3]){
  assert.ok(!html.includes('monster-lift'),'no artificial elevation through the table');
 }
 const voices=tileSoundPlan('play',0);assert.ok(voices.some(v=>v.source==='tone'&&v.frequency<300&&v.gain>=.12),'audible low body on an ordinary tile hit');
-const files=['menu','table','victory','reflection'].map(s=>`public/audio/${s}-0513.mp3`);assert.equal(new Set(files.map(p=>statSync(p).size)).size,4);for(const p of files)assert.ok(statSync(p).size>300000);
+// 2026-11-18: the 0513 tracks are no longer played and were moved out of public (artifacts/unused-bgm-2026-11-18).
 const page=readFileSync('app/page.tsx','utf8');assert.ok(page.includes('data-seat-dialogue={i}')&&page.includes('opponent-status-row'));
 console.log('PASS: one greeting per opponent within shuffle, no vertical lift, stronger low hit, four real music tracks, inline dialogue hosts.');
