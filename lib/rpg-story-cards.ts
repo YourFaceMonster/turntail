@@ -5,7 +5,7 @@ export const STORY_CARDS={
  'crown-two':{name:'붉은 왕관 2',back:'겹쳐진 두 왕관',source:'프롤로그'},
  'iron-gate-two':{name:'검은 철문 2',back:'두 철문',source:'스테이지 3'},
  'sacred-flame-two':{name:'성화 2',back:'꺼지지 않은 두 겹의 불꽃',source:'스테이지 6'},
- 'secret-key-two':{name:'비밀의 열쇠 2',back:'하나로 포개지는 두 열쇠',source:'스테이지 9'},
+ 'secret-key-two':{name:'열쇠 2',back:'하나로 포개지는 두 열쇠',source:'스테이지 9'},
 } as const;
 export type StoryCardId=keyof typeof STORY_CARDS;
 export const ST3_STORY_KEY='ST3_POST_CARDS';

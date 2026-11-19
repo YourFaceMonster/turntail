@@ -6,8 +6,8 @@ import {readBombSave,BOMB_SAVE_KEY,validateBombSave} from '../lib/bomb-market-st
 import {ACHIEVEMENTS} from '../lib/achievements';
 const tile=(n:number,s:number):Tile=>({id:(n-1)*4+s,n,s});
 test('all sixty saved tile identities retain numeric and suit order under new display names',()=>{
- assert.deepEqual(suits,['철문','비밀의 열쇠','성화','왕관']);
- assert.deepEqual(BOMB_SUIT_NAMES,['검정 철문','초록 비밀의 열쇠','주황 성화','빨강 왕관']);
+ assert.deepEqual(suits,['철문','열쇠','성화','왕관']);
+ assert.deepEqual(BOMB_SUIT_NAMES,['검정 철문','초록 열쇠','주황 성화','빨강 왕관']);
  const deck=Array.from({length:60},(_,id)=>tile(Math.floor(id/4)+1,id%4));
  for(const a of deck)for(const b of deck){
   const oldScore=(t:Tile)=>(t.n===2?17:t.n===1?16:t.n)*4+[0,2,1,3][t.s];

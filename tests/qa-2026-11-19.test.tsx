@@ -41,12 +41,12 @@ test('dialogue splits: ST4 crossing in two cuts, ST3 epilogue only between sente
  assert.ok(read('lib/rpg-inns.ts').includes('번 안에 모두 찾으시면 유물을 하나 드리지요. 처음 한 번만입니다.'));
 });
 
-test('network failures read as Korean; game messages pass through; suit is 비밀의 열쇠 everywhere on screen',async()=>{
+test('network failures read as Korean; game messages pass through; suit is 열쇠 everywhere on screen (user 11-19: simple name)',async()=>{
  const {userMessage,NETWORK_ERROR_MESSAGE}=await import('../lib/user-message.ts');
  assert.equal(userMessage(new TypeError('Failed to fetch'),'x'),NETWORK_ERROR_MESSAGE);
  assert.equal(userMessage(new Error('Load failed'),'x'),NETWORK_ERROR_MESSAGE);
  assert.equal(userMessage(new Error('HP가 가득 찼어요.'),'x'),'HP가 가득 찼어요.');
  assert.equal(userMessage(new Error('Unexpected token'),'불러오지 못했어요.'),'불러오지 못했어요.');
  assert.ok(!/instanceof Error\?\w+\.message:/.test(read('app/components/HighScores.tsx')+read('app/components/DailyBoard.tsx')));
- assert.ok(read('app/page.tsx').includes('<i className="legend-star">비밀의 열쇠</i>'));
+ assert.ok(read('app/page.tsx').includes('<i className="legend-star">열쇠</i>'));
 });

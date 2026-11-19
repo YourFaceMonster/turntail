@@ -136,7 +136,7 @@ function Ledger({win}:Win){
 const TRACES=[
  {id:'letters',label:'편지함',text:'주인을 찾지 못한 편지 묶음. 맨 아래 봉투에 왕관 문양이 찍혀 있다.'},
  {id:'stars',label:'별자리판',text:'별을 이은 선 사이에 철문과 성화 문양이 그려져 있다.'},
- {id:'box',label:'봉인된 상자',text:'봉인에 비밀의 열쇠 문양. 누군가 여러 번 열었다 닫은 흔적이 있다.'},
+ {id:'box',label:'봉인된 상자',text:'봉인에 열쇠 문양. 누군가 여러 번 열었다 닫은 흔적이 있다.'},
 ] as const;
 type TraceId=typeof TRACES[number]['id'];
 const TRACE_AREAS:Record<Layout,Record<TraceId,{x:number,y:number,width:number,height:number}>>={
