@@ -66,3 +66,7 @@ ZIP 최상위에 `index.html`이 있다. 두 묶음 모두 itch.io 기본 제한
 선택 환경변수: `TURNTALE_API_ORIGIN`(HTTPS 출처), `TURNTALE_ONESTORE_PLACEMENT`(원스토어 발급 전면 광고 ID). 새 빌드는 타임스탬프가 붙은 별도 폴더를 만든다. pnpm@11.25.0·잠금 파일·기존 node_modules 정션을 유지했다.
 
 공식 참고: [itch.io HTML5](https://itch.io/docs/creators/html5), [원스토어 IAA](https://onestore-dev.gitbook.io/dev/docs/apps/product/monetization/iaa), [공식 SDK API 자료](https://github.com/ONE-store/onestore_web_sdk_skills/blob/main/skills/onestore-web-sdk/references/sdk-context.md).
+
+## 0.7.40 호스팅 (2026-11-19)
+- 원스토어판 호스팅: https://turntale-onestore.pages.dev (Cloudflare Pages, 직접 업로드). 다시 올리기: build-stores.mjs 실행 후 `wrangler pages deploy outputs/stores/<새 폴더>/onestore/game --project-name turntale-onestore --branch main`.
+- 서버 허용 주소는 wrangler.jsonc vars에 넣었다. 남은 것: 원스토어 Web 상품 등록·광고 지면 ID 발급 → TURNTALE_ONESTORE_PLACEMENT 지정 재빌드·재업로드 → 원스토어 앱 안 실기기 확인.

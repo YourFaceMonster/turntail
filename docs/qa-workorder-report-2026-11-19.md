@@ -110,3 +110,7 @@
 - 튜토리얼 수정: 규칙 목록 왼쪽 정렬, 예시 상자 두 줄 배치, 넘친 회복 예시에 패 정산 몫 표시(실제 계산 함수 값), 정찰 안내 문구가 패 뒤에 가리던 문제, '족보 싸움에서' 오타, 스토리 4단계 중복 설명 축소, 기본 연습에서 이긴 상대 패를 작게 남김, 낸 패 자리 정리.
 - Codex 스토어 빌드 커밋(7adc230)도 이번에 함께 올렸다. 서버 CORS는 TURNTALE_ALLOWED_ORIGINS가 비어 있으면 기존과 같다. 원스토어 광고 ID·전용 호스팅은 아직이다.
 - 검사 450/450·타입 검사·운영 빌드 통과. 0.7.39 (d31b78d) GitHub main push 후 공개 HTML 0.7.39, 공개 page 묶음에 새 튜토리얼 코드(tutorial-coin-hint·tutorial-beaten) 확인, 메뉴 기록실 버튼 코드 없음 확인. 휴대폰 실기기 화면은 보지 못했다(로컬 375×812 확인만).
+## 0.7.40 (2026-11-19) · 원스토어 전용 사이트
+- Cloudflare Pages 프로젝트 turntale-onestore를 새로 만들고 0.7.40 원스토어판(outputs/stores/0.7.40-2026-11-19T13-15-44-395Z/onestore/game, 794파일)을 wrangler pages deploy로 직접 올렸다. 주소 https://turntale-onestore.pages.dev (Git 연결 없음, 새 버전마다 다시 빌드해 올려야 한다).
+- 본 서버 wrangler.jsonc vars에 TURNTALE_ALLOWED_ORIGINS=https://turntale-onestore.pages.dev. 0.7.40 (b328656) push 후 공개 0.7.40, 그 주소의 OPTIONS 204·허용 헤더, 다른 주소 403, 원스토어판 화면 0.7.40·오늘의 판 순위 요청 200 확인.
+- 광고 지면 ID가 없어 실광고는 꺼져 있다. 원스토어 앱 안·실기기·광고는 아직 확인하지 못했다.
