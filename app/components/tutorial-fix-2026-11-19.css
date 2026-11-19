@@ -1,0 +1,20 @@
+/* 2026-11-19 tutorial QA: left-aligned rule lists, readable demo boxes, scout hint below the stack, beaten tiles stay visible. */
+html body .tutorial-modal .tutorial-rule-list{text-align:left;padding-left:18px;margin:12px 0 0}
+html body .tutorial-modal .tutorial-rule-list li{text-align:left}
+html body .tutorial-modal .tutorial-settle-demo li{line-height:1.5}
+html body .tutorial-modal .tutorial-settle-why{display:block;font-size:10px;color:#bfc6b3}
+html body .tutorial-modal .tutorial-tip{text-align:left;font-size:11px;line-height:1.6}
+
+/* Demo box: label on its own line, the big numbers under it. */
+html body .tutorial-modal .tutorial-hp-demo{flex-direction:column;gap:4px;padding:12px 14px}
+html body .tutorial-modal .tutorial-hp-demo>svg{width:20px;height:20px}
+html body .tutorial-modal .tutorial-hp-demo>span{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;line-height:1.3}
+html body .tutorial-modal .tutorial-hp-demo b{display:block;font-size:30px;line-height:1.1}
+
+/* Scout demo: the hint sits under the cards instead of behind them. */
+html body .tutorial-modal .tutorial-coin-stack{margin:6px auto 4px}
+html body .tutorial-modal .tutorial-coin-stack>button small{display:none}
+html body .tutorial-modal .tutorial-coin-hint{display:block;text-align:center;font-size:11px;color:#f2d99c;margin:4px 0 0}
+
+/* Basic lessons: the opponent's beaten tiles stay as a small row above mine. */
+html body .tutorial-modal .tutorial-beaten{display:flex;justify-content:center;gap:3px;margin:2px 0 4px;opacity:.55;transform:scale(.72);transform-origin:center bottom;filter:grayscale(.35)}

@@ -3,9 +3,10 @@ import {APP_VERSION} from '../../lib/version';
 import RoomAmbience from './RoomAmbience';
 import TurntaleWordmark from './TurntaleWordmark';
 import {SuitEmblem} from './TileFace';
-import {BookOpen,BookMarked,Settings,Trophy,Award,UserRound,ChevronRight} from 'lucide-react';
+import {BookOpen,BookMarked,Settings,Award,UserRound,ChevronRight} from 'lucide-react';
 
-type Props={bomb?:boolean,single:()=>void,multi:()=>void,tutorial:()=>void,scores:()=>void,achievements:()=>void,codex?:()=>void,settings:()=>void,profile:()=>void,resume:()=>void,canResume:boolean,name:string,avatar:string};
+// 2026-11-19 user decision: the records room (기록실) left the menu; its screen code stays for now, scores are still saved.
+type Props={bomb?:boolean,single:()=>void,multi:()=>void,tutorial:()=>void,achievements:()=>void,codex?:()=>void,settings:()=>void,profile:()=>void,resume:()=>void,canResume:boolean,name:string,avatar:string};
 
 export default function MainMenu(p:Props){return <section className="title-screen">
  <div className="title-atmosphere" aria-hidden="true"/>
@@ -25,7 +26,7 @@ export default function MainMenu(p:Props){return <section className="title-scree
   </div>
   <button className="menu-tutorial" onClick={p.tutorial}><BookOpen aria-hidden="true"/><span className="menu-tutorial-copy">{p.bomb?"폭탄시장전 규칙":"튜토리얼"}<small>{p.bomb?"공개 시장 · 폭탄 반응 · 5판 정산":"패 내기부터 스토리모드 정산까지"}</small></span><ChevronRight aria-hidden="true"/></button>
 
-  <nav className="title-tools" aria-label="메인 메뉴"><button className="menu-tool-records" onClick={p.scores}><span className="menu-tool-icon"><Trophy aria-hidden="true"/></span><span className="menu-tool-label">기록실</span></button><button className="menu-tool-achievements" onClick={p.achievements}><span className="menu-tool-icon"><Award aria-hidden="true"/></span><span className="menu-tool-label">업적</span></button>{p.codex&&!p.bomb&&<button className="menu-tool-codex" onClick={p.codex}><span className="menu-tool-icon"><BookMarked aria-hidden="true"/></span><span className="menu-tool-label">도감</span></button>}<button className="menu-tool-settings" onClick={p.settings}><span className="menu-tool-icon"><Settings aria-hidden="true"/></span><span className="menu-tool-label">설정</span></button></nav>
+  <nav className="title-tools" aria-label="메인 메뉴"><button className="menu-tool-achievements" onClick={p.achievements}><span className="menu-tool-icon"><Award aria-hidden="true"/></span><span className="menu-tool-label">업적</span></button>{p.codex&&!p.bomb&&<button className="menu-tool-codex" onClick={p.codex}><span className="menu-tool-icon"><BookMarked aria-hidden="true"/></span><span className="menu-tool-label">도감</span></button>}<button className="menu-tool-settings" onClick={p.settings}><span className="menu-tool-icon"><Settings aria-hidden="true"/></span><span className="menu-tool-label">설정</span></button></nav>
   <div className="title-ornament" aria-hidden="true"><span/>✧<span/></div>
  </div>
  <small className="title-version">TURNTALE · {APP_VERSION}</small>
