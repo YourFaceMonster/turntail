@@ -147,7 +147,9 @@ export type RpgRework={version:2,chapter:number,activated:string[],knotStages:nu
  /** 2026-11-17: the player fell and spent one fate to retry this stage. hp = the HP at the fall (result screen shows it). */
  retried?:{stage:number,left:number,hp:number[]}};
 export function isRpgRework(game:{rpgTest?:boolean,rpgRun?:{rework?:RpgRework}|null}){return !!game.rpgRun?.rework&&!game.rpgTest;}
-export function rpgMaxHp(run:RpgRun,seat=0){if(seat!==0)return 100;const on=(id:string)=>run.equipped.includes(id);return 100+(on('cracked-heart')?RELIC_VALUES.crackedHeart:0)+(on('second-heart')?10:0)+(on('whole-heart')?35:0)+(reworkSynergies(run).includes('heart')?5:0);}
+/** 2026-11-18 user decision: opponents heal only up to the HP they started the stage with (ST1 25/25, not 25/100). */
+export function rpgEnemyMaxHp(run:Pick<RpgRun,'stage'|'trials'>,seat:number){const row=RPG_STAGE_HP[Math.min(RPG_STAGE_HP.length,Math.max(1,run.stage||1))-1];return trialEnemyHp(run,row)[seat-1]??100;}
+export function rpgMaxHp(run:RpgRun,seat=0){if(seat!==0)return rpgEnemyMaxHp(run,seat);const on=(id:string)=>run.equipped.includes(id);return 100+(on('cracked-heart')?RELIC_VALUES.crackedHeart:0)+(on('second-heart')?10:0)+(on('whole-heart')?35:0)+(reworkSynergies(run).includes('heart')?5:0);}
 export function activateRpgRelics(run:RpgRun):RpgRun{
  const state=run.rework;if(!state)return run;
  // Owned-only relics never sit in an equip slot (older saves may still have them equipped).
@@ -204,7 +206,7 @@ export function rpgOverflowSettlement(hp:number[],max:number[],delta:number[],co
  * "If the round ended now": per-seat HP change from public hand counts only (no hidden tiles),
  * using the same pairwise settlement and overflow rule as the real round end. Relic heals are not included.
  */
-export function rpgSettlementPreview(run:Pick<RpgRun,'hp'|'equipped'>,counts:readonly number[]){
+export function rpgSettlementPreview(run:Pick<RpgRun,'hp'|'equipped'>&Partial<Pick<RpgRun,'stage'|'trials'>>,counts:readonly number[]){
  const seats=counts.flatMap((_,i)=>run.hp[i]>0?[i]:[]),list=[...counts],{delta,transfers}=rpgHandSettlement(list,seats);
  const result=rpgOverflowSettlement(run.hp,run.hp.map((_,i)=>rpgMaxHp(run as RpgRun,i)),delta,list,transfers,seats);
  return run.hp.map((hp,i)=>seats.includes(i)?result.hp[i]-hp:0);

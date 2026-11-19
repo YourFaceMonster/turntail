@@ -37,29 +37,30 @@ test('three-seat HP formula and fair tied runners-up',()=>{
  for(let a=1;a<20;a++)for(let b=1;b<20;b++)assert.equal(rpgHandSettlement([0,a,b],[0,1,2]).delta.reduce((sum,x)=>sum+x,0),0);
 });
 test('settlement applies positive HP, clamps and is idempotent across save reload',()=>{
- const game=fresh();game.rpgRun!.hp=[60,50,50];const result=finish(game,[0,4,8]);
- assert.deepEqual(result.players.map(p=>p.delta),[12,4,-16]);assert.deepEqual(game.rpgRun!.hp,[72,54,34]);
- settle(game);assert.deepEqual(game.rpgRun!.hp,[72,54,34]);
- const storage=memory();saveRpgGame(storage,game);const saved=readRpgArchive(storage).active!;settle(saved);assert.deepEqual(saved.rpgRun!.hp,[72,54,34]);
- game.rpgRun!.hp=[99,99,50];startRpgRound(game,100);finish(game,[0,4,8]);assert.deepEqual(game.rpgRun!.hp,[100,99,27],'overflow 11 returns 4+7 to the payers');
+ // 2026-11-18: opponents cap at their stage start HP (ST1 25/30), so the AIs start inside that cap.
+ const game=fresh();game.rpgRun!.hp=[60,20,25];const result=finish(game,[0,4,8]);
+ assert.deepEqual(result.players.map(p=>p.delta),[12,4,-16]);assert.deepEqual(game.rpgRun!.hp,[72,24,9]);
+ settle(game);assert.deepEqual(game.rpgRun!.hp,[72,24,9]);
+ const storage=memory();saveRpgGame(storage,game);const saved=readRpgArchive(storage).active!;settle(saved);assert.deepEqual(saved.rpgRun!.hp,[72,24,9]);
+ game.rpgRun!.hp=[99,20,25];startRpgRound(game,100);finish(game,[0,4,8]);assert.deepEqual(game.rpgRun!.hp,[100,20,2],'overflow 11 returns 4+7 to the payers');
  assert.deepEqual(game.rpgRun!.rework!.overflow,{dealt:[11,0,0],taken:[0,4,7]});
 });
 test('overflowed HP returns as damage split by what each payer gave, for every seat',()=>{
  // Player 95/100 gets +10 (6 from AI1, 4 from AI2): overflow 5 → 3 and 2.
- const game=fresh();game.rpgRun!.hp=[95,50,50];finish(game,[0,6,4]);
- assert.deepEqual(game.rpgRun!.hp,[100,35,50]);assert.deepEqual(game.rpgRun!.rework!.overflow,{dealt:[5,0,0],taken:[0,3,2]});
+ const game=fresh();game.rpgRun!.hp=[95,20,25];finish(game,[0,6,4]);
+ assert.deepEqual(game.rpgRun!.hp,[100,5,25]);assert.deepEqual(game.rpgRun!.rework!.overflow,{dealt:[5,0,0],taken:[0,3,2]});
  // No overflow: no record and the old formula is untouched.
- const plain=fresh();plain.rpgRun!.hp=[60,50,50];finish(plain,[0,6,4]);assert.equal(plain.rpgRun!.rework!.overflow,undefined);assert.deepEqual(plain.rpgRun!.hp,[70,38,52]);
- // AI winner at the cap hits the player and the other AI alike.
- const ai=fresh();ai.rpgRun!.hp=[80,98,50];finish(ai,[5,0,5]);
- assert.deepEqual(ai.rpgRun!.hp,[71,100,41]);assert.deepEqual(ai.rpgRun!.rework!.overflow,{dealt:[0,8,0],taken:[4,0,4]});
+ const plain=fresh();plain.rpgRun!.hp=[60,20,25];finish(plain,[0,6,4]);assert.equal(plain.rpgRun!.rework!.overflow,undefined);assert.deepEqual(plain.rpgRun!.hp,[70,8,27]);
+ // AI winner at its cap (ST1 AI 1 = 25) hits the player and the other AI alike.
+ const ai=fresh();ai.rpgRun!.hp=[80,23,25];finish(ai,[5,0,5]);
+ assert.deepEqual(ai.rpgRun!.hp,[71,25,16]);assert.deepEqual(ai.rpgRun!.rework!.overflow,{dealt:[0,8,0],taken:[4,0,4]});
  // A payer that itself overflows passes its own excess down the line after taking its share.
- const chain=fresh();chain.rpgRun!.hp=[100,100,40];finish(chain,[0,2,6]);
- assert.deepEqual(chain.rpgRun!.hp,[100,100,20]);assert.deepEqual(chain.rpgRun!.rework!.overflow,{dealt:[8,2,0],taken:[0,2,8]});
+ const chain=fresh();chain.rpgRun!.hp=[100,25,30];finish(chain,[0,2,6]);
+ assert.deepEqual(chain.rpgRun!.hp,[100,25,10]);assert.deepEqual(chain.rpgRun!.rework!.overflow,{dealt:[8,2,0],taken:[0,2,8]});
 });
 test('one AI at 0 HP ends the stage at settlement; a legacy 1v1 save still deals 12+12+36 with stable seats',()=>{
- const game=fresh();game.rpgRun!.hp=[80,10,30];finish(game,[0,8,4]);
- assert.deepEqual(game.rpgRun!.hp,[92,0,34]);assert.equal(game.rpgRun!.status,'allocation','no 1v1 continuation');
+ const game=fresh();game.rpgRun!.hp=[80,10,26];finish(game,[0,8,4]);
+ assert.deepEqual(game.rpgRun!.hp,[92,0,30]);assert.equal(game.rpgRun!.status,'allocation','no 1v1 continuation');
  game.rpgRun!.status='playing';startRpgRound(game,100);
  assert.deepEqual(game.players.map(p=>p.hand.length),[12,0,12]);assert.equal(game.stacks.flat().filter(Boolean).length,36);assert.equal(game.cols,6);assert.equal(game.rows,3);
  assert.notEqual(game.turn,1);const ai=rpgTwinBotView(game,2);assert.equal(ai.players.length,2);assert.equal(ai.me,1);assert.equal(ai.capacity,2);
@@ -98,10 +99,10 @@ test('private 2층-only intel, no repeats, pickup expiry, per-round reset and ho
  game.rpgRun!.hp=[70,90,90];finish(game,[3,0,6]);startRpgRound(game,0);assert.equal(game.rpgRun!.rework!.intel[0].length,2,'blue glass +1 scout synergy');assert.equal(game.rpgRun!.rework!.intel[1].length,1,'an AI winner also sees just one');
 });
 test('final knot once per stage, ring only 3 seats, no resurrection',()=>{
- const game=fresh();game.rpgRun!.hp=[6,90,90];game.rpgRun!.equipped=['final-knot'];finish(game,[5,0,5]);assert.equal(game.rpgRun!.hp[0],11);
+ const game=fresh();game.rpgRun!.hp=[6,15,30];game.rpgRun!.equipped=['final-knot'];finish(game,[5,0,5]);assert.equal(game.rpgRun!.hp[0],11);
  startRpgRound(game,0);finish(game,[1,0,2]);assert.equal(game.rpgRun!.hp[0],11,'+1 hand, −1 from the capped AI overflow, knot already spent');assert.deepEqual(game.rpgRun!.rework!.knotStages,[1]);
- const ring=fresh();ring.rpgRun!.hp=[60,90,90];ring.rpgRun!.equipped=['second-ring'];finish(ring,[4,0,8]);assert.equal(ring.rpgRun!.hp[0],69,'+4 hand, −1 AI overflow, +6 ring');
- ring.rpgRun!.hp=[60,0,90];startRpgRound(ring,0);finish(ring,[7,0,0],2);assert.equal(ring.rpgRun!.hp[0],53);
+ const ring=fresh();ring.rpgRun!.hp=[60,15,30];ring.rpgRun!.equipped=['second-ring'];finish(ring,[4,0,8]);assert.equal(ring.rpgRun!.hp[0],69,'+4 hand, −1 AI overflow, +6 ring');
+ ring.rpgRun!.hp=[60,0,20];startRpgRound(ring,0);finish(ring,[7,0,0],2);assert.equal(ring.rpgRun!.hp[0],53);
 });
 test('rewards: 2/3 offers, mirror +1, stable compass preview, quest exclusion',()=>{
  for(const stage of [1,2,3,6,9]){

@@ -28,7 +28,7 @@ export function DialogueTools({auto,setAuto,lines,onOpenChange,className=''}:{au
 
 function DialogueBacklog({lines,close}:{lines:readonly BacklogLine[],close:()=>void}){
  const panel=useRef<HTMLElement>(null),list=useRef<HTMLOListElement>(null);
- useEffect(()=>{const previous=document.activeElement;panel.current?.focus();list.current?.lastElementChild?.scrollIntoView({block:'end'});return()=>{if(previous instanceof HTMLElement&&previous.isConnected)previous.focus({preventScroll:true});};},[]);
+ useEffect(()=>{const previous=document.activeElement;panel.current?.focus();list.current?.lastElementChild?.scrollIntoView({block:'end'});return()=>{if(previous instanceof HTMLElement&&previous.isConnected)previous.focus({preventScroll:true,focusVisible:false} as FocusOptions);};},[]);
  // Portal to <body>: the dialogue boxes clip overflow and some cutscene layers are transformed, which would trap a fixed overlay.
  if(typeof document==='undefined')return null;
  return createPortal(<div className="dialogue-backlog-overlay" onClick={event=>{event.stopPropagation();close();}} onPointerDown={event=>event.stopPropagation()}>

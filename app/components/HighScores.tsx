@@ -1,4 +1,5 @@
 "use client";
+import {userMessage} from '../../lib/user-message';
 import {useEffect,useState} from 'react';
 import {topScores,type HighScore} from '../../lib/challenge';
 import {syncPersonalScores} from '../../lib/score-sync';
@@ -16,7 +17,7 @@ export default function HighScores({close,personal,profileToken,name,openHistory
   void (async()=>{let syncError='';try{await syncPersonalScores(profileToken,name,JSON.parse(syncKey),controller.signal);}catch{syncError='내 싱글 기록 동기화가 지연되고 있어요. 다시 시도하면 저장된 기록을 전송합니다.';}
    if(!active)return;
    try{const response=await fetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},signal:AbortSignal.any([controller.signal,AbortSignal.timeout(10000)]),body:JSON.stringify({action:'leaderboard',profileToken,mode,size,kind,page})}),data=await response.json() as Leaderboard&{error?:string};if(!response.ok)throw Error(data.error||'순위를 불러오지 못했어요.');if(active){setBoard(data);setError(syncError);}}
-   catch(e){if(active){setBoard(null);setError(e instanceof Error?e.message:'전체 순위에 연결하지 못했어요.');}}finally{if(active)setBusy(false);}
+   catch(e){if(active){setBoard(null);setError(userMessage(e,'전체 순위에 연결하지 못했어요.'));}}finally{if(active)setBusy(false);}
   })();return()=>{active=false;controller.abort();};
  },[scope,mode,size,kind,page,profileToken,name,syncKey,refresh]);
  useEffect(()=>{const refreshVisible=()=>{if(!document.hidden)setRefresh(x=>x+1);};window.addEventListener('online',refreshVisible);document.addEventListener('visibilitychange',refreshVisible);return()=>{window.removeEventListener('online',refreshVisible);document.removeEventListener('visibilitychange',refreshVisible);};},[]);

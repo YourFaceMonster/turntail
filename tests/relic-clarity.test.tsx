@@ -44,13 +44,13 @@ test('owned-only relics work from the bag and never take an equip slot',()=>{
 });
 
 test('settlement relic heals are recorded for notices and the result line; full HP shows nothing',()=>{
- const ring=fresh();ring.rpgRun!.hp=[60,90,90];ring.rpgRun!.equipped=['second-ring'];finish(ring,[4,0,8]);
+ const ring=fresh();ring.rpgRun!.hp=[60,15,30];ring.rpgRun!.equipped=['second-ring'];finish(ring,[4,0,8]);
  assert.equal(ring.rpgRun!.hp[0],69);assert.deepEqual(ring.rpgRun!.rework!.relicHeals,[{relicId:'second-ring',amount:6}]);assert.equal(procs(ring,'second-ring').at(-1)?.message,'2등 · HP +6');
  const html=renderToStaticMarkup(<RpgReworkResult game={view(ring,ring.players[0].token)} busy={false} choose={()=>{}} next={()=>{}} newRun={()=>{}} exit={()=>{}}/>);
  assert.ok(html.includes('rpg-relic-heal-line')&&html.includes('두 번째 반지 HP +6'));
- const knot=fresh();knot.rpgRun!.hp=[12,90,90];knot.rpgRun!.equipped=['final-knot'];finish(knot,[5,0,5]);
+ const knot=fresh();knot.rpgRun!.hp=[12,15,30];knot.rpgRun!.equipped=['final-knot'];finish(knot,[5,0,5]);
  assert.equal(procs(knot,'final-knot').length,1);assert.equal(knot.rpgRun!.rework!.relicHeals?.[0].relicId,'final-knot');
- const capped=fresh();capped.rpgRun!.hp=[100,90,90];capped.rpgRun!.equipped=['second-ring'];finish(capped,[4,0,8]);
+ const capped=fresh();capped.rpgRun!.hp=[100,15,30];capped.rpgRun!.equipped=['second-ring'];finish(capped,[4,0,8]);
  assert.equal(procs(capped,'second-ring').length,0,'no notice when nothing was healed');assert.equal(capped.rpgRun!.rework!.relicHeals,undefined);
  startRpgRound(ring,0);assert.equal(ring.rpgRun!.rework!.relicHeals,undefined,'cleared at the next round');
 });

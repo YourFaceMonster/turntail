@@ -1,4 +1,5 @@
 'use client';
+import {userMessage} from '../../lib/user-message';
 import {useEffect,useRef,useState} from 'react';
 import {currentRpgShop,RPG_CONSUMABLES,type RpgRun} from '../../lib/rpg.ts';
 import {isRpgDemo} from '../../lib/rpg-demo-catalog.ts';
@@ -22,9 +23,9 @@ export default function JourneyVillageShop({run,busy,error,action}:Props){
   if(run.consumables.length>pending.current.consumables||run.relics.length>pending.current.relics){setCart([]);setNotice('구매 완료 · 여행 가방에 넣었어요.');pending.current=null;setCheckingOut(false);}
   else if(error){pending.current=null;setCheckingOut(false);}
  },[run.consumables,run.relics,error]);
- let quoted=run,quoteError='';try{quoted=quoteRpgCart(run,cart);}catch(e){quoteError=e instanceof Error?e.message:'구매 목록을 확인해 주세요.';}
+ let quoted=run,quoteError='';try{quoted=quoteRpgCart(run,cart);}catch(e){quoteError=userMessage(e,'구매 목록을 확인해 주세요.');}
  const total=run.coins-quoted.coins,shop=currentRpgShop(run),stock=shop?.stock||[],disabled=busy||checkingOut;
- const add=(id:string)=>{if(disabled)return;try{quoteRpgCart(run,[...cart,id]);setCart([...cart,id]);setNotice(`${nameOf(id)} 담음 · 아직 구매 전이에요.`);}catch(e){setNotice(e instanceof Error?e.message:'담을 수 없어요.');}};
+ const add=(id:string)=>{if(disabled)return;try{quoteRpgCart(run,[...cart,id]);setCart([...cart,id]);setNotice(`${nameOf(id)} 담음 · 아직 구매 전이에요.`);}catch(e){setNotice(userMessage(e,'담을 수 없어요.'));}};
  const remove=(id:string)=>{if(disabled)return;const index=cart.lastIndexOf(id);setCart(cart.filter((_,i)=>i!==index));setNotice('');};
  const checkout=()=>{if(disabled||!cart.length||quoteError)return;pending.current={consumables:run.consumables.length,relics:run.relics.length};setCheckingOut(true);setNotice('');action('rpg-buy',{cart});};
  const ownedRow=(relic:boolean)=>{

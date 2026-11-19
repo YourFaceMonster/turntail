@@ -40,6 +40,12 @@ export function ProloguePicture({cut,duration=cut.duration,hiddenLight=false}:{c
   {cut.keepsakeFace&&<img className="prologue-keepsake-preview" src={keepsakeSource(cut)} data-card={cut.keepsakeCard||'iron-gate-two'} data-face={cut.keepsakeFace} data-matte={cut.keepsakeFace==='front'&&(cut.keepsakeCard||'iron-gate-two')!=='iron-gate-two'?'':undefined} alt=""/>}
  </div>;
 }
+/** Load and decode one story painting: one retry after a failure, an 8s cap, never rejects. */
+export function loadStoryImage(src:string):Promise<boolean>{
+ return new Promise(resolve=>{let tries=0;const attempt=()=>{const image=new Image();const timer=setTimeout(()=>{image.onload=image.onerror=null;resolve(false);},8000);
+  image.onload=()=>{clearTimeout(timer);void image.decode().catch(()=>{}).then(()=>resolve(true));};
+  image.onerror=()=>{clearTimeout(timer);if(tries++<1)setTimeout(attempt,600);else resolve(false);};image.src=src;};attempt();});
+}
 /** Decode first and retain keyed layers so the outgoing painting never restarts its fade. */
 export function CrossfadePicture({cut,duration=cut.duration,hiddenLight=false}:{cut:PrologueCut,duration?:number,hiddenLight?:boolean}){
  type Picture={key:string,cut:PrologueCut,duration:number,hiddenLight:boolean};
@@ -47,10 +53,11 @@ export function CrossfadePicture({cut,duration=cut.duration,hiddenLight=false}:{
  const [frame,setFrame]=useState<Picture&{previous:Picture|null,transition:'none'|'overlap'|'fade',serial:number}>({key,cut,duration,hiddenLight,previous:null,transition:'none',serial:0});
  useEffect(()=>{
   if(frame.key===key)return;
-  let cancelled=false;const art=prologueArt(cut),image=art?new Image():null;
+  let cancelled=false;const art=prologueArt(cut),image=!!art;
   const commit=()=>{if(!cancelled)setFrame(current=>({key,cut,duration,hiddenLight,previous:{key:current.key,cut:current.cut,duration:current.duration,hiddenLight:current.hiddenLight},transition:storyPictureTransition(current.cut,cut),serial:current.serial+1}));};
-  if(image){image.onload=()=>{void image.decode().catch(()=>{}).then(commit);};image.src=matchMedia('(max-aspect-ratio:1/1)').matches?art!.portrait:art!.landscape;}else commit();
-  return()=>{cancelled=true;if(image)image.onload=null;};
+  // QA IMG-2: a painting that fails twice (or takes 8s) still advances, so the words never sit on the previous scene's picture.
+   if(image){void loadStoryImage(matchMedia('(max-aspect-ratio:1/1)').matches?art!.portrait:art!.landscape).then(commit);}else commit();
+  return()=>{cancelled=true;};
  },[key]);
  useEffect(()=>{if(!frame.previous)return;const timer=setTimeout(()=>setFrame(value=>({...value,previous:null,transition:'none'})),520);return()=>clearTimeout(timer);},[frame.serial]);
  return <div className="story-painting-stack" data-transition={frame.transition}>{frame.previous&&<div key={frame.previous.key} className="story-painting-out"><ProloguePicture cut={frame.previous.cut} duration={frame.previous.duration} hiddenLight={frame.previous.hiddenLight}/></div>}<div key={frame.key} className={frame.previous?'story-painting-in':'story-painting-current'}><ProloguePicture cut={frame.cut} duration={frame.duration} hiddenLight={frame.hiddenLight}/></div></div>;
@@ -73,10 +80,15 @@ export default function RpgPrologue({onEvent,enter,context,music=true,sound=true
   const visibility=()=>{const active=!document.hidden;player.pause(!active||loading);setVisible(active);};
   const hide=()=>{player.pause(true);setVisible(false);};visibility();
   let frame=0;const animate=(now:number)=>{player.tick(now);setIndex(player.index);if(!player.completed)frame=requestAnimationFrame(animate);};
-  const loadArt=()=>{const current=++loadId;loading=true;setArtReady(false);visibility();void Promise.all(prologueSceneSources(cuts,orientation.matches).map(src=>new Promise<void>(resolve=>{const image=new Image();setTimeout(resolve,8000);image.onload=()=>{void image.decode().catch(()=>{}).then(()=>resolve());};image.onerror=()=>resolve();image.src=src;}))).then(()=>{if(disposed||current!==loadId)return;loading=false;setArtReady(true);visibility();cancelAnimationFrame(frame);frame=requestAnimationFrame(animate);});};
-  loadArt();orientation.addEventListener('change',loadArt);
+  // 2026-11-19 (QA IMG-1/3): wait only for the opening painting(s), then fetch the rest in story order two at a time.
+   const sourcesFrom=()=>prologueSceneSources(cuts.slice(Math.min(player.index,cuts.length-1)),orientation.matches);
+   const warm=(list:readonly string[])=>{let next=0;const pump=()=>{if(disposed||next>=list.length)return;const src=list[next++];void loadStoryImage(src).then(pump);};pump();pump();};
+   const loadArt=()=>{const current=++loadId;loading=true;setArtReady(false);visibility();const list=sourcesFrom();void Promise.all(list.slice(0,2).map(loadStoryImage)).then(()=>{if(disposed||current!==loadId)return;loading=false;setArtReady(true);visibility();cancelAnimationFrame(frame);frame=requestAnimationFrame(animate);warm(list.slice(2));});};
+   // Turning the phone keeps the scene running; the other orientation's paintings load in the background.
+   const reorient=()=>{if(loading){loadArt();return;}warm(sourcesFrom());};
+  loadArt();orientation.addEventListener('change',reorient);
   document.addEventListener('visibilitychange',visibility);window.addEventListener('pagehide',hide);window.addEventListener('pageshow',visibility);
-  return()=>{disposed=true;cancelAnimationFrame(frame);document.body.style.setProperty('overflow',previousOverflow,previousPriority);orientation.removeEventListener('change',loadArt);document.removeEventListener('visibilitychange',visibility);window.removeEventListener('pagehide',hide);window.removeEventListener('pageshow',visibility);if(previous instanceof HTMLElement&&previous.isConnected)previous.focus({preventScroll:true});};
+  return()=>{disposed=true;cancelAnimationFrame(frame);document.body.style.setProperty('overflow',previousOverflow,previousPriority);orientation.removeEventListener('change',reorient);document.removeEventListener('visibilitychange',visibility);window.removeEventListener('pagehide',hide);window.removeEventListener('pageshow',visibility);if(previous instanceof HTMLElement&&previous.isConnected)previous.focus({preventScroll:true,focusVisible:false} as FocusOptions);};
  },[cutsKey]);
  // Cutscenes are silent of music for now: pause page BGM and skip the synthesized tavern motif (ambient sounds stay).
  useEffect(()=>holdCutsceneSilence(),[]);

@@ -29,8 +29,8 @@ import {measureDealLayout,shuffleTileSize,type DealView,type DealItem,type DealT
 import {measureSavedTable,type SavedTableItem} from '../../lib/saved-table';
 import TableSurfaceViewport from './TableSurfaceViewport';
 import {nativeTableMaterial} from '../../lib/table-material';
-type Props={onWorldDiameter:(diameter:number)=>void,company:{name:string,avatar?:string,points:number,count:number}[],tableSet:number,tileSet?:number,stage?:number,phase:EntrancePhase,resume:boolean,migrated?:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void,onSkip?:()=>void};
-function GameEntrance({onWorldDiameter,company,tableSet,tileSet,stage,phase,resume,migrated=false,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback,onSkip}:Props){
+type Props={onWorldDiameter:(diameter:number)=>void,company:{name:string,avatar?:string,points:number,count:number}[],tableSet:number,tileSet?:number,stage?:number,phase:EntrancePhase,resume:boolean,migrated?:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void,onSkip?:()=>void,/** False on the bare home screen: the table art waits until a play menu opens or a game starts (2026-11-18, ~3MB off the first visit). */warm?:boolean};
+function GameEntrance({onWorldDiameter,company,tableSet,tileSet,stage,phase,resume,migrated=false,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback,onSkip,warm=true}:Props){
  const [screen,setScreen]=useState({width:0,height:0}),[landings,setLandings]=useState<{item:DealItem,target:DealTarget,finish:Record<string,string>}[]>([]);
  const [scene,setScene]=useState<ShuffleScene|null>(null),[assetsReady,setAssetsReady]=useState(false);
  const [gpuStatus,setGpuStatus]=useState<'pending'|'ready'|'fallback'>('pending');
@@ -64,7 +64,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,tileSet,stage,phase,resu
  useEffect(()=>{const resize=()=>setScreen({width:window.innerWidth,height:window.innerHeight});resize();window.addEventListener('resize',resize);return()=>window.removeEventListener('resize',resize);},[]);
  // Decode while the menu is still visible, rather than on the first moving frame.
  useEffect(()=>{
-  if(!screen.width)return;
+  if(!screen.width||!warm)return;
   let cancelled=false;setAssetsReady(false);
   const surfaceAsset=nativeTableMaterial(stage||tableSet||0);
   const paths=[...(surfaceAsset?[surfaceAsset]:[]),...(stage?[stageEnvironmentImage(stage)]:['/turntale-room-0513.webp']),...(stage?[]:['/monsters/blue-0513.webp','/monsters/red-0513.webp','/monsters/haetae-0513.webp','/monsters/hiboringji-061.webp','/monsters/hibo-seated-063.webp']),'/turntale-ivory-material-055.webp','/turntale-stone-material-055.webp','/turntale-tile-back-gold.svg','/turntale-wood-0513.webp',...(stage?['/stage-company-0516.webp','/stage-table-materials-0518.webp']:[]),...(stage||tableSet?['/turntale-stage-materials-v2.webp']:[])];
@@ -72,7 +72,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,tileSet,stage,phase,resu
   if(stage)paths.push(...['scout-lens','swapped-fate','ward-seal-v3','ember-bomb-v2','emergency-herb-v2','whisper-eye-v2'].map(id=>`/rpg-items-v1/consumables/${id}.webp`),'/rpg-items-v1/effects/ember-impact-v1.webp','/item-battle-v1/skills/rogue-ambush-0650.webp');
   void Promise.all([...new Set(paths)].map(src=>new Promise<void>(resolve=>{const finish=()=>{clearTimeout(timer);resolve();},timer=setTimeout(finish,6000),img=new Image();img.onload=()=>{void img.decode().catch(()=>{}).then(finish);};img.onerror=finish;img.src=src;}))).then(()=>{if(!cancelled)setAssetsReady(true);});
   return()=>{cancelled=true;};
- },[screen.width>screen.height,!!screen.width,stage,tableSet,companyArtKey]);
+ },[screen.width>screen.height,!!screen.width,stage,tableSet,companyArtKey,warm]);
  useLayoutEffect(()=>{
   if(phase==='menu-out'){setSavedLandings([]);setSavedBounds(null);}
   if(!resume||phase!=='room-hold'||!game||!screen.width||!pageVisible)return;

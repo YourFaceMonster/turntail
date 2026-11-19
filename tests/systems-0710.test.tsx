@@ -11,13 +11,13 @@ const t=(n:number,s=0):Tile=>({id:(n-1)*4+s,n,s}),noop=()=>{};
 
 test('settlement preview matches the real round end, overflow included, from public counts only',()=>{
  // 95/100 with AI hands 6 and 4: +10 caps at +5, the overflow 5 returns as 3 and 2.
- assert.deepEqual(rpgSettlementPreview({hp:[95,50,50],equipped:[]},[0,6,4]),[5,-15,0]);
+ assert.deepEqual(rpgSettlementPreview({hp:[95,20,25],equipped:[]},[0,6,4]),[5,-15,0]);
  // Mid-round counts work the same way (3 tiles still in my hand: +6 from AI 1, +4 from AI 2).
- assert.deepEqual(rpgSettlementPreview({hp:[95,50,50],equipped:[]},[3,6,4]),[5,-15,0]);
+ assert.deepEqual(rpgSettlementPreview({hp:[95,20,25],equipped:[]},[3,6,4]),[5,-15,0]);
  // A fallen seat neither pays nor receives.
- assert.deepEqual(rpgSettlementPreview({hp:[60,0,50],equipped:[]},[2,5,4]),[4,0,-4],'AI 2 pays its own 4 tiles; seat 1 is out');
+ assert.deepEqual(rpgSettlementPreview({hp:[60,0,25],equipped:[]},[2,5,4]),[4,0,-4],'AI 2 pays its own 4 tiles; seat 1 is out');
  // Cracked heart raises the player's cap to 115: +10 caps at +5 and the overflow 5 returns as 3 and 2.
- assert.deepEqual(rpgSettlementPreview({hp:[110,50,50],equipped:['cracked-heart']},[0,6,4]),[5,-15,0]);
+ assert.deepEqual(rpgSettlementPreview({hp:[110,20,25],equipped:['cracked-heart']},[0,6,4]),[5,-15,0]);
 });
 
 test('fast pacing skips the combo announcement on local games only',()=>{

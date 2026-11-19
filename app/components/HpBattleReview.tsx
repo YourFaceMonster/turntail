@@ -38,7 +38,7 @@ export default function HpBattleReview({game,paused=false,onHit,onReviewChange,o
  useEffect(()=>{
   if(!shown||!ready)return;const previous=document.activeElement;confirm.current?.focus({preventScroll:true});
   const keyboard=(event:KeyboardEvent)=>{if(event.key==='Escape'){event.preventDefault();dismiss();}else if(event.key==='Tab'){event.preventDefault();confirm.current?.focus();}};
-  document.addEventListener('keydown',keyboard);return()=>{document.removeEventListener('keydown',keyboard);if(previous instanceof HTMLElement&&previous.isConnected)previous.focus({preventScroll:true});};
+  document.addEventListener('keydown',keyboard);return()=>{document.removeEventListener('keydown',keyboard);if(previous instanceof HTMLElement&&previous.isConnected)previous.focus({preventScroll:true,focusVisible:false} as FocusOptions);};
  },[shown?.id,ready]);
  if(!shown)return null;
  const history=game.rpgRun?.combat?.battles||[],presentation={...shown,ordinal:shown.ordinal||Math.max(1,history.findIndex(event=>event.id===shown.id)+1)};

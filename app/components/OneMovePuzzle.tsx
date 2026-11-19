@@ -1,4 +1,5 @@
 "use client";
+import {userMessage} from '../../lib/user-message';
 import {useEffect,useState} from 'react';
 import TileFace from './TileFace';
 import {combo,sorted} from '../../lib/game';
@@ -31,7 +32,7 @@ function PuzzleBoard({puzzle,cleared,back,next,solved}:{puzzle:Puzzle,cleared:bo
  function submit(){
   try{const after=playPuzzle(puzzle,state,chosen);setState(after);setPicked([]);setError('');
    if(after.status==='won'){cue('confirm');solved(tries);}else if(after.status==='lost')cue('back');else cue('click');
-  }catch(e){setError(e instanceof Error?e.message:'낼 수 없는 조합이에요.');}
+  }catch(e){setError(userMessage(e,'낼 수 없는 조합이에요.'));}
  }
  function retry(){setState(startPuzzle(puzzle));setPicked([]);setError('');setTries(t=>t+1);}
  const left=puzzle.moves-state.used;

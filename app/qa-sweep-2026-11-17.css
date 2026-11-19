@@ -98,3 +98,5 @@ html body .modal-shade .modal,html body .modal-shade .modal *{scrollbar-width:th
 html body .modal-shade .modal::-webkit-scrollbar,html body .modal-shade .modal *::-webkit-scrollbar{width:6px;height:6px}
 html body .modal-shade .modal::-webkit-scrollbar-thumb,html body .modal-shade .modal *::-webkit-scrollbar-thumb{background:#a8844a;border-radius:6px}
 html body .modal-shade .modal::-webkit-scrollbar-track,html body .modal-shade .modal *::-webkit-scrollbar-track{background:#17120e}
+/* 2026-11-19 (QA IMG-1): on a phone held upright the story window uses the portrait map it already shows, instead of downloading the wide one too. */
+@media (max-aspect-ratio:1/1){html body .modal.rpg-hub.journey-entry{background-image:linear-gradient(145deg,#0c1d28c9,#0d2027e8),url('/prologue/iron-gate-village-map-portrait-v3.webp')!important}}

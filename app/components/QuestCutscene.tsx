@@ -20,7 +20,7 @@ export default function QuestCutscene({title,speaker,speakers,lines,scene,choice
  const text=useRef<HTMLParagraphElement>(null),script=lines.join('\u0000'),pages=useDialoguePages(lines,text),[page,setPage]=useState({script,sourceIndex:0,offset:0});
  if(page.script!==script)setPage({script,sourceIndex:0,offset:0});
  const index=dialoguePageAt(pages,page.sourceIndex,page.offset),sourceIndex=pages[index]?.sourceIndex||0,last=index===pages.length-1,root=useRef<HTMLElement>(null);
- useEffect(()=>{const previous=document.activeElement;root.current?.focus();return()=>{if(previous instanceof HTMLElement&&previous.isConnected)previous.focus({preventScroll:true});};},[]);
+ useEffect(()=>{const previous=document.activeElement;root.current?.focus();return()=>{if(previous instanceof HTMLElement&&previous.isConnected)previous.focus({preventScroll:true,focusVisible:false} as FocusOptions);};},[]);
  useEffect(()=>{root.current?.focus({preventScroll:true});},[index]);
  useEffect(()=>holdCutsceneSilence(),[]);
  const advance=()=>{if(!busy&&!last){cue('dialogue');const next=pages[index+1];setPage({script,sourceIndex:next.sourceIndex,offset:pages.slice(0,index+1).filter(p=>p.sourceIndex===next.sourceIndex).reduce((sum,p)=>sum+p.text.replace(/\s/gu,'').length,0)});}};
