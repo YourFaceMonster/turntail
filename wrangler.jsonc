@@ -4,6 +4,10 @@
   "main": "./worker/index.ts",
   "compatibility_date": "2026-05-15",
   "compatibility_flags": ["nodejs_compat"],
+  // ONE store web build host (Cloudflare Pages). Exact origins only, comma separated. See lib/store-cors.ts.
+  "vars": {
+    "TURNTALE_ALLOWED_ORIGINS": "https://turntale-onestore.pages.dev"
+  },
   "d1_databases": [
     {
       "binding": "DB",
