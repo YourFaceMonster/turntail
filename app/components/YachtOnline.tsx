@@ -1,4 +1,6 @@
 'use client';
+import {gameFetch,inviteUrl} from '../../lib/distribution';
+
 import {useCallback,useEffect,useRef,useState} from 'react';
 import './yacht-online.css';
 import {YACHT_CATEGORIES,YACHT_LABELS,YACHT_HINTS,YACHT_UPPER,YACHT_BONUS,YACHT_JOKER_BONUS,upperSubtotal,yachtBonus,boxScore,allowedCategories,yachtJokerBonus,type YachtCategory} from '../../lib/yacht-dice';
@@ -23,13 +25,13 @@ export default function YachtOnline({start,name,avatar,profileToken,exit}:{start
  const [history,setHistory]=useState<History|null>(null),[left,setLeft]=useState(0),[copied,setCopied]=useState<''|'code'|'link'>('');
  const session=useRef<Session|null>(start.kind==='resume'?{code:start.code,token:start.token}:null),revision=useRef(0),playKey=useRef<string|undefined>(undefined),started=useRef(false),lastEvent=useRef<string|undefined>(undefined);
  const post=useCallback(async(action:string,extra:Record<string,unknown>={})=>{
-  const response=await fetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},signal:AbortSignal.timeout(12000),body:JSON.stringify({...session.current,profileToken,revision:revision.current,...(playKey.current?{playKey:playKey.current}:{}),...(action==='yachtCreate'||action==='yachtJoin'?{name,avatar}:{}),action,...extra})});
+  const response=await gameFetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},signal:AbortSignal.timeout(12000),body:JSON.stringify({...session.current,profileToken,revision:revision.current,...(playKey.current?{playKey:playKey.current}:{}),...(action==='yachtCreate'||action==='yachtJoin'?{name,avatar}:{}),action,...extra})});
   const data:any=await response.json().catch(()=>({}));
   if(data.room){revision.current=data.revision;playKey.current=data.room.playKey;if(data.token&&data.room.code){session.current={code:data.room.code,token:data.token};writeSession(session.current);}setRoom(data.room);}
   if(!response.ok){if(response.status===403||response.status===404){writeSession(null);}throw Error(data.error||'처리하지 못했어요.');}
   return data;
  },[profileToken,name,avatar]);
- const loadHistory=useCallback(async()=>{if(!profileToken)return;try{const r=await fetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},signal:AbortSignal.timeout(12000),body:JSON.stringify({action:'yachtHistory',profileToken})});const d=await r.json() as History;if(r.ok)setHistory(d);}catch{}},[profileToken]);
+ const loadHistory=useCallback(async()=>{if(!profileToken)return;try{const r=await gameFetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},signal:AbortSignal.timeout(12000),body:JSON.stringify({action:'yachtHistory',profileToken})});const d=await r.json() as History;if(r.ok)setHistory(d);}catch{}},[profileToken]);
  // Enter the room once.
  useEffect(()=>{if(started.current)return;started.current=true;setBusy(true);
   const go=start.kind==='create'?post('yachtCreate',{size:start.size}):start.kind==='join'?post('yachtJoin',{code:start.code.toUpperCase()}):post('yachtState');
@@ -50,7 +52,7 @@ export default function YachtOnline({start,name,avatar,profileToken,exit}:{start
  function leave(){cue('back');if(room?.phase!=='playing')writeSession(null);exit();}
  async function copyCode(){if(!room)return;try{await navigator.clipboard.writeText(room.code);setCopied('code');setTimeout(()=>setCopied(''),1500);}catch{}}
  /** Link that opens the multiplayer menu with Yacht Dice picked and this code filled in. */
- async function copyLink(){if(!room)return;const url=`${location.origin}/?yacht=${room.code}`;try{if(navigator.share&&matchMedia('(pointer:coarse)').matches){await navigator.share({title:'턴테일 요트다이스',text:`요트다이스 ${room.size}인전에 같이 해요! 방 코드 ${room.code}`,url});return;}await navigator.clipboard.writeText(url);setCopied('link');setTimeout(()=>setCopied(''),1800);}catch{}}
+ async function copyLink(){if(!room)return;const url=inviteUrl('yacht',room.code);try{if(navigator.share&&matchMedia('(pointer:coarse)').matches){await navigator.share({title:'턴테일 요트다이스',text:`요트다이스 ${room.size}인전에 같이 해요! 방 코드 ${room.code}`,url});return;}await navigator.clipboard.writeText(url);setCopied('link');setTimeout(()=>setCopied(''),1800);}catch{}}
  async function react(emoji:number){if(!session.current)return;cue('click');try{await post('yachtReact',{emoji});}catch{}}
 
  if(!room)return <div className="yacht-online"><section className="yo-panel yo-center"><h2>요트다이스</h2><p>{busy?'방에 들어가는 중…':error||'방 정보를 불러오지 못했어요.'}</p><button className="secondary" onClick={()=>{writeSession(null);exit();}}>돌아가기</button></section></div>;

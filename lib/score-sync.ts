@@ -1,3 +1,4 @@
+import {gameFetch} from './distribution';
 import type {HighScore} from './challenge';
 type Receipt={ids:string[],name:string};
 function readReceipt(key:string):Receipt{try{return JSON.parse(localStorage.getItem(key)||'null')||{ids:[],name:''};}catch{return {ids:[],name:''};}}
@@ -12,7 +13,7 @@ export async function syncPersonalScores(profileToken:string,name:string,rows:Hi
  // across reloads; retries never duplicate an already accepted result.
  for(let offset=0;offset<Math.max(1,pending.length);offset+=18){
   const scores=pending.slice(offset,offset+18);
-  const response=await fetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},signal:signal?AbortSignal.any([signal,AbortSignal.timeout(8000)]):AbortSignal.timeout(8000),body:JSON.stringify({action:'syncScores',profileToken,name:cleanName,scores})});
+  const response=await gameFetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},signal:signal?AbortSignal.any([signal,AbortSignal.timeout(8000)]):AbortSignal.timeout(8000),body:JSON.stringify({action:'syncScores',profileToken,name:cleanName,scores})});
   const data:any=await response.json();if(!response.ok)throw Error(data.error||'기록을 동기화하지 못했어요.');
   acknowledge(key,scores.map(identity),cleanName,retained);
  }

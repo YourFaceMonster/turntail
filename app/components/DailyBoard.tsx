@@ -1,4 +1,6 @@
 'use client';
+import {gameFetch} from '../../lib/distribution';
+
 import {userMessage} from '../../lib/user-message';
 import {useEffect,useRef,useState} from 'react';
 import './daily-board.css';
@@ -15,7 +17,7 @@ export default function DailyBoard({profileToken,start,close}:{profileToken:stri
  useEffect(()=>{panel.current?.focus();},[]);
  useEffect(()=>{let stop=false;setError('');
   const date=day==='yesterday'&&board?new Date(Date.parse(board.today+'T00:00:00Z')-86400000).toISOString().slice(0,10):undefined;
-  fetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},signal:AbortSignal.timeout(12000),body:JSON.stringify({action:'dailyBoard',profileToken,...(date?{date}:{})})})
+  gameFetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},signal:AbortSignal.timeout(12000),body:JSON.stringify({action:'dailyBoard',profileToken,...(date?{date}:{})})})
    .then(async r=>{const d:any=await r.json();if(!r.ok)throw Error(d.error||'순위를 불러오지 못했어요.');if(!stop)setBoard(d);})
    .catch(e=>{if(!stop)setError(userMessage(e,'순위를 불러오지 못했어요.'));});
   return()=>{stop=true;};

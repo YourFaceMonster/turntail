@@ -16,14 +16,16 @@ export const SOUND_ASSETS={
 } as const;
 export type SoundAssetKind=keyof typeof SOUND_ASSETS;
 const decoded=new WeakMap<AudioContext,Map<SoundAssetKind,{buffer:AudioBuffer,gain:number}>>();
-const loading=new WeakMap<AudioContext,Promise<void>>();
+const loading=new WeakMap<AudioContext,Map<SoundAssetKind,Promise<void>>>();
 
 /** Decode once per context, starting on a user gesture; never delay a game event. */
-export function preloadSoundAssets(ctx:AudioContext):Promise<void>{
+export function preloadSoundAssets(ctx:AudioContext,kinds:readonly SoundAssetKind[]=Object.keys(SOUND_ASSETS) as SoundAssetKind[]):Promise<void>{
  if(typeof fetch!=='function'||typeof ctx.decodeAudioData!=='function')return Promise.resolve();
- const pending=loading.get(ctx);if(pending)return pending;
- const buffers=new Map<SoundAssetKind,{buffer:AudioBuffer,gain:number}>();decoded.set(ctx,buffers);
- const ready=Promise.all((Object.keys(SOUND_ASSETS) as SoundAssetKind[]).map(async kind=>{
+ let pending=loading.get(ctx);if(!pending){pending=new Map();loading.set(ctx,pending);}
+ let buffers=decoded.get(ctx);if(!buffers){buffers=new Map();decoded.set(ctx,buffers);}
+ return Promise.all(kinds.map(kind=>{
+  const prior=pending!.get(kind);if(prior)return prior;
+  const task=(async()=>{
   try{
    const response=await fetch(SOUND_ASSETS[kind].src);
    if(!response.ok)return;
@@ -33,16 +35,16 @@ export function preloadSoundAssets(ctx:AudioContext):Promise<void>{
     const samples=buffer.getChannelData(channel);
     for(let i=0;i<samples.length;i++)peak=Math.max(peak,Math.abs(samples[i]));
    }
-   if(peak>0)buffers.set(kind,{buffer,gain:Math.min(24,SOUND_ASSETS[kind].gain/peak)});
+   if(peak>0)buffers!.set(kind,{buffer,gain:Math.min(24,SOUND_ASSETS[kind].gain/peak)});
   }catch{/* Missing/unsupported audio keeps the existing synthesized cue available. */}
+  })();pending!.set(kind,task);return task;
  })).then(()=>{});
- loading.set(ctx,ready);return ready;
 }
 
 /** False means the caller should use its existing synth; no late sounds are queued. */
 export function playSoundAsset(ctx:AudioContext,kind:SoundAssetKind):boolean{
  if(ctx.state!=='running')return false;
- const asset=decoded.get(ctx)?.get(kind);if(!asset)return false;
+ const asset=decoded.get(ctx)?.get(kind);if(!asset){void preloadSoundAssets(ctx,[kind]);return false;}
  let source:AudioBufferSourceNode|undefined,gain:GainNode|undefined;
  try{
   source=ctx.createBufferSource();gain=ctx.createGain();

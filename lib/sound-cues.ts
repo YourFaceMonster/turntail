@@ -21,28 +21,30 @@ export type CueKind=keyof typeof CUE_ASSETS;
 export function isCueKind(kind:string):kind is CueKind{return Object.prototype.hasOwnProperty.call(CUE_ASSETS,kind);}
 
 const decoded=new WeakMap<AudioContext,Map<CueKind,{buffer:AudioBuffer,gain:number}>>();
-const loading=new WeakMap<AudioContext,Promise<void>>();
+const loading=new WeakMap<AudioContext,Map<CueKind,Promise<void>>>();
 
 /** Decode once per context on a user gesture; a missing file only silences that cue. */
-export function preloadCues(ctx:AudioContext):Promise<void>{
+export function preloadCues(ctx:AudioContext,kinds:readonly CueKind[]=Object.keys(CUE_ASSETS) as CueKind[]):Promise<void>{
  if(typeof fetch!=='function'||typeof ctx.decodeAudioData!=='function')return Promise.resolve();
- const pending=loading.get(ctx);if(pending)return pending;
- const buffers=new Map<CueKind,{buffer:AudioBuffer,gain:number}>();decoded.set(ctx,buffers);
- const ready=Promise.all((Object.keys(CUE_ASSETS) as CueKind[]).map(async kind=>{
+ let pending=loading.get(ctx);if(!pending){pending=new Map();loading.set(ctx,pending);}
+ let buffers=decoded.get(ctx);if(!buffers){buffers=new Map();decoded.set(ctx,buffers);}
+ return Promise.all(kinds.map(kind=>{
+  const prior=pending!.get(kind);if(prior)return prior;
+  const task=(async()=>{
   try{
    const response=await fetch(CUE_ASSETS[kind].src);if(!response.ok)return;
    const buffer=await ctx.decodeAudioData(await response.arrayBuffer());
    let peak=0;for(let c=0;c<buffer.numberOfChannels;c++){const s=buffer.getChannelData(c);for(let i=0;i<s.length;i++)peak=Math.max(peak,Math.abs(s[i]));}
-   if(peak>0)buffers.set(kind,{buffer,gain:Math.min(24,CUE_ASSETS[kind].gain/peak)});
+   if(peak>0)buffers!.set(kind,{buffer,gain:Math.min(24,CUE_ASSETS[kind].gain/peak)});
   }catch{/* keep other cues */}
+  })();pending!.set(kind,task);return task;
  })).then(()=>{});
- loading.set(ctx,ready);return ready;
 }
 
 /** Plays immediately or not at all (never queued late). Returns whether it played. */
 export function playCue(ctx:AudioContext,kind:CueKind,delay=0):boolean{
  if(ctx.state!=='running')return false;
- const asset=decoded.get(ctx)?.get(kind);if(!asset)return false;
+ const asset=decoded.get(ctx)?.get(kind);if(!asset){void preloadCues(ctx,[kind]);return false;}
  try{
   const source=ctx.createBufferSource(),gain=ctx.createGain();
   source.buffer=asset.buffer;gain.gain.value=asset.gain;source.connect(gain);gain.connect(effectOutput(ctx));

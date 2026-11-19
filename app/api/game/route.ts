@@ -1,4 +1,5 @@
 import {maintainRecords} from '../../../lib/record-retention';
+import {allowedGameOrigin,gameCorsHeaders} from "../../../lib/store-cors";
 import { env } from "cloudflare:workers";
 import {act,assertTurnReady,botMove,player,room,start,view,capacity,advanceRoom,hostSeat,restartMatch,revealHand,changeLobbyAI,type Game} from "../../../lib/game";
 import {avatarImage,updateProfile,sendChat} from "../../../lib/social";
@@ -11,13 +12,17 @@ import {claimDailyAttempt,dailyBoardRequest,dailyFinishRequest,dailyFinishStatem
 import {dailyDate,DAILY_AI_NAMES,DAILY_SIZE} from "../../../lib/daily";
 export const dynamic="force-dynamic";
 function reply(x:unknown,status=200){return Response.json(x,{status,headers:{"Cache-Control":"no-store"}});}
+function storeOrigins(){return (env as unknown as {TURNTALE_ALLOWED_ORIGINS?:string}).TURNTALE_ALLOWED_ORIGINS||'';}
+export function OPTIONS(req:Request){return new Response(null,{status:allowedGameOrigin(req,storeOrigins())?204:403,headers:gameCorsHeaders(req,storeOrigins())});}
 async function deviceKey(secret:unknown){
  if(typeof secret!=="string"||!/^[a-f0-9-]{36}$/i.test(secret))return null;
  const digest=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(secret));
  return Array.from(new Uint8Array(digest),x=>x.toString(16).padStart(2,"0")).join("");
 }
-export async function POST(req:Request){try{
- const origin=req.headers.get("origin");if(origin&&origin!==new URL(req.url).origin)return reply({error:"접속 주소를 확인해 주세요."},403);
+export async function POST(req:Request){
+ const origins=storeOrigins(),reply=(x:unknown,status=200)=>Response.json(x,{status,headers:gameCorsHeaders(req,origins)});
+ try{
+ const origin=req.headers.get("origin");if(origin&&!allowedGameOrigin(req,origins))return reply({error:"접속 주소를 확인해 주세요."},403);
  const b=await req.json() as any;const db=env.DB;if(!db)throw Error("게임 저장소에 연결하지 못했어요.");
  const profile=await deviceKey(b.profileToken);
  const retentionReady=await maintainRecords(db);
