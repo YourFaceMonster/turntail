@@ -118,3 +118,8 @@
 - 사용자 결정(원스토어 심의 등급): 친구 채팅을 없앴다. 상단 '💬 채팅' 버튼·채팅 창·결과 화면 '친구와 채팅' 버튼 삭제, 서버 chat 요청은 거절, 방 정보의 chat은 항상 빈 목록(예전 저장 방의 메시지도 안 보임). 프로필 이름·사진은 그대로.
 - 검증: tsc 통과, 테스트 450/450(첫 실행에서 1개 실패, 재실행에서 전부 통과), 운영 빌드 통과. 0.7.41 (c199c84) GitHub main push 후 공개 HTML 0.7.41, 공개 page 묶음에 0.7.41 있고 '친구와 채팅' 없음 확인.
 - 원스토어판 0.7.41(outputs/stores/0.7.41-2026-11-20T00-14-35-405Z)을 turntale-onestore에 다시 올렸다. 공개 page 묶음 0.7.41·채팅 문구 없음 확인. 광고 ID는 아직 없다.
+
+## 0.7.42 (2026-11-20) · 개인정보처리방침·원스토어 광고 ID
+- public/privacy.html 추가(닉네임·프로필 사진·무작위 기기 ID·게임 기록·접속 기록, 보관 기간, Cloudflare·원스토어 위탁, 국외 이전 표, 문의 turntail01@gmail.com). 원스토어 '정보 수집 및 공유' 신고와 맞춘 내용이다.
+- 검증: tsc 통과, 테스트 450/450, 운영 빌드 통과. 0.7.42 (9b7825f) push 후 공개 HTML 0.7.42, https://turntail.yousexybaby.workers.dev/privacy.html 200·연락처 확인.
+- 원스토어 전면 광고 지면 ID xNFN7-Y8TD-MFWV-9ESD를 TURNTALE_ONESTORE_PLACEMENT로 넣어 0.7.42 원스토어판(outputs/stores/0.7.42-2026-11-20T00-56-33-912Z)을 빌드해 turntale-onestore에 올렸다. 공개 store-lifecycle 묶음에 ID 포함 확인, itch판에는 없음. 스토어 빌드에는 privacy.html이 들어가지 않아 방침 주소는 본 사이트 주소를 쓴다. 원스토어 앱 안 광고 표시는 아직 확인하지 못했다.
