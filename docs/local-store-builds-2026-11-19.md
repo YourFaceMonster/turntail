@@ -70,3 +70,5 @@ ZIP 최상위에 `index.html`이 있다. 두 묶음 모두 itch.io 기본 제한
 ## 0.7.40 호스팅 (2026-11-19)
 - 원스토어판 호스팅: https://turntale-onestore.pages.dev (Cloudflare Pages, 직접 업로드). 다시 올리기: build-stores.mjs 실행 후 `wrangler pages deploy outputs/stores/<새 폴더>/onestore/game --project-name turntale-onestore --branch main`.
 - 서버 허용 주소는 wrangler.jsonc vars에 넣었다. 남은 것: 원스토어 Web 상품 등록·광고 지면 ID 발급 → TURNTALE_ONESTORE_PLACEMENT 지정 재빌드·재업로드 → 원스토어 앱 안 실기기 확인.
+## 0.7.41 호스트 (2026-11-20)
+- 채팅 삭제판 0.7.41을 다시 빌드해 turntale-onestore에 올렸다(5개 파일 변경). 광고 ID는 아직 없다.

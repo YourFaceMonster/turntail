@@ -114,3 +114,7 @@
 - Cloudflare Pages 프로젝트 turntale-onestore를 새로 만들고 0.7.40 원스토어판(outputs/stores/0.7.40-2026-11-19T13-15-44-395Z/onestore/game, 794파일)을 wrangler pages deploy로 직접 올렸다. 주소 https://turntale-onestore.pages.dev (Git 연결 없음, 새 버전마다 다시 빌드해 올려야 한다).
 - 본 서버 wrangler.jsonc vars에 TURNTALE_ALLOWED_ORIGINS=https://turntale-onestore.pages.dev. 0.7.40 (b328656) push 후 공개 0.7.40, 그 주소의 OPTIONS 204·허용 헤더, 다른 주소 403, 원스토어판 화면 0.7.40·오늘의 판 순위 요청 200 확인.
 - 광고 지면 ID가 없어 실광고는 꺼져 있다. 원스토어 앱 안·실기기·광고는 아직 확인하지 못했다.
+## 0.7.41 (2026-11-20) · 친구 채팅 삭제
+- 사용자 결정(원스토어 심의 등급): 친구 채팅을 없앴다. 상단 '💬 채팅' 버튼·채팅 창·결과 화면 '친구와 채팅' 버튼 삭제, 서버 chat 요청은 거절, 방 정보의 chat은 항상 빈 목록(예전 저장 방의 메시지도 안 보임). 프로필 이름·사진은 그대로.
+- 검증: tsc 통과, 테스트 450/450(첫 실행에서 1개 실패, 재실행에서 전부 통과), 운영 빌드 통과. 0.7.41 (c199c84) GitHub main push 후 공개 HTML 0.7.41, 공개 page 묶음에 0.7.41 있고 '친구와 채팅' 없음 확인.
+- 원스토어판 0.7.41(outputs/stores/0.7.41-2026-11-20T00-14-35-405Z)을 turntale-onestore에 다시 올렸다. 공개 page 묶음 0.7.41·채팅 문구 없음 확인. 광고 ID는 아직 없다.
