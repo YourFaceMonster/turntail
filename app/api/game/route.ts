@@ -2,7 +2,7 @@ import {maintainRecords} from '../../../lib/record-retention';
 import {allowedGameOrigin,gameCorsHeaders} from "../../../lib/store-cors";
 import { env } from "cloudflare:workers";
 import {act,assertTurnReady,botMove,player,room,start,view,capacity,advanceRoom,hostSeat,restartMatch,revealHand,changeLobbyAI,type Game} from "../../../lib/game";
-import {avatarImage,updateProfile,sendChat} from "../../../lib/social";
+import {avatarImage,updateProfile} from "../../../lib/social";
 import {scoreEntries,mergeScores,type HighScore} from "../../../lib/challenge";
 import {LINEUP_SUMMARY_SQL,LINEUP_PLAYERS_SQL} from "../../../lib/history";
 import {sharedScores,LEADERBOARD_CTE,boardArgs,PAGE_SIZE,PRUNE_SCORES_SQL,PRUNE_MATCHES_SQL} from "../../../lib/leaderboard";
@@ -108,7 +108,7 @@ export async function POST(req:Request){
    skipped=changed&&!["state","chat","profile","reveal","abandon"].includes(b.action);
    if(!changed&&!["state","chat","profile","reveal","abandon"].includes(b.action)&&b.revision!==row.revision&&(!b.eventId||b.eventId!==g.lastEvent?.id))return reply({error:"화면을 최신 상태로 맞췄어요. 다시 선택해 주세요.",game:view(g,token),revision:row.revision},409);
    if(b.action==="state"||skipped){}
-   else if(b.action==="chat"){if(g.practice)throw Error("채팅은 친구 대전에서 이용해 주세요.");sendChat(g,me,b.text,Date.now(),typeof b.messageId==="string"&&/^[a-f0-9-]{36}$/i.test(b.messageId)?b.messageId:crypto.randomUUID());}
+   else if(b.action==="chat"){throw Error("채팅 기능은 더 이상 제공하지 않아요.");}
    else if(b.action==="reveal")revealHand(g,me,!!b.show);
    else if(b.action==="abandon"){}
    else if(b.action==="newChallenge")throw Error("도전모드는 종료됐어요.");
