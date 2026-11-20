@@ -1,0 +1,31 @@
+/* ONE store build only (2026-11-20).
+   The ONE store app runs web games full screen: the status bar disappears and the camera punch hole sits
+   over the top of the page, while the WebView reports safe-area-inset-top as 0. User choice: backgrounds
+   keep filling the whole screen (like other games); only text and buttons move down.
+   - The game CSS already avoids notches with env(safe-area-inset-top). In this build those env() values are
+     rewritten to var(--store-safe-top) (vite.store.config.ts), so those screens move their buttons down.
+   - Screens that never used env() get the same top space below.
+   - --store-safe-top is at least 32px in portrait. In landscape the punch hole is at a side; use the host value. */
+:root{--store-safe-top:max(env(safe-area-inset-top,0px),32px)}
+@media (orientation:landscape){:root{--store-safe-top:env(safe-area-inset-top,0px)}}
+
+/* User request: a dark fade at the very top over every screen (backgrounds stay as they are), fading out by
+   the end of the punch-hole space. Drawn above everything and ignores taps. */
+html::after{content:'';position:fixed;z-index:2147483647;left:0;right:0;top:0;height:var(--store-safe-top);pointer-events:none;background:linear-gradient(rgba(0,0,0,.78),rgba(0,0,0,.42) 45%,rgba(0,0,0,0))}
+
+@media (orientation:portrait){
+ /* In-game table: the top bar row (logo, 1라운드, buttons). */
+ .table-v211>.topbar{margin-top:var(--store-safe-top)!important}
+ /* Story map HUD (place name, HP, 저장). */
+ .journey-game-hud{padding-top:var(--store-safe-top)!important}
+
+ /* The ONE store app also floats its own menu button over the top right corner (about 38px wide, down to
+    ~58px from the top). Buttons that land there move left automatically (onestore-layout.ts). */
+ [data-store-nudge]{translate:var(--store-nudge) 0!important}
+ /* In-game top bar on a 375px phone: buttons end at x 335 instead of 366; the labels between slide left. */
+ .topbar>.top-actions{translate:-31px 0}
+ .topbar>.ingame-round{translate:-8px 0}
+ .topbar>.ingame-table-theme{translate:-10px 0}
+ .turntale .menu-profile{right:52px!important}
+ .prologue-skip{right:52px!important}
+}

@@ -76,3 +76,21 @@ ZIP 최상위에 `index.html`이 있다. 두 묶음 모두 itch.io 기본 제한
 ## 0.7.42 광고 ID (2026-11-20)
 - 원스토어 전면 광고 지면 ID: xNFN7-Y8TD-MFWV-9ESD. 원스토어판을 다시 빌드할 때마다 TURNTALE_ONESTORE_PLACEMENT에 이 값을 넣어야 광고가 켜진다.
 - 개인정보처리방침 주소: https://turntail.yousexybaby.workers.dev/privacy.html (스토어 빌드에는 포함 안 됨).
+
+## 원스토어판만 다시 올림 (2026-11-20, 버전 표시 0.7.42 그대로)
+- 펀치홀: 원스토어 앱 전체화면에서 카메라 구멍이 맨 윗줄을 가려, 원스토어판만 위 32px(또는 기기가 알려 주는 값 중 큰 쪽) 검은 띠를 두고 게임 전체를 내렸다(store/onestore-safe-area.css). 게임 CSS의 vh/dvh는 빌드 때 --app-vh로 바꾼다(vite.store.config.ts). 가로 화면은 기기 값만 쓴다.
+- 스토리 테스트 모드를 원스토어판에서 숨겼다.
+- 광고 시험: 테스트 URL https://turntale-onestore.pages.dev/?adtest=1 로 열면 설정 창에 '광고 시험' 버튼이 나와 전면 광고를 바로 요청하고 결과를 글로 보여 준다.
+- 오늘의 판: 판이 끝날 때마다 띄우던 광고를 없애고, 오늘 두 번째 이후 도전(연습판 포함)을 시작할 때 전면 광고를 띄운다(3분 간격 규칙은 같음). 본 사이트는 광고가 없어 변화 없음.
+- 빌드 outputs/stores/0.7.42-2026-11-20T01-24-21-191Z, Pages 공개 CSS에 새 규칙 확인. 테스트 450/450, tsc 통과. 본 사이트(GitHub)에는 아직 push하지 않았다. 앱 안 광고·펀치홀 확인은 사용자 몫.
+- 폰 확인(사용자): 광고는 뜸. 광고 뒤 오늘의 판 화면이 나무판만 보이고 멈춤 → 광고 중 받은 일시정지가 풀리지 않던 것. 광고가 끝나면, 화면이 다시 보이거나 터치하면 일시정지를 푼다. 탁자 배경·팝업은 body에 바로 그려져 띠를 덮었으므로 띠 기준을 #root에서 body로 옮겼다. 다시 올림: outputs/stores/0.7.42-2026-11-20T01-38-40-976Z.
+- 띠 꾸미기(사용자 선택 A+B, 시험판): 검은 띠 대신 지금 화면 맨 위에 실제로 보이는 배경(메뉴 그림, 대결 탁자 나무 무늬 등)을 띠까지 이어 그리고 살짝 어둡게 한다(store/onestore-band.ts). 대결 화면에서는 윗줄의 턴테일 로고를 띠 왼쪽 작은 로고(public/ui/onestore-band-wordmark-v1.webp, 원본 wordmark-v035에서 잘라 만듦)로 올리고 원래 자리는 비운다. 가로 화면은 로고 없음. ?adtest=1 칸에 기기가 알려 주는 안전 영역·화면 크기를 표시한다. 빌드 outputs/stores/0.7.42-2026-11-20T01-58-23-683Z.
+- 띠 수정(사용자): 띠를 어둡게 하던 그림자를 없애고 배경만 이어 그린다. 작은 띠 로고 파일은 지우고, 대결 화면 윗줄의 턴테일 로고를 1.26배로 키워 띠까지 올렸다(세로 화면만, 375px 폰 기준 탁자 이름 글자 왼쪽에서 끝남). 로고가 잘리지 않게 대결 화면 main의 세로 넘침을 보이게 했다. 빌드 D:\CHATGPT_CODEX\17_Turntail\site-publish-checkout\outputs\stores\0.7.42-2026-11-20T02-11-03-001Z.
+- 띠 최종 시험(사용자 B안, 다른 게임 참고): 로고는 원래 자리·크기로 되돌리고 띠는 배경만 이어 그린다. 팝업이 화면을 어둡게 하면 띠도 같이 어둡게(--band-shade). 원스토어 앱의 오른쪽 위 ⋮ 버튼(약 40px 폭)을 피해 대결 윗줄 버튼을 28px 왼쪽으로(라운드·탁자 이름도 조금씩), 메인 '내 프로필'·프롤로그 건너뛰기를 오른쪽 52px로 옮겼다(세로 화면). 빌드 D:\CHATGPT_CODEX\17_Turntail\site-publish-checkout\outputs\stores\0.7.42-2026-11-20T02-24-08-618Z.
+- 띠 그라데이션(사용자): 띠 위쪽 끝을 어둡게(검정 78%) 하고 아래로 갈수록 투명하게 해 게임 화면과 자연스럽게 잇는다. 빌드 D:\CHATGPT_CODEX\17_Turntail\site-publish-checkout\outputs\stores\0.7.42-2026-11-20T02-25-18-689Z.
+- ⋮ 자동 피하기(사용자 '나머지도'): 세로 화면에서 화면 오른쪽 위 38px×58px(원스토어 ⋮ 자리)에 들어온 버튼은 어느 화면이든 자동으로 왼쪽으로 옮긴다(같은 작은 버튼 묶음은 함께, onestore-band.ts clearHostMenu). 미리보기에서 설정·튜토리얼 창의 × 버튼이 옮겨지는 것 확인. 프롤로그·컷씬처럼 그림을 img로 그리는 화면도 띠가 그림을 이어받게 했다(미리보기 창이 숨겨져 프롤로그 로딩이 느려 직접 확인은 못 함). 빌드 D:\CHATGPT_CODEX\17_Turntail\site-publish-checkout\outputs\stores\0.7.42-2026-11-20T02-37-38-656Z.
+- 컷씬 띠 이음매(사용자): 띠에 그림을 따로 그리면 컷씬 카메라 확대·이동과 어긋나므로, 프롤로그·컷씬 그림(.prologue-picture)과 누르는 면을 띠까지 위로 늘렸다(body·잘라내는 조상은 overflow:clip + overflow-clip-margin). 어두운 위쪽 그라데이션은 body::before로 모든 것 위에 둔다. 새 그림은 필요 없음. 빌드 D:\CHATGPT_CODEX\17_Turntail\site-publish-checkout\outputs\stores\0.7.42-2026-11-20T02-48-04-983Z.
+- 폰 확인: 컷씬 위가 여전히 잘림 → 폰 WebView가 overflow-clip-margin을 무시한 것으로 보고, 로고 시험 때 폰에서 통한 overflow:visible 방식으로 바꿨다(body, 그리고 세로 화면에서 .prologue-picture를 잘라내던 조상). 그림 자체(.prologue-picture)는 계속 자기 영역을 잘라 카메라 확대가 밖으로 넘치지 않는다. 빌드 D:\CHATGPT_CODEX\17_Turntail\site-publish-checkout\outputs\stores\0.7.42-2026-11-20T03-09-46-935Z.
+- 방식 변경(사용자 '왜 띠를 다시 그려야 해?' → '해'): 게임 전체를 내리고 띠를 다시 그리던 방식(배경 복사·그라데이션·컷씬 늘리기, onestore-band.ts)을 모두 걷어 냈다. 배경은 화면 전체를 채우고 글자·버튼만 내린다. 원스토어 WebView가 safe-area-inset-top을 0으로 주므로, 빌드 때 게임 CSS의 env(safe-area-inset-top)를 var(--store-safe-top)(세로 최소 32px)로 바꾼다. env를 안 쓰던 대결 윗줄(.table-v211>.topbar)과 지도 HUD(.journey-game-hud)는 직접 위 여백을 준다. ⋮ 자동 피하기는 onestore-layout.ts로 옮겨 유지. 미리보기: 메인 '내 프로필' 32px, 대결 윗줄 32px, 맨 아래 버튼 795px(화면 812). 빌드 outputs/stores/0.7.42-2026-11-20T03-22-30-633Z.
+- 위쪽 그라데이션(사용자): 모든 화면 맨 위 32px에 어두운→투명 그라데이션(html::after, 터치 통과)을 얹었다. 배경은 그대로. 빌드 D:\CHATGPT_CODEX\17_Turntail\site-publish-checkout\outputs\stores\0.7.42-2026-11-20T03-25-31-399Z.
+- 프롤로그 뒤 깜빡임(사용자 제보): 새 여정이 일반 대결용 입장 연출(탁자·'새로운 승부를 준비하고 있어요')을 거쳐 지도가 덮이면서 대결 화면이 잠깐 보였다. 방금 저장한 여정이므로 '이어서 하기'와 같은 방법(fadeIntoSavedTable)으로 연다(미리보기·테스트 여정은 기존 경로). 공용 코드 app/page.tsx 변경이라 본 사이트는 다음 배포 때 반영. 빌드 D:\CHATGPT_CODEX\17_Turntail\site-publish-checkout\outputs\stores\0.7.42-2026-11-20T03-53-02-996Z.

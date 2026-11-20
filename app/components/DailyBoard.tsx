@@ -11,7 +11,7 @@ const fmt=(date:string)=>{const [,m,d]=date.split('-');return `${Number(m)}월 $
 const signed=(n:number)=>n>0?`+${n}`:String(n);
 
 /** 오늘의 판: today's ranking and the start button. The score is recorded by the server from the round itself. */
-export default function DailyBoard({profileToken,start,close}:{profileToken:string|null,start:()=>void,close:()=>void}){
+export default function DailyBoard({profileToken,start,close}:{profileToken:string|null,start:(again:boolean)=>void,close:()=>void}){
  const [board,setBoard]=useState<Board|null>(null),[error,setError]=useState(''),[day,setDay]=useState<'today'|'yesterday'>('today');
  const panel=useRef<HTMLElement>(null);
  useEffect(()=>{panel.current?.focus();},[]);
@@ -35,6 +35,6 @@ export default function DailyBoard({profileToken,start,close}:{profileToken:stri
   {error?<p role="alert" className="daily-error">{error}</p>:!board?<p className="daily-empty" role="status">순위를 불러오는 중…</p>:
    board.rows.length?<ol className="daily-rows">{board.rows.map((r,i)=><li key={i} className={r.isMe?'is-me':''} data-medal={r.rank<=3?r.rank:undefined}><b>{r.rank}</b><span>{r.name}{r.win&&<em>1등</em>}{!!r.tries&&<small className="daily-tries">도전 {r.tries}회</small>}</span><strong>{signed(r.score)}점</strong></li>)}</ol>:<p className="daily-empty">아직 기록이 없어요. 첫 기록을 남겨 보세요!</p>}
   {board&&<p className="daily-mine">{board.mine?`내 순위 ${board.mine.rank}위 / ${board.total}명 · ${signed(board.mine.score)}점${board.mine.tries?` · 도전 ${board.mine.tries}회`:''}`:`참가 ${board.total}명`}</p>}
-  {showingToday&&<><button className="primary full" onClick={start}>{startLabel}</button><p className="daily-note">{note}{!profileToken&&' 이 기기 기록을 확인하지 못해 순위에는 올라가지 않아요.'}</p></>}
+  {showingToday&&<><button className="primary full" onClick={()=>start(!!board&&(board.attempt==='again'||board.attempt==='done'||used>0))}>{startLabel}</button><p className="daily-note">{note}{!profileToken&&' 이 기기 기록을 확인하지 못해 순위에는 올라가지 않아요.'}</p></>}
  </section></div>;
 }

@@ -1,7 +1,7 @@
 'use client';
 import {gameFetch,inviteUrl} from '../lib/distribution';
 
-import {hasResultAd,showResultAd} from '../lib/distribution-ads';
+import {hasResultAd,showResultAd,showDailyAgainAd} from '../lib/distribution-ads';
 import {storePaused,subscribeStorePause} from '../lib/store-lifecycle';
 import {userMessage} from '../lib/user-message';
 import {forgeRelic,rpgMaxHp} from '../lib/rpg-rework';
@@ -470,7 +470,10 @@ function readJSON<T>(key:string,fallback:T):T{try{return JSON.parse(safeGet(key)
   }catch(e){setRpgError(userMessage(e,'스토리 여정을 시작하지 못했어요.'));setNewGameKind(null);setRpgHubOpen(true);}
  }
  const enteredRpgDraft=useRef<Game|null>(null);
- function enterNewRpg(){const draft=rpgIntroDraft;if(!draft||enteredRpgDraft.current===draft.game)return;enteredRpgDraft.current=draft.game;if(rpgPreview.current?.mode==='screens'){showRpgPreviewScreen('map');return;}try{if(!rpgPreview.current?.owns(draft.game)){setRpgArchive(saveRpgGame(localStorage,draft.game,draft.replace));refreshSaves();}setRpgIntroDraft(null);launchPreparedGame(draft.game);}catch(e){setRpgError(userMessage(e,'스토리 여정을 시작하지 못했어요.'));setRpgIntroDraft(null);setRpgHubOpen(true);}}
+ function enterNewRpg(){const draft=rpgIntroDraft;if(!draft||enteredRpgDraft.current===draft.game)return;enteredRpgDraft.current=draft.game;if(rpgPreview.current?.mode==='screens'){showRpgPreviewScreen('map');return;}try{if(!rpgPreview.current?.owns(draft.game)){setRpgArchive(saveRpgGame(localStorage,draft.game,draft.replace));refreshSaves();}setRpgIntroDraft(null);
+  // 2026-11-20 user report: the new-table entrance (table + "새로운 승부를 준비하고 있어요") flashed before the map. The journey
+  // was just saved, so open it the way 이어서 하기 does. Preview and test journeys keep the prepared-game path.
+  if(!rpgPreview.current?.owns(draft.game)&&!draft.game.rpgTest)fadeIntoSavedTable(draft.game,{code:draft.game.code,token:draft.game.players[0].token,local:true});else launchPreparedGame(draft.game);}catch(e){setRpgError(userMessage(e,'스토리 여정을 시작하지 못했어요.'));setRpgIntroDraft(null);setRpgHubOpen(true);}}
  function resumeRpg(){
   if(pending.current||entranceBusy.current)return;
   try{const saved=readRpgArchive(localStorage),g=saved.active;if(!g)throw Error('저장된 스토리 여정이 없어요.');setRpgArchive(saved);setRpgHubOpen(false);fadeIntoSavedTable(g,{code:g.code,token:g.players[0].token,local:true});}
@@ -561,8 +564,10 @@ function readJSON<T>(key:string,fallback:T):T{try{return JSON.parse(safeGet(key)
   * 오늘의 판 (2026-11-12, user choice C): played in the browser like 일반모드 with today's shared deal. The server
   * only reserves the ranked slot here and records the final score (submitDaily). Offline → an unranked practice table.
   */
- async function startDaily(){
+ async function startDaily(again=false){
   if(pending.current||entranceBusy.current)return;setDailyOpen(false);setSetupOpen(null);armAudio();pending.current=true;setBusy(true);
+  // 2026-11-20 user decision (ONE store): the ad sits between today's first try and the next one.
+  if(again){try{await showDailyAgainAd();}catch{}}
   let claim:{date?:string,code?:string,ranked?:boolean}={};
   try{const res=await gameFetch("/api/game",{method:"POST",headers:{"Content-Type":"application/json"},signal:AbortSignal.timeout(8000),body:JSON.stringify({action:"dailyClaim",profileToken:profile.current,name:name||"나"})});if(res.ok)claim=await res.json();}catch{}
   finally{pending.current=false;setBusy(false);}
@@ -743,7 +748,7 @@ function readJSON<T>(key:string,fallback:T):T{try{return JSON.parse(safeGet(key)
  {bombEdition&&classicBomb.error&&!error&&<div className="error" role="alert">{classicBomb.error}</div>}
  {yachtOpen&&<YachtPractice playerName={name||'여행자'} playerAvatar={<SeatAvatar seat={0} photo={avatar}/>} settings={()=>{armAudio();setSettingsOpen(true);}} close={()=>setYachtOpen(false)}/>}
  {singleMenuOpen&&<SinglePlayerMenu close={()=>setSingleMenuOpen(false)} yacht={()=>{armAudio();setSingleMenuOpen(false);setYachtOpen(true);}} normal={()=>{setSingleMenuOpen(false);setSetupOpen('single');}} rpg={()=>{setSingleMenuOpen(false);openRpgHub();}} daily={bombEdition?undefined:()=>{armAudio();setSingleMenuOpen(false);setDailyOpen(true);}}/>}
- {dailyOpen&&<DailyBoard profileToken={profile.current||null} close={()=>setDailyOpen(false)} start={()=>void startDaily()}/>}
+ {dailyOpen&&<DailyBoard profileToken={profile.current||null} close={()=>setDailyOpen(false)} start={again=>void startDaily(again)}/>}
  {resumeOpen&&<ResumePicker slots={saveSlots} errors={saveErrors} choose={resumeSlot} remove={removeSavedSlots} close={()=>setResumeOpen(false)}/>}
  {newGameKind&&<NewGameConfirm mode={newGameKind} detail={saveSlots.find(s=>s.mode===newGameKind)?.detail||'진행 중인 게임'} cancel={()=>setNewGameKind(null)} confirm={()=>newGameKind==='rpg'?startNewRpg(true):startPractice()}/>}
  {rpgPreviewMode&&<RpgPreviewTools mode={rpgPreviewMode} screen={showRpgPreviewScreen} busy={busy||entrance!=='idle'} exit={()=>{leaveTable();openRpgHub();}}/>}
