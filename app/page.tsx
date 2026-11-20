@@ -471,9 +471,9 @@ function readJSON<T>(key:string,fallback:T):T{try{return JSON.parse(safeGet(key)
  }
  const enteredRpgDraft=useRef<Game|null>(null);
  function enterNewRpg(){const draft=rpgIntroDraft;if(!draft||enteredRpgDraft.current===draft.game)return;enteredRpgDraft.current=draft.game;if(rpgPreview.current?.mode==='screens'){showRpgPreviewScreen('map');return;}try{if(!rpgPreview.current?.owns(draft.game)){setRpgArchive(saveRpgGame(localStorage,draft.game,draft.replace));refreshSaves();}setRpgIntroDraft(null);
-  // 2026-11-20 user report: the new-table entrance (table + "새로운 승부를 준비하고 있어요") flashed before the map. The journey
-  // was just saved, so open it the way 이어서 하기 does. Preview and test journeys keep the prepared-game path.
-  if(!rpgPreview.current?.owns(draft.game)&&!draft.game.rpgTest)fadeIntoSavedTable(draft.game,{code:draft.game.code,token:draft.game.players[0].token,local:true});else launchPreparedGame(draft.game);}catch(e){setRpgError(userMessage(e,'스토리 여정을 시작하지 못했어요.'));setRpgIntroDraft(null);setRpgHubOpen(true);}}
+  // 2026-11-20: opening a new journey like 이어서 하기 (to avoid a brief table flash) left the map closed and showed a
+  // settlement window instead, so the prepared-game entrance stays.
+  launchPreparedGame(draft.game);}catch(e){setRpgError(userMessage(e,'스토리 여정을 시작하지 못했어요.'));setRpgIntroDraft(null);setRpgHubOpen(true);}}
  function resumeRpg(){
   if(pending.current||entranceBusy.current)return;
   try{const saved=readRpgArchive(localStorage),g=saved.active;if(!g)throw Error('저장된 스토리 여정이 없어요.');setRpgArchive(saved);setRpgHubOpen(false);fadeIntoSavedTable(g,{code:g.code,token:g.players[0].token,local:true});}
