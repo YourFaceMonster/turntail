@@ -6,7 +6,8 @@
   "compatibility_flags": ["nodejs_compat"],
   // ONE store web build host (Cloudflare Pages). Exact origins only, comma separated. See lib/store-cors.ts.
   "vars": {
-    "TURNTALE_ALLOWED_ORIGINS": "https://turntale-onestore.pages.dev"
+    // https://localhost: the Google Play app (Capacitor serves the game from inside the APK at this origin).
+    "TURNTALE_ALLOWED_ORIGINS": "https://turntale-onestore.pages.dev,https://localhost"
   },
   "d1_databases": [
     {
