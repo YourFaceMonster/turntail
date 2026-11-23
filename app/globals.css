@@ -409,6 +409,13 @@ main.turntale.active-table{display:flex!important;flex-direction:column!importan
  .turntale .title-play{width:100%;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.turntale .title-play .pixel-button{min-height:47px;font-size:clamp(15px,2.6vw,21px);padding:10px;grid-template-columns:12px minmax(0,1fr) 12px;gap:4px;border-radius:14px}.turntale .title-play .pixel-button:before{border-radius:9px}.button-jewel{font-size:13px}
  .turntale .menu-tutorial{min-height:32px;margin-top:13px;padding:6px 22px;font-size:12px}.turntale .title-tools{margin-top:14px;gap:30px}.turntale .title-tools button{flex-direction:row;gap:8px;font-size:11px}.turntale .title-tools button>span{width:29px;height:28px}.turntale .title-tools svg{width:17px;height:17px}.turntale .title-ornament{display:none}
 }
+/* Very short landscape phones (e.g. Galaxy S25 Ultra app, 384px tall, edge-to-edge): keep the menu inside the screen and clear the status/gesture bars. */
+@media(orientation:landscape) and (max-height:420px){
+ .turntale .title-content{padding:6px 0 max(6px,env(safe-area-inset-bottom))}.turntale .title-logo-premium h1>img{max-height:62px}
+ .turntale .title-suits{margin:4px 0 7px}.turntale .menu-tutorial{margin-top:8px}.turntale .title-tools{margin-top:8px}
+ .turntale .title-version{left:auto;right:max(12px,env(safe-area-inset-right));bottom:max(4px,env(safe-area-inset-bottom));transform:none;translate:none}
+}
+@media(orientation:landscape) and (max-height:600px){.turntale .menu-profile{top:max(10px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right))}}
 /* Smooth C lettering: live Korean text, flat ivory faces and one bronze offset. */
 .turntale .title-content .title-logo-smooth{width:min(380px,100%);text-align:center}
 .turntale .title-content .title-logo-smooth h1{line-height:1.1;letter-spacing:-5px;padding-right:5px}
