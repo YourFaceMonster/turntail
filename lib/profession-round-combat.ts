@@ -8,6 +8,7 @@ import { withRelicActivations } from './rpg-relic-feedback';
 import { recordRpgRoundHealth } from './rpg-round-health';
 import type { HpBattleEvent } from './hp-item-battle';
 import type { ProfessionEffect } from './rpg-profession-combat';
+import {tr} from './i18n/index.ts';
 export type RoundCombatState = {
     round: number;
     handFinished?: boolean;
@@ -94,7 +95,7 @@ export function queueProfessionRoundBattle(g: Game, now = Date.now()): HpBattleE
     const event: HpBattleEvent = { id, round: g.round, actor, label, damage: skill.damage, maxHp: hpLimit(run), ordinal: c.battles.length + 1, winningTiles: g.trick.map(t => ({ ...t })), damageTaken: damage, hpBefore: [...run.hp], hpAfter: [...run.hp], professions: effects, relics: relic.effects, relicDamage: relic.damage, relicHealing: relic.heal, roundPending: true, at: now };
     c.battles.push(event);
     c.battleTiles = g.players.map(() => 0);
-    g.log = [`${g.players[actor].name} · ${label} 승리 · ${role === 'rogue' && label !== '싱글' ? `바닥 ${effects[0]?.revealed || 0}장 확인 · 함정 적립` : skill.heal ? `회복 ${skill.heal} 적립` : `공격 ${skill.damage} 적립`}`, ...g.log].slice(0, 40);
+    g.log = [tr('{0} · {1} 승리 · {2}',{0:g.players[actor].name,1:label,2:role === 'rogue' && label !== '싱글' ? `바닥 ${effects[0]?.revealed || 0}장 확인 · 함정 적립` : skill.heal ? `회복 ${skill.heal} 적립` : `공격 ${skill.damage} 적립`}), ...g.log].slice(0, 40);
     return event;
 }
 /** Card results are captured first; all HP then resolves together before money/progression. */
@@ -132,10 +133,10 @@ export function settleProfessionRound(g: Game, now = Date.now()) {
         const r = run.roundHealth;
         before.forEach((hp, seat) => { const net = run.hp[seat] - hp; r.damage[seat] -= Math.max(0, -net); r.healing[seat] -= Math.max(0, net); const heal = Math.min(s.healing[seat], Math.max(0, hpLimit(run) - hp + applied[seat])); r.healing[seat] += heal; r.damage[seat] += Math.min(applied[seat], hp + heal); });
     }
-    const summary: HpBattleEvent = { id: `${g.code}:${g.round}:settlement`, round: g.round, actor: g.winner, label: '판 전체 정산', damage: s.appliedDamage.reduce((a, b) => a + b, 0), maxHp: hpLimit(run), damageTaken: s.appliedDamage, blockedDamage: blocked, hpBefore: before, hpAfter: [...run.hp], roundFinal: true, roundSettlement: true, roundHealing: [...s.appliedHealing!], at: now };
+    const summary: HpBattleEvent = { id: `${g.code}:${g.round}:settlement`, round: g.round, actor: g.winner, label: tr('판 전체 정산'), damage: s.appliedDamage.reduce((a, b) => a + b, 0), maxHp: hpLimit(run), damageTaken: s.appliedDamage, blockedDamage: blocked, hpBefore: before, hpAfter: [...run.hp], roundFinal: true, roundSettlement: true, roundHealing: [...s.appliedHealing!], at: now };
     c.lastBattle = summary;
     const relics = c.battles.flatMap(e => e.relics || []);
     if (relics.length)
         Object.assign(run, withRelicActivations(run, relics, now));
-    g.log = ['판 종료 · 공격·회복·함정 일괄 정산', ...g.log].slice(0, 40);
+    g.log = [tr('판 종료 · 공격·회복·함정 일괄 정산'), ...g.log].slice(0, 40);
 }

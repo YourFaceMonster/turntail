@@ -11,6 +11,7 @@ import {RPG_BASIC_ITEMS,RPG_SHOP_ITEMS,giveRpgEnemyItems} from './rpg-items.ts';
 import {stageOpponents} from './stage-theme.ts';
 import {RPG_TWINS} from './rpg-twins.ts';
 import {RPG_GUARDIANS,rpgStageCast} from './rpg-chapters.ts';
+import {tr} from './i18n/index.ts';
 
 function prepareEnemyItems(game:Game){if(game.rpgRun?.rework)return;if(isRpgPhaseOne(game))game.rpgRun!.enemyConsumables=Object.fromEntries([1,2].map(seat=>[seat,[...RPG_PHASE_ONE.enemyStartingItems]]));else giveRpgEnemyItems(game.rpgRun!,game.rpgTest?2:1);}
 function opponents(stage:number,journey=false){
@@ -35,17 +36,17 @@ export function createRpgTestGame(name:string,avatar='',now=Date.now()):Game{
  return game;
 }
 export function startRpgRound(game:Game,now=Date.now()){
- const run=game.rpgRun;if(!run||!game.practice||game.phase!=='ended')throw Error('스토리 여정의 판 결과를 먼저 확인해 주세요.');
- if(run.journey&&run.journey.location!=='battle')throw Error('지도에서 다음 승부를 선택해 주세요.');
+ const run=game.rpgRun;if(!run||!game.practice||game.phase!=='ended')throw Error(tr('스토리 여정의 판 결과를 먼저 확인해 주세요.'));
+ if(run.journey&&run.journey.location!=='battle')throw Error(tr('지도에서 다음 승부를 선택해 주세요.'));
  if(run.status==='ready'){
   if(run.pendingRework){enableRpgRework(run);run.pendingRework=false;}
   game.rpgRun=run.rework?advanceReworkStage(run):isRpgPhaseOne(game)?advanceRpgPhaseOne(run):advanceRpgStage(run);game.rpgRun.itemGuards={0:!!run.itemGuards?.[0]};
   game.players=[game.players[0],...opponents(game.rpgRun.stage,!!game.rpgRun.journey)];prepareEnemyItems(game);
- }else if(run.status!=='playing')throw Error('보상과 준비를 마친 뒤 다음 판을 시작해 주세요.');
+ }else if(run.status!=='playing')throw Error(tr('보상과 준비를 마친 뒤 다음 판을 시작해 주세요.'));
  game.capacity=3;start(game,now);
 }
 export function abandonRpgGame(game:Game,now=Date.now()){
- if(!game.rpgRun||['complete','game-over','abandoned'].includes(game.rpgRun.status))throw Error('진행 중인 스토리 여정이 없어요.');
+ if(!game.rpgRun||['complete','game-over','abandoned'].includes(game.rpgRun.status))throw Error(tr('진행 중인 스토리 여정이 없어요.'));
  game.rpgRun={...game.rpgRun,status:'abandoned',updatedAt:now};game.phase='ended';game.turnDeadline=0;
 }
 

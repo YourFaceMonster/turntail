@@ -29,6 +29,7 @@ import {measureDealLayout,shuffleTileSize,type DealView,type DealItem,type DealT
 import {measureSavedTable,type SavedTableItem} from '../../lib/saved-table';
 import TableSurfaceViewport from './TableSurfaceViewport';
 import {nativeTableMaterial} from '../../lib/table-material';
+import {tr,trv} from '../../lib/i18n/index.ts';
 type Props={onWorldDiameter:(diameter:number)=>void,company:{name:string,avatar?:string,points:number,count:number}[],tableSet:number,tileSet?:number,stage?:number,phase:EntrancePhase,resume:boolean,migrated?:boolean,reduced:boolean,visible:boolean,game:DealView|null,rotation:number,onPrepared:()=>void,onFallback:()=>void,onSkip?:()=>void,/** False on the bare home screen: the table art waits until a play menu opens or a game starts (2026-11-18, ~3MB off the first visit). */warm?:boolean};
 function GameEntrance({onWorldDiameter,company,tableSet,tileSet,stage,phase,resume,migrated=false,reduced,visible:pageVisible,game,rotation,onPrepared,onFallback,onSkip,warm=true}:Props){
  const [screen,setScreen]=useState({width:0,height:0}),[landings,setLandings]=useState<{item:DealItem,target:DealTarget,finish:Record<string,string>}[]>([]);
@@ -220,11 +221,11 @@ function GameEntrance({onWorldDiameter,company,tableSet,tileSet,stage,phase,resu
   {resume&&phase!=='menu-out'&&savedLandings.length>0&&<ResumeGpuTiles rows={savedLandings} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
   {!resume&&!['menu-out','room-hold'].includes(phase)&&scene&&cards.length===60&&<EntranceGpuTiles painterly={!!stage} cards={cards} routes={dealRoutes} phase={phase} visible={pageVisible} width={screen.width} height={screen.height} overview={overview} onStatus={gpuPrepared}/>}
   {!resume&&['opponent-out','settle','game-in'].includes(phase)&&<TableSurfaceViewport className="entry-surface-handoff" circle={{cx:worldX,cy:worldY,diameter}} width={screen.width} height={screen.height} stage={stage||tableSet||0}/>}
-  {stage&&['approach','shuffle','deal'].includes(phase)&&<div className="entry-stage-arrival"><span>STAGE {String(stage).padStart(2,'0')}</span><strong>{stageTheme(stage).name}</strong></div>}
-  <div className="entry-reunion"><div className="entry-return-note"><span>{resume?'WELCOME BACK':`${company.length+1} PLAYERS · TAKE YOUR SEAT`}</span><strong>{stage?`${stageTheme(stage).name}의 테이블`:resume?'익숙한 테이블로 돌아왔어요':'달빛 서재의 작은 승부'}</strong><small>{resume?migrated?'3인전으로 전환했어요. 스테이지와 점수는 이어지고, 진행 중이던 패는 다시 나눴어요.':'자리에 놓인 패 그대로, 승부를 이어갑니다.':'테이블에 둘러앉아 새로운 승부를 시작합니다.'}</small></div></div>
+  {stage&&['approach','shuffle','deal'].includes(phase)&&<div className="entry-stage-arrival"><span>STAGE {String(stage).padStart(2,'0')}</span><strong>{trv(stageTheme(stage).name)}</strong></div>}
+  <div className="entry-reunion"><div className="entry-return-note"><span>{resume?'WELCOME BACK':`${company.length+1} PLAYERS · TAKE YOUR SEAT`}</span><strong>{stage?tr('{0}의 테이블',{0:stageTheme(stage).name}):resume?tr('익숙한 테이블로 돌아왔어요'):tr('달빛 서재의 작은 승부')}</strong><small>{resume?migrated?tr('3인전으로 전환했어요. 스테이지와 점수는 이어지고, 진행 중이던 패는 다시 나눴어요.'):tr('자리에 놓인 패 그대로, 승부를 이어갑니다.'):tr('테이블에 둘러앉아 새로운 승부를 시작합니다.')}</small></div></div>
   {stage&&<div className="entry-painted-glaze"/>}<div className="entry-edge-shade"/>
-  <div className="entry-curtain"/>{skippable&&<span className="entry-skip-hint">더블클릭·더블탭으로 연출 건너뛰기</span>}
-  {['prepare','room-hold'].includes(phase)&&<div className="entry-preparing-note"><i/><strong>{resume?'저장된 테이블을 불러오고 있어요':'새로운 승부를 준비하고 있어요'}</strong><small>잠시만 기다려 주세요</small></div>}
+  <div className="entry-curtain"/>{skippable&&<span className="entry-skip-hint">{tr('더블클릭·더블탭으로 연출 건너뛰기')}</span>}
+  {['prepare','room-hold'].includes(phase)&&<div className="entry-preparing-note"><i/><strong>{resume?tr('저장된 테이블을 불러오고 있어요'):tr('새로운 승부를 준비하고 있어요')}</strong><small>{tr('잠시만 기다려 주세요')}</small></div>}
  </div></StageVisuals>,document.body);
 }
 

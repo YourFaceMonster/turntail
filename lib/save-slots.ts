@@ -2,6 +2,7 @@ import {hpLimit} from './hp-limit';
 import type {Game} from './game.ts';
 import {RPG_PHASE_ONE_STORAGE_KEY,readRpgArchive} from './rpg-storage.ts';
 import {readRpgTestGame} from './rpg-test-storage.ts';
+import {tr} from './i18n/index.ts';
 export type Session={code:string,token:string,local?:boolean};
 export type SaveSlot={mode:'single'|'item'|'stage'|'rpg'|'rpg-test'|'hp-item'|'hp-item-2'|'multi',title:string,detail:string,game?:Game,session:Session};
 type StoragePort=Pick<Storage,'getItem'|'setItem'>;
@@ -11,12 +12,12 @@ function json<T>(storage:StoragePort,key:string):T|null{const raw=storage.getIte
 /** A session pointer never decides which local saves exist. Each slot is discovered independently. */
 export function readSaveSlots(storage:StoragePort){
  const slots:SaveSlot[]=[],errors:string[]=[];
- try{const g=json<Game>(storage,SINGLE_GAME_KEY);if(g&&g.capacity!==2&&!g.challenge&&!g.stageRun&&!g.itemRun){if(!g.practice||g.rpgRun||g.rpgMini||!g.players?.[0]?.token)throw Error('저장 형식을 확인해 주세요.');slots.push({mode:'single',title:'일반모드 · AI 대전',detail:`${g.players[0].name} · ${g.capacity}인전 · ${g.round}번째 판 · ${g.players[0].points||0}점`,game:g,session:{code:g.code,token:g.players[0].token,local:true}});}}catch{errors.push('일반모드 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
- try{const g=readRpgArchive(storage).active;if(g)slots.push({mode:'rpg',title:'스토리모드',detail:`${g.players[0].name} · STAGE ${g.rpgRun!.stage}/${g.rpgRun!.phaseOne&&!g.rpgRun!.rework?3:10} · HP ${g.rpgRun!.hp[0]} · 운명력 ${g.rpgRun!.fate}${g.rpgRun!.journey?'/3':''}${g.rpgRun!.journey?.location==='mini-game'?` · 주점 승부 ${g.rpgRun!.journey.mini?.game.rpgMini?.roundIndex}/3`:g.rpgRun!.journey?.location==='tavern'?' · 주점':g.rpgRun!.journey?.location==='map'?' · 지도':''}`,game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push('스토리 여정 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
- try{const g=readRpgTestGame(storage);if(g&&['playing','allocation','relic','ready'].includes(g.rpgRun!.status))slots.push({mode:'rpg-test',title:'이전 RPG 장비 테스트',detail:`${g.players[0].name} · STAGE ${g.rpgRun!.stage}/3 · 유물 ${g.rpgRun!.relics.length}개 · 아이템 ${g.rpgRun!.consumables.length}개`,game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push('RPG 테스트 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
+ try{const g=json<Game>(storage,SINGLE_GAME_KEY);if(g&&g.capacity!==2&&!g.challenge&&!g.stageRun&&!g.itemRun){if(!g.practice||g.rpgRun||g.rpgMini||!g.players?.[0]?.token)throw Error(tr('저장 형식을 확인해 주세요.'));slots.push({mode:'single',title:'일반모드 · AI 대전',detail:tr('{0} · {1}인전 · {2}번째 판 · {3}점',{0:g.players[0].name,1:g.capacity,2:g.round,3:g.players[0].points||0}),game:g,session:{code:g.code,token:g.players[0].token,local:true}});}}catch{errors.push('일반모드 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
+ try{const g=readRpgArchive(storage).active;if(g)slots.push({mode:'rpg',title:tr('스토리모드'),detail:tr('{0} · STAGE {1}/{2} · HP {3} · 운명력 {4}{5}{6}',{0:g.players[0].name,1:g.rpgRun!.stage,2:g.rpgRun!.phaseOne&&!g.rpgRun!.rework?3:10,3:g.rpgRun!.hp[0],4:g.rpgRun!.fate,5:g.rpgRun!.journey?'/3':'',6:g.rpgRun!.journey?.location==='mini-game'?` · 주점 승부 ${g.rpgRun!.journey.mini?.game.rpgMini?.roundIndex}/3`:g.rpgRun!.journey?.location==='tavern'?' · 주점':g.rpgRun!.journey?.location==='map'?' · 지도':''}),game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push(tr('스토리 여정 저장을 읽지 못했어요. 기존 데이터는 보존했어요.'));}
+ try{const g=readRpgTestGame(storage);if(g&&['playing','allocation','relic','ready'].includes(g.rpgRun!.status))slots.push({mode:'rpg-test',title:tr('이전 RPG 장비 테스트'),detail:tr('{0} · STAGE {1}/3 · 유물 {2}개 · 아이템 {3}개',{0:g.players[0].name,1:g.rpgRun!.stage,2:g.rpgRun!.relics.length,3:g.rpgRun!.consumables.length}),game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push(tr('RPG 테스트 저장을 읽지 못했어요. 기존 데이터는 보존했어요.'));}
  // Retired item-mode-1 archives remain untouched and never produce a resume slot.
- try{const g=(JSON.parse(storage.getItem('turntale-hp-items-2-v1')||'null') as {active?:Game}|null)?.active;if(g?.code&&g.players?.[0]&&g.rpgRun)slots.push({mode:'hp-item-2',title:'아이템전 · 종료된 모드',detail:`${g.players[0].name} · 라운드 ${g.round} · HP ${g.rpgRun!.hp[0]}/${hpLimit(g.rpgRun)}`,game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push('HP 아이템전 저장을 읽지 못했어요. 기존 데이터는 보존했어요.');}
- try{const s=json<Session>(storage,'jangseong-session');if(s&&!s.local&&s.code&&s.token)slots.push({mode:'multi',title:'멀티플레이',detail:`방 코드 ${s.code} · 방 상태 확인 후 이어하기`,session:s});}catch{errors.push('멀티플레이 연결 정보를 읽지 못했어요.');}
+ try{const g=(JSON.parse(storage.getItem('turntale-hp-items-2-v1')||'null') as {active?:Game}|null)?.active;if(g?.code&&g.players?.[0]&&g.rpgRun)slots.push({mode:'hp-item-2',title:tr('아이템전 · 종료된 모드'),detail:tr('{0} · 라운드 {1} · HP {2}/{3}',{0:g.players[0].name,1:g.round,2:g.rpgRun!.hp[0],3:hpLimit(g.rpgRun)}),game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push(tr('HP 아이템전 저장을 읽지 못했어요. 기존 데이터는 보존했어요.'));}
+ try{const s=json<Session>(storage,'jangseong-session');if(s&&!s.local&&s.code&&s.token)slots.push({mode:'multi',title:tr('멀티플레이'),detail:tr('방 코드 {0} · 방 상태 확인 후 이어하기',{0:s.code}),session:s});}catch{errors.push(tr('멀티플레이 연결 정보를 읽지 못했어요.'));}
  return {slots,errors};
 }
 /** No silent storage failures: publish the new live state only after persistence succeeds. */
@@ -28,28 +29,28 @@ export function saveSingleGame(storage:StoragePort,game:Game){
 /** Delete only the explicitly selected progress; preserve archive records and unlocks. */
 export function deleteSaveSlot(storage:Pick<Storage,'getItem'|'setItem'|'removeItem'>,slot:SaveSlot){
  const keys:Partial<Record<SaveSlot['mode'],string>>={single:SINGLE_GAME_KEY,rpg:slot.game?.rpgRun?.phaseOne?RPG_PHASE_ONE_STORAGE_KEY:'turntale-rpg-state-v1','rpg-test':'turntale-rpg-test-v1','hp-item-2':'turntale-hp-items-2-v1',multi:'jangseong-session'};
- const key=keys[slot.mode];if(!key)throw Error('삭제할 저장을 다시 선택해 주세요.');
+ const key=keys[slot.mode];if(!key)throw Error(tr('삭제할 저장을 다시 선택해 주세요.'));
  const raw=storage.getItem(key);if(raw===null)return;
- let value:any;try{value=JSON.parse(raw);}catch{throw Error('저장이 변경됐어요. 목록을 다시 열어 주세요.');}
+ let value:any;try{value=JSON.parse(raw);}catch{throw Error(tr('저장이 변경됐어요. 목록을 다시 열어 주세요.'));}
  const archive=slot.mode==='rpg'||slot.mode==='hp-item-2',current=archive?value?.active:value;
  const code=current?.code;
- if(code!==slot.session.code)throw Error('저장이 변경됐어요. 목록을 다시 열어 주세요.');
- if(archive&&(!Array.isArray(value.records)||value.version!==1))throw Error('기록을 보존할 수 없어 삭제하지 않았어요.');
+ if(code!==slot.session.code)throw Error(tr('저장이 변경됐어요. 목록을 다시 열어 주세요.'));
+ if(archive&&(!Array.isArray(value.records)||value.version!==1))throw Error(tr('기록을 보존할 수 없어 삭제하지 않았어요.'));
  const before=new Map<string,string|null>([[key,raw]]),after=new Map<string,string|null>([[key,archive?JSON.stringify({...value,active:null}):null]]);
  if(slot.mode!=='multi'){
   const sessionRaw=storage.getItem('jangseong-session');let pointer:Session|null=null;try{pointer=sessionRaw?JSON.parse(sessionRaw):null;}catch{}
   if(pointer?.local&&pointer.code===slot.session.code){before.set('jangseong-session',sessionRaw);after.set('jangseong-session',null);}
  }
  try{for(const [target,next] of after)next===null?storage.removeItem(target):storage.setItem(target,next);}
- catch{for(const [target,previous] of before){try{previous===null?storage.removeItem(target):storage.setItem(target,previous);}catch{}}throw Error('저장을 삭제하지 못했어요. 기존 진행을 다시 확인해 주세요.');}
+ catch{for(const [target,previous] of before){try{previous===null?storage.removeItem(target):storage.setItem(target,previous);}catch{}}throw Error(tr('저장을 삭제하지 못했어요. 기존 진행을 다시 확인해 주세요.'));}
 }
 
 /** Validate every checked slot first; commit the entire selection or restore it all. */
 export function deleteSaveSlots(storage:Pick<Storage,'getItem'|'setItem'|'removeItem'>,slots:SaveSlot[]){
- if(!slots.length)throw Error('삭제할 저장을 선택해 주세요.');
+ if(!slots.length)throw Error(tr('삭제할 저장을 선택해 주세요.'));
  const changes=new Map<string,string|null>(),staging={getItem:(key:string)=>changes.has(key)?changes.get(key)!:storage.getItem(key),setItem:(key:string,value:string)=>{changes.set(key,value);},removeItem:(key:string)=>{changes.set(key,null);}};
  for(const slot of new Map(slots.map(slot=>[slot.mode,slot])).values())deleteSaveSlot(staging,slot);
  const before=new Map([...changes.keys()].map(key=>[key,storage.getItem(key)]));
  try{for(const [key,value] of changes)value===null?storage.removeItem(key):storage.setItem(key,value);}
- catch{for(const [key,value] of before){try{value===null?storage.removeItem(key):storage.setItem(key,value);}catch{}}throw Error('선택한 저장을 삭제하지 못했어요. 기존 진행을 다시 확인해 주세요.');}
+ catch{for(const [key,value] of before){try{value===null?storage.removeItem(key):storage.setItem(key,value);}catch{}}throw Error(tr('선택한 저장을 삭제하지 못했어요. 기존 진행을 다시 확인해 주세요.'));}
 }

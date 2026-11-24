@@ -1,16 +1,17 @@
 import type {RpgRun} from './rpg.ts';
+import {tr} from './i18n/index.ts';
 
 /** Story keepsakes only. Never enter hands, shop stock, relics or combat effects. */
 export const STORY_CARDS={
- 'crown-two':{name:'붉은 왕관 2',back:'겹쳐진 두 왕관',source:'프롤로그'},
- 'iron-gate-two':{name:'검은 철문 2',back:'두 철문',source:'스테이지 3'},
- 'sacred-flame-two':{name:'성화 2',back:'꺼지지 않은 두 겹의 불꽃',source:'스테이지 6'},
- 'secret-key-two':{name:'열쇠 2',back:'하나로 포개지는 두 열쇠',source:'스테이지 9'},
+ 'crown-two':{name:tr('붉은 왕관 2'),back:tr('겹쳐진 두 왕관'),source:tr('프롤로그')},
+ 'iron-gate-two':{name:tr('검은 철문 2'),back:tr('두 철문'),source:tr('스테이지 3')},
+ 'sacred-flame-two':{name:tr('성화 2'),back:tr('꺼지지 않은 두 겹의 불꽃'),source:tr('스테이지 6')},
+ 'secret-key-two':{name:tr('열쇠 2'),back:tr('하나로 포개지는 두 열쇠'),source:tr('스테이지 9')},
 } as const;
 export type StoryCardId=keyof typeof STORY_CARDS;
 export const ST3_STORY_KEY='ST3_POST_CARDS';
 export function validateStoryCards(value:unknown):asserts value is StoryCardId[]{
- if(!Array.isArray(value)||value.some(id=>typeof id!=='string'||!Object.hasOwn(STORY_CARDS,id))||new Set(value).size!==value.length)throw Error('이야기 패 수집 기록을 읽지 못했어요. 기존 데이터는 보존했어요.');
+ if(!Array.isArray(value)||value.some(id=>typeof id!=='string'||!Object.hasOwn(STORY_CARDS,id))||new Set(value).size!==value.length)throw Error(tr('이야기 패 수집 기록을 읽지 못했어요. 기존 데이터는 보존했어요.'));
 }
 export function storyCardsForRun(run:RpgRun):StoryCardId[]{
  if(run.storyCards!==undefined)validateStoryCards(run.storyCards);

@@ -1,3 +1,4 @@
+import {tr} from './i18n/index.ts';
 /**
  * Yacht Dice (요트다이스) for the ST4~6 side quest. Pure rules: no HP, relic or journey logic here.
  * Two seats: 0 = player, 1 = AI. The AI sees only the shared table (dice and both score sheets).
@@ -8,8 +9,8 @@ export type YachtSheet=Partial<Record<YachtCategory,number>>;
 /** yachtBonuses: extra yachts scored after a 50 in the yacht box (joker rule, +100 each). */
 export type YachtMatch={version:1,dice:number[],held:boolean[],rollsLeft:number,turn:0|1,round:number,sheets:[YachtSheet,YachtSheet],status:'playing'|'ended',yachtBonuses?:[number,number],last?:{seat:0|1,category:YachtCategory,score:number,bonus?:number,joker?:boolean}};
 export const YACHT_JOKER_BONUS=100;
-export const YACHT_LABELS:Record<YachtCategory,string>={ones:'1',twos:'2',threes:'3',fours:'4',fives:'5',sixes:'6',choice:'초이스','four-kind':'포카인드','full-house':'풀하우스','small-straight':'스몰 스트레이트','large-straight':'라지 스트레이트',yacht:'요트'};
-export const YACHT_HINTS:Record<YachtCategory,string>={ones:'1의 합',twos:'2의 합',threes:'3의 합',fours:'4의 합',fives:'5의 합',sixes:'6의 합',choice:'주사위 5개 합','four-kind':'같은 눈 4개 이상 · 5개 합','full-house':'3개+2개 · 5개 합','small-straight':'연속 4개 · 15점','large-straight':'연속 5개 · 30점',yacht:'같은 눈 5개 · 50점'};
+export const YACHT_LABELS:Record<YachtCategory,string>={ones:'1',twos:'2',threes:'3',fours:'4',fives:'5',sixes:'6',choice:tr('초이스'),'four-kind':tr('포카인드'),'full-house':'풀하우스','small-straight':tr('스몰 스트레이트'),'large-straight':tr('라지 스트레이트'),yacht:tr('요트')};
+export const YACHT_HINTS:Record<YachtCategory,string>={ones:tr('1의 합'),twos:tr('2의 합'),threes:tr('3의 합'),fours:tr('4의 합'),fives:tr('5의 합'),sixes:tr('6의 합'),choice:tr('주사위 5개 합'),'four-kind':tr('같은 눈 4개 이상 · 5개 합'),'full-house':tr('3개+2개 · 5개 합'),'small-straight':tr('연속 4개 · 15점'),'large-straight':tr('연속 5개 · 30점'),yacht:tr('같은 눈 5개 · 50점')};
 export const YACHT_UPPER:readonly YachtCategory[]=YACHT_CATEGORIES.slice(0,6);
 export const YACHT_BONUS={threshold:63,points:35} as const;
 export type DiceRandom=()=>number;
@@ -65,23 +66,23 @@ export function boxScore(sheet:YachtSheet,cat:YachtCategory,dice:readonly number
 }
 
 export function rollYacht(match:YachtMatch,seat:0|1,random:DiceRandom=cryptoDie):YachtMatch{
- if(match.status!=='playing'||match.turn!==seat)throw Error('지금은 주사위를 굴릴 차례가 아니에요.');
- if(match.rollsLeft<=0)throw Error('이번 차례의 굴리기를 모두 사용했어요. 점수 칸을 골라 주세요.');
+ if(match.status!=='playing'||match.turn!==seat)throw Error(tr('지금은 주사위를 굴릴 차례가 아니에요.'));
+ if(match.rollsLeft<=0)throw Error(tr('이번 차례의 굴리기를 모두 사용했어요. 점수 칸을 골라 주세요.'));
  const first=match.rollsLeft===3;
  return {...match,dice:match.dice.map((d,i)=>!first&&match.held[i]?d:random()),held:first?[false,false,false,false,false]:[...match.held],rollsLeft:match.rollsLeft-1,last:undefined};
 }
 export function toggleYachtHold(match:YachtMatch,seat:0|1,index:unknown):YachtMatch{
- if(match.status!=='playing'||match.turn!==seat)throw Error('지금은 주사위를 고를 차례가 아니에요.');
- if(match.rollsLeft===3||match.rollsLeft===0)throw Error(match.rollsLeft===3?'먼저 주사위를 굴려 주세요.':'점수 칸을 골라 주세요.');
- if(!Number.isInteger(index)||(index as number)<0||(index as number)>4)throw Error('주사위를 선택해 주세요.');
+ if(match.status!=='playing'||match.turn!==seat)throw Error(tr('지금은 주사위를 고를 차례가 아니에요.'));
+ if(match.rollsLeft===3||match.rollsLeft===0)throw Error(match.rollsLeft===3?tr('먼저 주사위를 굴려 주세요.'):tr('점수 칸을 골라 주세요.'));
+ if(!Number.isInteger(index)||(index as number)<0||(index as number)>4)throw Error(tr('주사위를 선택해 주세요.'));
  const held=[...match.held];held[index as number]=!held[index as number];return {...match,held};
 }
 export function scoreYacht(match:YachtMatch,seat:0|1,category:unknown):YachtMatch{
- if(match.status!=='playing'||match.turn!==seat)throw Error('지금은 점수를 적을 차례가 아니에요.');
- if(match.rollsLeft===3)throw Error('먼저 주사위를 굴려 주세요.');
- if(!YACHT_CATEGORIES.includes(category as YachtCategory))throw Error('점수 칸을 선택해 주세요.');
- const cat=category as YachtCategory,own=match.sheets[seat];if(own[cat]!==undefined)throw Error('이미 기록한 점수 칸이에요.');
- if(!allowedCategories(own,match.dice).includes(cat))throw Error('조커 규칙: 같은 눈의 숫자 칸이 비어 있으면 그 칸, 아니면 아래쪽 족보 칸에 적어야 해요.');
+ if(match.status!=='playing'||match.turn!==seat)throw Error(tr('지금은 점수를 적을 차례가 아니에요.'));
+ if(match.rollsLeft===3)throw Error(tr('먼저 주사위를 굴려 주세요.'));
+ if(!YACHT_CATEGORIES.includes(category as YachtCategory))throw Error(tr('점수 칸을 선택해 주세요.'));
+ const cat=category as YachtCategory,own=match.sheets[seat];if(own[cat]!==undefined)throw Error(tr('이미 기록한 점수 칸이에요.'));
+ if(!allowedCategories(own,match.dice).includes(cat))throw Error(tr('조커 규칙: 같은 눈의 숫자 칸이 비어 있으면 그 칸, 아니면 아래쪽 족보 칸에 적어야 해요.'));
  const score=boxScore(own,cat,match.dice),bonus=yachtJokerBonus(own,match.dice),joker=yachtJoker(own,match.dice);
  const sheets:[YachtSheet,YachtSheet]=[{...match.sheets[0]},{...match.sheets[1]}];sheets[seat][cat]=score;
  const bonuses:[number,number]=[...(match.yachtBonuses||[0,0])] as [number,number];if(bonus)bonuses[seat]++;
@@ -123,7 +124,7 @@ export function yachtAiPlan(match:YachtMatch):YachtAiPlan{
 }
 /** One visible AI action: roll, re-hold and roll, or write a score. */
 export function yachtAiStep(match:YachtMatch,random:DiceRandom=cryptoDie):YachtMatch{
- if(match.status!=='playing'||match.turn!==1)throw Error('상대의 차례가 아니에요.');
+ if(match.status!=='playing'||match.turn!==1)throw Error(tr('상대의 차례가 아니에요.'));
  const plan=yachtAiPlan(match);
  return plan.type==='roll'?rollYacht({...match,held:plan.held},1,random):scoreYacht(match,1,plan.category);
 }

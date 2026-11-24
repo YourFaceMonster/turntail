@@ -1,5 +1,6 @@
 import {STORY_CARD_ART,STORY_CARD_SCENE_ART} from './rpg-story-card-art.ts';
 import type {PrologueCut} from './rpg-prologue.ts';
+import {tr} from './i18n/index.ts';
 
 const frame=(landscape:string,portrait:string)=>({landscape:`/prologue/${landscape}.webp`,portrait:`/prologue/${portrait}.webp`});
 export const PROLOGUE_ART={
@@ -31,7 +32,7 @@ export function prologueSceneSources(cuts:readonly PrologueCut[],portrait:boolea
 /** Consecutive captions over one painting share a single mounted picture and camera. */
 export function prologueSceneGroup(cuts:readonly PrologueCut[],index:number){
  const identity=(cut:PrologueCut)=>{const art=prologueArt({...cut,poseArt:undefined});return art?JSON.stringify([art.landscape,art.portrait,cut.focus||'',keepsakeSource(cut)||'']):'dark';};
- if(!cuts[index])throw Error('이야기 장면을 찾을 수 없어요.');
+ if(!cuts[index])throw Error(tr('이야기 장면을 찾을 수 없어요.'));
  const visual=identity(cuts[index]);let start=index,end=index;
  while(start>0&&identity(cuts[start-1])===visual)start--;
  while(end+1<cuts.length&&identity(cuts[end+1])===visual)end++;

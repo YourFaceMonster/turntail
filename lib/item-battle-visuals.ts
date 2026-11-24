@@ -1,4 +1,5 @@
 import type {RpgProfessionId} from './rpg-professions';
+import {tr} from './i18n/index.ts';
 export const ITEM_BATTLE_STAGE_COUNT=10;
 /** Presentation only: never change RPG progression, opponents or AI difficulty. */
 export function itemBattleVisualStage(seed:string){let hash=2166136261;for(const ch of seed){hash^=ch.charCodeAt(0);hash=Math.imul(hash,16777619);}return (hash>>>0)%ITEM_BATTLE_STAGE_COUNT+1;}
@@ -6,7 +7,7 @@ export function validItemBattleStage(value:unknown):value is number{return Numbe
 export function newItemBattleVisualStage(){const random=new Uint32Array(1);crypto.getRandomValues(random);return random[0]%ITEM_BATTLE_STAGE_COUNT+1;}
 export const PROFESSION_SKILL_IMAGES:Record<RpgProfessionId,string>={swordsman:'/item-battle-v1/skills/swordsman-strike-v1.webp',mage:'/item-battle-v1/skills/mage-fireball-v1.webp',cleric:'/item-battle-v1/skills/cleric-heal-v1.webp',rogue:'/item-battle-v1/trap-v1.webp'};
 /** Existing spent gauge defines presentation tiers, not character levels. */
-export function mageSpellPresentation(spent:number){return spent>=5?{kind:'wall' as const,name:'파이어월'}:spent>=3?{kind:'wave' as const,name:'화염 파동'}:{kind:'ball' as const,name:'파이어볼'};}
+export function mageSpellPresentation(spent:number){return spent>=5?{kind:'wall' as const,name:tr('파이어월')}:spent>=3?{kind:'wave' as const,name:tr('화염 파동')}:{kind:'ball' as const,name:tr('파이어볼')};}
 /** Mirror the source artwork for a rightward shot, then aim its leading edge. */
 export function mageSpellFlightOrientation(from:{x:number,y:number},to:{x:number,y:number}){
  const right=to.x>from.x,heading=Math.atan2(to.y-from.y,to.x-from.x)*180/Math.PI;

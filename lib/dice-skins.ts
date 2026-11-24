@@ -3,13 +3,14 @@
  * (TURNTALE keeps growth to content unlocks). Stored per device like the achievements themselves.
  */
 import {COMPLETION_ACHIEVEMENT,type AchievementState} from './achievements';
+import {tr} from './i18n/index.ts';
 export const DICE_SKIN_KEY='turntale-dice-skin';
 export const DICE_SKINS=[
- {id:'ivory',name:'상아 주사위',need:0,note:'처음부터'},
- {id:'obsidian',name:'흑요석 주사위',need:3,note:'업적 3개'},
- {id:'jade',name:'비취 주사위',need:6,note:'업적 6개'},
- {id:'gilded',name:'금박 주사위',need:10,note:'업적 10개'},
- {id:'crimson',name:'세계수 주사위',need:'all',note:'모든 업적 달성'},
+ {id:'ivory',name:tr('상아 주사위'),need:0,note:tr('처음부터')},
+ {id:'obsidian',name:tr('흑요석 주사위'),need:3,note:tr('업적 3개')},
+ {id:'jade',name:tr('비취 주사위'),need:6,note:tr('업적 6개')},
+ {id:'gilded',name:tr('금박 주사위'),need:10,note:tr('업적 10개')},
+ {id:'crimson',name:tr('세계수 주사위'),need:'all',note:tr('모든 업적 달성')},
 ] as const;
 export type DiceSkinId=typeof DICE_SKINS[number]['id'];
 export function earnedAchievementCount(state:Pick<AchievementState,'unlocked'>){return Object.keys(state.unlocked).filter(id=>id!==COMPLETION_ACHIEVEMENT&&state.unlocked[id]).length;}

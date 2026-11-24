@@ -1,12 +1,13 @@
 import type {HighScore} from './challenge';
+import {tr} from './i18n/index.ts';
 export type LeaderboardEntry={rank:number,name:string,score:number,at:number,isMe:boolean};
 export type Leaderboard={rows:LeaderboardEntry[],total:number,mine:LeaderboardEntry|null,page:number,pageSize:number};
 export const PAGE_SIZE=10;
 export function sharedScores(input:unknown,now=Date.now()):HighScore[]{
- if(!Array.isArray(input)||input.length>18)throw Error('동기화할 기록을 확인해 주세요.');
+ if(!Array.isArray(input)||input.length>18)throw Error(tr('동기화할 기록을 확인해 주세요.'));
  return input.map((r:any)=>{
   const limit=r?.kind==='ten'?600:60,min=r?.kind==='ten'?-1800:-180;
-  if(!r||r.mode!=='single'||![2,3,4].includes(r.size)||!['single','ten'].includes(r.kind)||typeof r.id!=='string'||r.id.length>180||!r.id.startsWith(r.kind==='ten'?'single:ten:':'single:round:')||!Number.isInteger(r.score)||r.score<min||r.score>limit||!Number.isSafeInteger(r.at)||r.at<1577836800000||r.at>now+60000)throw Error('올바르지 않은 경기 기록이에요.');
+  if(!r||r.mode!=='single'||![2,3,4].includes(r.size)||!['single','ten'].includes(r.kind)||typeof r.id!=='string'||r.id.length>180||!r.id.startsWith(r.kind==='ten'?'single:ten:':'single:round:')||!Number.isInteger(r.score)||r.score<min||r.score>limit||!Number.isSafeInteger(r.at)||r.at<1577836800000||r.at>now+60000)throw Error(tr('올바르지 않은 경기 기록이에요.'));
   return {id:r.id,mode:'single',size:r.size,kind:r.kind,score:r.score,at:r.at};
  });
 }

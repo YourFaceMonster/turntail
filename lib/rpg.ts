@@ -12,6 +12,7 @@ import type {RpgExchangeEvent,RpgItemEvent,RpgTacticalState} from './rpg-items.t
 import type {RpgPhaseOneState} from './rpg-phase-one.ts';
 import type {RpgProfessionCombat} from './rpg-profession-combat.ts';
 import {ITEM_BATTLE_RELICS} from './item-battle-relic-catalog.ts';
+import {tr} from './i18n/index.ts';
 /** The RPG journey is deliberately separate from the older score based stage run. */
 export type RpgStatus='playing'|'allocation'|'relic'|'ready'|'complete'|'game-over'|'abandoned';
 export type RpgResult={id:string,at:number,players:{count:number,delta:number,total?:number}[]};
@@ -22,31 +23,31 @@ export const RPG_BOSSES=[3,6,9,10];
 export const RPG_TEST_ROUNDS=5;
 export const RPG_RELIC_REWARD_STAGES=[1,2,4,5,7,8];
 export const RPG_RELICS=[
- {id:BLUE_GLASS_ID,name:'파수꾼의 푸른 유리',grade:'common',effect:'장착 중 응급 약초 회복량 +5 (10 → 15)'},
- {id:'recovery-lantern',name:'회복의 등불',grade:'common',effect:'기본 완료 회복 +5'},
- {id:'cracked-heart',name:'금이 간 심장',grade:'common',effect:'스테이지 첫 HP 피해 8 감소'},
- {id:'final-knot',name:'마지막 매듭',grade:'rare',effect:'운명 구제 HP 50 → 60'},
- {id:'second-heart',name:'두 번째 심장',grade:'rare',effect:'HP 배분 5포인트마다 HP +1'},
- {id:'second-ring',name:'두 번째 반지',grade:'rare',effect:'2등 기본 주화 +15'},
- {id:'stopped-hourglass',name:'멈춘 모래시계',grade:'legendary',effect:'카드 한 판 승리 시 포인트 +5'},
- {id:'two-sided-coin',name:'양면의 동전',grade:'common',effect:'주화 배분 10마다 주화 +1'},
- {id:'gamblers-gloves',name:'승부사의 장갑',grade:'common',effect:'첫 5장 족보 제출 시 포인트 +2'},
- {id:'mor-quill',name:'모르의 깃펜',grade:'common',effect:'영역당 미발견 소문 1개 추가 열람'},
- {id:'merchants-scales',name:'상인의 저울',grade:'rare',effect:'영역 첫 상품 구매 20주화 할인'},
- {id:'twin-needle-compass',name:'쌍침 나침반',grade:'common',effect:'갈림길 보상 종류 미리 보기'},
- {id:'split-mirror',name:'갈라진 거울',grade:'legendary',effect:'갈림길 이벤트 후보 2개 제시'},
+ {id:BLUE_GLASS_ID,name:tr('파수꾼의 푸른 유리'),grade:'common',effect:tr('장착 중 응급 약초 회복량 +5 (10 → 15)')},
+ {id:'recovery-lantern',name:tr('회복의 등불'),grade:'common',effect:tr('기본 완료 회복 +5')},
+ {id:'cracked-heart',name:tr('금이 간 심장'),grade:'common',effect:tr('스테이지 첫 HP 피해 8 감소')},
+ {id:'final-knot',name:tr('마지막 매듭'),grade:'rare',effect:tr('운명 구제 HP 50 → 60')},
+ {id:'second-heart',name:tr('두 번째 심장'),grade:'rare',effect:tr('HP 배분 5포인트마다 HP +1')},
+ {id:'second-ring',name:tr('두 번째 반지'),grade:'rare',effect:tr('2등 기본 주화 +15')},
+ {id:'stopped-hourglass',name:tr('멈춘 모래시계'),grade:'legendary',effect:tr('카드 한 판 승리 시 포인트 +5')},
+ {id:'two-sided-coin',name:tr('양면의 동전'),grade:'common',effect:tr('주화 배분 10마다 주화 +1')},
+ {id:'gamblers-gloves',name:tr('승부사의 장갑'),grade:'common',effect:tr('첫 5장 족보 제출 시 포인트 +2')},
+ {id:'mor-quill',name:tr('모르의 깃펜'),grade:'common',effect:tr('영역당 미발견 소문 1개 추가 열람')},
+ {id:'merchants-scales',name:tr('상인의 저울'),grade:'rare',effect:tr('영역 첫 상품 구매 20주화 할인')},
+ {id:'twin-needle-compass',name:tr('쌍침 나침반'),grade:'common',effect:tr('갈림길 보상 종류 미리 보기')},
+ {id:'split-mirror',name:tr('갈라진 거울'),grade:'legendary',effect:tr('갈림길 이벤트 후보 2개 제시')},
 ] as const;
 export const RPG_CONSUMABLES=[
- {id:'whisper-eye',name:'엿보는 눈',price:30,effect:'선택한 상대 손패 무작위 1장 확인 · 사용한 사람만 공개'},
- {id:'ember-bomb',name:'작열탄',price:45,effect:'선택한 상대에게 즉시 HP 8 피해 · 최소 HP 1'},
- {id:'emergency-herb',name:'응급 약초',price:30,effect:'전투 중 자신의 HP 10 회복 · 최대 HP 100'},
- {id:'ward-seal',name:'수호의 봉인',price:40,effect:'비공개 방패 준비 · 다음 공격 또는 패 교환 아이템 1회 완전 방어'},
- {id:'red-vial',name:'붉은 약병',price:30,effect:'준비 중 즉시 HP 20 회복'},
- {id:'moonlight-soup',name:'달빛 수프',price:35,effect:'다음 기본 완료 회복 +20'},
- {id:'guardian-bandage',name:'수호의 붕대',price:40,effect:'다음 스테이지 피해 15 방어'},
- {id:'swapped-fate',name:'뒤바뀐 운명',price:45,effect:'내 손패 1장 ↔ 상대 무작위 1장 · 양쪽 손패 4장 이상 · 1·2 교환 제외'},
- {id:'fates-scales',name:'운명의 저울',price:75,effect:'내 손패 2장 ↔ 상대 무작위 2장 · 양쪽 손패 5장 이상'},
- {id:'scout-lens',name:'정찰 렌즈',price:45,effect:'원하는 2층 패 1장 투시 · 안쪽 패도 선택 가능'},
+ {id:'whisper-eye',name:tr('엿보는 눈'),price:30,effect:tr('선택한 상대 손패 무작위 1장 확인 · 사용한 사람만 공개')},
+ {id:'ember-bomb',name:tr('작열탄'),price:45,effect:tr('선택한 상대에게 즉시 HP 8 피해 · 최소 HP 1')},
+ {id:'emergency-herb',name:tr('응급 약초'),price:30,effect:tr('전투 중 자신의 HP 10 회복 · 최대 HP 100')},
+ {id:'ward-seal',name:tr('수호의 봉인'),price:40,effect:tr('비공개 방패 준비 · 다음 공격 또는 패 교환 아이템 1회 완전 방어')},
+ {id:'red-vial',name:tr('붉은 약병'),price:30,effect:tr('준비 중 즉시 HP 20 회복')},
+ {id:'moonlight-soup',name:tr('달빛 수프'),price:35,effect:tr('다음 기본 완료 회복 +20')},
+ {id:'guardian-bandage',name:tr('수호의 붕대'),price:40,effect:tr('다음 스테이지 피해 15 방어')},
+ {id:'swapped-fate',name:tr('뒤바뀐 운명'),price:45,effect:tr('내 손패 1장 ↔ 상대 무작위 1장 · 양쪽 손패 4장 이상 · 1·2 교환 제외')},
+ {id:'fates-scales',name:tr('운명의 저울'),price:75,effect:tr('내 손패 2장 ↔ 상대 무작위 2장 · 양쪽 손패 5장 이상')},
+ {id:'scout-lens',name:tr('정찰 렌즈'),price:45,effect:tr('원하는 2층 패 1장 투시 · 안쪽 패도 선택 가능')},
 ] as const;
 const RPG_MARKET_RELICS=[...RPG_RELICS,...ITEM_BATTLE_RELICS];
 const rewardCoins=[30,20,10];
@@ -68,18 +69,18 @@ export function rpgRanks(hp:number[],counts:number[]){return hp.map((value,i)=>1
 function offers(run:RpgRun,seed:string,count:number,grade?:string){let hash=2166136261;for(const c of seed)hash=Math.imul(hash^c.charCodeAt(0),16777619)>>>0;const pool=RPG_RELICS.filter(r=>(r.id!==BLUE_GLASS_ID||run.unlocked?.includes(BLUE_GLASS_ID))&&(r.id!=='second-heart'||run.unlocked?.includes('second-heart'))&&(run.stage>3||!['mor-quill','twin-needle-compass','split-mirror'].includes(r.id))&&!run.relics.includes(r.id)&&(!grade||r.grade===grade));const chosen:string[]=[];while(pool.length&&chosen.length<count){const index=hash%pool.length;chosen.push(pool.splice(index,1)[0].id);hash=Math.imul(hash^chosen.length,16777619)>>>0;}return chosen;}
 export function settleRpgRound(run:RpgRun,result:RpgResult,winner:number,testMode=false):RpgRun{
  if(run.status!=='playing'||run.roundIds.includes(result.id))return run;
- if(result.players.length!==3)throw Error('스토리 여정은 나와 AI 2명의 3인전이에요.');
+ if(result.players.length!==3)throw Error(tr('스토리 여정은 나와 AI 2명의 3인전이에요.'));
  const hp=[...run.hp],counts=result.players.map(p=>p.count),effects:RpgRelicEffect[]=[];let points=run.points,shield=run.shield||0;
  result.players.forEach((p,i)=>{
   if(p.delta>=0){if(i===0)points+=p.delta;return;}
   if(run.combat)return;
   let damage=-p.delta;
-  if(i===0&&run.equipped.includes('cracked-heart')&&!run.crackedHeartUsed.includes(run.stage)){const blocked=Math.min(8,damage);damage-=blocked;effects.push({relicId:'cracked-heart',message:`피해 ${blocked} 방어`});}
+  if(i===0&&run.equipped.includes('cracked-heart')&&!run.crackedHeartUsed.includes(run.stage)){const blocked=Math.min(8,damage);damage-=blocked;effects.push({relicId:'cracked-heart',message:tr('피해 {0} 방어',{0:blocked})});}
   if(i===0&&shield>0){const blocked=Math.min(shield,damage);damage-=blocked;shield-=blocked;}
   hp[i]-=damage;
  });
  const crackedHeartUsed=!run.combat&&result.players[0].delta<0&&run.equipped.includes('cracked-heart')&&!run.crackedHeartUsed.includes(run.stage)?[...run.crackedHeartUsed,run.stage]:run.crackedHeartUsed;
- if(winner===0&&run.equipped.includes('stopped-hourglass')){points+=5;effects.push({relicId:'stopped-hourglass',message:'포인트 +5'});}
+ if(winner===0&&run.equipped.includes('stopped-hourglass')){points+=5;effects.push({relicId:'stopped-hourglass',message:tr('포인트 +5')});}
  const base=withRelicActivations({...run,hp,points,shield,crackedHeartUsed,rounds:run.rounds+1,roundIds:[...run.roundIds,result.id],updatedAt:result.at},effects,result.at);
  const rewardEffects:RpgRelicEffect[]=[];
  if(!hp.some(value=>value<=0))return base;
@@ -90,12 +91,12 @@ export function settleRpgRound(run:RpgRun,result:RpgResult,winner:number,testMod
  const nextStage=retry?run.stage:Math.min(10,run.stage+1),regionChange=!retry&&[4,7,10].includes(nextStage),complete=run.stage===3&&!retry&&!testMode;
  const settledHp=[...hp];
  if(regionChange){settledHp[0]=100;fate=3;}
- else if(rank===3){settledHp[0]=run.equipped.includes('final-knot')?60:50;if(run.equipped.includes('final-knot'))rewardEffects.push({relicId:'final-knot',message:'구제 HP 60'});}
+ else if(rank===3){settledHp[0]=run.equipped.includes('final-knot')?60:50;if(run.equipped.includes('final-knot'))rewardEffects.push({relicId:'final-knot',message:tr('구제 HP 60')});}
  else settledHp[0]=Math.min(100,Math.max(0,settledHp[0])+(run.equipped.includes('recovery-lantern')?15:10)+(run.pendingSoup?20:0));
  const lanternBonus=settledHp[0]-Math.min(100,Math.max(0,hp[0])+10+(run.pendingSoup?20:0));
- if(!regionChange&&rank<=2&&run.equipped.includes('recovery-lantern')&&lanternBonus>0)rewardEffects.push({relicId:'recovery-lantern',message:`추가 회복 +${lanternBonus} HP`});
+ if(!regionChange&&rank<=2&&run.equipped.includes('recovery-lantern')&&lanternBonus>0)rewardEffects.push({relicId:'recovery-lantern',message:tr('추가 회복 +{0} HP',{0:lanternBonus})});
  const firstBossPayment=!boss||!run.bossCoinPaid.includes(run.stage);
- if(firstBossPayment&&rank===2&&run.equipped.includes('second-ring'))rewardEffects.push({relicId:'second-ring',message:'2등 주화 +15'});
+ if(firstBossPayment&&rank===2&&run.equipped.includes('second-ring'))rewardEffects.push({relicId:'second-ring',message:tr('2등 주화 +15')});
  const relicStage=!retry&&(RPG_RELIC_REWARD_STAGES.includes(run.stage)||[3,6,9].includes(run.stage));
  const relicOffers=relicStage?offers(run,result.id,boss?2:3,boss?run.stage===9?'legendary':'rare':undefined):[];
  const fallback=relicStage&&!relicOffers.length?20:0;
@@ -106,73 +107,73 @@ export function settleRpgRound(run:RpgRun,result:RpgResult,winner:number,testMod
  return withRelicActivations({...base,hp:settledHp,fate,coins:run.coins+coins,shops,shield:0,pendingSoup:regionChange||rank===3?run.pendingSoup:false,bossCoinPaid:boss&&firstBossPayment?[...run.bossCoinPaid,run.stage]:run.bossCoinPaid,unlocked:special?[...new Set([...(run.unlocked||[]),'second-heart'])]:run.unlocked||[],status:'allocation',reward},rewardEffects,result.at);
 }
 export function allocateRpgPoints(run:RpgRun,heal:number):RpgRun{
- if(run.status!=='allocation'||!run.reward)throw Error('배분할 보상이 없어요.');
- if(!Number.isInteger(heal)||heal<0||heal>run.points)throw Error('회복할 포인트를 확인해 주세요.');
+ if(run.status!=='allocation'||!run.reward)throw Error(tr('배분할 보상이 없어요.'));
+ if(!Number.isInteger(heal)||heal<0||heal>run.points)throw Error(tr('회복할 포인트를 확인해 주세요.'));
  const extra=run.equipped.includes('second-heart')?Math.floor(heal/5):0;
- if(heal&&run.hp[0]+heal+extra>100)throw Error('최대 HP를 넘어서 회복할 수 없어요.');
+ if(heal&&run.hp[0]+heal+extra>100)throw Error(tr('최대 HP를 넘어서 회복할 수 없어요.'));
  const coins=run.points-heal,coinBonus=run.equipped.includes('two-sided-coin')?Math.floor(coins/10):0;
  const effects:RpgRelicEffect[]=[];
- if(extra>0)effects.push({relicId:'second-heart',message:`추가 회복 +${extra} HP`});
- if(coinBonus>0)effects.push({relicId:'two-sided-coin',message:`추가 주화 +${coinBonus}`});
+ if(extra>0)effects.push({relicId:'second-heart',message:tr('추가 회복 +{0} HP',{0:extra})});
+ if(coinBonus>0)effects.push({relicId:'two-sided-coin',message:tr('추가 주화 +{0}',{0:coinBonus})});
  return withRelicActivations({...run,hp:[Math.min(100,run.hp[0]+heal+extra),run.hp[1],run.hp[2]],coins:run.coins+coins+coinBonus,points:0,status:run.reward.offers.length?'relic':run.reward.reason==='end'?'complete':'ready',updatedAt:Date.now()},effects);
 }
 export function chooseRpgRelic(run:RpgRun,id:string|null,replace:string|null=null):RpgRun{
  if(run.journey)replace=null;
- if(run.status!=='relic'||!run.reward)throw Error('선택할 유물 보상이 없어요.');
- if(id!==null&&!run.reward.offers.includes(id))throw Error('제시된 유물 중에서 선택해 주세요.');
+ if(run.status!=='relic'||!run.reward)throw Error(tr('선택할 유물 보상이 없어요.'));
+ if(id!==null&&!run.reward.offers.includes(id))throw Error(tr('제시된 유물 중에서 선택해 주세요.'));
  if(id===null)return {...run,coins:run.coins+20,status:run.reward.reason==='end'?'complete':'ready',updatedAt:Date.now()};
- if(run.relics.includes(id))throw Error('같은 유물은 중복으로 보유할 수 없어요.');
+ if(run.relics.includes(id))throw Error(tr('같은 유물은 중복으로 보유할 수 없어요.'));
  const relics=replace?run.relics.filter(item=>item!==replace):[...run.relics],equipped=run.equipped.filter(item=>item!==replace);
  relics.push(id);if(equipped.length<3)equipped.push(id);
  return {...run,relics,equipped,discovered:[...new Set([...run.discovered,id])],status:run.reward.reason==='end'?'complete':'ready',updatedAt:Date.now()};
 }
 export function equipRpgRelic(run:RpgRun,id:string,replace:string|null=null):RpgRun{
- if(run.status!=='ready')throw Error('유물은 전투 준비 중에만 바꿀 수 있어요.');
- if(!run.relics.includes(id))throw Error('보유하지 않은 유물이에요.');
+ if(run.status!=='ready')throw Error(tr('유물은 전투 준비 중에만 바꿀 수 있어요.'));
+ if(!run.relics.includes(id))throw Error(tr('보유하지 않은 유물이에요.'));
  if(run.equipped.includes(id))return activateRpgRelics({...run,equipped:run.equipped.filter(item=>item!==id)});
- if(run.equipped.length>=rpgRelicSlots(run)&&(!replace||!run.equipped.includes(replace)))throw Error('장착 자리가 가득 찼어요. 교체할 유물을 고르세요.');
+ if(run.equipped.length>=rpgRelicSlots(run)&&(!replace||!run.equipped.includes(replace)))throw Error(tr('장착 자리가 가득 찼어요. 교체할 유물을 고르세요.'));
  return activateRpgRelics({...run,equipped:[...run.equipped.filter(item=>item!==replace),id]});
 }
 export function advanceRpgStage(run:RpgRun):RpgRun{
- if(run.status!=='ready'||!run.reward)throw Error('보상 선택을 마친 뒤 다음 승부로 갈 수 있어요.');
+ if(run.status!=='ready'||!run.reward)throw Error(tr('보상 선택을 마친 뒤 다음 승부로 갈 수 있어요.'));
  const stage=run.reward.nextStage;
  return {...run,stage,status:'playing',hp:[run.hp[0],100,100],shield:run.pendingBandage?15:0,pendingBandage:false,reward:null,updatedAt:Date.now()};
 }
 export function buyRpgItem(run:RpgRun,id:string):RpgRun{
- if(run.rework)throw Error('새 RPG에서는 소모품·주화·상점을 사용하지 않아요.');
- if(id==='spark-dart')throw Error('바늘탄은 현재 상점에서 판매하지 않아요.');
- if(run.status!=='ready')throw Error('전투 준비 중에만 구매할 수 있어요.');
+ if(run.rework)throw Error(tr('새 RPG에서는 소모품·주화·상점을 사용하지 않아요.'));
+ if(id==='spark-dart')throw Error(tr('바늘탄은 현재 상점에서 판매하지 않아요.'));
+ if(run.status!=='ready')throw Error(tr('전투 준비 중에만 구매할 수 있어요.'));
  const shop=currentRpgShop(run),entry=shop?.stock.find(item=>item.id===id);
- if(!shop||!entry||entry.quantity<1)throw Error('상점에서 구매할 수 없는 물품이에요.');
- if(entry.kind==='relic'&&run.relics.includes(id))throw Error('같은 유물은 1개만 보유할 수 있어요.');
+ if(!shop||!entry||entry.quantity<1)throw Error(tr('상점에서 구매할 수 없는 물품이에요.'));
+ if(entry.kind==='relic'&&run.relics.includes(id))throw Error(tr('같은 유물은 1개만 보유할 수 있어요.'));
  const discounted=run.equipped.includes('merchants-scales')&&!(run.scaleUsed||[]).includes(shop.area);
  const price=Math.max(0,entry.price-(discounted?20:0));
- if(run.coins<price)throw Error(`주화 ${price}개가 필요해요.`);
- return withRelicActivations({...run,coins:run.coins-price,relics:entry.kind==='relic'?[...run.relics,id]:run.relics,consumables:entry.kind==='consumable'?[...run.consumables,id]:run.consumables,discovered:entry.kind==='relic'?[...new Set([...run.discovered,id])]:run.discovered,scaleUsed:discounted?[...(run.scaleUsed||[]),shop.area]:run.scaleUsed||[],shops:(run.shops||[]).map(item=>item.area===shop.area?{...shop,stock:shop.stock.map(product=>product.id===id?{...product,quantity:product.kind==='consumable'?product.quantity:product.quantity-1}:product)}:item),updatedAt:Date.now()},discounted&&entry.price>price?[{relicId:'merchants-scales',message:`주화 ${entry.price-price} 절약`}]:[]);
+ if(run.coins<price)throw Error(tr('주화 {0}개가 필요해요.',{0:price}));
+ return withRelicActivations({...run,coins:run.coins-price,relics:entry.kind==='relic'?[...run.relics,id]:run.relics,consumables:entry.kind==='consumable'?[...run.consumables,id]:run.consumables,discovered:entry.kind==='relic'?[...new Set([...run.discovered,id])]:run.discovered,scaleUsed:discounted?[...(run.scaleUsed||[]),shop.area]:run.scaleUsed||[],shops:(run.shops||[]).map(item=>item.area===shop.area?{...shop,stock:shop.stock.map(product=>product.id===id?{...product,quantity:product.kind==='consumable'?product.quantity:product.quantity-1}:product)}:item),updatedAt:Date.now()},discounted&&entry.price>price?[{relicId:'merchants-scales',message:tr('주화 {0} 절약',{0:entry.price-price})}]:[]);
 }
 export function sellRpgRelic(run:RpgRun,id:string):RpgRun{
- if(run.rework)throw Error('새 RPG에서는 소모품·주화·상점을 사용하지 않아요.');
- if(run.status!=='ready'||!currentRpgShop(run))throw Error('상점이 열린 전투 준비 중에만 판매할 수 있어요.');
- if(!run.relics.includes(id))throw Error('보유하지 않은 유물이에요.');
+ if(run.rework)throw Error(tr('새 RPG에서는 소모품·주화·상점을 사용하지 않아요.'));
+ if(run.status!=='ready'||!currentRpgShop(run))throw Error(tr('상점이 열린 전투 준비 중에만 판매할 수 있어요.'));
+ if(!run.relics.includes(id))throw Error(tr('보유하지 않은 유물이에요.'));
  const grade=RPG_RELICS.find(item=>item.id===id)?.grade,price=grade==='legendary'?80:grade==='rare'?50:30;
  return {...run,coins:run.coins+price,relics:run.relics.filter(item=>item!==id),equipped:run.equipped.filter(item=>item!==id),updatedAt:Date.now()};
 }
 export function restRpg(run:RpgRun,kind:'light'|'deep'):RpgRun{
- if(run.rework)throw Error('새 RPG에서는 소모품·주화·상점을 사용하지 않아요.');
- if(run.status!=='ready')throw Error('전투 준비 중에만 휴식할 수 있어요.');
+ if(run.rework)throw Error(tr('새 RPG에서는 소모품·주화·상점을 사용하지 않아요.'));
+ if(run.status!=='ready')throw Error(tr('전투 준비 중에만 휴식할 수 있어요.'));
  const price=kind==='light'?40:80,heal=kind==='light'?20:45;
- if(run.coins<price||run.hp[0]>=100)throw Error('주화가 부족하거나 HP가 이미 가득 찼어요.');
+ if(run.coins<price||run.hp[0]>=100)throw Error(tr('주화가 부족하거나 HP가 이미 가득 찼어요.'));
  return {...run,coins:run.coins-price,hp:[Math.min(100,run.hp[0]+heal),run.hp[1],run.hp[2]],updatedAt:Date.now()};
 }
 export function useRpgConsumable(run:RpgRun,id:string):RpgRun{
- if(run.rework)throw Error('새 RPG에서는 소모품·주화·상점을 사용하지 않아요.');
- if(run.status!=='ready')throw Error('이 소모품은 전투 준비 중에 사용해 주세요.');
- if(!run.consumables.includes(id))throw Error('보유하지 않은 소모품이에요.');
+ if(run.rework)throw Error(tr('새 RPG에서는 소모품·주화·상점을 사용하지 않아요.'));
+ if(run.status!=='ready')throw Error(tr('이 소모품은 전투 준비 중에 사용해 주세요.'));
+ if(!run.consumables.includes(id))throw Error(tr('보유하지 않은 소모품이에요.'));
  const herb=id==='emergency-herb'&&isRpgDemo(run);
- if((id==='red-vial'||herb)&&run.hp[0]>=100)throw Error('HP가 이미 가득 찼어요.');
- if(id==='moonlight-soup'&&run.pendingSoup)throw Error('달빛 수프 효과가 이미 대기 중이에요.');
- if(id==='guardian-bandage'&&run.pendingBandage)throw Error('붕대 보호가 이미 대기 중이에요.');
- if(!herb&&!['red-vial','moonlight-soup','guardian-bandage'].includes(id))throw Error('전술 아이템은 카드 승부 중 내 차례에 사용해 주세요.');
+ if((id==='red-vial'||herb)&&run.hp[0]>=100)throw Error(tr('HP가 이미 가득 찼어요.'));
+ if(id==='moonlight-soup'&&run.pendingSoup)throw Error(tr('달빛 수프 효과가 이미 대기 중이에요.'));
+ if(id==='guardian-bandage'&&run.pendingBandage)throw Error(tr('붕대 보호가 이미 대기 중이에요.'));
+ if(!herb&&!['red-vial','moonlight-soup','guardian-bandage'].includes(id))throw Error(tr('전술 아이템은 카드 승부 중 내 차례에 사용해 주세요.'));
  const index=run.consumables.indexOf(id);
  return {...run,hp:id==='red-vial'||herb?[Math.min(100,run.hp[0]+(herb?emergencyHerbHealing(run.equipped):20)),run.hp[1],run.hp[2]]:run.hp,pendingSoup:run.pendingSoup||id==='moonlight-soup',pendingBandage:run.pendingBandage||id==='guardian-bandage',consumables:run.consumables.filter((_,i)=>i!==index),updatedAt:Date.now()};
 }

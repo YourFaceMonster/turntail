@@ -4,6 +4,7 @@ import {enterJourneyNode} from './rpg-game.ts';
 import {setJourneyRunNumber,returnJourneyMap,type JourneyNode} from './rpg-journey.ts';
 import {STORY_QUESTS,JOURNEY_REGIONS,type JourneyRegion} from './rpg-chapters.ts';
 import {settleRpgPhaseOne,chooseRpgStageReward,reconcileRpgEliminations} from './rpg-phase-one.ts';
+import {tr} from './i18n/index.ts';
 
 function finishPreview(game:Game,failed=false){
  if(!game.rpgRun?.rework){reconcileRpgEliminations(game);return;}
@@ -16,16 +17,16 @@ export type RpgPreviewScreen='prologue'|'prologue-2'|'map'|'map-2'|'map-3'|'map-
 const STAGES=[1,2,3,4,5,6,7,8,9,10] as const;
 /** Every screen shortcut, in menu order (ST1~10 battles, rewards, quests, region maps and both endings). */
 export const RPG_PREVIEW_SCREENS:readonly {id:RpgPreviewScreen,label:string}[]=[
- {id:'tavern',label:'주점 바로 보기'},{id:'map',label:'지도 보기 · 철문의 영역'},
- ...([2,3,4] as const).map(region=>({id:`map-${region}` as RpgPreviewScreen,label:`지도 보기 · ${JOURNEY_REGIONS[region as JourneyRegion].name}`})),
- {id:'prologue',label:'프롤로그 다시 보기'},{id:'prologue-2',label:'2회차 프롤로그'},
- ...STAGES.map(stage=>({id:`battle-${stage}` as RpgPreviewScreen,label:`ST${stage} 전투 화면`})),
- ...STORY_QUESTS.map(quest=>({id:quest.id as RpgPreviewScreen,label:`ST${quest.stage} 서브퀘스트 · ${quest.name}`})),
- {id:'dice-den',label:'ST5~6 서브퀘스트 · 안개 나루 주사위판'},
- {id:'inn-2',label:'ST4~6 지역 주점 · 안개 나루 주점'},{id:'inn-3',label:'ST7~9 지역 주점 · 달빛 등불 주점'},{id:'cup-round',label:'여관 토너먼트 · 1판 결과'},
- ...STAGES.filter(stage=>stage<10).map(stage=>({id:`reward-${stage}` as RpgPreviewScreen,label:`ST${stage} 클리어·보상`})),
- {id:'ending-1',label:'ST10 클리어 · 정상 엔딩'},{id:'ending-2',label:'ST10 클리어 · 2회차 진엔딩'},
- {id:'mini-round',label:'세린 · 이번 판 결과'},{id:'mini-final',label:'세린 · 3판 최종 결과'},{id:'failed',label:'여정 실패'},
+ {id:'tavern',label:tr('주점 바로 보기')},{id:'map',label:tr('지도 보기 · 철문의 영역')},
+ ...([2,3,4] as const).map(region=>({id:`map-${region}` as RpgPreviewScreen,label:tr('지도 보기 · {0}',{0:JOURNEY_REGIONS[region as JourneyRegion].name})})),
+ {id:'prologue',label:tr('프롤로그 다시 보기')},{id:'prologue-2',label:tr('2회차 프롤로그')},
+ ...STAGES.map(stage=>({id:`battle-${stage}` as RpgPreviewScreen,label:tr('ST{0} 전투 화면',{0:stage})})),
+ ...STORY_QUESTS.map(quest=>({id:quest.id as RpgPreviewScreen,label:tr('ST{0} 서브퀘스트 · {1}',{0:quest.stage,1:quest.name})})),
+ {id:'dice-den',label:tr('ST5~6 서브퀘스트 · 안개 나루 주사위판')},
+ {id:'inn-2',label:tr('ST4~6 지역 주점 · 안개 나루 주점')},{id:'inn-3',label:tr('ST7~9 지역 주점 · 달빛 등불 주점')},{id:'cup-round',label:tr('여관 토너먼트 · 1판 결과')},
+ ...STAGES.filter(stage=>stage<10).map(stage=>({id:`reward-${stage}` as RpgPreviewScreen,label:tr('ST{0} 클리어·보상',{0:stage})})),
+ {id:'ending-1',label:tr('ST10 클리어 · 정상 엔딩')},{id:'ending-2',label:tr('ST10 클리어 · 2회차 진엔딩')},
+ {id:'mini-round',label:tr('세린 · 이번 판 결과')},{id:'mini-final',label:tr('세린 · 3판 최종 결과')},{id:'failed',label:tr('여정 실패')},
 ];
 export function isRpgPreviewScreen(value:unknown):value is RpgPreviewScreen{return RPG_PREVIEW_SCREENS.some(screen=>screen.id===value);}
 /** Runtime-only owner. Never attach preview rules to a Game or serialize them. */
@@ -35,14 +36,14 @@ export class RpgPreviewSession{
  private gear:{relics:string[],equipped:string[],consumables:string[]};
  private initial:Game;
  constructor(game:Game,readonly mode:RpgPreviewMode){
-  if(!game.rpgRun?.journey||!game.rpgRun.phaseOne||game.rpgTest)throw Error('화면 테스트용 새 RPG가 필요해요.');
+  if(!game.rpgRun?.journey||!game.rpgRun.phaseOne||game.rpgTest)throw Error(tr('화면 테스트용 새 RPG가 필요해요.'));
   game.rpgRun.coins=game.rpgRun.rework?0:1000;this.runId=game.rpgRun.id;this.gear=this.equipment(game);this.initial=structuredClone(game);
  }
  owns(game:Game){return game.rpgRun?.id===this.runId&&!game.rpgTest;}
  private equipment(game:Game){const run=game.rpgRun!;return {relics:[...run.relics],equipped:[...run.equipped],consumables:[...run.consumables]};}
  screen(game:Game,target:RpgPreviewScreen):Game{
-  if(this.mode!=='screens'||!this.owns(game))throw Error('프롤로그·화면 테스트에서만 바로 이동할 수 있어요.');
-  if(!isRpgPreviewScreen(target))throw Error('확인할 화면을 선택해 주세요.');
+  if(this.mode!=='screens'||!this.owns(game))throw Error(tr('프롤로그·화면 테스트에서만 바로 이동할 수 있어요.'));
+  if(!isRpgPreviewScreen(target))throw Error(tr('확인할 화면을 선택해 주세요.'));
   const quest=STORY_QUESTS.find(q=>q.id===target),region=/^map-(\d)$/.exec(target)?.[1];
   const stage=target.startsWith('battle-')||target.startsWith('reward-')?Number(target.split('-')[1]):target.startsWith('ending-')?10:quest?quest.stage:target==='dice-den'?5:target==='inn-2'||target==='cup-round'?4:target==='inn-3'?7:region?JOURNEY_REGIONS[Number(region) as JourneyRegion].stages[0]:target==='failed'?1:2;
   const next=structuredClone(this.initial);
@@ -83,7 +84,7 @@ export class RpgPreviewSession{
     const counted=run.roundIds.includes(game.result.id);run.roundIds=run.roundIds.filter(id=>id!==game.result!.id);if(counted)run.rounds=Math.max(0,run.rounds-1);finishPreview(game);
    }
    game.rpgRun=chooseRpgStageReward(game.rpgRun!,'relic',undefined,false,game.rpgRun!.phaseOne!.clear!.relicOffers?.[0]);
-   game.log=['TEST · 한 판 완료 · 저장하지 않는 화면 검증',...game.log].slice(0,40);return true;
+   game.log=[tr('TEST · 한 판 완료 · 저장하지 않는 화면 검증'),...game.log].slice(0,40);return true;
   }
   if(run.status!=='allocation'){
    // Settlement may already have recorded a losing round and removed its gear.
@@ -94,7 +95,7 @@ export class RpgPreviewSession{
     phaseOne:{...run.phaseOne!,eliminated:[1,2]}},counted?{...game.result,players:game.result.players.map(player=>({...player,delta:0}))}:game.result);
   }
   game.rpgRun=chooseRpgStageReward(game.rpgRun!,'all',undefined,false,game.rpgRun!.phaseOne?.clear?.relicOffers?.[0]);
-  game.log=['TEST · 한 판 완료 · 승패와 관계없이 다음 여정으로',...game.log].slice(0,40);
+  game.log=[tr('TEST · 한 판 완료 · 승패와 관계없이 다음 여정으로'),...game.log].slice(0,40);
   return true;
  }
 }

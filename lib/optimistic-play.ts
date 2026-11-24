@@ -1,5 +1,6 @@
 import {beats,combo,uid,RECENT_TRICK_PLAYS,type view} from './game';
 import {announcedPlayDuration,QUICK_PLAY_MS} from './play-notices';
+import {tr} from './i18n/index.ts';
 
 type View=ReturnType<typeof view>;
 /** Prefix of a play event the browser shows before the server answers (server rooms only). */
@@ -25,7 +26,7 @@ export function optimisticPlay(g:View,ids:number[],seenSizes:ReadonlySet<number>
  const players=g.players.map((p,i)=>i===g.me?{...p,count:p.count-played.length,hand:hand.filter(t=>!ids.includes(t.id))}:p);
  return {...g,players,trick:played,lastBy:g.me,rally,roundActions:(g.roundActions||0)+1,played:[...(g.played||[]),...played],
   tablePlay,trickPlays:[...(g.trickPlays||[]),tablePlay].slice(-RECENT_TRICK_PLAYS),turn:(g.me+1)%g.players.length,turnReadyAt:now+reviewMs,
-  lastEvent:{id,type:'play',who:g.me,tiles:played,label,at:now,rally,showNotice,reviewMs},log:[`${me.name} · ${label} ${played.length}개 제출`,...g.log].slice(0,40)} as View;
+  lastEvent:{id,type:'play',who:g.me,tiles:played,label,at:now,rally,showNotice,reviewMs},log:[tr('{0} · {1} {2}개 제출',{0:me.name,1:label,2:played.length}),...g.log].slice(0,40)} as View;
 }
 /** The server's answer to an optimistic play: same player, same tiles. */
 export function confirmsOptimistic(pending:{who:number,ids:number[]},event?:{type?:string,who?:number,tiles?:{id:number}[]}|null){

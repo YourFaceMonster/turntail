@@ -1,5 +1,6 @@
 import type {RpgRun,RpgShop} from './rpg.ts';
 import {BLUE_GLASS_ID} from './blue-glass.ts';
+import {tr} from './i18n/index.ts';
 
 export const RPG_DEMO_PRICES:Record<string,number>={'emergency-herb':30,'ember-bomb':45,'ward-seal':40,'whisper-eye':30,'swapped-fate':45,'scout-lens':10};
 export const RPG_DEMO_RELICS=['cracked-heart','recovery-lantern',BLUE_GLASS_ID,'wind-sigil','warrior-crest','life-sigil','sun-sigil','crimson-fang'] as const;
@@ -20,6 +21,6 @@ export function demoRelicOffers(run:RpgRun):string[]{
 /** Only unpaid demo offers migrate. Previously owned items and paid rewards stay intact. */
 export function restoreDemoReward(run:RpgRun){
  const clear=run.phaseOne?.clear;if(run.rework||!isRpgDemo(run)||!clear||clear.chosen||run.status!=='allocation')return;
- if(clear.relicOffers!==undefined){if(!Array.isArray(clear.relicOffers)||clear.relicOffers.length>2||new Set(clear.relicOffers).size!==clear.relicOffers.length||clear.relicOffers.some(id=>typeof id!=='string'||!(RPG_DEMO_RELICS as readonly string[]).includes(id)||id===BLUE_GLASS_ID))throw Error('유물 보상 후보의 저장 형식이 올바르지 않아요.');return;}
+ if(clear.relicOffers!==undefined){if(!Array.isArray(clear.relicOffers)||clear.relicOffers.length>2||new Set(clear.relicOffers).size!==clear.relicOffers.length||clear.relicOffers.some(id=>typeof id!=='string'||!(RPG_DEMO_RELICS as readonly string[]).includes(id)||id===BLUE_GLASS_ID))throw Error(tr('유물 보상 후보의 저장 형식이 올바르지 않아요.'));return;}
  const offers=demoRelicOffers(run);clear.relicOffers=offers;clear.relicId=offers[0]||'';
 }

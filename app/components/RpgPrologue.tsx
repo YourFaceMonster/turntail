@@ -15,9 +15,10 @@ import {DialogueTools,useDialogueAuto} from './DialogueTools';
 import StoryPuzzle from './StoryPuzzle';
 import type {StoryEventId,StoryEventResult} from '../../lib/rpg-chapters';
 import {keepsakeSource,prologueArt,prologueSceneSources,prologueSceneGroup,storyPictureKey,storyPictureTransition} from '../../lib/rpg-prologue-art';
+import {tr,trv} from '../../lib/i18n/index.ts';
 
 export function TwoCrowns(){return <svg viewBox="0 0 100 70" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round"><path d="M12 21l13 10 10-19 11 19 14-10-5 29H17zM17 56h38"/><path d="M40 31l13 10 10-19 11 19 14-10-5 29H45zM45 66h38"/></g></svg>;}
-export function StoryTile({back=false}:{back?:boolean}){return <div className={`prologue-tile ${back?'is-back':''}`} aria-label={back?'겹친 두 왕관이 새겨진 낡은 패 뒷면':'낡은 빨간 숫자 2 패'}><div className="prologue-tile-front"><span>2</span><i><SuitEmblem s={3}/></i></div><div className="prologue-tile-back"><TwoCrowns/></div><b className="prologue-tile-scratch"/></div>;}
+export function StoryTile({back=false}:{back?:boolean}){return <div className={`prologue-tile ${back?'is-back':''}`} aria-label={back?tr('겹친 두 왕관이 새겨진 낡은 패 뒷면'):tr('낡은 빨간 숫자 2 패')}><div className="prologue-tile-front"><span>2</span><i><SuitEmblem s={3}/></i></div><div className="prologue-tile-back"><TwoCrowns/></div><b className="prologue-tile-scratch"/></div>;}
 export function ProloguePicture({cut,duration=cut.duration,hiddenLight=false}:{cut:PrologueCut,duration?:number,hiddenLight?:boolean}){
  const artImage=useRef<HTMLImageElement>(null),[light,setLight]=useState<CSSProperties>();
  useEffect(()=>{
@@ -64,7 +65,7 @@ export function CrossfadePicture({cut,duration=cut.duration,hiddenLight=false}:{
 }
 
 type Props={onEvent?:(id:StoryEventId,result:StoryEventResult)=>void,enter:()=>void,context?:AudioContext|null,music?:boolean,sound?:boolean,musicVolume?:number,cuts?:readonly PrologueCut[],label?:string,skipLabel?:string,chrome?:import('react').ReactNode,track?:string};
-export default function RpgPrologue({onEvent,enter,context,music=true,sound=true,musicVolume=40,cuts=FIRST_PROLOGUE,label='턴테일 프롤로그',skipLabel='건너뛰기',chrome,track}:Props){
+export default function RpgPrologue({onEvent,enter,context,music=true,sound=true,musicVolume=40,cuts=FIRST_PROLOGUE,label=tr('턴테일 프롤로그'),skipLabel=tr('건너뛰기'),chrome,track}:Props){
  const finish=useRef(enter),[closing,setClosing]=useState(false);const finishTimer=useRef<ReturnType<typeof setTimeout>|null>(null);const complete=()=>{if(finishTimer.current)return;setClosing(true);finishTimer.current=setTimeout(()=>finish.current(),240);};useEffect(()=>()=>{if(finishTimer.current)clearTimeout(finishTimer.current);},[]);
  useEffect(()=>{finish.current=enter;},[enter]);
  const clock=useRef<PrologueClock|null>(null);
@@ -123,10 +124,10 @@ export default function RpgPrologue({onEvent,enter,context,music=true,sound=true
  if(typeof document==='undefined')return null;
  return createPortal(<section ref={root} tabIndex={-1} className={`rpg-prologue ${closing?'is-story-closing':''}`} role="dialog" aria-modal="true" aria-label={label} data-cut={cut.id} data-storyboard={cut.storyboard} data-paused={!visible} onKeyDown={event=>{event.stopPropagation();if(event.key==='Escape'){event.preventDefault();clock.current!.complete();}if(event.target===event.currentTarget&&(event.key===' '||event.key==='Enter')){event.preventDefault();advance();}if(event.key==='Tab'){event.preventDefault();root.current?.querySelector<HTMLButtonElement>('.prologue-skip')?.focus();}}}>
   {chrome}
-  {artReady?<div className="prologue-tap-surface" onClick={advance}><div className="prologue-cut" data-scene={cut.scene} style={{'--cut-duration':`${cut.duration}ms`} as CSSProperties}><CrossfadePicture cut={{...cuts[sceneGroup.start],poseArt:cut.poseArt}} duration={sceneGroup.duration}/>{cut.fx==='flash'&&<div key={`fx-${cut.id}`} className="story-fx-flash" aria-hidden="true"/>}<div key={cut.id} className="prologue-caption" aria-live="polite">{cut.speaker&&<small>{cut.speaker}</small>}<p><DialogueText text={cut.line}/></p>{cuts===FIRST_PROLOGUE&&cut.storyboard==='P19'&&<small>시작 유물 · 금이 간 심장</small>}</div></div></div>:<p className="prologue-loading" role="status">이야기를 펼치는 중…</p>}
+  {artReady?<div className="prologue-tap-surface" onClick={advance}><div className="prologue-cut" data-scene={cut.scene} style={{'--cut-duration':`${cut.duration}ms`} as CSSProperties}><CrossfadePicture cut={{...cuts[sceneGroup.start],poseArt:cut.poseArt}} duration={sceneGroup.duration}/>{cut.fx==='flash'&&<div key={`fx-${cut.id}`} className="story-fx-flash" aria-hidden="true"/>}<div key={cut.id} className="prologue-caption" aria-live="polite">{cut.speaker&&<small>{trv(cut.speaker)}</small>}<p><DialogueText text={cut.line}/></p>{cuts===FIRST_PROLOGUE&&cut.storyboard==='P19'&&<small>{tr('시작 유물 · 금이 간 심장')}</small>}</div></div></div>:<p className="prologue-loading" role="status">{tr('이야기를 펼치는 중…')}</p>}
   {interactive&&<StoryPuzzle key={cut.id} inline id={cut.interaction!} done={settle}/>}
   {artReady&&<DialogueTools className="is-story" auto={auto} setAuto={setAuto} lines={backlog} onOpenChange={setLogOpen}/>}
-  <button className="prologue-skip" onClick={()=>clock.current!.complete()}>{skipLabel} <span aria-hidden="true">↗</span></button><span className="prologue-touch-hint">화면을 누르면 다음 장면</span>
-  {artReady&&cut.location&&<div className="prologue-location"><small>현재 위치</small><strong>{cut.location}</strong></div>}
+  <button className="prologue-skip" onClick={()=>clock.current!.complete()}>{skipLabel} <span aria-hidden="true">↗</span></button><span className="prologue-touch-hint">{tr('화면을 누르면 다음 장면')}</span>
+  {artReady&&cut.location&&<div className="prologue-location"><small>{tr('현재 위치')}</small><strong>{cut.location}</strong></div>}
  <div className="story-exit-fade" aria-hidden="true"/></section>,document.body);
 }

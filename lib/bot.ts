@@ -1,5 +1,6 @@
 import {combo,legalOptions,rank,suitRank,type Tile,type LegalOption,type BotPosition,type BotAction} from './game.ts';
 import {accessibleStack} from './table-access.ts';
+import {tr} from './i18n/index.ts';
 
 type Position=Pick<BotPosition,'me'|'turn'|'lastBy'|'trick'|'cols'|'rows'|'played'> & {
  players:{count:number,known:Tile[],hand?:Tile[]}[];
@@ -220,7 +221,7 @@ function exact(p:Position,w:World,ranked:Candidate[]):{action:BotAction,nodes:nu
 }
 
 export function stageBotProfile(level:number){
- if(!Number.isInteger(level)||level<1||level>10)throw Error('AI 난이도는 1~10 사이여야 해요.');
+ if(!Number.isInteger(level)||level<1||level>10)throw Error(tr('AI 난이도는 1~10 사이여야 해요.'));
  return {level,samples:[0,0,0,2,3,4,5,6,8,10][level-1],plies:[0,0,0,6,10,12,14,16,20,24][level-1],exact:level>=7,scoreRisk:Math.max(0,level-7)};
 }
 function introductoryDecision(p:Position,ctx:Context,level:number):BotAction{

@@ -6,8 +6,9 @@ import KoreanPortrait from './KoreanPortrait';
 import MonsterPortrait from './MonsterPortrait';
 import AnimalFace from './AnimalFace';
 import {SEAT_ANIMALS} from '../../lib/animal-faces';
+import {tr} from '../../lib/i18n/index.ts';
 export default function SeatPortrait({avatar='',seat=0,guardian=false}:{avatar?:string,seat?:number,guardian?:boolean}){
- if(guardian)return <span className="portrait avatar"><img src={RPG_GUARDIAN_ART} alt="수호자"/></span>;
+ if(guardian)return <span className="portrait avatar"><img src={RPG_GUARDIAN_ART} alt={tr('수호자')}/></span>;
  const twin=twinIndex(avatar);if(twin!==null)return <TwinPortrait index={twin}/>;
  if(avatar.startsWith('stage-portrait:'))return <StagePortrait index={Number(avatar.split(':')[1])}/>;
  if(avatar.startsWith('korean-portrait:'))return <KoreanPortrait index={Number(avatar.split(':')[1])}/>;

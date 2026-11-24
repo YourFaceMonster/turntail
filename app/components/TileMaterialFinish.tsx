@@ -1,5 +1,6 @@
 import {CARTOON_TILE_PATH} from './TileCartoon';
-export const TILE_MATERIAL_NAMES=['뼈','호두나무','옥','수정','규화목','현무암','월장석','호박석','흑요석','세계수 목재'] as const;
+import {tr} from '../../lib/i18n/index.ts';
+export const TILE_MATERIAL_NAMES=[tr('뼈'),tr('호두나무'),tr('옥'),tr('수정'),tr('규화목'),tr('현무암'),tr('월장석'),tr('호박석'),tr('흑요석'),tr('세계수 목재')] as const;
 /** Restrained edge details add material character without covering the shared number/suit layout. */
 export default function TileMaterialFinish({stage,id}:{stage:number,id:string}){
  const dark=[6,9,10].includes(stage),wood=[2,5,10].includes(stage),glass=[4,8,9].includes(stage),accent=stage===10?'#efbe68':stage===3?'#d6f0c0':stage===7?'#deedff':glass?'#fff3d9':'#eedcb5';

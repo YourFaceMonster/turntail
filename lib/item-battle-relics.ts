@@ -3,6 +3,7 @@ import {RPG_RELICS} from './rpg.ts';
 import {DICE_RELIC} from './rpg-dice-den.ts';
 import {ITEM_BATTLE_RELICS} from './item-battle-relic-catalog.ts';
 import type {Tile} from './game.ts';
+import {tr} from './i18n/index.ts';
 
 /** Item-match prototypes. The original RPG catalogue and its rewards are unchanged. */
 export {ITEM_BATTLE_RELICS};
@@ -14,7 +15,7 @@ const FORGED_ICONS=new Set(['whole-heart','gamblers-hourglass','undying-lantern'
 export function relicImage(id:string){if(FORGED_ICONS.has(id))return `/rpg-items-v1/relics/${id}-v1.webp`;if(id===BLUE_GLASS_ID)return '/rpg-items-v1/relics/watchkeepers-blue-glass-v1.webp';if(id===DICE_RELIC.id)return '/rpg-items-v1/relics/haro-ivory-die-v1.webp';return ITEM_BATTLE_RELICS.some(relic=>relic.id===id)?`/item-battle-v1/relics/${id}.webp`:`/rpg-items-v1/relics/${id}.webp`;}
 export function itemBattleRelicWin(equipped:readonly string[],label:string,tiles:readonly Tile[]){
  const effects:{relicId:string,message:string}[]=[];let damage=0,heal=0;
- const add=(id:string,amount:number,healing=false)=>{if(!equipped.includes(id))return;if(healing)heal+=amount;else damage+=amount;effects.push({relicId:id,message:healing?`HP +${amount}`:`추가 피해 +${amount}`});};
+ const add=(id:string,amount:number,healing=false)=>{if(!equipped.includes(id))return;if(healing)heal+=amount;else damage+=amount;effects.push({relicId:id,message:healing?`HP +${amount}`:tr('추가 피해 +{0}',{0:amount})});};
  if(label==='페어')add('wind-sigil',1);
  if(label==='트리플'){add('warrior-crest',2);add('life-sigil',2,true);}
  if(label==='플러시')add('sun-sigil',3);

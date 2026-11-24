@@ -1,4 +1,5 @@
 import type {StageRecord,StageRun} from './stage-challenge';
+import {tr} from './i18n/index.ts';
 export const TABLE_COLLECTION_KEY='turntale-table-collection';
 export type TableCollection={version:1,selected:number,unlocked:number[]};
 type Storage={getItem:(key:string)=>string|null,setItem:(key:string,value:string)=>void};
@@ -17,7 +18,7 @@ export function reconcileTableCollection(collection:TableCollection,archive:{act
  return {...collection,unlocked};
 }
 export function selectTableSet(collection:TableCollection,set:number):TableCollection{
- if(!valid(set)||!collection.unlocked.includes(set))throw Error('해당 스테이지를 클리어하면 선택할 수 있어요.');
+ if(!valid(set)||!collection.unlocked.includes(set))throw Error(tr('해당 스테이지를 클리어하면 선택할 수 있어요.'));
  return {...collection,selected:set};
 }
 export function saveTableCollection(storage:Pick<Storage,'setItem'>,collection:TableCollection){storage.setItem(TABLE_COLLECTION_KEY,JSON.stringify(collection));}

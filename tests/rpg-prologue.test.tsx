@@ -68,7 +68,7 @@ test('muting both buses creates no sources; music-only and effects-only stay ind
  const ctx={sampleRate:100,currentTime:0,destination:{},createGain:node,createOscillator:()=>{created++;return node();},createBufferSource:()=>{created++;return node();},createBiquadFilter:node,createBuffer:()=>({getChannelData:()=>new Float32Array(300)})} as unknown as AudioContext;
  const cut=FIRST_PROLOGUE.find(c=>c.scene==='room')!;prologueAmbience(ctx,cut,false,0,false)();assert.equal(created,0);
  const musicStop=prologueAmbience(ctx,cut,true,40,false);assert.ok(created>0);musicStop();assert.ok(stopped>0);assert.ok(disconnected>0);
- const prior=created,stop=prologueAmbience(ctx,cut,false,40,true);assert.equal(created-prior,1);stop();stop();
+ const prior=created,stop=prologueAmbience(ctx,cut,false,40,true);assert.equal(created-prior,2,'hearth bed: fire rumble + uneven soft pops (2026-11-24, no even ticking)');stop();stop();
  assert.doesNotThrow(()=>prologueAmbience({createBuffer(){throw Error('audio blocked');}} as unknown as AudioContext,cut,true,40)());
 });
 test('wind bed loops without a seam and stays one bed across consecutive wind cuts',()=>{

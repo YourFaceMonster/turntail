@@ -1,5 +1,6 @@
 /** /api/game handlers for 오늘의 판. The score comes from the server-run round, never from the browser. */
 import {DAILY_INDEX_SQL,DAILY_MIGRATE_SQL,DAILY_OPEN_SQL,DAILY_PAGE,DAILY_PRUNE_SQL,DAILY_TABLE_SQL,DAILY_TRIES,DAILY_TRIES_SQL,dailyDate,dailyPruneBefore,isDailyDate} from './daily';
+import {tr} from './i18n/index.ts';
 
 type Db={prepare:(sql:string)=>any,batch:(statements:any[])=>Promise<any[]>};
 type Reply=(body:unknown,status?:number)=>Response;
@@ -50,9 +51,9 @@ export const DAILY_SCORE_LIMIT=120;
  * check guard the row.
  */
 export async function dailyFinishRequest(db:Db,b:any,profile:string|null,reply:Reply,now=Date.now()){
- if(!profile)return reply({error:'기기 기록을 확인하지 못했어요.'},400);
+ if(!profile)return reply({error:tr('기기 기록을 확인하지 못했어요.')},400);
  const code=String(b.code||''),score=Number(b.score),date=isDailyDate(b.date)?b.date:dailyDate(now);
- if(!/^[A-Z0-9]{12}$/.test(code)||!Number.isInteger(score)||Math.abs(score)>DAILY_SCORE_LIMIT)return reply({error:'오늘의 판 기록을 확인하지 못했어요.'},400);
+ if(!/^[A-Z0-9]{12}$/.test(code)||!Number.isInteger(score)||Math.abs(score)>DAILY_SCORE_LIMIT)return reply({error:tr('오늘의 판 기록을 확인하지 못했어요.')},400);
  await ensureDailyTable(db);
  const r=await db.prepare(`UPDATE daily_scores SET ${FINISH_SET} WHERE id=?4 AND code=?5 AND open=1`).bind(score,Number(!!b.win),now,`${profile}:${date}`,code).run();
  return reply({recorded:!!r.meta.changes});

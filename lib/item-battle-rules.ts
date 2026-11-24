@@ -7,6 +7,7 @@ import {assertTurnReady,lowestHandLead,sorted,uid,view,type Game,type Tile} from
 import {withRelicActivations} from './rpg-relic-feedback.ts';
 import {AMBUSH_IMPACT_MS,AMBUSH_PRESENTATION_MS,TRAP_IMPACT_MS,TRAP_TURN_READY_MS} from './pickup-presentation.ts';
 import {professionActiveAvailability,consumeProfessionGauge} from './profession-actives.ts';
+import {tr} from './i18n/index.ts';
 
 export type FloorTrap={damage?:number,id:string,owner:number,index:number,tileId:number,round:number};
 export type TrapIntel={index:number,tileId:number,trapped:boolean};
@@ -28,19 +29,19 @@ export function applyPioneerDeal(game:Game,now=Date.now()){
   game.players[0].hand=sorted(hand);
  }
  game.opening=lowestHandLead(game.players);game.turn=game.opening.who;
- game.log[0]=`라운드 ${game.round} · 첫 선 ${game.players[game.turn].name} (철문 3)`;
- Object.assign(run,withRelicActivations(run,[{relicId:'pioneers-eye',message:'첫 분배 · 철문 3으로 첫 선'}],now));
+ game.log[0]=tr('라운드 {0} · 첫 선 {1} (철문 3)',{0:game.round,1:game.players[game.turn].name});
+ Object.assign(run,withRelicActivations(run,[{relicId:'pioneers-eye',message:tr('첫 분배 · 철문 3으로 첫 선')}],now));
 }
 export function trapAvailability(game:Pick<Game,'phase'|'turn'|'rpgRun'|'round'|'turnReadyAt'|'roundActions'|'result'>,who:number,enabled=true,now=Date.now()){
  const state=itemBattleState(game),combat=game.rpgRun?.combat;
- if(!state||combat?.professions[who]!=='rogue')return {usable:false,reason:'도적의 함정'};
+ if(!state||combat?.professions[who]!=='rogue')return {usable:false,reason:tr('도적의 함정')};
  return professionActiveAvailability(game,who,enabled,now);
 }
 export function placeFloorTrap(game:Game,who:number,index:number,now=Date.now()){
  const availability=trapAvailability(game,who,true,now);if(!availability.usable)throw Error(availability.reason);
- if(!game.practice||!Number.isInteger(index)||!game.stacks[index]?.some(Boolean))throw Error('남아 있는 바닥패를 선택해 주세요.');
+ if(!game.practice||!Number.isInteger(index)||!game.stacks[index]?.some(Boolean))throw Error(tr('남아 있는 바닥패를 선택해 주세요.'));
  assertTurnReady(game,now);const state=itemBattleState(game)!,tile=game.stacks[index][1]||game.stacks[index][0]!;
- if(state.traps.some(trap=>trap.owner===who&&trap.tileId===tile.id&&trap.round===game.round))throw Error('이미 내 함정이 설치된 패예요.');
+ if(state.traps.some(trap=>trap.owner===who&&trap.tileId===tile.id&&trap.round===game.round))throw Error(tr('이미 내 함정이 설치된 패예요.'));
  consumeProfessionGauge(game,who,now);
  state.traps.push({id:uid(),owner:who,index,tileId:tile.id,round:game.round});state.trapUsed[who]=true;game.rpgRun!.updatedAt=now;
  // No public event/log, turn, item inventory or action counter changes on installation.
@@ -53,7 +54,7 @@ export function recordTrapIntel(game:Game,who:number,index:number,tileId:number)
 export function blockItemBattleDamage(game:Game,seat:number,damage:number,now=Date.now()){
  const run=game.rpgRun;if(!run||seat!==0||damage<=0)return damage;
  if(run.equipped.includes('cracked-heart')&&!run.crackedHeartUsed.includes(run.stage)){
-  const blocked=Math.min(8,damage);run.crackedHeartUsed.push(run.stage);Object.assign(run,withRelicActivations(run,[{relicId:'cracked-heart',message:`피해 ${blocked} 방어`}],now));return damage-blocked;
+  const blocked=Math.min(8,damage);run.crackedHeartUsed.push(run.stage);Object.assign(run,withRelicActivations(run,[{relicId:'cracked-heart',message:tr('피해 {0} 방어',{0:blocked})}],now));return damage-blocked;
  }
  return damage;
 }
@@ -62,11 +63,11 @@ export function triggerFloorTrap(game:Game,who:number,index:number,tile:Tile,now
  const traps=state.traps.filter(trap=>trap.tileId===tile.id&&trap.round===game.round&&rpgAlive(game,trap.owner));state.traps=state.traps.filter(trap=>!traps.includes(trap));
  for(const key of Object.keys(state.trapIntel))state.trapIntel[Number(key)]=state.trapIntel[Number(key)].filter(intel=>intel.tileId!==tile.id);
  if(hasImmediateSkills(game)){
-  for(const trap of traps){const safe=trap.owner===who,damage=game.players.map((_,seat)=>seat===who&&!safe?trap.damage??4:0),result=applyImmediateEffects(game,damage,game.players.map(()=>0),now);state.trapEvents.push({id:uid(),owner:trap.owner,target:who,index,damage:result.damage[who],hpBefore:result.before[who],hpAfter:result.after[who],at:now,safe});if(!safe)game.log=[`${game.players[trap.owner].name}의 함정 · ${game.players[who].name} HP −${result.damage[who]}`,...game.log].slice(0,40);}
+  for(const trap of traps){const safe=trap.owner===who,damage=game.players.map((_,seat)=>seat===who&&!safe?trap.damage??4:0),result=applyImmediateEffects(game,damage,game.players.map(()=>0),now);state.trapEvents.push({id:uid(),owner:trap.owner,target:who,index,damage:result.damage[who],hpBefore:result.before[who],hpAfter:result.after[who],at:now,safe});if(!safe)game.log=[tr('{0}의 함정 · {1} HP −{2}',{0:game.players[trap.owner].name,1:game.players[who].name,2:result.damage[who]}),...game.log].slice(0,40);}
   if(!deferFinish)finishImmediateCombat(game,now,'trap');return;
  }
  if(hasRoundCombat(game)){
-  for(const trap of traps){const safe=trap.owner===who,damage=safe?0:trap.damage??4;if(damage)queueRoundDamage(game,who,damage,'trap');state.trapEvents.push({id:uid(),owner:trap.owner,target:who,index,damage,hpBefore:run.hp[who],hpAfter:run.hp[who],at:now,safe});if(!safe)game.log=[`${game.players[trap.owner].name}의 함정 · ${game.players[who].name} 피해 ${damage} 적립`,...game.log].slice(0,40);}
+  for(const trap of traps){const safe=trap.owner===who,damage=safe?0:trap.damage??4;if(damage)queueRoundDamage(game,who,damage,'trap');state.trapEvents.push({id:uid(),owner:trap.owner,target:who,index,damage,hpBefore:run.hp[who],hpAfter:run.hp[who],at:now,safe});if(!safe)game.log=[tr('{0}의 함정 · {1} 피해 {2} 적립',{0:game.players[trap.owner].name,1:game.players[who].name,2:damage}),...game.log].slice(0,40);}
   run.updatedAt=now;return;
  }
  const hpBeforePickup=run.hp[who],triggered:TrapBurst[]=[];
@@ -74,7 +75,7 @@ export function triggerFloorTrap(game:Game,who:number,index:number,tile:Tile,now
   const safe=trap.owner===who,hpBefore=run.hp[who],damage=safe?0:blockItemBattleDamage(game,who,4,now);run.hp[who]=Math.max(0,hpBefore-damage);
   {const before=[...run.hp];before[who]=hpBefore;recordRpgRoundHealth(run,before);}
   state.lastTrap={id:uid(),owner:trap.owner,target:who,index,damage:hpBefore-run.hp[who],hpBefore,hpAfter:run.hp[who],at:now+TRAP_IMPACT_MS,safe};state.trapEvents.push(state.lastTrap);triggered.push(state.lastTrap);
-  if(!safe){game.log=[`${game.players[trap.owner].name}의 함정 발동 · ${game.players[who].name} HP −${state.lastTrap.damage}`,...game.log].slice(0,40);game.turnReadyAt=Math.max(game.turnReadyAt||0,now+TRAP_TURN_READY_MS);}
+  if(!safe){game.log=[tr('{0}의 함정 발동 · {1} HP −{2}',{0:game.players[trap.owner].name,1:game.players[who].name,2:state.lastTrap.damage}),...game.log].slice(0,40);game.turnReadyAt=Math.max(game.turnReadyAt||0,now+TRAP_TURN_READY_MS);}
  }
  const hostile=triggered.filter(event=>!event.safe);
  if(hostile.length)state.lastTrap={...hostile[0],id:uid(),owners:hostile.map(event=>event.owner),damage:hpBeforePickup-run.hp[who],hpBefore:hpBeforePickup,hpAfter:run.hp[who]};
@@ -91,7 +92,7 @@ export function triggerScoutedPickup(game:Game,who:number,index:number,tile:Tile
  run.hp=run.hp.map((hp,seat)=>Math.max(0,hp-damage[seat]));run.updatedAt=now;
  recordRpgRoundHealth(run,hpBefore);
  const event:AmbushBurst={id:uid(),round:game.round,owner:who,index,damage,hpBefore,hpAfter:[...run.hp],at:now+AMBUSH_IMPACT_MS};state.lastAmbush=event;state.ambushEvents=[...(state.ambushEvents||[]),event];
- game.turnReadyAt=Math.max(game.turnReadyAt||0,now+AMBUSH_PRESENTATION_MS);game.log=[`${game.players[who].name} · 투시 패 회수 기습 · ${game.players.map((player,seat)=>seat===who?null:`${player.name} HP −${damage[seat]}`).filter(Boolean).join(' · ')}`,...game.log].slice(0,40);return event;
+ game.turnReadyAt=Math.max(game.turnReadyAt||0,now+AMBUSH_PRESENTATION_MS);game.log=[tr('{0} · 투시 패 회수 기습 · {1}',{0:game.players[who].name,1:game.players.map((player,seat)=>seat===who?null:`${player.name} HP −${damage[seat]}`).filter(Boolean).join(' · ')}),...game.log].slice(0,40);return event;
 }
 /** Automatic scouting uses hidden upper tiles only and the receiver's own private map. */
 export function scoutProfessionFloor(game:Game,who:number,count:number){

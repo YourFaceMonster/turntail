@@ -1,10 +1,11 @@
 import type {Game,Tile,BotAction} from './game';
 import {accessibleStack} from './table-access';
+import {tr} from './i18n/index.ts';
 export type ItemKind='lens'|'ledger'|'guide';
 export const TABLE_ITEMS=[
- {id:'lens' as const,name:'정찰 렌즈',icon:'◉',description:'선택한 외곽의 위층 비공개 패 1장을 이번 차례에만 확인합니다.'},
- {id:'ledger' as const,name:'기록 두루마리',icon:'▤',description:'이번 판에 이미 제출된 패를 문양·숫자별로 한눈에 확인합니다.'},
- {id:'guide' as const,name:'전술 부적',icon:'✧',description:'이번 차례의 제출·가져오기 후보 한 가지를 제안받습니다.'},
+ {id:'lens' as const,name:tr('정찰 렌즈'),icon:'◉',description:tr('선택한 외곽의 위층 비공개 패 1장을 이번 차례에만 확인합니다.')},
+ {id:'ledger' as const,name:tr('기록 두루마리'),icon:'▤',description:tr('이번 판에 이미 제출된 패를 문양·숫자별로 한눈에 확인합니다.')},
+ {id:'guide' as const,name:tr('전술 부적'),icon:'✧',description:tr('이번 차례의 제출·가져오기 후보 한 가지를 제안받습니다.')},
 ];
 export type ItemIntel={kind:ItemKind,round:number,event:string,peek?:{index:number,tile:Tile},suggestion?:BotAction};
 export type ItemSeat={stock:Record<ItemKind,number>,usedRound:number,intel?:ItemIntel};
@@ -12,19 +13,19 @@ export type ItemRun={version:1,seats:ItemSeat[]};
 export function newItemRun(size:number):ItemRun{return {version:1,seats:Array.from({length:size},()=>({stock:{lens:3,ledger:3,guide:3},usedRound:0}))};}
 const accessible=(g:Game,i:number)=>accessibleStack(g.stacks,g.cols||5,g.rows||3,i);
 export function useTableItem(g:Game,who:number,kind:ItemKind,index=-1,suggestion?:BotAction){
- if(!g.practice||!g.challenge?.itemMode||g.stageRun||!g.itemRun)throw Error('아이템은 싱글 10판 아이템전에서만 사용할 수 있어요.');
- if(g.phase!=='playing'||g.turn!==who||g.challenge.complete||g.challenge.abandoned)throw Error('진행 중인 내 차례에만 사용할 수 있어요.');
- const seat=g.itemRun.seats[who];if(!seat||!TABLE_ITEMS.some(i=>i.id===kind))throw Error('남은 아이템을 확인해 주세요.');
- if(seat.usedRound===g.round)throw Error('한 판에는 아이템 하나만 사용할 수 있어요.');
- if(!(seat.stock[kind]>0))throw Error('남은 아이템을 확인해 주세요.');
+ if(!g.practice||!g.challenge?.itemMode||g.stageRun||!g.itemRun)throw Error(tr('아이템은 싱글 10판 아이템전에서만 사용할 수 있어요.'));
+ if(g.phase!=='playing'||g.turn!==who||g.challenge.complete||g.challenge.abandoned)throw Error(tr('진행 중인 내 차례에만 사용할 수 있어요.'));
+ const seat=g.itemRun.seats[who];if(!seat||!TABLE_ITEMS.some(i=>i.id===kind))throw Error(tr('남은 아이템을 확인해 주세요.'));
+ if(seat.usedRound===g.round)throw Error(tr('한 판에는 아이템 하나만 사용할 수 있어요.'));
+ if(!(seat.stock[kind]>0))throw Error(tr('남은 아이템을 확인해 주세요.'));
  const intel:ItemIntel={kind,round:g.round,event:g.lastEvent?.id||''};
  if(kind==='lens'){
-  if(!g.trick.length||!Number.isInteger(index)||!g.stacks[index]?.[1]||!accessible(g,index))throw Error('가져올 수 있는 외곽 위층 패를 먼저 선택해 주세요.');
+  if(!g.trick.length||!Number.isInteger(index)||!g.stacks[index]?.[1]||!accessible(g,index))throw Error(tr('가져올 수 있는 외곽 위층 패를 먼저 선택해 주세요.'));
   intel.peek={index,tile:{...g.stacks[index][1]!}};
  }
- if(kind==='guide'){if(!suggestion)throw Error('전술 후보를 확인하지 못했어요.');intel.suggestion=structuredClone(suggestion);}
+ if(kind==='guide'){if(!suggestion)throw Error(tr('전술 후보를 확인하지 못했어요.'));intel.suggestion=structuredClone(suggestion);}
  seat.stock[kind]--;seat.usedRound=g.round;seat.intel=intel;
- g.log=[`${g.players[who].name} · ${TABLE_ITEMS.find(i=>i.id===kind)!.name} 사용`,...g.log].slice(0,40);
+ g.log=[tr('{0} · {1} 사용',{0:g.players[who].name,1:TABLE_ITEMS.find(i=>i.id===kind)!.name}),...g.log].slice(0,40);
 }
 export function itemView(g:Game,who:number){
  if(!g.itemRun)return null;const seat=g.itemRun.seats[who];if(!seat)return null;

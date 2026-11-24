@@ -5,6 +5,7 @@ import {useEffect,useState} from 'react';
 import {topScores,type HighScore} from '../../lib/challenge';
 import {syncPersonalScores} from '../../lib/score-sync';
 import type {Leaderboard} from '../../lib/leaderboard';
+import {tr,trv} from '../../lib/i18n/index.ts';
 const signed=(n:number)=>`${n>0?'+':''}${n}`;
 const date=(at:number)=>new Date(at).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
 export default function HighScores({close,personal,profileToken,name,openHistory,initialMode='single',initialSize=3}:{close:()=>void,personal:HighScore[],profileToken:string,name:string,openHistory:()=>void,initialMode?:'single'|'multi',initialSize?:number}){
@@ -15,30 +16,30 @@ export default function HighScores({close,personal,profileToken,name,openHistory
  useEffect(()=>{
   if(scope!=='global')return;const controller=new AbortController();let active=true;
   setBusy(true);setError('');
-  void (async()=>{let syncError='';try{await syncPersonalScores(profileToken,name,JSON.parse(syncKey),controller.signal);}catch{syncError='내 싱글 기록 동기화가 지연되고 있어요. 다시 시도하면 저장된 기록을 전송합니다.';}
+  void (async()=>{let syncError='';try{await syncPersonalScores(profileToken,name,JSON.parse(syncKey),controller.signal);}catch{syncError=tr('내 싱글 기록 동기화가 지연되고 있어요. 다시 시도하면 저장된 기록을 전송합니다.');}
    if(!active)return;
-   try{const response=await gameFetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},signal:AbortSignal.any([controller.signal,AbortSignal.timeout(10000)]),body:JSON.stringify({action:'leaderboard',profileToken,mode,size,kind,page})}),data=await response.json() as Leaderboard&{error?:string};if(!response.ok)throw Error(data.error||'순위를 불러오지 못했어요.');if(active){setBoard(data);setError(syncError);}}
-   catch(e){if(active){setBoard(null);setError(userMessage(e,'전체 순위에 연결하지 못했어요.'));}}finally{if(active)setBusy(false);}
+   try{const response=await gameFetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},signal:AbortSignal.any([controller.signal,AbortSignal.timeout(10000)]),body:JSON.stringify({action:'leaderboard',profileToken,mode,size,kind,page})}),data=await response.json() as Leaderboard&{error?:string};if(!response.ok)throw Error(data.error||tr('순위를 불러오지 못했어요.'));if(active){setBoard(data);setError(syncError);}}
+   catch(e){if(active){setBoard(null);setError(userMessage(e,tr('전체 순위에 연결하지 못했어요.')));}}finally{if(active)setBusy(false);}
   })();return()=>{active=false;controller.abort();};
  },[scope,mode,size,kind,page,profileToken,name,syncKey,refresh]);
  useEffect(()=>{const refreshVisible=()=>{if(!document.hidden)setRefresh(x=>x+1);};window.addEventListener('online',refreshVisible);document.addEventListener('visibilitychange',refreshVisible);return()=>{window.removeEventListener('online',refreshVisible);document.removeEventListener('visibilitychange',refreshVisible);};},[]);
  function filter(change:()=>void){setBusy(true);change();setPage(0);}
- return <div className="modal-shade score-shade" onClick={close}><section className="modal highscore-modal" role="dialog" aria-modal="true" aria-label="하이스코어" onClick={e=>e.stopPropagation()}>
-  <button className="close" aria-label="기록실 닫기" onClick={close}>×</button><span className="eyebrow">TURNTALE HALL OF FAME</span><h2>기록실</h2><p>모두의 한 수가 남긴 기록</p>
-  <div className="segmented score-scope" aria-label="순위 범위"><button className={scope==='global'?'chosen':''} onClick={()=>filter(()=>setScope('global'))}>전체 순위</button><button className={scope==='personal'?'chosen':''} onClick={()=>filter(()=>setScope('personal'))}>내 기록 TOP 10</button></div>
-  <div className="segmented" aria-label="플레이 모드"><button className={mode==='single'?'chosen':''} onClick={()=>filter(()=>setMode('single'))}>싱글플레이</button><button className={mode==='multi'?'chosen':''} onClick={()=>filter(()=>setMode('multi'))}>멀티플레이</button></div>
-  <div className="segmented" aria-label="참가 인원">{[3,4].map(n=><button key={n} className={size===n?'chosen':''} onClick={()=>filter(()=>setSize(n))}>{n}인전</button>)}</div>
-  <div className={`score-results ${scope==='global'&&busy?'is-loading':''}`} aria-busy={scope==='global'&&busy}>{scope==='personal'?<ol className="highscore-board">{Array.from({length:10},(_,i)=>i).map(i=>{const row=topScores(personal,mode,size,kind)[i];return <li key={i}><span>{`${i+1}위`}</span><strong>{row?signed(row.score):'—'}</strong><small>{row?date(row.at):'아직 기록이 없어요'}</small></li>;})}</ol>:<>
+ return <div className="modal-shade score-shade" onClick={close}><section className="modal highscore-modal" role="dialog" aria-modal="true" aria-label={tr('하이스코어')} onClick={e=>e.stopPropagation()}>
+  <button className="close" aria-label={tr('기록실 닫기')} onClick={close}>×</button><span className="eyebrow">TURNTALE HALL OF FAME</span><h2>{tr('기록실')}</h2><p>{tr('모두의 한 수가 남긴 기록')}</p>
+  <div className="segmented score-scope" aria-label={tr('순위 범위')}><button className={scope==='global'?'chosen':''} onClick={()=>filter(()=>setScope('global'))}>{tr('전체 순위')}</button><button className={scope==='personal'?'chosen':''} onClick={()=>filter(()=>setScope('personal'))}>{tr('내 기록 TOP 10')}</button></div>
+  <div className="segmented" aria-label={tr('플레이 모드')}><button className={mode==='single'?'chosen':''} onClick={()=>filter(()=>setMode('single'))}>{tr('싱글플레이')}</button><button className={mode==='multi'?'chosen':''} onClick={()=>filter(()=>setMode('multi'))}>{tr('멀티플레이')}</button></div>
+  <div className="segmented" aria-label={tr('참가 인원')}>{[3,4].map(n=><button key={n} className={size===n?'chosen':''} onClick={()=>filter(()=>setSize(n))}>{n}{tr('인전')}</button>)}</div>
+  <div className={`score-results ${scope==='global'&&busy?'is-loading':''}`} aria-busy={scope==='global'&&busy}>{scope==='personal'?<ol className="highscore-board">{Array.from({length:10},(_,i)=>i).map(i=>{const row=topScores(personal,mode,size,kind)[i];return <li key={i}><span>{tr('{0}위',{0:i+1})}</span><strong>{row?signed(row.score):'—'}</strong><small>{row?date(row.at):tr('아직 기록이 없어요')}</small></li>;})}</ol>:<>
    {board?<>
-    <div className="my-global-rank">{board.mine?<><span>내 최고 순위 <b>{board.mine.rank}위</b> / {board.total}개 기록</span><strong>{signed(board.mine.score)}점</strong></>:<span>전체 {board.total}개 기록 · 한 판의 기록을 남겨보세요</span>}</div>
-    <ol className="global-board" start={page*board.pageSize+1}>{board.rows.map(row=><li key={row.rank} className={`${row.isMe?'is-me':''} ${row.rank<=3?'podium podium-'+row.rank:''}`}><span className="global-place" data-medal={row.rank<=3?row.rank:undefined}><b>{row.rank}</b></span><div><strong>{row.name}{row.isMe&&<em>나</em>}</strong><small>{date(row.at)}</small></div><b>{signed(row.score)}<small>점</small></b></li>)}</ol>
-    {!board.rows.length&&<p className="leaderboard-status">아직 등록된 기록이 없어요.<br/>이 부문의 첫 주인공이 되어보세요!</p>}
-    {board.total>board.pageSize&&<nav className="leaderboard-pages" aria-label="순위 페이지"><button className="secondary" disabled={page===0} onClick={()=>setPage(page-1)}>이전</button><span>{page+1} / {Math.ceil(board.total/board.pageSize)}</span><button className="secondary" disabled={(page+1)*board.pageSize>=board.total} onClick={()=>setPage(page+1)}>다음</button></nav>}
-   </>:<p className="leaderboard-status" role="status">{busy?'전체 순위 확인 중…':'기록을 불러올 수 없어요.'}</p>}
+    <div className="my-global-rank">{board.mine?<><span>{tr('내 최고 순위')} <b>{board.mine.rank}{tr('위')}</b> / {board.total}{tr('개 기록')}</span><strong>{signed(board.mine.score)}{tr('점')}</strong></>:<span>{tr('전체')} {board.total}{tr('개 기록 · 한 판의 기록을 남겨보세요')}</span>}</div>
+    <ol className="global-board" start={page*board.pageSize+1}>{board.rows.map(row=><li key={row.rank} className={`${row.isMe?'is-me':''} ${row.rank<=3?'podium podium-'+row.rank:''}`}><span className="global-place" data-medal={row.rank<=3?row.rank:undefined}><b>{row.rank}</b></span><div><strong>{trv(row.name)}{row.isMe&&<em>{tr('나')}</em>}</strong><small>{date(row.at)}</small></div><b>{signed(row.score)}<small>{tr('점')}</small></b></li>)}</ol>
+    {!board.rows.length&&<p className="leaderboard-status">{tr('아직 등록된 기록이 없어요.')}<br/>{tr('이 부문의 첫 주인공이 되어보세요!')}</p>}
+    {board.total>board.pageSize&&<nav className="leaderboard-pages" aria-label={tr('순위 페이지')}><button className="secondary" disabled={page===0} onClick={()=>setPage(page-1)}>{tr('이전')}</button><span>{page+1} / {Math.ceil(board.total/board.pageSize)}</span><button className="secondary" disabled={(page+1)*board.pageSize>=board.total} onClick={()=>setPage(page+1)}>{tr('다음')}</button></nav>}
+   </>:<p className="leaderboard-status" role="status">{busy?tr('전체 순위 확인 중…'):tr('기록을 불러올 수 없어요.')}</p>}
    {error&&<p className="score-note" role="status">{error}</p>}
-   <button className="text-btn" disabled={busy} onClick={()=>setRefresh(x=>x+1)}>↻ 전체 순위 새로고침</button>
+   <button className="text-btn" disabled={busy} onClick={()=>setRefresh(x=>x+1)}>{tr('↻ 전체 순위 새로고침')}</button>
   </>}</div>
-  <p className="score-note">{scope==='global'?'부문별 상위 10개만 저장 · 순위 밖 기록은 보관하지 않아요':'이 브라우저에 저장된 개인 역대 TOP 10'}<br/>일반 대전 단판 기록 · 높은 점수순 · 동점은 먼저 달성한 순서 · 무효 판 제외</p>
-  <button className="text-btn" onClick={openHistory}>일반 대전·친구 누적 전적 보기 →</button>
+  <p className="score-note">{scope==='global'?tr('부문별 상위 10개만 저장 · 순위 밖 기록은 보관하지 않아요'):tr('이 브라우저에 저장된 개인 역대 TOP 10')}<br/>{tr('일반 대전 단판 기록 · 높은 점수순 · 동점은 먼저 달성한 순서 · 무효 판 제외')}</p>
+  <button className="text-btn" onClick={openHistory}>{tr('일반 대전·친구 누적 전적 보기 →')}</button>
  </section></div>;
 }

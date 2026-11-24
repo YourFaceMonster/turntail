@@ -7,6 +7,7 @@ import {rank,suitRank,type Tile} from '../../lib/game';
 import {HIGH_LOW_GOAL,MEMORY_GOAL,MEMORY_PAIRS} from '../../lib/rpg-inns';
 import './inn-games.css';
 import './flat-tiles.css';
+import {tr} from '../../lib/i18n/index.ts';
 
 /** The shared table back flips over to the face, like the battle tiles (face is only mounted once open). */
 function FlipTile({tile,open}:{tile:Tile,open:boolean}){return <span className="flip-tile" data-open={open||undefined}><span className="flip-side flip-back"><TileBack flat/></span><span className="flip-side flip-face">{open&&<TileFace tile={tile}/>}</span></span>;}
@@ -25,12 +26,12 @@ export function HighLowGame({finish,quit}:{finish:(streak:number)=>void,quit:()=
  // Flip the next tile first; a right guess then slides it into the current slot.
  const guess=(up:boolean)=>{if(miss||!next||revealing)return;const right=up?stronger(next,current)>0:stronger(next,current)<0;setRevealing(true);setTimeout(()=>{setRevealing(false);if(right){setStreak(s=>s+1);setIndex(i=>i+1);}else setMiss(next);},right?750:450);};
  const reached=streak>=HIGH_LOW_GOAL;
- return <div className="inn-game flat-tiles" role="group" aria-label="높을까 낮을까">
-  <p className="inn-game-rule">다음 패가 지금 패보다 <b>셀까</b>, <b>약할까</b>? 세기 순서는 대결과 같아요(2가 가장 세고, 같은 숫자는 문양 순서).</p>
-  <div className="inn-hl-table"><div className="inn-hl-card"><TileFace tile={current}/><small>지금 패</small></div><div className="inn-hl-card" aria-label={miss||revealing?'뒤집은 다음 패':'엎어 둔 다음 패'}><FlipTile key={index} tile={miss||next||current} open={!!miss||revealing}/><small>다음 패</small></div></div>
-  <p className="inn-game-score" aria-live="polite">연속 <b>{streak}</b>번 · 목표 {HIGH_LOW_GOAL}번{reached&&' · 달성!'}</p>
-  {miss?<><p className="inn-game-note">빗나갔어요. 이번 판은 보상이 없어요.</p><div className="inn-game-actions"><button className="primary" onClick={()=>finish(0)}>결과 확인</button></div></>:
-   <div className="inn-game-actions"><button className="primary" onClick={()=>guess(true)} disabled={!next||revealing}>더 세다 ↑</button><button className="primary" onClick={()=>guess(false)} disabled={!next||revealing}>더 약하다 ↓</button><button className="secondary" onClick={()=>streak?finish(streak):quit()}>{streak?`여기서 멈추기 (${streak}연속)`:'그만두기'}</button></div>}
+ return <div className="inn-game flat-tiles" role="group" aria-label={tr('높을까 낮을까')}>
+  <p className="inn-game-rule">{tr('다음 패가 지금 패보다')} <b>{tr('셀까')}</b>, <b>{tr('약할까')}</b>{tr('? 세기 순서는 대결과 같아요(2가 가장 세고, 같은 숫자는 문양 순서).')}</p>
+  <div className="inn-hl-table"><div className="inn-hl-card"><TileFace tile={current}/><small>{tr('지금 패')}</small></div><div className="inn-hl-card" aria-label={miss||revealing?tr('뒤집은 다음 패'):tr('엎어 둔 다음 패')}><FlipTile key={index} tile={miss||next||current} open={!!miss||revealing}/><small>{tr('다음 패')}</small></div></div>
+  <p className="inn-game-score" aria-live="polite">{tr('연속')} <b>{streak}</b>{tr('번 · 목표')} {HIGH_LOW_GOAL}{tr('번')}{reached&&tr(' · 달성!')}</p>
+  {miss?<><p className="inn-game-note">{tr('빗나갔어요. 이번 판은 보상이 없어요.')}</p><div className="inn-game-actions"><button className="primary" onClick={()=>finish(0)}>{tr('결과 확인')}</button></div></>:
+   <div className="inn-game-actions"><button className="primary" onClick={()=>guess(true)} disabled={!next||revealing}>{tr('더 세다 ↑')}</button><button className="primary" onClick={()=>guess(false)} disabled={!next||revealing}>{tr('더 약하다 ↓')}</button><button className="secondary" onClick={()=>streak?finish(streak):quit()}>{streak?tr('여기서 멈추기 ({0}연속)',{0:streak}):tr('그만두기')}</button></div>}
  </div>;
 }
 
@@ -45,10 +46,10 @@ export function MemoryGame({finish,quit}:{finish:(flips:number)=>void,quit:()=>v
   const now=[...open,i];setOpen(now);setFlips(flips+1);
   if(now.length===2){const [a,b]=now;if(cards[a].pair===cards[b].pair){setFound([...found,cards[a].pair]);setOpen([]);}else{setLock(true);setTimeout(()=>{setOpen([]);setLock(false);},800);}}
  };
- return <div className="inn-game flat-tiles" role="group" aria-label="기록 맞추기">
-  <p className="inn-game-rule">엎어 둔 패 {MEMORY_PAIRS*2}장에서 <b>똑같은 패</b> 두 장씩 찾아요. 적게 뒤집을수록 좋아요.</p>
-  <div className="inn-memory-grid">{cards.map((card,i)=>{const shown=open.includes(i)||found.includes(card.pair);return <button key={card.key} className="inn-memory-card" data-found={found.includes(card.pair)||undefined} aria-label={shown?`${card.tile.n}`:'엎어 둔 패'} onClick={()=>flip(i)}><FlipTile tile={card.tile} open={shown}/></button>;})}</div>
-  <p className="inn-game-score" aria-live="polite">뒤집은 횟수 <b>{flips}</b> · 목표 {MEMORY_GOAL}번 이내 · 찾은 짝 {found.length}/{MEMORY_PAIRS}</p>
-  <div className="inn-game-actions">{done?<button className="primary" onClick={()=>finish(flips)}>결과 확인</button>:<button className="secondary" onClick={quit}>그만두기</button>}</div>
+ return <div className="inn-game flat-tiles" role="group" aria-label={tr('기록 맞추기')}>
+  <p className="inn-game-rule">{tr('엎어 둔 패')} {MEMORY_PAIRS*2}{tr('장에서')} <b>{tr('똑같은 패')}</b> {tr('두 장씩 찾아요. 적게 뒤집을수록 좋아요.')}</p>
+  <div className="inn-memory-grid">{cards.map((card,i)=>{const shown=open.includes(i)||found.includes(card.pair);return <button key={card.key} className="inn-memory-card" data-found={found.includes(card.pair)||undefined} aria-label={shown?`${card.tile.n}`:tr('엎어 둔 패')} onClick={()=>flip(i)}><FlipTile tile={card.tile} open={shown}/></button>;})}</div>
+  <p className="inn-game-score" aria-live="polite">{tr('뒤집은 횟수')} <b>{flips}</b> {tr('· 목표')} {MEMORY_GOAL}{tr('번 이내 · 찾은 짝')} {found.length}/{MEMORY_PAIRS}</p>
+  <div className="inn-game-actions">{done?<button className="primary" onClick={()=>finish(flips)}>{tr('결과 확인')}</button>:<button className="secondary" onClick={quit}>{tr('그만두기')}</button>}</div>
  </div>;
 }

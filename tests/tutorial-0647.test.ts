@@ -6,7 +6,8 @@ const answerNumbers:Record<string,number[]>={color:[7],number:[2],single:[6],pai
 const before=JSON.stringify(lessons);
 for(const lesson of lessons){
  assert.equal(tutorialAnswer(lesson,[]),false,lesson.kind+' rejects an empty answer');
- if(lesson.kind==='draw')continue;
+ if(lesson.kind==='draw'||lesson.kind==='goal')continue;
+ assert.ok(lesson.tip.length>10,lesson.kind+' ends with a tip');
  const expected=lesson.kind==='color'?lesson.hand.filter(tile=>tile.s===3):lesson.hand.filter(tile=>answerNumbers[lesson.kind].includes(tile.n));
  assert.equal(tutorialAnswer(lesson,expected.map(tile=>tile.id)),true,lesson.kind+' can be completed with its own hand');
  const wrong=lesson.hand.find(tile=>!expected.some(value=>value.id===tile.id));
@@ -23,4 +24,5 @@ const five=lessons.find(lesson=>lesson.kind==='five')!;
 assert.equal(combo(five.hand.slice(0,5))?.label,'풀하우스');
 assert.equal(combo([...five.target])?.label,'스트레이트');
 assert.equal(JSON.stringify(lessons),before,'answers do not mutate the lesson tiles');
-console.log('PASS: all nine tutorial lessons have reachable legal answers; wrong and incomplete groups rejected; two-step finish preserves its order.');
+assert.equal(lessons[0].kind,'goal','the guide opens with the goal of the game');
+console.log('PASS: the goal page and all nine tutorial lessons have reachable legal answers; wrong and incomplete groups rejected; two-step finish preserves its order.');

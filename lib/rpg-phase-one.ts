@@ -6,13 +6,14 @@ import {journeyAfterReward} from './rpg-journey.ts';
 import {settle,type Game} from './game.ts';
 import type {RpgRun,RpgResult} from './rpg.ts';
 import {withRelicActivations} from './rpg-relic-feedback.ts';
+import {tr} from './i18n/index.ts';
 
 /** Phase-one tuning only. Never used by normal play, item matches or legacy RPG saves. */
 export const RPG_PHASE_ONE={maxHp:100,duelsPerGauge:3,enemyHp:[[70,70],[75,75],[85,85]],rewardCoins:30,rewardHeal:30,startingRelic:'cracked-heart',relicLimit:3,
  relicPool:['cracked-heart','recovery-lantern','wind-sigil','warrior-crest','life-sigil','sun-sigil','crimson-fang','cloud-blessing'],
  enemyStartingItems:[] as readonly string[],
  shop:[{id:'emergency-herb',price:30},{id:'ember-bomb',price:45}],
- synergy:{id:'sheltered-light',name:'지켜낸 등불',requires:['cracked-heart','recovery-lantern'],clearHeal:2},
+ synergy:{id:'sheltered-light',name:tr('지켜낸 등불'),requires:['cracked-heart','recovery-lantern'],clearHeal:2},
 } as const;
 export type RpgStageReward='relic'|'coins'|'heal'|'all';
 export type RpgPhaseOneState={version:1,eliminated:number[],chargedBattles:string[],clearedStages:number[],rewardHistory?:{stage:number,choice:RpgStageReward,relicId?:string,replaced?:string,declined?:boolean}[],
@@ -35,7 +36,7 @@ export function reconcileRpgEliminations(game:Game,now=Date.now()){
   state.eliminated.push(seat);game.players[seat].hand=[];
   if(game.publicDraws)game.publicDraws[game.players[seat].id]=[];
   const combat=run.combat;if(combat?.itemBattle)combat.itemBattle.traps=combat.itemBattle.traps.filter(trap=>trap.owner!==seat);
-  game.log=[`${game.players[seat].name} · HP 0 · 전투에서 퇴장`,...game.log].slice(0,40);
+  game.log=[tr('{0} · HP 0 · 전투에서 퇴장',{0:game.players[seat].name}),...game.log].slice(0,40);
  }
  const failed=run.hp[0]<=0,cleared=run.hp.slice(1).every(hp=>hp<=0);
  if(failed||cleared){
@@ -68,25 +69,25 @@ export function settleRpgPhaseOne(run:RpgRun,result:RpgResult):RpgRun{
  const relicOffers=isRpgDemo(run)?demoRelicOffers(run):undefined;
  const relicId=relicOffers?relicOffers[0]||'':RPG_PHASE_ONE.relicPool.find(id=>!run.relics.includes(id))||'';
  state.clear={...(relicOffers?{relicOffers}:{}),stage:run.stage,hpBefore,baseHeal,relicHeal,synergyHeal,relicId};
- const effects=[...(relicHeal?[{relicId:'recovery-lantern',message:`추가 회복 +${relicHeal} HP`}]:[]),...(synergyHeal?[{relicId:'recovery-lantern',message:`${RPG_PHASE_ONE.synergy.name} · 조합 회복 +${synergyHeal} HP`}]:[])];
+ const effects=[...(relicHeal?[{relicId:'recovery-lantern',message:tr('추가 회복 +{0} HP',{0:relicHeal})}]:[]),...(synergyHeal?[{relicId:'recovery-lantern',message:tr('{0} · 조합 회복 +{1} HP',{0:RPG_PHASE_ONE.synergy.name,1:synergyHeal})}]:[])];
  return withRelicActivations({...base,...(run.journey?{storyCards:storyCardsForRun({...run,phaseOne:state})}:{}),phaseOne:state,hp:[hpBefore+baseHeal+relicHeal+synergyHeal,...run.hp.slice(1)],status:'allocation',reward:null},effects,result.at);
 }
 export function chooseRpgStageReward(run:RpgRun,choice:RpgStageReward,replace?:string,decline=false,selectedRelic?:string):RpgRun{
  if(run.rework)return journeyAfterReward(chooseReworkReward(run,selectedRelic,decline));
  run=structuredClone(run);restoreDemoReward(run);
  const state=run.phaseOne,clear=state?.clear;
- if(!state||!clear||run.status!=='allocation'||clear.chosen)throw Error('선택할 스테이지 보상이 없어요.');
- if(!['relic','coins','heal','all'].includes(choice))throw Error('올바른 스테이지 보상을 확인해 주세요.');
+ if(!state||!clear||run.status!=='allocation'||clear.chosen)throw Error(tr('선택할 스테이지 보상이 없어요.'));
+ if(!['relic','coins','heal','all'].includes(choice))throw Error(tr('올바른 스테이지 보상을 확인해 주세요.'));
  if(isRpgDemo(run)&&!decline&&(choice==='all'||choice==='relic')&&clear.relicOffers?.length){
-  if(run.stage===2&&clear.relicOffers.length>1&&!selectedRelic)throw Error('유물 후보 중 하나를 선택해 주세요.');
-  const picked=selectedRelic||clear.relicOffers[0];if(!clear.relicOffers.includes(picked))throw Error('제시된 유물 후보 중에서 선택해 주세요.');clear.relicId=picked;
+  if(run.stage===2&&clear.relicOffers.length>1&&!selectedRelic)throw Error(tr('유물 후보 중 하나를 선택해 주세요.'));
+  const picked=selectedRelic||clear.relicOffers[0];if(!clear.relicOffers.includes(picked))throw Error(tr('제시된 유물 후보 중에서 선택해 주세요.'));clear.relicId=picked;
  }
  if(run.journey)replace=undefined;
  let relics=[...run.relics],coins=run.coins,hp=[...run.hp];
  if((choice==='relic'||choice==='all'&&!!clear.relicId&&!relics.includes(clear.relicId))&&!decline){
-  if(!clear.relicId||relics.includes(clear.relicId))throw Error('획득할 수 있는 새 유물이 없어요.');
-  if(!run.journey&&relics.length>=RPG_PHASE_ONE.relicLimit){if(!replace||!relics.includes(replace))throw Error('교체할 기존 유물을 선택하거나 획득을 포기해 주세요.');relics=relics.filter(id=>id!==replace);}
-  else if(replace)throw Error('빈 유물 자리가 있어 교체가 필요하지 않아요.');
+  if(!clear.relicId||relics.includes(clear.relicId))throw Error(tr('획득할 수 있는 새 유물이 없어요.'));
+  if(!run.journey&&relics.length>=RPG_PHASE_ONE.relicLimit){if(!replace||!relics.includes(replace))throw Error(tr('교체할 기존 유물을 선택하거나 획득을 포기해 주세요.'));relics=relics.filter(id=>id!==replace);}
+  else if(replace)throw Error(tr('빈 유물 자리가 있어 교체가 필요하지 않아요.'));
   relics.push(clear.relicId);
  }
  if(choice==='coins'||choice==='all')coins+=RPG_PHASE_ONE.rewardCoins;
@@ -98,7 +99,7 @@ export function chooseRpgStageReward(run:RpgRun,choice:RpgStageReward,replace?:s
  return journeyAfterReward({...run,phaseOne:nextState,relics,equipped,coins,hp,discovered:[...new Set([...run.discovered,...relics])],status:run.stage===3?'complete':'ready',updatedAt:Date.now()});
 }
 export function advanceRpgPhaseOne(run:RpgRun):RpgRun{
- if(!run.phaseOne||run.status!=='ready'||!run.phaseOne.clear?.chosen||run.stage>=3)throw Error('보상 선택을 마친 뒤 다음 스테이지로 진행해 주세요.');
+ if(!run.phaseOne||run.status!=='ready'||!run.phaseOne.clear?.chosen||run.stage>=3)throw Error(tr('보상 선택을 마친 뒤 다음 스테이지로 진행해 주세요.'));
  const stage=run.stage+1;
  return {...run,stage,status:'playing',hp:[run.hp[0],...RPG_PHASE_ONE.enemyHp[stage-1]],phaseOne:{...run.phaseOne,eliminated:[],clear:undefined},reward:null,updatedAt:Date.now()};
 }

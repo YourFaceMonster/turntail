@@ -9,6 +9,7 @@ import { recordRpgRoundHealth } from './rpg-round-health';
 import { isRpgPhaseOne, reconcileRpgEliminations } from './rpg-phase-one';
 import type { HpBattleEvent } from './hp-item-battle';
 import type { ProfessionEffect } from './rpg-profession-combat';
+import {tr} from './i18n/index.ts';
 const zeros = (g: Game) => g.players.map(() => 0);
 const opponents = (g: Game, actor: number) => g.players.flatMap((_, seat) => seat !== actor && g.rpgRun!.hp[seat] > 0 ? [seat] : []);
 function pick<T>(values: T[]): T | undefined { if (!values.length)
@@ -116,7 +117,7 @@ export function resolveImmediateProfessionBattle(g: Game, now = Date.now()): HpB
     c.lastInstant = event;
     if (relic.effects.length)
         Object.assign(run, withRelicActivations(run, relic.effects, now));
-    g.log = [`${g.players[actor].name} · ${label} 승리 · ${label === '싱글' ? '패 피해 1 정산 예정' : role === 'rogue' ? `바닥 ${effects[0]?.revealed || 0}장 확인 · 함정 설치` : role === 'cleric' ? `HP +${result.healing[actor]}` : g.players.flatMap((p, i) => result.damage[i] ? [`${p.name} HP −${result.damage[i]}`] : []).join(' · ') || '피해 방어'}`, ...g.log].slice(0, 40);
+    g.log = [tr('{0} · {1} 승리 · {2}',{0:g.players[actor].name,1:label,2:label === '싱글' ? '패 피해 1 정산 예정' : role === 'rogue' ? `바닥 ${effects[0]?.revealed || 0}장 확인 · 함정 설치` : role === 'cleric' ? `HP +${result.healing[actor]}` : g.players.flatMap((p, i) => result.damage[i] ? [`${p.name} HP −${result.damage[i]}`] : []).join(' · ') || '피해 방어'}), ...g.log].slice(0, 40);
     finishImmediateCombat(g, now);
     return event;
 }
@@ -141,7 +142,7 @@ export function settleImmediateCardRound(g: Game, now = Date.now()) {
         applyImmediateEffects(g, fallback, zeros(g), now);
     const cards = s.handFinished ? s.damage : zeros(g), result = applyImmediateEffects(g, cards, zeros(g), now, true);
     s.settled = true;
-    const summary: HpBattleEvent = { id: `${g.code}:${g.round}:settlement`, round: g.round, actor: g.winner!, label: '패 정산', damage: result.damage.reduce((a, b) => a + b, 0), maxHp: hpLimit(run), damageTaken: result.damage, blockedDamage: result.blocked, hpBefore: before, hpAfter: [...run.hp], roundFinal: true, roundSettlement: true, at: now };
+    const summary: HpBattleEvent = { id: `${g.code}:${g.round}:settlement`, round: g.round, actor: g.winner!, label: tr('패 정산'), damage: result.damage.reduce((a, b) => a + b, 0), maxHp: hpLimit(run), damageTaken: result.damage, blockedDamage: result.blocked, hpBefore: before, hpAfter: [...run.hp], roundFinal: true, roundSettlement: true, at: now };
     c.lastBattle = summary;
-    g.log = ['판 종료 · 패 피해 정산 · 스킬 중복 적용 없음', ...g.log].slice(0, 40);
+    g.log = [tr('판 종료 · 패 피해 정산 · 스킬 중복 적용 없음'), ...g.log].slice(0, 40);
 }

@@ -4,6 +4,7 @@ import {TwinPortrait} from './TwinPortrait';
 import {stageOpponents} from '../../lib/stage-theme.ts';
 import {JOURNEY_REGIONS,JOURNEY_STAGE_NAMES,chapterArt,rpgStageCast,stageRegion,RPG_GUARDIANS,RPG_GUARDIAN_ART} from '../../lib/rpg-chapters.ts';
 import './journey-destination.css';
+import {tr,trv} from '../../lib/i18n/index.ts';
 
 /** ST1~3 keep their approved connection paintings; ST4~10 use the stage's "before" painting. */
 const EARLY_ART:Record<number,string>={1:'/prologue/gate-before-portrait-r61-iron-v1.webp',2:'/prologue/square-poko-portrait-night-symbols-v6.webp',3:'/prologue/twins-before-portrait-r61-iron-v1.webp'};
@@ -13,7 +14,7 @@ const REGION_SUIT:Record<number,number>={1:0,2:2,3:1,4:3};
 const Sigil=({region}:{region:number})=><svg viewBox="0 0 100 100" aria-hidden="true" focusable="false" fill="currentColor"><g transform="translate(50 50)"><SuitMotif s={REGION_SUIT[region]}/></g></svg>;
 /** 2026-11-17: ST1~3 show the same faces as their duel seats (painted crops for ST1·2, twin portraits for ST3). */
 const EARLY_CAST:Record<number,readonly {name:string,portrait?:number,twin?:0|1}[]>={
- 1:[{name:'문지기 로웬',portrait:stageOpponents(1)[0].portrait},{name:'루미',portrait:stageOpponents(1)[1].portrait}],
+ 1:[{name:tr('문지기 로웬'),portrait:stageOpponents(1)[0].portrait},{name:tr('루미'),portrait:stageOpponents(1)[1].portrait}],
  2:stageOpponents(2).map(p=>({name:p.name,portrait:p.portrait})),
  3:[{name:'첫째',twin:0},{name:'둘째',twin:1}],
 };
@@ -34,11 +35,11 @@ export default function JourneyDestinationHead({stage,title}:{stage:number,title
  return <>
   <div className="destination-hero" data-gate={gate||undefined} aria-hidden="true">
    <img src={gate?regionArt(region):stageArt(stage)} alt="" decoding="async"/>
-   {gate&&<span className="destination-ribbon"><i data-region={region}><Sigil region={region}/></i>새 영역 · {info.name}</span>}
+   {gate&&<span className="destination-ribbon"><i data-region={region}><Sigil region={region}/></i>{tr('새 영역 ·')} {trv(info.name)}</span>}
    <span className="destination-stage-no">STAGE {stage}</span>
   </div>
   <h3 className="destination-title">{title}</h3>
-  {gate&&<ol className="destination-road" aria-label={`${info.name}의 길`}>{info.stages.map((s,i)=><li key={s} data-here={s===stage||undefined}><b>ST{s}</b><span>{JOURNEY_STAGE_NAMES[s]}</span>{i<info.stages.length-1&&<em aria-hidden="true">›</em>}</li>)}</ol>}
-  {!!cast.length&&<ul className="destination-cast" aria-label="상대">{cast.map((p,i)=><li key={i}><span className="destination-face">{p.art?<img src={p.art} alt=""/>:p.twin!==undefined?<TwinPortrait index={p.twin}/>:p.portrait!==undefined?<RpgCastPortrait index={p.portrait}/>:<span>{p.name.slice(0,1)}</span>}</span><small>{p.name}</small></li>)}</ul>}
+  {gate&&<ol className="destination-road" aria-label={tr('{0}의 길',{0:info.name})}>{info.stages.map((s,i)=><li key={s} data-here={s===stage||undefined}><b>ST{s}</b><span>{JOURNEY_STAGE_NAMES[s]}</span>{i<info.stages.length-1&&<em aria-hidden="true">›</em>}</li>)}</ol>}
+  {!!cast.length&&<ul className="destination-cast" aria-label={tr('상대')}>{cast.map((p,i)=><li key={i}><span className="destination-face">{p.art?<img src={p.art} alt=""/>:p.twin!==undefined?<TwinPortrait index={p.twin}/>:p.portrait!==undefined?<RpgCastPortrait index={p.portrait}/>:<span>{p.name.slice(0,1)}</span>}</span><small>{trv(p.name)}</small></li>)}</ul>}
  </>;
 }

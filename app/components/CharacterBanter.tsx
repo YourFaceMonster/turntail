@@ -4,6 +4,7 @@ import {createPortal} from 'react-dom';
 import {eventBanter,idleBanter,type Banter,type BanterTable} from '../../lib/character-banter';
 import {seatAccent} from '../../lib/seat-presentation';
 import {twinIndex} from '../../lib/rpg-twins';
+import {trv} from '../../lib/i18n/index.ts';
 
 /** Purely decorative conversation: it never delays a turn or captures a tap. */
 export default function CharacterBanter({game,enabled,landscape=false}:{game:BanterTable,enabled:boolean,landscape?:boolean}){
@@ -34,5 +35,5 @@ export default function CharacterBanter({game,enabled,landscape=false}:{game:Ban
  },[enabled,game.code,game.round]);
  useEffect(()=>{setHost(line?document.querySelector(`[data-seat-dialogue="${line.who}"]`):null);},[line,landscape]);
  if(!enabled||!line||!host)return null;
- return createPortal(<div className="seat-banter" data-speaker-seat={line.who} data-banter-kind={line.kind} data-long-banter={line.text.length>24} style={{borderColor:seatAccent(line.who)}} role="status" aria-live="polite" title={line.text} key={line.id}>{landscape&&<b className="banter-speaker">{game.players[line.who]?.name} · </b>}{line.text}</div>,host);
+ return createPortal(<div className="seat-banter" data-speaker-seat={line.who} data-banter-kind={line.kind} data-long-banter={line.text.length>24} style={{borderColor:seatAccent(line.who)}} role="status" aria-live="polite" title={line.text} key={line.id}>{landscape&&<b className="banter-speaker">{trv(game.players[line.who]?.name)} · </b>}{line.text}</div>,host);
 }

@@ -1,0 +1,21 @@
+/* 2026-11-24 stage 1 coach bubble and the first-time guide prompt. */
+.stage-one-coach{position:fixed;left:50%;top:36%;transform:translate(-50%,-50%);z-index:60;width:min(360px,calc(100vw - 28px));display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;align-items:start;padding:11px 13px 9px;border:1px solid #d9b46a;border-radius:14px;background:#0b0b0bee;box-shadow:0 10px 28px #000c;color:#f3e4c2;pointer-events:none;animation:stage-one-coach-in .28s ease-out both}
+.stage-one-coach .coach-icon{grid-row:1/3;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#3a2c12;color:#ffd77e}
+.stage-one-coach .coach-icon svg{width:18px;height:18px}
+.stage-one-coach strong{display:block;font-size:14px;color:#ffe2a3;line-height:1.35}
+.stage-one-coach p{margin:3px 0 0;font-size:12.5px;line-height:1.55;color:#eadcbc}
+.stage-one-coach>button{grid-column:2;justify-self:end;pointer-events:auto;margin-top:4px;padding:3px 9px;min-height:26px;border:1px solid #6b5a33;border-radius:999px;background:#151515;color:#cdbf9f;font-size:11px}
+.stage-one-coach.tone-draw{border-color:#7fb0d9}.stage-one-coach.tone-last{border-color:#8fd19e}
+@keyframes stage-one-coach-in{from{opacity:0;transform:translate(-50%,-44%)}to{opacity:1;transform:translate(-50%,-50%)}}
+@media(prefers-reduced-motion:reduce){.stage-one-coach{animation:none}}
+@media(orientation:landscape) and (max-height:600px){.stage-one-coach{top:30%;width:min(420px,60vw)}}
+
+.first-guide-shade{z-index:80}
+html body .modal-shade>.modal.first-guide{width:min(360px,calc(100vw - 28px));padding:24px 20px 18px!important;text-align:center}
+.first-guide-icon{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#3a2c12;color:#ffd77e;margin-bottom:6px}
+.first-guide-icon svg{width:24px;height:24px}
+html body .first-guide h2{margin:4px 0 10px!important;font-size:21px!important;color:#ffe2a3}
+.first-guide p{margin:0 0 10px;font-size:13.5px;line-height:1.65;color:#eadcbc;text-align:left}
+.first-guide .first-guide-note{font-size:12px;color:#c9bb98}
+.first-guide-actions{display:grid;grid-template-columns:1fr 1.3fr;gap:9px;margin-top:14px}
+.first-guide-actions button{min-height:46px;border-radius:12px;font-size:14px;font-weight:700}

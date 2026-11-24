@@ -4,17 +4,18 @@ import {createPortal} from 'react-dom';
 import type {view} from '../../lib/game.ts';
 import {trapAvailability,type TrapBurst} from '../../lib/item-battle-rules.ts';
 import {TRAP_IMPACT_MS,TRAP_PRESENTATION_MS} from '../../lib/pickup-presentation.ts';
+import {tr} from '../../lib/i18n/index.ts';
 type View=ReturnType<typeof view>;
 export type TrapHpPresentation={id:string,target:number,before:number};
 export function RogueTrapControl({game,enabled,targeting,choose}:{game:View,enabled:boolean,targeting:boolean,choose:()=>void}){
  const state=game.rpgRun?.combat;if(!state?.itemBattle||state.professions[game.me]!=='rogue')return null;
  const availability=trapAvailability(game,game.me,enabled),hasFloor=game.stacks.some(stack=>stack.trapAvailable);
- return <button type="button" className={`text-btn rogue-trap-control ${targeting?'is-targeting':''}`} disabled={!availability.usable||!hasFloor} title={hasFloor?availability.reason:'남은 바닥패 없음'} aria-label={targeting?'함정 설치 취소':availability.reason==='이번 턴 스킬 사용 완료'?'함정 사용함':'함정 설치'} aria-pressed={targeting} onClick={choose}><img src="/item-battle-v1/trap-v1.webp" alt=""/></button>;
+ return <button type="button" className={`text-btn rogue-trap-control ${targeting?'is-targeting':''}`} disabled={!availability.usable||!hasFloor} title={hasFloor?availability.reason:tr('남은 바닥패 없음')} aria-label={targeting?tr('함정 설치 취소'):availability.reason==='이번 턴 스킬 사용 완료'?tr('함정 사용함'):tr('함정 설치')} aria-pressed={targeting} onClick={choose}><img src="/item-battle-v1/trap-v1.webp" alt=""/></button>;
 }
 export function FloorTrapMarker({game,index}:{game:View,index:number}){
  const state=game.rpgRun?.combat?.itemBattle,own=state?.traps.some(trap=>trap.index===index),intel=state?.trapIntel[game.me]?.find(value=>value.index===index);
  if(!own&&!intel)return null;
- const label=own?'내 함정':intel?.trapped?'함정 발견':'확인 시 함정 없음';
+ const label=own?tr('내 함정'):intel?.trapped?tr('함정 발견'):tr('확인 시 함정 없음');
  return <span className={`floor-trap-inset ${own?'is-own':intel?.trapped?'is-detected':'is-clear'}`} aria-label={label} title={label}>{own||intel?.trapped?<img src="/item-battle-v1/trap-v1.webp" alt=""/>:'✓'}</span>;
 }
 export function RogueTrapEffects({game,onHit,onHpPresentation}:{game:View,onHit:()=>void,onHpPresentation:(value:TrapHpPresentation|null)=>void}){
@@ -35,13 +36,13 @@ export function RogueTrapEffects({game,onHit,onHpPresentation}:{game:View,onHit:
   },Math.max(0,event.at-Date.now())),done=setTimeout(()=>setScene(null),Math.max(0,end-Date.now()));
   return()=>{clearTimeout(impact);clearTimeout(done);animations.forEach(animation=>animation.cancel());callbacks.current.onHpPresentation(null);};
  },[event?.id,game.me]);
- if(safe)return createPortal(<div className="trap-recovery-notice" role="status">내 함정을 안전하게 회수했어요 · 피해 없음</div>,document.body);
+ if(safe)return createPortal(<div className="trap-recovery-notice" role="status">{tr('내 함정을 안전하게 회수했어요 · 피해 없음')}</div>,document.body);
  if(!scene)return null;const {event:hit,impact}=scene,ownerNames=(hit.owners||[hit.owner]).map(owner=>game.players[owner].name).join(' · ');
  return <>{createPortal(<div className={`trap-presentation ${impact?'is-impact':'is-revealing'}`} data-trap-phase={impact?'impact':'revealing'}>
-  <div className="trap-impact-title" style={{left:scene.center.x,top:scene.center.y}} role="status" aria-live="polite"><strong>{impact?'쾅! 함정 발동':'함정을 밟았다!'}</strong><span>{impact?`${game.players[hit.target].name} ${hit.damage?`HP −${hit.damage}`:'피해 방어'}`:`${ownerNames}의 숨겨둔 함정`}</span></div>
+  <div className="trap-impact-title" style={{left:scene.center.x,top:scene.center.y}} role="status" aria-live="polite"><strong>{impact?tr('쾅! 함정 발동'):tr('함정을 밟았다!')}</strong><span>{impact?`${game.players[hit.target].name} ${hit.damage?`HP −${hit.damage}`:tr('피해 방어')}`:tr('{0}의 숨겨둔 함정',{0:ownerNames})}</span></div>
  </div>,document.body)}
- {scene.floor&&createPortal(<span className={`trap-floor-scene ${impact?'is-impact':''}`} aria-hidden="true"><i/><i/><img src="/item-battle-v1/trap-v1.webp" alt=""/><b>쾅!</b></span>,scene.floor)}
+ {scene.floor&&createPortal(<span className={`trap-floor-scene ${impact?'is-impact':''}`} aria-hidden="true"><i/><i/><img src="/item-battle-v1/trap-v1.webp" alt=""/><b>{tr('쾅!')}</b></span>,scene.floor)}
  {impact&&scene.target&&createPortal(<span className="trap-target-impact" aria-hidden="true"/>,scene.target)}
- {impact&&createPortal(<b className="trap-damage-float" style={{left:scene.targetPoint.x,top:scene.targetPoint.y}}>{hit.damage?`−${hit.damage}`:'방어'}</b>,document.body)}
- {impact&&scene.owners.map((owner,index)=>createPortal(<span className="trap-owner-laugh" style={{left:owner.x,top:owner.y}} role="status">히히, 걸렸네!</span>,document.body,`laugh:${index}`))}</>;
+ {impact&&createPortal(<b className="trap-damage-float" style={{left:scene.targetPoint.x,top:scene.targetPoint.y}}>{hit.damage?`−${hit.damage}`:tr('방어')}</b>,document.body)}
+ {impact&&scene.owners.map((owner,index)=>createPortal(<span className="trap-owner-laugh" style={{left:owner.x,top:owner.y}} role="status">{tr('히히, 걸렸네!')}</span>,document.body,`laugh:${index}`))}</>;
 }

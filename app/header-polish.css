@@ -34,3 +34,5 @@
  .turntale.table-v211.active-table.classic-mode .classic-opponent-portrait>.portrait{width:19px!important;height:19px!important;min-width:19px!important;font-size:13px!important}.classic-portrait-score{font-size:9px!important}
  .turntale.table-v211.active-table:is(.hp-item-mode,.rpg-journey-mode) .own-status-card>.own-wallet{margin-left:8px;padding:1px 4px}.own-wallet>svg{width:12px;height:12px}.own-wallet>b{font-size:11px!important}
 }
+/* 2026-11-24: the tavern/tournament round label is wider than STAGE n; keep the table-theme text clear of it. */
+.turntale.table-v211.active-table>.topbar:has(.ingame-round.is-long) .ingame-table-theme{width:clamp(28px,calc(50% - 176px),180px)}

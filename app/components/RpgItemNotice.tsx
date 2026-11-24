@@ -6,6 +6,7 @@ import {isAttackItem,itemImage,rpgItemNoticeText,type RpgItemEvent} from '../../
 import {itemScenePoints,itemSceneTiming,itemProjectileFrames,dartFacingFrames} from '../../lib/rpg-item-motion.ts';
 import TileFace from './TileFace';
 import TileBack from './TileBack';
+import {tr,trv} from '../../lib/i18n/index.ts';
 type View=ReturnType<typeof view>;
 type Scene={points:ReturnType<typeof itemScenePoints>,source:DOMRect,target:DOMRect,badge:{left:number,top:number},elapsed:number};
 export function RpgItemNotice({game}:{game:View}){
@@ -40,7 +41,7 @@ export function RpgItemNotice({game}:{game:View}){
   {offensive&&<span className={`item-fx-projectile ${!isAttackItem(shown.itemId)?'is-tile-projectile':''}`} ref={projectile}>{blocked&&!isAttackItem(shown.itemId)?shown.tiles?.[0]?<TileFace tile={shown.tiles[0]}/>:<TileBack/>:<img src={itemImage(shown.itemId)} alt="" loading="eager" decoding="sync" fetchPriority="high"/>}</span>}
   {shown.kind==='damage'&&(shown.itemId==='ember-bomb'?<span className="ember-impact-visual" aria-hidden="true"><span className="ember-impact-sheet"/><i className="ember-impact-shockwave"/></span>:<><span className="item-fx-impact"/><svg className="item-impact-burst dart-contact-spark" viewBox="0 0 100 100" aria-hidden="true"><path d="M49 47L31 17L45 43L52 49L72 31L57 50L77 64L54 56L45 80L48 57L21 63Z" fill="#ffdf9c"/><path d="M46 45L53 48L56 55L48 57L44 52Z" fill="#fff7df"/></svg></>)}
   {blocked&&<><span className="item-character-shield"><i/><img src={itemImage('ward-seal')} alt=""/></span><span className="item-guard-contact"><i/><b/></span></>}
-  {!offensive&&!ownExchange&&<><strong className="item-emblem-owner">{game.players[shown.actor]?.name}</strong><span className="item-fx-emblem"><img src={itemImage(shown.itemId)} alt=""/></span></>}
-  {shown.kind==='failed'&&<span className="item-failed-caption">교환할 수 없습니다<small>1·2를 제외한 교환 가능한 패가 없어요.</small></span>}
+  {!offensive&&!ownExchange&&<><strong className="item-emblem-owner">{trv(game.players[shown.actor]?.name)}</strong><span className="item-fx-emblem"><img src={itemImage(shown.itemId)} alt=""/></span></>}
+  {shown.kind==='failed'&&<span className="item-failed-caption">{tr('교환할 수 없습니다')}<small>{tr('1·2를 제외한 교환 가능한 패가 없어요.')}</small></span>}
  </div>,document.body);
 }

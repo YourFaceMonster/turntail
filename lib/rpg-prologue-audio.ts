@@ -46,12 +46,22 @@ export function prologueBed(ctx:AudioContext,bed:PrologueBed,sound=true){
    lfo(.071,.06,gust.gain);lfo(.043,.05,lowGain.gain);lfo(.097,260,band.frequency);lfo(.053,120,lowFilter.frequency);
    low.start(at);high.start(at,3.3);sources.push(low,high);
   }else{
+   // 2026-11-24 player feedback "tick tick tick": the old hearth was a click every 3400 samples (~13 a second, evenly
+   // spaced), which read as a ticking machine. Now: a warm low fire rumble, plus a few soft pops at uneven gaps.
    master.gain.linearRampToValueAtTime(.16,at+FADE_IN);
-   const buffer=ctx.createBuffer(1,ctx.sampleRate*3,ctx.sampleRate),samples=buffer.getChannelData(0);
-   for(let i=0;i<samples.length;i++)samples[i]=i%3400<25?(Math.random()-.5)*.6:0;
-   const source=remember(ctx.createBufferSource()),filter=remember(ctx.createBiquadFilter());
-   source.buffer=buffer;source.loop=true;filter.type='lowpass';filter.frequency.value=1200;
-   source.connect(filter);filter.connect(master);source.start(at);sources.push(source);
+   const rate=ctx.sampleRate,buffer=ctx.createBuffer(1,Math.floor(rate*9),rate),samples=buffer.getChannelData(0);
+   let smooth=0;fillSeamless(samples,()=>{smooth=(smooth+Math.random()*.04-.02)/1.02;return smooth*5;});
+   const pops=ctx.createBuffer(1,Math.floor(rate*9),rate),popData=pops.getChannelData(0);
+   for(let at2=rate*(.4+Math.random()*.6);at2<popData.length-rate*.05;at2+=rate*(.45+Math.random()*1.4)){
+    const start=Math.floor(at2),length=Math.floor(rate*(.012+Math.random()*.02)),level=.05+Math.random()*.09;
+    for(let i=0;i<length;i++)popData[start+i]+=(Math.random()-.5)*level*Math.exp(-i/(length*.3));
+   }
+   const body=remember(ctx.createBufferSource()),bodyFilter=remember(ctx.createBiquadFilter()),bodyGain=remember(ctx.createGain());
+   body.buffer=buffer;body.loop=true;bodyFilter.type='lowpass';bodyFilter.frequency.value=380;bodyGain.gain.value=.9;
+   body.connect(bodyFilter);bodyFilter.connect(bodyGain);bodyGain.connect(master);
+   const pop=remember(ctx.createBufferSource()),popFilter=remember(ctx.createBiquadFilter());
+   pop.buffer=pops;pop.loop=true;popFilter.type='lowpass';popFilter.frequency.value=1800;
+   pop.connect(popFilter);popFilter.connect(master);body.start(at);pop.start(at);sources.push(body,pop);
   }
  }catch{stop();}
  return stop;

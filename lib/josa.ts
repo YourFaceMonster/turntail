@@ -1,4 +1,5 @@
 /** Korean particle picker (2026-11-17): chooses 이/가·을/를·은/는·과/와 by the last sound of a name or number. */
+import {lang} from './i18n/index.ts';
 export type JosaPair='이/가'|'을/를'|'은/는'|'과/와';
 /** 영 일 이 삼 사 오 육 칠 팔 구 — whether each digit's reading ends in a final consonant. */
 const DIGIT_FINAL=[true,true,false,true,false,false,true,true,true,false];
@@ -16,6 +17,8 @@ export function hasFinal(word:string){
  return false;
 }
 export function josa(word:string,pair:JosaPair){
+ // English has no particles: the English sentence around the word carries the meaning.
+ if(lang()==='en')return word;
  const [withFinal,withoutFinal]=pair.split('/');
  return word+(hasFinal(word)?withFinal:withoutFinal);
 }

@@ -1,0 +1,135 @@
+/* 2026-11-24 player feedback: scrolling the guide was awkward. The guide now fits one screen:
+   a flex column whose table and hand give up height first; the heading shrinks on short screens,
+   and a wide short screen puts the rule text beside the table. */
+html body .modal-shade.tutorial-shade{padding:8px!important;align-items:center}
+html body .turntale .tutorial-modal,html body .tutorial-modal{display:flex;flex-direction:column;max-height:calc(100dvh - 16px)!important;overflow:hidden!important;padding:14px 16px 12px!important}
+html body .tutorial-modal>*{flex:none}
+.tutorial-col-info,.tutorial-col-play{display:contents}
+html body .tutorial-modal .tutorial-heading{margin-bottom:10px}
+html body .tutorial-modal .tutorial-chapters button{padding:8px 6px}
+html body .tutorial-modal .tutorial-progress{margin:10px 0 8px}
+html body .tutorial-modal .tutorial-lesson-copy h3{margin:0 0 5px;font-size:17px}
+html body .turntale .tutorial-modal .guide-copy,html body .tutorial-modal .guide-copy{min-height:0!important;margin:0 0 8px!important;line-height:1.6!important;font-size:12.5px!important}
+html body .tutorial-modal .tutorial-order{margin:4px 0 8px}
+html body .tutorial-modal :is(.tutorial-rank,.tutorial-five-order){margin:4px 0 8px}
+html body .turntale .tutorial-modal .tutorial-table,html body .tutorial-modal .tutorial-table{min-height:96px;padding:8px!important}
+html body .turntale .tutorial-modal .helper-bubble,html body .tutorial-modal .helper-bubble{margin:8px 0 6px;min-height:40px;font-size:12px}
+html body .tutorial-modal .helper-bubble .tutorial-tip-line{display:block;margin-top:3px;font-size:11px;line-height:1.5;color:#e9d9b2}
+html body .turntale .tutorial-modal .tutorial-hand,html body .tutorial-modal .tutorial-hand{padding:9px 5px 10px!important;margin:0!important;min-height:0}
+html body .tutorial-modal .tutorial-actions{margin-top:10px}
+html body .tutorial-modal .tutorial-item-stage{min-height:0;padding:11px}
+html body .tutorial-modal .tutorial-exit{margin:8px auto 0}
+
+/* Shorter phones: drop the decorative parts of the heading first (the × still closes), then shrink tiles. */
+@media (max-height:820px){
+ html body .tutorial-modal .tutorial-book,html body .tutorial-modal .tutorial-heading .eyebrow,html body .tutorial-modal .tutorial-heading p{display:none}
+ html body .tutorial-modal .tutorial-heading{margin-bottom:8px;min-height:30px}
+ html body .modal-shade>.modal.tutorial-modal h2,html body .tutorial-modal .tutorial-heading h2{font-size:19px!important;margin:0!important}
+ html body .tutorial-modal .tutorial-exit{display:none}
+}
+@media (max-height:700px){
+ html body .turntale .tutorial-modal,html body .tutorial-modal{--tutorial-tile-w:37px;--tutorial-tile-h:50px}
+ html body .turntale .tutorial-modal .tutorial-table,html body .tutorial-modal .tutorial-table{min-height:80px}
+ html body .tutorial-modal .tutorial-hp-demo{padding:8px 12px}
+ html body .tutorial-modal .tutorial-hp-demo b{font-size:24px}
+ html body .tutorial-modal .tutorial-rule-list{margin-top:8px}
+ html body .tutorial-modal .tutorial-rule-list li+li{margin-top:4px}
+ html body .tutorial-modal .tutorial-kit-art img{width:44px;height:44px}
+}
+
+/* Wide and short (phone on its side): steps and rules on the left, the table and hand on the right. */
+@media (orientation:landscape) and (max-height:600px){
+ html body .turntale .tutorial-modal,html body .tutorial-modal{width:min(900px,calc(100vw - 16px))!important;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);grid-template-rows:auto auto minmax(0,1fr);column-gap:14px;align-content:start;--tutorial-tile-w:36px;--tutorial-tile-h:49px}
+ html body .tutorial-modal>.close{position:absolute}
+ html body .tutorial-modal .tutorial-heading{grid-column:1;grid-row:1;margin-bottom:6px}
+ html body .tutorial-modal .tutorial-chapters{grid-column:2;grid-row:1;align-self:center;margin-right:30px}
+ html body .tutorial-modal .tutorial-col-info{display:block;grid-column:1;grid-row:2/4;min-height:0}
+ html body .tutorial-modal .tutorial-col-play{display:flex;flex-direction:column;grid-column:2;grid-row:2/4;min-height:0}
+ html body .tutorial-modal>.one-move-puzzle,html body .tutorial-modal>:not(.close,.tutorial-heading,.tutorial-chapters,.tutorial-col-info,.tutorial-col-play,.tutorial-exit){grid-column:1/-1;grid-row:2/4;min-height:0}
+ html body .tutorial-modal .tutorial-progress{margin:4px 0 8px}
+ html body .turntale .tutorial-modal .tutorial-table,html body .tutorial-modal .tutorial-table{min-height:72px;padding:6px!important}
+ html body .turntale .tutorial-modal .helper-bubble,html body .tutorial-modal .helper-bubble{margin:6px 0 5px;min-height:34px;padding:6px 10px}
+ html body .turntale .tutorial-modal .tutorial-hand,html body .tutorial-modal .tutorial-hand{padding:6px 4px 7px!important}
+ html body .tutorial-modal .tutorial-actions{margin-top:6px}
+ html body .tutorial-modal .tutorial-actions button{min-height:36px!important}
+ html body .tutorial-modal .tutorial-exit{display:none}
+}
+
+/* One-move puzzle chooser: ten puzzles in a two-column grid instead of a long list. */
+html body .tutorial-modal .puzzle-select{min-height:0}
+html body .tutorial-modal .puzzle-select .puzzle-intro{margin:8px 0 8px;font-size:12px;line-height:1.55}
+html body .tutorial-modal .puzzle-select .puzzle-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:0;padding:0}
+html body .tutorial-modal .puzzle-select .puzzle-list>li{margin:0;min-width:0}
+html body .tutorial-modal .puzzle-select .puzzle-list button{width:100%;min-height:0;height:100%;padding:7px 8px!important;gap:7px;margin:0}
+html body .tutorial-modal .puzzle-select .puzzle-list button>span[aria-hidden]{display:none}
+html body .tutorial-modal .puzzle-select .puzzle-no{width:24px;height:24px;min-width:24px;font-size:12px}
+html body .tutorial-modal .puzzle-select .puzzle-name{min-width:0;text-align:left}
+html body .tutorial-modal .puzzle-select .puzzle-name strong{font-size:12px;line-height:1.3;display:block}
+html body .tutorial-modal .puzzle-select .puzzle-name small{font-size:10px;line-height:1.3;display:block}
+html body .tutorial-modal .puzzle-select .puzzle-count{margin:8px 0 0}
+
+/* An open puzzle: the guide title steps aside (the tabs and "문제 목록" stay), the hand stays on one row and the
+   three buttons share one line. */
+html body .tutorial-modal:has(.puzzle-board) .tutorial-heading{display:none}
+html body .tutorial-modal .puzzle-board{min-height:0;margin-top:8px;--puzzle-w:min(38px,calc((100vw - 90px) / 8));--puzzle-h:calc(var(--puzzle-w) * 1.36)}
+html body .tutorial-modal .puzzle-board h4{margin:2px 0 2px;font-size:16px}
+html body .tutorial-modal .puzzle-board :is(.puzzle-lesson,.puzzle-goal){margin:0 0 4px;font-size:11.5px;line-height:1.45}
+html body .tutorial-modal .puzzle-board .puzzle-row{padding:5px 6px!important;margin:0 0 6px!important;min-height:0}
+html body .tutorial-modal .puzzle-board .puzzle-row>small{margin:0 0 3px;font-size:10px}
+html body .tutorial-modal .puzzle-board .puzzle-tiles{gap:3px;flex-wrap:nowrap;min-height:0}
+html body .tutorial-modal .puzzle-board .puzzle-tiles .tile{width:var(--puzzle-w)!important;height:var(--puzzle-h)!important;flex:none}
+html body .tutorial-modal .puzzle-board .puzzle-tiles>button{padding:0;min-width:0;flex:none}
+html body .tutorial-modal .puzzle-board .puzzle-mark{height:auto;font-size:22px}
+html body .tutorial-modal .puzzle-board .puzzle-note{margin:0 0 6px;min-height:0;padding:5px 8px;font-size:11.5px}
+html body .tutorial-modal .puzzle-board .puzzle-actions{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:6px;margin:0}
+html body .tutorial-modal .puzzle-board .puzzle-actions>button{min-height:38px!important;margin:0!important;padding:6px 4px!important;font-size:12px!important;white-space:nowrap}
+html body .tutorial-modal .puzzle-board{row-gap:5px!important}html body .tutorial-modal .puzzle-board>*{margin-bottom:0!important}
+
+/* The hand and table keep their own height (the column wrappers are display:contents, so set it on their children),
+   and up to six practice tiles stay on one row: tile width follows the screen width. */
+html body .tutorial-modal :is(.tutorial-col-info,.tutorial-col-play)>*{flex:none}
+html body .turntale .tutorial-modal,html body .tutorial-modal{--tutorial-tile-w:min(43px,calc((100vw - 104px) / 6))!important;--tutorial-tile-h:calc(var(--tutorial-tile-w) * 1.35)!important}
+html body .tutorial-modal .tutorial-hand{flex-wrap:nowrap!important}
+html body .tutorial-modal :is(.tutorial-hand,.tutorial-table,.tutorial-beaten) .tile{width:var(--tutorial-tile-w)!important;height:var(--tutorial-tile-h)!important}
+
+/* After a correct answer the bubble holds only the tip; no gap above it when it is alone. */
+html body .tutorial-modal .helper-bubble .tutorial-tip-line:first-child{margin-top:0;font-size:12px}
+/* Short phones (about 640–700px tall): the title row goes (× and the tabs stay), every block tightens. */
+@media (max-height:700px){
+ html body .tutorial-modal .tutorial-heading{display:none}
+ html body .tutorial-modal .tutorial-chapters button{padding:6px 4px;font-size:11.5px}
+ html body .tutorial-modal .tutorial-chapters{margin-right:34px}
+ html body .tutorial-modal .tutorial-progress{margin:6px 0 4px}
+ html body .tutorial-modal .tutorial-lesson-copy h3{font-size:15px;margin:0 0 3px}
+ html body .turntale .tutorial-modal .guide-copy,html body .tutorial-modal .guide-copy{font-size:12px!important;line-height:1.5!important;margin:0 0 5px!important}
+ html body .tutorial-modal .tutorial-order,html body .tutorial-modal :is(.tutorial-rank,.tutorial-five-order){margin:2px 0 5px;padding:4px}
+ html body .turntale .tutorial-modal .tutorial-table,html body .tutorial-modal .tutorial-table{min-height:0;padding:5px!important}
+ html body .tutorial-modal .tutorial-table>small{margin-bottom:4px}
+ html body .tutorial-modal .tutorial-beaten{margin:0 0 -8px;transform:scale(.6)}
+ html body .turntale .tutorial-modal .helper-bubble,html body .tutorial-modal .helper-bubble{margin:5px 0 5px;min-height:0;padding:5px 9px}
+ html body .turntale .tutorial-modal .tutorial-hand,html body .tutorial-modal .tutorial-hand{padding:6px 4px!important}
+ html body .tutorial-modal .tutorial-actions{margin-top:6px}
+ html body .tutorial-modal .tutorial-actions button{min-height:38px!important}
+ html body .tutorial-modal .tutorial-item-stage{padding:8px}
+ html body .tutorial-modal .tutorial-tip,html body .tutorial-modal .tutorial-rule-list{font-size:10.5px;line-height:1.5}
+ html body .tutorial-modal .tutorial-settle-why{font-size:9.5px}
+ html body .tutorial-modal .tutorial-coin-stack{transform:scale(.8);margin:-6px auto -10px}
+}
+
+/* Sideways: use the width, tabs sit above the rule text, the table column runs the full height. */
+@media (orientation:landscape) and (max-height:600px){
+ html body .modal-shade>.modal.tutorial-modal,html body .turntale .tutorial-modal,html body .tutorial-modal{width:min(940px,calc(100vw - 16px))!important;max-width:none!important;grid-template-rows:auto minmax(0,1fr)!important;padding:12px 16px 10px!important}
+ html body .tutorial-modal .tutorial-chapters{grid-column:1;grid-row:1;margin:0 0 4px;align-self:start}
+ html body .tutorial-modal .tutorial-col-info{grid-column:1;grid-row:2}
+ html body .tutorial-modal .tutorial-col-play{grid-column:2;grid-row:1/3;margin-right:36px}
+ html body .tutorial-modal>.puzzle-select,html body .tutorial-modal>.puzzle-board{grid-column:1/-1!important;grid-row:2!important;margin-right:0}
+ html body .tutorial-modal .puzzle-select .puzzle-list{grid-template-columns:repeat(5,minmax(0,1fr))}
+ html body .tutorial-modal .puzzle-board{--puzzle-w:34px}
+ html body .tutorial-modal .tutorial-chapters button{padding:5px 4px;font-size:11px}
+}
+
+/* Draw lesson on short screens: the face-down floor tile sits beside the opponent's tile, not under it. */
+@media (max-height:700px),(orientation:landscape) and (max-height:600px){
+ html body .turntale .tutorial-modal .tutorial-table,html body .tutorial-modal .tutorial-table{position:relative}
+ html body .turntale .tutorial-modal .tutorial-table>.tutorial-back,html body .tutorial-modal .tutorial-table>.tutorial-back{position:absolute;right:14px;top:50%;transform:translateY(-42%)}
+}

@@ -1,8 +1,9 @@
+import {tr} from './i18n/index.ts';
 export const KOREAN_OPPONENTS=[
- {name:'청돌',title:'느긋한 청도깨비',portrait:0,src:'/monsters/blue-0513.webp',width:1024,height:1536,crop:{x:265,y:65,size:550}},
- {name:'불찬',title:'장난꾸러기 불도깨비',portrait:1,src:'/monsters/red-0513.webp',width:1024,height:1536,crop:{x:175,y:30,size:680}},
- {name:'돌해',title:'묵직한 해태 수호자',portrait:2,src:'/monsters/haetae-0513.webp',width:1024,height:1536,crop:{x:175,y:10,size:680}},
- {name:'히보',title:'실력은 고수 · 성질은 시한폭탄',portrait:3,src:'/monsters/hiboringji-061.webp',modelSrc:'/monsters/hibo-seated-063.webp',width:1254,height:1254,crop:{x:270,y:140,size:720}}
+ {name:tr('청돌'),title:tr('느긋한 청도깨비'),portrait:0,src:'/monsters/blue-0513.webp',width:1024,height:1536,crop:{x:265,y:65,size:550}},
+ {name:tr('불찬'),title:tr('장난꾸러기 불도깨비'),portrait:1,src:'/monsters/red-0513.webp',width:1024,height:1536,crop:{x:175,y:30,size:680}},
+ {name:tr('돌해'),title:tr('묵직한 해태 수호자'),portrait:2,src:'/monsters/haetae-0513.webp',width:1024,height:1536,crop:{x:175,y:10,size:680}},
+ {name:'히보',title:tr('실력은 고수 · 성질은 시한폭탄'),portrait:3,src:'/monsters/hiboringji-061.webp',modelSrc:'/monsters/hibo-seated-063.webp',width:1254,height:1254,crop:{x:270,y:140,size:720}}
 ] as const;
 /** Sample without replacement and avoid the previous table where possible. */
 export function chooseKoreanOpponents(count:number,previous:readonly string[]=[],random=()=>crypto.getRandomValues(new Uint32Array(1))[0]/4294967296){

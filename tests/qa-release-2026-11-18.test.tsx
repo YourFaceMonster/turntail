@@ -2,7 +2,9 @@ import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {existsSync,readFileSync} from 'node:fs';
 
-const read=(file:string)=>readFileSync(file,'utf8');
+// 2026-11-20 English version: screen text is wrapped in tr('…'). Unwrap it so these source checks still read the Korean text.
+const unwrapTr=(src:string)=>src.replace(/\{tr\('((?:[^'\\]|\\.)*)'\)\}/g,'$1').replace(/tr\('((?:[^'\\]|\\.)*)'\)/g,"'$1'");
+const read=(file:string)=>unwrapTr(readFileSync(file,'utf8'));
 
 test('cutscene art loader is keyed on cut ids, not the array the parent rebuilds each render',()=>{
  const prologue=read('app/components/RpgPrologue.tsx');

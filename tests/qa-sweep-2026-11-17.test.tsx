@@ -3,12 +3,14 @@ import {test} from 'node:test';
 import {readFileSync} from 'node:fs';
 import {DICE_DEN_DIALOGUE} from '../lib/rpg-dice-den.ts';
 
-const read=(file:string)=>readFileSync(file,'utf8');
+// 2026-11-20 English version: screen text is wrapped in tr('…'). Unwrap it so these source checks still read the Korean text.
+const unwrapTr=(src:string)=>src.replace(/\{tr\('((?:[^'\\]|\\.)*)'\)\}/g,'$1').replace(/tr\('((?:[^'\\]|\\.)*)'\)/g,"'$1'");
+const read=(file:string)=>unwrapTr(readFileSync(file,'utf8'));
 
 test('duel: the lead lock line is said once (on the button), and my recent plays read "나"',()=>{
  const page=read('app/page.tsx');
  assert.ok(!page.includes('선 · 제출만 가능'));
- assert.ok(page.includes('"선은 제출만 가능"'));
+ assert.ok(page.includes("'선은 제출만 가능'")||page.includes('"선은 제출만 가능"'));
  assert.ok(page.includes("names={game.players.map((p,i)=>i===game.me?'나':p.name)}"));
 });
 

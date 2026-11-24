@@ -1,3 +1,4 @@
+import {tr} from './i18n/index.ts';
 /** Keep decoded item art alive across new-game and resume entrances. */
 export const ITEM_SCENE_IMAGES=[
  '/rpg-items-v1/consumables/scout-lens.webp','/rpg-items-v1/consumables/swapped-fate.webp',
@@ -12,7 +13,7 @@ function prepare(src:string){
  const image=new Image();image.decoding='sync';image.fetchPriority='high';
  const promise=new Promise<void>((resolve,reject)=>{
   let finished=false;
-  const fail=()=>{if(finished)return;finished=true;clearTimeout(timer);prepared.delete(src);reject(Error('아이템 이미지를 불러오지 못했어요. 다시 시도해 주세요.'));};
+  const fail=()=>{if(finished)return;finished=true;clearTimeout(timer);prepared.delete(src);reject(Error(tr('아이템 이미지를 불러오지 못했어요. 다시 시도해 주세요.')));};
   const timer=setTimeout(fail,10000);
   image.onload=()=>{void image.decode().then(()=>{if(finished)return;finished=true;clearTimeout(timer);resolve();},fail);};image.onerror=fail;image.src=src;
  });

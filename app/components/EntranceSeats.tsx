@@ -5,19 +5,21 @@ import StageModel from './StageModel';
 import {STAGE_THEMES} from '../../lib/stage-theme';
 import {twinIndex} from '../../lib/rpg-twins';
 import {entranceSeatLayout} from '../../lib/entrance-company';
+import {trv} from '../../lib/i18n/index.ts';
+import {tr} from '../../lib/i18n/index.ts';
 export type EntranceCompany={name:string,avatar?:string,points:number,count:number}[];
 /** Opponents sit beyond the rear rim, so the tabletop naturally occludes their lower bodies. */
 export default function EntranceSeats({company,diameter,cx,cy,stage=0,viewport}:{company:EntranceCompany,diameter:number,cx:number,cy:number,stage?:number,viewport?:{width:number,height:number,overview:number}}){
  return <div className="entry-world-company" data-player-count={company.length+1}>{company.map((p,i)=>{const monster=!!p.avatar?.startsWith('korean-monster:'),painted=monster||!!p.avatar?.startsWith('stage-portrait:'),seat=entranceSeatLayout(diameter,cx,cy,i,company.length,painted,stage,viewport,p.avatar?.startsWith('stage-portrait:')?Number(p.avatar.split(':')[1]):undefined);return <div key={p.name+i} className={`entry-world-seat modeled-seat ${painted?'monster-seat':''}`} data-world-seat={i} style={{left:seat.left,top:seat.top,width:seat.width,height:seat.height,'--seat-floor':`${seat.support}px`} as CSSProperties}>
  <div className={stage?"regional-character-body":"classic-character-motion"} style={{animationDelay:`${-i*1.25}s`}}>{monster?<MonsterModel index={Number(p.avatar!.split(':')[1])}/>:p.avatar?.startsWith('stage-portrait:')?<StageModel index={Number(p.avatar.split(':')[1])} facing={i>=Math.ceil(company.length/2)?'left':'right'}/>:<SeatedCharacter name={p.name} avatar={p.avatar} index={i}/>}</div>
  
- <span className="world-character-caption">{p.name}</span>
+ <span className="world-character-caption">{trv(p.name)}</span>
  </div>;})}</div>;
 }
 
 export function openingGreeting(avatar:string|undefined,_name:string){
- const twin=twinIndex(avatar);if(twin!==null)return twin===0?'이번에는 내가 먼저 끝내겠어.':'서두르지 마. 끝은 아직 모르잖아.';
- if(avatar?.startsWith('stage-portrait:'))return STAGE_THEMES.flatMap(t=>t.opponents).find(p=>p.portrait===Number(avatar.split(':')[1]))?.quote||'좋습니다. 한 수 겨뤄 보지요.';
- if(avatar==='korean-monster:3')return '히히. 빨리 끝내자. 나 성질 더럽다?';
- return avatar==='korean-monster:0'?'허허, 느긋하게 한 판 해볼까?':avatar==='korean-monster:1'?'좋아! 오늘은 내가 먼저 간다!':avatar==='korean-monster:2'?'끝까지 지켜보겠다. 시작하지.':'좋습니다. 한 수 겨뤄 보지요.';
+ const twin=twinIndex(avatar);if(twin!==null)return twin===0?tr('이번에는 내가 먼저 끝내겠어.'):tr('서두르지 마. 끝은 아직 모르잖아.');
+ if(avatar?.startsWith('stage-portrait:'))return STAGE_THEMES.flatMap(t=>t.opponents).find(p=>p.portrait===Number(avatar.split(':')[1]))?.quote||tr('좋습니다. 한 수 겨뤄 보지요.');
+ if(avatar==='korean-monster:3')return tr('히히. 빨리 끝내자. 나 성질 더럽다?');
+ return avatar==='korean-monster:0'?tr('허허, 느긋하게 한 판 해볼까?'):avatar==='korean-monster:1'?tr('좋아! 오늘은 내가 먼저 간다!'):avatar==='korean-monster:2'?tr('끝까지 지켜보겠다. 시작하지.'):tr('좋습니다. 한 수 겨뤄 보지요.');
 }

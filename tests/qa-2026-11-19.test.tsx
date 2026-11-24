@@ -4,7 +4,9 @@ import {readFileSync} from 'node:fs';
 import {RPG_STAGE_HP,rpgMaxHp,rpgEnemyMaxHp} from '../lib/rpg-rework.ts';
 import type {RpgRun} from '../lib/rpg.ts';
 
-const read=(file:string)=>readFileSync(file,'utf8');
+// 2026-11-20 English version: screen text is wrapped in tr('…'). Unwrap it so these source checks still read the Korean text.
+const unwrapTr=(src:string)=>src.replace(/\{tr\('((?:[^'\\]|\\.)*)'\)\}/g,'$1').replace(/tr\('((?:[^'\\]|\\.)*)'\)/g,"'$1'");
+const read=(file:string)=>unwrapTr(readFileSync(file,'utf8'));
 
 test('opponents heal only up to the HP they started the stage with',()=>{
  for(let stage=1;stage<=10;stage++){

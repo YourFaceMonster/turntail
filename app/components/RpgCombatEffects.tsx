@@ -5,6 +5,7 @@ import {createPortal} from 'react-dom';
 import type {view} from '../../lib/game.ts';
 import type {RpgItemEvent} from '../../lib/rpg-items.ts';
 import {itemSceneTiming} from '../../lib/rpg-item-motion.ts';
+import {tr} from '../../lib/i18n/index.ts';
 export type ItemHpPresentation={id:string,target:number,before:number};
 export function RpgCombatEffects({game,onHit,onGuard,onAttack,onHpPresentation}:{game:ReturnType<typeof view>,onHit:(who:number,itemId:string)=>void,onGuard?:(itemId:string)=>void,onAttack?:(id:string)=>void,onHpPresentation?:(held:ItemHpPresentation|null)=>void}){
  const event=game.rpgRun?.lastItem,seen=useRef(event?.id),callback=useRef({onHit,onGuard,onAttack,onHpPresentation});callback.current={onHit,onGuard,onAttack,onHpPresentation};
@@ -21,5 +22,5 @@ export function RpgCombatEffects({game,onHit,onGuard,onAttack,onHpPresentation}:
  },[event?.id,game.me]);
  if(!hit)return null;
  const healing=hit.event.kind==='heal',deferred=hasRoundCombat(game)&&!hasImmediateSkills(game);
- return createPortal(<span key={hit.event.id} className={`rpg-hit-overlay ${healing?'is-heal':'is-damage'}`} role="status" aria-label={`${game.players[hit.event.target].name} HP ${hit.event.amount} ${healing?'회복':'피해'}${deferred?' 정산 예정':''}`}><span className="rpg-hit-flash"/>{healing&&<span className="rpg-healing-rings" aria-hidden="true"/>}<b className="rpg-hit-number">{healing?'+':'−'}{hit.event.amount}{deferred&&<small>정산 예정</small>}</b></span>,hit.anchor);
+ return createPortal(<span key={hit.event.id} className={`rpg-hit-overlay ${healing?'is-heal':'is-damage'}`} role="status" aria-label={`${game.players[hit.event.target].name} HP ${hit.event.amount} ${healing?tr('회복'):tr('피해')}${deferred?tr(' 정산 예정'):''}`}><span className="rpg-hit-flash"/>{healing&&<span className="rpg-healing-rings" aria-hidden="true"/>}<b className="rpg-hit-number">{healing?'+':'−'}{hit.event.amount}{deferred&&<small>{tr('정산 예정')}</small>}</b></span>,hit.anchor);
 }

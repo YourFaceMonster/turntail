@@ -4,6 +4,7 @@ import type {RpgRun} from './rpg';
 import {DICE_RELIC,DICE_RELIC_HEAL} from './rpg-dice-den';
 import {withRelicActivations} from './rpg-relic-feedback';
 import {rpgRelicSlots,trialEnemyHp,trialStartHp} from './rpg-trials';
+import {tr} from './i18n/index.ts';
 /** Quest-only relics never appear in stage reward offers. */
 const QUEST_RELICS=['watchkeepers-blue-glass',DICE_RELIC.id];
 
@@ -24,11 +25,11 @@ export const RELIC_TAGS:Record<string,RelicTag>={
  'cracked-heart':'heart','second-heart':'heart','whole-heart':'heart',
  'recovery-lantern':'mend','final-knot':'mend','second-ring':'mend',[DICE_RELIC.id]:'mend','undying-lantern':'mend',
 };
-export const RELIC_TAG_NAMES:Record<RelicTag,string>={scout:'정찰',heart:'체력',mend:'회복'};
+export const RELIC_TAG_NAMES:Record<RelicTag,string>={scout:tr('정찰'),heart:tr('체력'),mend:tr('회복')};
 export const RELIC_SYNERGIES:Record<RelicTag,{name:string,effect:string}>={
- scout:{name:'정찰 공명',effect:'판이 시작될 때 바닥 패 1장을 더 몰래 봐요'},
- heart:{name:'체력 공명',effect:'최대 HP +5'},
- mend:{name:'회복 공명',effect:'스테이지를 클리어하면 HP +3'},
+ scout:{name:tr('정찰 공명'),effect:tr('판이 시작될 때 바닥 패 1장을 더 몰래 봐요')},
+ heart:{name:tr('체력 공명'),effect:tr('최대 HP +5')},
+ mend:{name:tr('회복 공명'),effect:tr('스테이지를 클리어하면 HP +3')},
 };
 /** Active (equipped) relics only; owned-only relics never count. */
 export function reworkSynergies(run:Pick<RpgRun,'equipped'|'rework'>):RelicTag[]{
@@ -39,10 +40,10 @@ export function reworkSynergies(run:Pick<RpgRun,'equipped'|'rework'>):RelicTag[]
 const firstOfTag=(run:Pick<RpgRun,'equipped'>,tag:RelicTag)=>run.equipped.find(id=>RELIC_TAGS[id]===tag)!;
 /** Forging: two known materials become one legendary relic, freeing a slot. */
 export const RELIC_RECIPES=[
- {id:'whole-heart',materials:['cracked-heart','second-heart'],pio:'금이 간 심장에 두 번째 심장을 포개면 금이 메워지면서 온전한 심장이 된대.'},
- {id:'gamblers-hourglass',materials:['gamblers-gloves','stopped-hourglass'],pio:'승부사의 장갑을 낀 손으로 멈춘 모래시계를 뒤집으면, 모래가 다시 흐른다더군.'},
- {id:'undying-lantern',materials:['recovery-lantern','final-knot'],pio:'회복의 등불 심지에 마지막 매듭을 묶으면 눈보라에도 꺼지지 않는 등불이 된대.'},
- {id:'forked-mirror',materials:['twin-needle-compass','split-mirror'],pio:'쌍침 나침반을 갈라진 거울에 비추면, 두 갈래 길이 한꺼번에 보인다던데.'},
+ {id:'whole-heart',materials:['cracked-heart','second-heart'],pio:tr('금이 간 심장에 두 번째 심장을 포개면 금이 메워지면서 온전한 심장이 된대.')},
+ {id:'gamblers-hourglass',materials:['gamblers-gloves','stopped-hourglass'],pio:tr('승부사의 장갑을 낀 손으로 멈춘 모래시계를 뒤집으면, 모래가 다시 흐른다더군.')},
+ {id:'undying-lantern',materials:['recovery-lantern','final-knot'],pio:tr('회복의 등불 심지에 마지막 매듭을 묶으면 눈보라에도 꺼지지 않는 등불이 된대.')},
+ {id:'forked-mirror',materials:['twin-needle-compass','split-mirror'],pio:tr('쌍침 나침반을 갈라진 거울에 비추면, 두 갈래 길이 한꺼번에 보인다던데.')},
 ] as const;
 export type RelicRecipe=typeof RELIC_RECIPES[number];
 export const recipeRumor=(id:string)=>`recipe:${id}`;
@@ -59,13 +60,13 @@ export function learnRecipes(run:RpgRun,count:number):{run:RpgRun,learned:string
 }
 /** Why a known recipe cannot be forged right now, or '' when it can. */
 export function forgeBlocker(run:RpgRun,id:string){
- const recipe=relicRecipe(id);if(!recipe)return '없는 조합법이에요.';
- if(!run.rework||!run.journey)return '새 여정에서만 합성할 수 있어요.';
- if(!knownRecipes(run).some(known=>known.id===id))return '아직 모르는 조합법이에요.';
+ const recipe=relicRecipe(id);if(!recipe)return tr('없는 조합법이에요.');
+ if(!run.rework||!run.journey)return tr('새 여정에서만 합성할 수 있어요.');
+ if(!knownRecipes(run).some(known=>known.id===id))return tr('아직 모르는 조합법이에요.');
  const outside=run.status==='allocation'||run.status==='ready'&&!['battle','mini-game'].includes(run.journey.location);
- if(!outside)return '승부 밖에서 합성할 수 있어요.';
+ if(!outside)return tr('승부 밖에서 합성할 수 있어요.');
  const missing=recipe.materials.filter(material=>!run.relics.includes(material));
- return missing.length?`재료가 부족해요 · ${missing.map(material=>reworkRelic(material)?.name||material).join(' · ')}`:'';
+ return missing.length?tr('재료가 부족해요 · {0}',{0:missing.map(material=>reworkRelic(material)?.name||material).join(' · ')}):'';
 }
 /** Current-HP bonus each heart relic grants on its first equip of a chapter. */
 /** Relic numbers (B안 2026-11-15: cracked heart 20→15, lantern 5→10, knot ≤10/+5 → ≤20/+10, ring 3→6; undying lantern raised to stay above its materials). */
@@ -83,7 +84,7 @@ export function forgeRelic(run:RpgRun,id:string):RpgRun{
  if(HEART_BONUS[id]&&granted){activated.push(id);if(equipped.includes(id)&&hp>0)hp+=Math.max(0,HEART_BONUS[id]-granted);}
  let next:RpgRun={...run,relics:[...run.relics.filter(relic=>!materials.includes(relic)),id],equipped,hp:[hp,...run.hp.slice(1)],
   discovered:[...new Set([...run.discovered,id])],rework:{...state,activated},updatedAt:Date.now()};
- next=withRelicActivations(next,[{relicId:id,message:'합성 완료'}]);
+ next=withRelicActivations(next,[{relicId:id,message:tr('합성 완료')}]);
  return activateRpgRelics(next);
 }
 /** Compass preview of the next reward offers (compass alone or forged into the mirror). */
@@ -92,43 +93,43 @@ const hasExtraOffer=(run:Pick<RpgRun,'relics'>)=>run.relics.includes('split-mirr
 /** RPG only. Shared item-match catalogues and the global HP limit remain intact.
  * effect = one line "when → what"; detail = the plain-language explanation shown when the relic is tapped. */
 export const RPG_REWORK_RELICS=[
- ['gamblers-gloves','승부사의 장갑','5장 족보로 이기면 바닥 패를 1장 더 몰래 봐요','족보 싸움에서 이기면 바닥의 뒤집힌 위층 패를 몰래 볼 수 있어요(정찰). 5장 족보로 이기면 1장을 더 봐요. 나에게만 보여요.'],
- ['cracked-heart','금이 간 심장','최대 HP +15 · 챕터에서 처음 장착하면 HP도 +15','장착하는 동안 최대 HP가 15 늘어나요. 현재 HP +15는 챕터마다 처음 장착할 때 한 번만 받아요.'],
- ['second-heart','두 번째 심장','최대 HP +10 · 챕터에서 처음 장착하면 HP도 +10','장착하는 동안 최대 HP가 10 늘어나요. 현재 HP +10은 챕터마다 처음 장착할 때 한 번만 받아요.'],
- ['recovery-lantern','회복의 등불','스테이지를 클리어하면 HP +10','AI 한 명의 HP를 0으로 만들어 스테이지를 클리어하면 바로 HP 10을 회복해요. 최대 HP를 넘으면 회복하지 않아요.'],
- ['watchkeepers-blue-glass','파수꾼의 푸른 유리','판이 시작될 때마다 바닥 패 1장을 몰래 봐요','매 판 시작 시 바닥의 뒤집힌 위층 패 1장을 자동으로 확인해요. 나에게만 보여요.'],
- ['stopped-hourglass','멈춘 모래시계','판에서 이기면 다음 판에 바닥 패를 1장 더 봐요','판에서 1등을 하면 다음 판 시작에 바닥 패 1장을 몰래 봐요(선견지명). 이 유물이 있으면 2장을 봐요.'],
- ['final-knot','마지막 매듭','판이 끝났을 때 HP 20 이하면 HP +10 · 스테이지당 1번','판 정산 후 HP가 1~20이면 HP 10을 회복해요. 한 스테이지에서 한 번만 발동해요.'],
- ['second-ring','두 번째 반지','셋이 겨룬 판에서 2등이면 HP +6','세 명 모두 HP가 남은 판에서 2등으로 마치면 정산 후 HP 6을 회복해요.'],
- ['mor-quill','모르의 깃펜','주점에서 조합법을 하나 더 들어요','장착하지 않고 갖고만 있어도 적용돼요. 눈길의 주점 피오, 안개 나루 주점 도칸, 달빛 등불 주점 리네에게서 합성 조합법을 하나씩 더 들어 소문 수첩에 적어요.'],
- ['twin-needle-compass','쌍침 나침반','다음 유물 보상 후보를 미리 봐요','장착하지 않고 갖고만 있어도 적용돼요. 여행 가방과 스테이지 정산 화면에서 다음 클리어 보상 후보를 보여 줘요.'],
- ['split-mirror','갈라진 거울','유물 보상 후보가 1개 더 나와요','장착하지 않고 갖고만 있어도 적용돼요. 스테이지 클리어 보상 후보가 2개에서 3개로(보스는 3개에서 4개로) 늘어요.'],
- [DICE_RELIC.id,DICE_RELIC.name,'판이 시작될 때 HP가 50 이하면 HP +3','매 판 시작 시 HP가 50 이하이면 HP 3을 회복해요. 위기일수록 조금씩 버티게 도와줘요.'],
+ ['gamblers-gloves',tr('승부사의 장갑'),tr('5장 족보로 이기면 바닥 패를 1장 더 몰래 봐요'),tr('족보 싸움에서 이기면 바닥의 뒤집힌 위층 패를 몰래 볼 수 있어요(정찰). 5장 족보로 이기면 1장을 더 봐요. 나에게만 보여요.')],
+ ['cracked-heart',tr('금이 간 심장'),tr('최대 HP +15 · 챕터에서 처음 장착하면 HP도 +15'),tr('장착하는 동안 최대 HP가 15 늘어나요. 현재 HP +15는 챕터마다 처음 장착할 때 한 번만 받아요.')],
+ ['second-heart',tr('두 번째 심장'),tr('최대 HP +10 · 챕터에서 처음 장착하면 HP도 +10'),tr('장착하는 동안 최대 HP가 10 늘어나요. 현재 HP +10은 챕터마다 처음 장착할 때 한 번만 받아요.')],
+ ['recovery-lantern',tr('회복의 등불'),tr('스테이지를 클리어하면 HP +10'),tr('AI 한 명의 HP를 0으로 만들어 스테이지를 클리어하면 바로 HP 10을 회복해요. 최대 HP를 넘으면 회복하지 않아요.')],
+ ['watchkeepers-blue-glass',tr('파수꾼의 푸른 유리'),tr('판이 시작될 때마다 바닥 패 1장을 몰래 봐요'),tr('매 판 시작 시 바닥의 뒤집힌 위층 패 1장을 자동으로 확인해요. 나에게만 보여요.')],
+ ['stopped-hourglass',tr('멈춘 모래시계'),tr('판에서 이기면 다음 판에 바닥 패를 1장 더 봐요'),tr('판에서 1등을 하면 다음 판 시작에 바닥 패 1장을 몰래 봐요(선견지명). 이 유물이 있으면 2장을 봐요.')],
+ ['final-knot',tr('마지막 매듭'),tr('판이 끝났을 때 HP 20 이하면 HP +10 · 스테이지당 1번'),tr('판 정산 후 HP가 1~20이면 HP 10을 회복해요. 한 스테이지에서 한 번만 발동해요.')],
+ ['second-ring',tr('두 번째 반지'),tr('셋이 겨룬 판에서 2등이면 HP +6'),tr('세 명 모두 HP가 남은 판에서 2등으로 마치면 정산 후 HP 6을 회복해요.')],
+ ['mor-quill',tr('모르의 깃펜'),tr('주점에서 조합법을 하나 더 들어요'),tr('장착하지 않고 갖고만 있어도 적용돼요. 눈길의 주점 피오, 안개 나루 주점 도칸, 달빛 등불 주점 리네에게서 합성 조합법을 하나씩 더 들어 소문 수첩에 적어요.')],
+ ['twin-needle-compass',tr('쌍침 나침반'),tr('다음 유물 보상 후보를 미리 봐요'),tr('장착하지 않고 갖고만 있어도 적용돼요. 여행 가방과 스테이지 정산 화면에서 다음 클리어 보상 후보를 보여 줘요.')],
+ ['split-mirror',tr('갈라진 거울'),tr('유물 보상 후보가 1개 더 나와요'),tr('장착하지 않고 갖고만 있어도 적용돼요. 스테이지 클리어 보상 후보가 2개에서 3개로(보스는 3개에서 4개로) 늘어요.')],
+ [DICE_RELIC.id,DICE_RELIC.name,tr('판이 시작될 때 HP가 50 이하면 HP +3'),tr('매 판 시작 시 HP가 50 이하이면 HP 3을 회복해요. 위기일수록 조금씩 버티게 도와줘요.')],
  // Forged legendaries (see RELIC_RECIPES). Never offered as rewards.
- ['whole-heart','온전한 심장','최대 HP +35 · 챕터에서 처음 장착하면 HP도 +35','금이 간 심장과 두 번째 심장을 합친 유물이에요. 장착하는 동안 최대 HP가 35 늘어나요. 현재 HP +35는 챕터마다 처음 장착할 때 한 번만 받고, 재료로 이미 받은 만큼은 빼요.'],
- ['gamblers-hourglass','승부사의 모래시계','5장 족보로 이기면 바닥 +1장 · 판에서 이기면 다음 판 바닥 +2장','승부사의 장갑과 멈춘 모래시계를 합친 유물이에요. 5장 족보로 이기면 바닥 패를 1장 더 보고, 판에서 1등을 하면 다음 판 시작에 바닥 패를 3장 몰래 봐요.'],
- ['undying-lantern','꺼지지 않는 등불','클리어하면 HP +14 · 판이 끝났을 때 HP 25 이하면 HP +12 (스테이지당 1번)','회복의 등불과 마지막 매듭을 합친 유물이에요. 스테이지를 클리어하면 HP 14를, 판 정산 후 HP가 1~25이면 HP 12를 회복해요(스테이지당 한 번).'],
- ['forked-mirror','두 갈래 거울','유물 보상 후보 +1 · 다음 보상 후보 미리 보기','쌍침 나침반과 갈라진 거울을 합친 유물이에요. 장착하지 않고 갖고만 있어도 적용돼요. 보상 후보가 1개 늘고, 다음 클리어 보상 후보도 미리 보여 줘요.'],
+ ['whole-heart',tr('온전한 심장'),tr('최대 HP +35 · 챕터에서 처음 장착하면 HP도 +35'),tr('금이 간 심장과 두 번째 심장을 합친 유물이에요. 장착하는 동안 최대 HP가 35 늘어나요. 현재 HP +35는 챕터마다 처음 장착할 때 한 번만 받고, 재료로 이미 받은 만큼은 빼요.')],
+ ['gamblers-hourglass',tr('승부사의 모래시계'),tr('5장 족보로 이기면 바닥 +1장 · 판에서 이기면 다음 판 바닥 +2장'),tr('승부사의 장갑과 멈춘 모래시계를 합친 유물이에요. 5장 족보로 이기면 바닥 패를 1장 더 보고, 판에서 1등을 하면 다음 판 시작에 바닥 패를 3장 몰래 봐요.')],
+ ['undying-lantern',tr('꺼지지 않는 등불'),tr('클리어하면 HP +14 · 판이 끝났을 때 HP 25 이하면 HP +12 (스테이지당 1번)'),tr('회복의 등불과 마지막 매듭을 합친 유물이에요. 스테이지를 클리어하면 HP 14를, 판 정산 후 HP가 1~25이면 HP 12를 회복해요(스테이지당 한 번).')],
+ ['forked-mirror',tr('두 갈래 거울'),tr('유물 보상 후보 +1 · 다음 보상 후보 미리 보기'),tr('쌍침 나침반과 갈라진 거울을 합친 유물이에요. 장착하지 않고 갖고만 있어도 적용돼요. 보상 후보가 1개 늘고, 다음 클리어 보상 후보도 미리 보여 줘요.')],
 ].map(([id,name,effect,detail])=>({id,name,effect,detail,grade:RELIC_GRADES[id]||'common',passive:isPassiveRelic(id)}));
 export function reworkRelic(id:string){return RPG_REWORK_RELICS.find(relic=>relic.id===id);}
 /** Two-line rail summary (when / what) for the narrow equipped-relic rail; the full effect stays in the tap tooltip. */
 export const RPG_REWORK_RELIC_SHORT:Record<string,{label:string,bonus:string}>={
- 'gamblers-gloves':{label:'5장 승리',bonus:'바닥 +1장'},
- 'cracked-heart':{label:'최대 HP',bonus:'+15'},
- 'second-heart':{label:'최대 HP',bonus:'+10'},
- 'recovery-lantern':{label:'클리어',bonus:'HP +10'},
- 'watchkeepers-blue-glass':{label:'판 시작',bonus:'바닥 1장'},
- 'stopped-hourglass':{label:'판 승리',bonus:'바닥 +1장'},
+ 'gamblers-gloves':{label:tr('5장 승리'),bonus:tr('바닥 +1장')},
+ 'cracked-heart':{label:tr('최대 HP'),bonus:'+15'},
+ 'second-heart':{label:tr('최대 HP'),bonus:'+10'},
+ 'recovery-lantern':{label:tr('클리어'),bonus:'HP +10'},
+ 'watchkeepers-blue-glass':{label:tr('판 시작'),bonus:tr('바닥 1장')},
+ 'stopped-hourglass':{label:tr('판 승리'),bonus:tr('바닥 +1장')},
  'final-knot':{label:'HP 20↓',bonus:'HP +10'},
- 'second-ring':{label:'2등',bonus:'HP +6'},
- 'mor-quill':{label:'소지',bonus:'조합법 +1'},
- 'twin-needle-compass':{label:'소지',bonus:'미리 보기'},
- 'split-mirror':{label:'소지',bonus:'후보 +1'},
+ 'second-ring':{label:tr('2등'),bonus:'HP +6'},
+ 'mor-quill':{label:tr('소지'),bonus:tr('조합법 +1')},
+ 'twin-needle-compass':{label:tr('소지'),bonus:tr('미리 보기')},
+ 'split-mirror':{label:tr('소지'),bonus:tr('후보 +1')},
  [DICE_RELIC.id]:{label:'HP 50↓',bonus:'HP +3'},
- 'whole-heart':{label:'최대 HP',bonus:'+35'},
- 'gamblers-hourglass':{label:'5장·판승리',bonus:'+1/+2장'},
- 'undying-lantern':{label:'클리어·위기',bonus:'+14·12'},
- 'forked-mirror':{label:'소지',bonus:'후보 +1'},
+ 'whole-heart':{label:tr('최대 HP'),bonus:'+35'},
+ 'gamblers-hourglass':{label:tr('5장·판승리'),bonus:tr('+1/+2장')},
+ 'undying-lantern':{label:tr('클리어·위기'),bonus:'+14·12'},
+ 'forked-mirror':{label:tr('소지'),bonus:tr('후보 +1')},
 };
 /** Chapter of a stage (1~3, 4~6, 7~9, 10): normal-stage relics last until the chapter ends. */
 export function reworkChapterRange(stage:number):[number,number]{return stage>=10?[10,10]:[Math.floor((stage-1)/3)*3+1,Math.floor((stage-1)/3)*3+3];}
@@ -158,7 +159,7 @@ export function activateRpgRelics(run:RpgRun):RpgRun{
  for(const [id,amount] of Object.entries(HEART_BONUS))if(equipped.includes(id)&&!activated.includes(id)){if(hp>0){hp+=amount;procs.push(id);}activated.push(id);}
  const next={...run,equipped},maxHp=rpgMaxHp(next),healed=Math.min(maxHp,Math.max(0,hp));
  const result={...next,maxHp,hp:[healed,...run.hp.slice(1)],rework:{...state,activated}};
- return procs.length?withRelicActivations(result,procs.map(id=>({relicId:id,message:`최대 HP ${maxHp} · HP +${HEART_BONUS[id]}`}))):result;
+ return procs.length?withRelicActivations(result,procs.map(id=>({relicId:id,message:tr('최대 HP {0} · HP +{1}',{0:maxHp,1:HEART_BONUS[id]})}))):result;
 }
 /** Called for new journeys, or at the next safe deal after a legacy round. */
 export function enableRpgRework(run:RpgRun,fresh=false){
@@ -241,11 +242,11 @@ export function beginReworkRound(game:Game){
   const mine=state.nextForesight===0,glass=!mine?'':run.equipped.includes('gamblers-hourglass')?'gamblers-hourglass':run.equipped.includes('stopped-hourglass')?'stopped-hourglass':'';
   // 2026-11-13 balance: a round win shows 1 floor tile next round (stopped hourglass +1, forged hourglass +2).
   const extra=glass==='gamblers-hourglass'?2:glass?1:0,revealed=scoutRpgFloor(game,state.nextForesight,FORESIGHT_TILES+extra,extra);
-  if(glass&&revealed>FORESIGHT_TILES)recordRelic(run,glass,`바닥 패 ${revealed-FORESIGHT_TILES}장 더 확인`);
+  if(glass&&revealed>FORESIGHT_TILES)recordRelic(run,glass,tr('바닥 패 {0}장 더 확인',{0:revealed-FORESIGHT_TILES}));
  }
  state.nextForesight=undefined;
- if(run.equipped.includes('watchkeepers-blue-glass')&&scoutRpgFloor(game,0,1))recordRelic(run,'watchkeepers-blue-glass','바닥 패 1장 확인');
- if(run.hp[0]>0&&reworkSynergies(run).includes('scout')&&scoutRpgFloor(game,0,1))recordRelic(run,firstOfTag(run,'scout'),'정찰 공명 · 바닥 패 1장 확인');
+ if(run.equipped.includes('watchkeepers-blue-glass')&&scoutRpgFloor(game,0,1))recordRelic(run,'watchkeepers-blue-glass',tr('바닥 패 1장 확인'));
+ if(run.hp[0]>0&&reworkSynergies(run).includes('scout')&&scoutRpgFloor(game,0,1))recordRelic(run,firstOfTag(run,'scout'),tr('정찰 공명 · 바닥 패 1장 확인'));
 }
 export function resolveRpgScout(game:Game){
  if(!isRpgRework(game)||game.lastBy===null)return;const state=game.rpgRun!.rework!,id=game.tablePlay?.id;
@@ -253,7 +254,7 @@ export function resolveRpgScout(game:Game){
  const gloves=game.rpgRun!.equipped.find(relic=>relic==='gamblers-gloves'||relic==='gamblers-hourglass'),bonus=game.lastBy===0&&game.trick.length===5&&gloves?1:0;
  const count=scoutCount(game.trick);if(!count)return;
  const revealed=scoutRpgFloor(game,game.lastBy,count+bonus,bonus);
- if(bonus&&revealed>count)recordRelic(game.rpgRun!,gloves!,'바닥 패 1장 더 확인');
+ if(bonus&&revealed>count)recordRelic(game.rpgRun!,gloves!,tr('바닥 패 1장 더 확인'));
 }
 export function reworkRewardOffers(run:RpgRun,stage=run.stage){
  const state=run.rework!;if(state.rewardOffers[stage])return state.rewardOffers[stage];
@@ -282,9 +283,9 @@ export function settleReworkRound(run:RpgRun,result:RpgResultLike):RpgRun{
   if(next.hp[0]<=0)return;const before=next.hp[0];next.hp[0]=Math.min(rpgMaxHp(next),before+amount);
   const gained=next.hp[0]-before;if(gained>0){heals.push({relicId,amount:gained});recordRelic(next,relicId,`${label} HP +${gained}`);}
  };
- if(seats.length===3&&result.players[0].place===2&&next.equipped.includes('second-ring'))heal('second-ring',RELIC_VALUES.ring,'2등 ·');
+ if(seats.length===3&&result.players[0].place===2&&next.equipped.includes('second-ring'))heal('second-ring',RELIC_VALUES.ring,tr('2등 ·'));
  const knot=next.equipped.includes('undying-lantern')?{id:'undying-lantern',...RELIC_VALUES.undying}:next.equipped.includes('final-knot')?{id:'final-knot',...RELIC_VALUES.knot}:null;
- if(knot&&next.hp[0]>0&&next.hp[0]<=knot.limit&&!state.knotStages.includes(next.stage)){heal(knot.id,knot.amount,'위기 회복 ·');state.knotStages.push(next.stage);}
+ if(knot&&next.hp[0]>0&&next.hp[0]<=knot.limit&&!state.knotStages.includes(next.stage)){heal(knot.id,knot.amount,tr('위기 회복 ·'));state.knotStages.push(next.stage);}
  state.lastRecipe=undefined;state.retried=undefined;
  next.rounds++;next.roundIds.push(result.id);next.updatedAt=result.at;state.intel={};state.lastScout=undefined;
  // ST7 optional observation: finishing a round in second place unlocks one extra line.
@@ -296,12 +297,12 @@ export function settleReworkRound(run:RpgRun,result:RpgResultLike):RpgRun{
  else if(cleared){
   const phase=next.phaseOne!;if(!phase.clearedStages.includes(next.stage)){
    phase.clearedStages.push(next.stage);const hpBefore=next.hp[0];
-   if(next.equipped.includes('undying-lantern'))heal('undying-lantern',RELIC_VALUES.undying.clear,'클리어 회복 ·');else if(next.equipped.includes('recovery-lantern'))heal('recovery-lantern',RELIC_VALUES.lantern,'클리어 회복 ·');
-   if(reworkSynergies(next).includes('mend'))heal(firstOfTag(next,'mend'),3,'회복 공명 ·');
+   if(next.equipped.includes('undying-lantern'))heal('undying-lantern',RELIC_VALUES.undying.clear,tr('클리어 회복 ·'));else if(next.equipped.includes('recovery-lantern'))heal('recovery-lantern',RELIC_VALUES.lantern,tr('클리어 회복 ·'));
+   if(reworkSynergies(next).includes('mend'))heal(firstOfTag(next,'mend'),3,tr('회복 공명 ·'));
    // Each chapter boss leaves a note with one unknown forging recipe.
    if([3,6,9].includes(next.stage)&&next.journey){const taught=learnRecipes(next,1);next.journey=taught.run.journey;state.lastRecipe=taught.learned[0];}
    const offers=reworkRewardOffers(next),mirror=next.relics.includes('forked-mirror')?'forked-mirror':'split-mirror';
-   if(offers.length&&hasExtraOffer(next))recordRelic(next,mirror,'보상 후보 +1');phase.clear={stage:next.stage,hpBefore,baseHeal:0,relicHeal:next.hp[0]-hpBefore,synergyHeal:0,relicId:offers[0]||'',relicOffers:offers};
+   if(offers.length&&hasExtraOffer(next))recordRelic(next,mirror,tr('보상 후보 +1'));phase.clear={stage:next.stage,hpBefore,baseHeal:0,relicHeal:next.hp[0]-hpBefore,synergyHeal:0,relicId:offers[0]||'',relicOffers:offers};
   }next.status=next.stage===10?'complete':'allocation';next.storyCards=storyCardsForRun(next);state.nextForesight=undefined;
  }else state.nextForesight=result.players.findIndex(p=>p.winner);
  state.relicHeals=heals.length?heals:undefined;
@@ -319,8 +320,8 @@ export function settleReworkRound(run:RpgRun,result:RpgResultLike):RpgRun{
 type RpgResultLike=Pick<RoundResult,'id'|'round'|'at'|'players'>&{transfers?:RoundResult['transfers']};
 export function chooseReworkReward(run:RpgRun,id?:string,decline=false){
  const next=structuredClone(run),clear=next.phaseOne?.clear;
- if(next.status!=='allocation'||!clear||clear.chosen)throw Error('선택할 유물 보상이 없어요.');
- const offers=clear.relicOffers||[];if(!decline&&offers.length&&(!id||!offers.includes(id)))throw Error('제시된 유물 중 하나를 선택해 주세요.');
+ if(next.status!=='allocation'||!clear||clear.chosen)throw Error(tr('선택할 유물 보상이 없어요.'));
+ const offers=clear.relicOffers||[];if(!decline&&offers.length&&(!id||!offers.includes(id)))throw Error(tr('제시된 유물 중 하나를 선택해 주세요.'));
  if(id&&!decline){clear.relicId=id;if([3,6,9].includes(next.stage))next.rework!.inherited=id;
   else{next.relics=[...new Set([...next.relics,id])];if(!isPassiveRelic(id)&&next.equipped.length<rpgRelicSlots(next)&&!next.equipped.includes(id))next.equipped.push(id);}
   next.discovered=[...new Set([...next.discovered,id])];}
@@ -330,7 +331,7 @@ export function chooseReworkReward(run:RpgRun,id?:string,decline=false){
  return activateRpgRelics(next);
 }
 export function advanceReworkStage(run:RpgRun){
- if(run.status!=='ready'||!run.phaseOne?.clear?.chosen||run.stage>=10)throw Error('유물 보상을 먼저 확인해 주세요.');
+ if(run.status!=='ready'||!run.phaseOne?.clear?.chosen||run.stage>=10)throw Error(tr('유물 보상을 먼저 확인해 주세요.'));
  const next=structuredClone(run),stage=next.stage+1,state=next.rework!;
  if([4,7,10].includes(stage)){
   next.relics=state.inherited?[state.inherited]:[];next.equipped=next.relics.slice(0,rpgRelicSlots(next));next.hp[0]=trialStartHp(next);state.chapter++;state.activated=[];state.knotStages=[];state.inherited=undefined;

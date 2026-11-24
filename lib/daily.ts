@@ -1,9 +1,10 @@
+import {tr} from './i18n/index.ts';
 /**
  * 오늘의 판 (daily table). Everyone gets the same 3-player deal on the same Korean calendar date; one round;
  * the server records the round score itself (the browser never sends a score), first finished round per device.
  */
 export const DAILY_SIZE=3;
-export const DAILY_AI_NAMES=['달빛','해솔'] as const;
+export const DAILY_AI_NAMES=[tr('달빛'),tr('해솔')] as const;
 const KST_MS=9*60*60*1000;
 /** Korean date, YYYY-MM-DD. The new daily table opens at midnight KST. */
 export function dailyDate(now=Date.now()){return new Date(now+KST_MS).toISOString().slice(0,10);}
