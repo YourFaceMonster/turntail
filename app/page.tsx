@@ -59,8 +59,6 @@ import './systems-0710.css';
 import './menu-windows-2026-11-17.css';
 import './qa-sweep-2026-11-17.css';
 import './hand-made-2026-11-25.css';
-import './ui-kit-2026-11-25.css';
-import './ui-kit-2-2026-11-25.css';
 import RpgCodex from './components/RpgCodex';
 import type {StoryCardId} from '../lib/rpg-story-cards';
 import ProfessionTargetPicker from './components/ProfessionTargetPicker';

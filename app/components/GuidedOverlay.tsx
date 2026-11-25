@@ -38,8 +38,7 @@ export default function GuidedOverlay({ctx,onExit,exitLabel}:{ctx:GuidedContext,
    b.style.left=Math.max(12,Math.min(W-bw-12,(x0+x1)/2-bw/2))+'px';
    // The finger points only where a tap is needed (not at plain "look here" steps).
    const tap=!step.button;f.hidden=!tap;
-   // 2026-11-25: the painted hand (ui/kit/pointer-hand) points down, so its tip rests on the target's top edge.
-   if(tap){const r=rects[0];f.style.left=r.left+r.width/2+'px';f.style.top=r.top+4+'px';}
+   if(tap){const r=rects[0];f.style.left=r.left+r.width/2+'px';f.style.top=r.top+r.height*.6+'px';}
   };
   place();
   return()=>{cancelAnimationFrame(frame);for(const el of document.querySelectorAll('.guided-allow'))el.classList.remove('guided-allow');};
@@ -48,7 +47,7 @@ export default function GuidedOverlay({ctx,onExit,exitLabel}:{ctx:GuidedContext,
  return <div className="guided-layer" aria-live="polite">
   <div className="guided-spot" ref={spot} hidden/>
   {!(step.targets?.length)&&<div className="guided-dim"/>}
-  <div className="guided-finger" ref={finger} hidden aria-hidden="true"><img src="/ui/kit/pointer-hand-v1.webp" alt=""/></div>
+  <div className="guided-finger" ref={finger} hidden aria-hidden="true">👆</div>
   <div className={`guided-box ${step.final?'is-final':''}`} ref={box} role="dialog" aria-label={tr('연습 판 안내')}>
    <small className="guided-progress">{tr('연습 판')} · {Math.min(index+1,steps.length)}/{steps.length}</small>
    <p dangerouslySetInnerHTML={{__html:step.text(ctx)}}/>

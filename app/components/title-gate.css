@@ -22,7 +22,7 @@
 .title-gate{position:absolute;inset:0;z-index:30;display:block;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .title-gate:focus-visible{outline:none}
 /* Sits in the open middle of the room, above the four tiles standing on the table. */
-.title-gate-prompt{position:absolute;left:50%;top:84%;transform:translate(-50%,-50%);white-space:nowrap;padding:10px 26px;
+.title-gate-prompt{position:absolute;left:50%;top:62%;transform:translate(-50%,-50%);white-space:nowrap;padding:10px 26px;
  background:radial-gradient(ellipse at center,#120a05b3 0%,#120a0566 55%,transparent 75%);
  font-size:clamp(17px,4.6vw,22px);font-weight:800;letter-spacing:.08em;color:#ffe7b0;
  text-shadow:0 0 14px #ffb54a99,0 2px 0 #3a1d08,0 3px 8px #000c;
