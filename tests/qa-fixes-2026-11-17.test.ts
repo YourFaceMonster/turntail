@@ -33,7 +33,7 @@ test('QA 4: a fall spends one fate and retries the same stage at once; no fate l
 
 test('QA 4: the result screen offers the retry, the map shows the fate gems, the save slot shows /10',()=>{
  const result=src('app/components/RpgReworkResult.tsx');
- assert.match(result,/다시 도전 →/);assert.match(result,/운명력 1개 사용/);
+ assert.match(result,/tr\('다시 도전'\)/);assert.match(result,/운명력 1개 사용/);
  assert.match(src('app/components/RpgJourneyScene.tsx'),/hidden=\{!!run\.rework&&!run\.journey\} className="journey-fate-gems"/);
  assert.match(src('lib/save-slots.ts'),/phaseOne&&!g\.rpgRun!\.rework\?3:10/);
 });

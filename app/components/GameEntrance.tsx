@@ -225,7 +225,7 @@ function GameEntrance({onWorldDiameter,company,tableSet,tileSet,stage,phase,resu
   <div className="entry-reunion"><div className="entry-return-note"><span>{resume?'WELCOME BACK':`${company.length+1} PLAYERS · TAKE YOUR SEAT`}</span><strong>{stage?tr('{0}의 테이블',{0:stageTheme(stage).name}):resume?tr('익숙한 테이블로 돌아왔어요'):tr('달빛 서재의 작은 승부')}</strong><small>{resume?migrated?tr('3인전으로 전환했어요. 스테이지와 점수는 이어지고, 진행 중이던 패는 다시 나눴어요.'):tr('자리에 놓인 패 그대로, 승부를 이어갑니다.'):tr('테이블에 둘러앉아 새로운 승부를 시작합니다.')}</small></div></div>
   {stage&&<div className="entry-painted-glaze"/>}<div className="entry-edge-shade"/>
   <div className="entry-curtain"/>{skippable&&<span className="entry-skip-hint">{tr('더블클릭·더블탭으로 연출 건너뛰기')}</span>}
-  {['prepare','room-hold'].includes(phase)&&<div className="entry-preparing-note"><i/><strong>{resume?tr('저장된 테이블을 불러오고 있어요'):tr('새로운 승부를 준비하고 있어요')}</strong><small>{tr('잠시만 기다려 주세요')}</small></div>}
+  {['prepare','room-hold'].includes(phase)&&<div className="entry-preparing-note"><img className="entry-loading-scene" src="/ui/kit/scene-loading-v1.webp" alt="" aria-hidden="true"/><span className="entry-loading-tile" aria-hidden="true"><img src="/ui/kit/loading-tile-v1.webp" alt=""/></span><strong>{resume?tr('펼쳐 둔 패를 다시 놓는 중…'):tr('패를 섞는 중…')}</strong></div>}
  </div></StageVisuals>,document.body);
 }
 

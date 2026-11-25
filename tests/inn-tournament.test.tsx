@@ -68,7 +68,7 @@ test('device title record and screens',()=>{
  const menu=renderToStaticMarkup(<JourneyInnView run={game.rpgRun!} busy={false} error="" action={()=>{}}/>);assert.match(menu,/여관 토너먼트/);
  startInnTournament(game);playMatch(game,[0,6,7]);const mini=activeJourneyMini(game)!;
  const html=renderToStaticMarkup(<InnTournamentResult game={view(mini,mini.players[0].token)} cup={game.rpgRun!.journey!.tournament} busy={false} next={()=>{}} back={()=>{}}/>);
- assert.match(html,/INN CUP · 1\/3/);assert.match(html,/달성/);assert.match(html,/다음 상대 · <b>도칸/);assert.ok(!html.includes(TOURNAMENT_TITLE+'로'),'no title before the final');
+ assert.match(html,/여관 토너먼트 · 1\/3/);assert.match(html,/달성/);assert.match(html,/다음 상대 · <b>도칸/);assert.ok(!html.includes(TOURNAMENT_TITLE+'로'),'no title before the final');
 });
 
 test('inn conversations use the speaker paintings; the painted ST7 ledger has four tappable rows',async()=>{

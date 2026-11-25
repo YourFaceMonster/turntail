@@ -2100,3 +2100,10 @@ main.turntale.active-table[data-rpg-mini="true"] .action-buttons{display:grid!im
 .unified-settings .volume-heading button[aria-checked=true],.unified-settings .setting-row button[role=switch][aria-checked=true]{background:linear-gradient(180deg,#d9ad5c,#a8772f);color:#24170b;border-color:#f3d48f}
 .unified-settings.is-dressed .settings-save-note{color:#b9a88c}
 @media(max-width:420px){.unified-settings .settings-icon{width:38px;height:38px}.unified-settings .settings-card{gap:9px;padding:9px 10px}}
+/* 2026-11-24 QA: Hibo's mood line (실실 웃는 고수…) is a third line in the fixed-height portrait seat card and its bottom got cut off. Tighten that card's lines so all three fit. */
+.turntale.table-v211.active-table:not(.landscape-table) .seat-card .op-info:has(.hiboringji-mood){gap:0!important}
+.turntale.table-v211.active-table:not(.landscape-table) .seat-card .op-info:has(.hiboringji-mood)>*{margin-block:0!important}
+.turntale.table-v211.active-table:not(.landscape-table) .seat-card .op-info:has(.hiboringji-mood) .seat-points{line-height:1!important}
+.turntale.table-v211.active-table:not(.landscape-table) .seat-card .hiboringji-mood{margin-top:2px!important;line-height:1.1!important;white-space:nowrap}
+.turntale.table-v211.active-table:not(.landscape-table) .seat-card .op-info:has(.hiboringji-mood) .opponent-name{line-height:1.05!important}
+.turntale.table-v211.active-table:not(.landscape-table) .opponents:has(.hiboringji-mood) .opponent .seat-card{height:calc(100% + 6px)!important}

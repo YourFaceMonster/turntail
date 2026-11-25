@@ -25,7 +25,7 @@ export default function HighScores({close,personal,profileToken,name,openHistory
  useEffect(()=>{const refreshVisible=()=>{if(!document.hidden)setRefresh(x=>x+1);};window.addEventListener('online',refreshVisible);document.addEventListener('visibilitychange',refreshVisible);return()=>{window.removeEventListener('online',refreshVisible);document.removeEventListener('visibilitychange',refreshVisible);};},[]);
  function filter(change:()=>void){setBusy(true);change();setPage(0);}
  return <div className="modal-shade score-shade" onClick={close}><section className="modal highscore-modal" role="dialog" aria-modal="true" aria-label={tr('하이스코어')} onClick={e=>e.stopPropagation()}>
-  <button className="close" aria-label={tr('기록실 닫기')} onClick={close}>×</button><span className="eyebrow">TURNTALE HALL OF FAME</span><h2>{tr('기록실')}</h2><p>{tr('모두의 한 수가 남긴 기록')}</p>
+  <button className="close" aria-label={tr('기록실 닫기')} onClick={close}>×</button><h2>{tr('기록실')}</h2><p>{tr('모두의 한 수가 남긴 기록')}</p>
   <div className="segmented score-scope" aria-label={tr('순위 범위')}><button className={scope==='global'?'chosen':''} onClick={()=>filter(()=>setScope('global'))}>{tr('전체 순위')}</button><button className={scope==='personal'?'chosen':''} onClick={()=>filter(()=>setScope('personal'))}>{tr('내 기록 TOP 10')}</button></div>
   <div className="segmented" aria-label={tr('플레이 모드')}><button className={mode==='single'?'chosen':''} onClick={()=>filter(()=>setMode('single'))}>{tr('싱글플레이')}</button><button className={mode==='multi'?'chosen':''} onClick={()=>filter(()=>setMode('multi'))}>{tr('멀티플레이')}</button></div>
   <div className="segmented" aria-label={tr('참가 인원')}>{[3,4].map(n=><button key={n} className={size===n?'chosen':''} onClick={()=>filter(()=>setSize(n))}>{n}{tr('인전')}</button>)}</div>
@@ -40,6 +40,6 @@ export default function HighScores({close,personal,profileToken,name,openHistory
    <button className="text-btn" disabled={busy} onClick={()=>setRefresh(x=>x+1)}>{tr('↻ 전체 순위 새로고침')}</button>
   </>}</div>
   <p className="score-note">{scope==='global'?tr('부문별 상위 10개만 저장 · 순위 밖 기록은 보관하지 않아요'):tr('이 브라우저에 저장된 개인 역대 TOP 10')}<br/>{tr('일반 대전 단판 기록 · 높은 점수순 · 동점은 먼저 달성한 순서 · 무효 판 제외')}</p>
-  <button className="text-btn" onClick={openHistory}>{tr('일반 대전·친구 누적 전적 보기 →')}</button>
+  <button className="text-btn" onClick={openHistory}>{tr('일반 대전·친구 누적 전적 보기')}</button>
  </section></div>;
 }

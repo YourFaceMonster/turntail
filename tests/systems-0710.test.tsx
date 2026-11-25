@@ -34,7 +34,7 @@ test('codex lists all sixteen journey relics (four forged) and four story cards,
  const html=renderToStaticMarkup(<RpgCodex discovered={['gamblers-gloves']} storyCards={['crown-two']} close={noop}/>);
  assert.match(html,/여정 도감/);assert.match(html,/승부사의 장갑/);assert.match(html,/\?\?\?/);assert.match(html,/1\/16/);assert.doesNotMatch(html,/금이 간 심장/,'unfound relic names stay hidden');
  const menu=renderToStaticMarkup(<MainMenu single={noop} multi={noop} tutorial={noop} achievements={noop} codex={noop} settings={noop} profile={noop} resume={noop} canResume={false} name="" avatar=""/>);
- assert.match(menu,/menu-tool-codex/);assert.match(menu,/스토리모드 정산까지/);assert.doesNotMatch(menu,/직업·주화|아이템전/,'the hidden item battle is not advertised');
+ assert.match(menu,/menu-tool-codex/);assert.match(menu,/따라 하는 연습 판/);assert.doesNotMatch(menu,/직업·주화|아이템전/,'the hidden item battle is not advertised');
 });
 
 test('tutorial second chapter teaches the RPG journey, not the hidden item battle',()=>{

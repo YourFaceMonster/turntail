@@ -40,6 +40,6 @@ test('practice table hides HP stake and relic, offers another game',()=>{
 });
 test('single-play menu shows Yacht Dice where item battle was',()=>{
  const noop=()=>{},html=renderToStaticMarkup(<SinglePlayerMenu normal={noop} yacht={noop} rpg={noop} close={noop}/>);
- assert.ok(html.includes('aria-label="요트다이스"')&&html.includes('YACHT DICE'));
+ assert.ok(html.includes('aria-label="요트다이스"')&&html.includes('노름꾼 하로와 1:1'));
  assert.ok(!html.includes('아이템전')&&!html.includes('HP ITEM MATCH'));
 });

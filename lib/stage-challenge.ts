@@ -16,7 +16,7 @@ export function newStageRun(id:string,now=Date.now()):StageRun{return {id,rulesV
 /** The same pairwise settlement, with two AI seats in new runs. */
 export function settleStageRun(run:StageRun,result:{id:string,at:number,players:{name:string,total:number}[]}):StageRun{
  if(run.status!=='playing'||run.roundIds.includes(result.id))return run;
- if(result.players.length!==(run.rulesVersion===1?4:STAGE_PLAYER_COUNT))throw Error(tr('스테이지 도전은 AI 2명과 함께하는 3인전이에요.'));
+ if(result.players.length!==(run.rulesVersion===1?4:STAGE_PLAYER_COUNT))throw Error(tr('스테이지 도전은 상대 2명과 함께하는 3인전이에요.'));
  const score=result.players[0].total,next={...run,score,peakScore:Math.max(run.peakScore,score),rounds:run.rounds+1,stageRounds:run.stageRounds+1,roundIds:[...run.roundIds,result.id],updatedAt:result.at};
  // Exactly zero survives. Human bankruptcy takes priority over every clear condition.
  if(score<0)return {...next,status:'game-over'};

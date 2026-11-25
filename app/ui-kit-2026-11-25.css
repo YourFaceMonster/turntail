@@ -1,0 +1,161 @@
+/* 2026-11-25 Codex UI skin kit (public/ui/kit/, request docs/codex-art-request-2026-11-25-ui-skin-kit.md).
+   Painted parts replace the CSS-drawn boxes: rounded corners, gradients and glow shadows go, wood and brass come in.
+   Loaded after every other stylesheet; the old files are full of !important, so the overrides here use it too.
+
+   Stretching (border-image):
+   - Buttons are 1024×200 plates with 130px end caps. Only the middle stretches sideways; the caps keep their shape
+     when the cap width is 0.65 × the button height (--kit-cap). Top/bottom slices are 0, so the whole height scales.
+   - Panels are 768×768 frames; 104px corners (wood border ≈ 68px + brass corner pieces) stay put. */
+
+:root{
+ --kit-ink:#2a1709;
+ --kit-cream:#f7e6c2;
+ --kit-shadow:drop-shadow(0 6px 10px #000b);
+}
+
+/* ───────── Buttons ───────── */
+button.primary,a.primary,button.secondary,a.secondary,button.danger,
+.title-screen .title-play>.pixel-button,.title-screen .menu-tutorial{
+ --kit-cap:28px;
+ border-style:solid!important;border-color:transparent!important;border-width:0 var(--kit-cap)!important;border-radius:0!important;
+ border-image-slice:0 130 fill!important;border-image-width:0 var(--kit-cap)!important;border-image-repeat:stretch!important;
+ background:none!important;box-shadow:none!important;filter:drop-shadow(0 3px 3px #0009);
+ padding-left:4px!important;padding-right:4px!important;outline-offset:3px;
+ transition:filter .12s,transform .08s;
+}
+button.primary,a.primary,.title-screen .title-play>.menu-single{border-image-source:url('/ui/kit/btn-primary-v1.webp')!important;color:#2a1405!important;text-shadow:0 1px 0 #ffd99566!important}
+button.primary:active:not(:disabled),a.primary:active,.title-screen .title-play>.menu-single:active{border-image-source:url('/ui/kit/btn-primary-down-v1.webp')!important}
+button.secondary,a.secondary,.title-screen .title-play>.menu-continue,.title-screen .title-play>.menu-multi,.title-screen .menu-tutorial{border-image-source:url('/ui/kit/btn-secondary-v1.webp')!important;color:var(--kit-cream)!important;text-shadow:0 1px 0 #000!important}
+button.secondary:active:not(:disabled),a.secondary:active,.title-screen .title-play>:is(.menu-continue,.menu-multi):active:not(:disabled),.title-screen .menu-tutorial:active{border-image-source:url('/ui/kit/btn-secondary-down-v1.webp')!important}
+button.danger{border-image-source:url('/ui/kit/btn-danger-v1.webp')!important;color:#ffe9d6!important;text-shadow:0 1px 0 #3a0806!important}
+button.danger:active:not(:disabled){border-image-source:url('/ui/kit/btn-danger-down-v1.webp')!important}
+:is(button.primary,button.secondary,button.danger,.title-screen .title-play>.pixel-button):disabled{border-image-source:url('/ui/kit/btn-disabled-v1.webp')!important;color:#b8a88a!important;text-shadow:0 1px 0 #000!important;opacity:1!important;filter:saturate(.7)}
+:is(button.primary,button.secondary,button.danger,.title-screen .title-play>.pixel-button,.title-screen .menu-tutorial):active:not(:disabled){transform:translateY(2px);filter:drop-shadow(0 1px 1px #0009)}
+:is(button.primary,button.secondary):hover:not(:disabled){filter:drop-shadow(0 3px 3px #0009) brightness(1.06)}
+/* Highlights the old CSS drew as glows ("ready to play", "draw ready"): a warm light instead. */
+button.primary.play-ready:not(:disabled),button.secondary.draw-ready:not(:disabled){filter:drop-shadow(0 0 6px #ffc86acc) drop-shadow(0 3px 3px #0009)}
+/* The old skins drew their own frames with pseudo-elements. */
+:is(button.primary,button.secondary,button.danger,.title-screen .title-play>.pixel-button,.title-screen .menu-tutorial)::after,
+.title-screen .title-play>.pixel-button::before{display:none!important}
+.title-screen .title-play>.pixel-button :is(strong,small){-webkit-text-stroke:0!important;paint-order:normal!important}
+
+/* ───────── Panels (every menu, confirm and result window) ───────── */
+.modal.modal.modal.modal{
+ border-style:solid!important;border-color:transparent!important;border-width:24px!important;border-radius:0!important;
+ border-image:url('/ui/kit/panel-wood-v1.webp') 104 / 24px / 0 stretch!important;
+ background-clip:padding-box!important;box-shadow:none!important;filter:var(--kit-shadow);
+ /* The painted frame now does the old side padding's job; keep the content width the windows were laid out for. */
+ padding-left:10px!important;padding-right:10px!important;
+}
+/* Windows without their own painted interior (most confirm and list windows) get the kit's wood inside too.
+   Left out: windows that already show a Codex painting behind their content. */
+.modal.modal.modal.modal:not(.unified-settings,.rpg-status-panel,.tutorial-modal,.rpg-hub,.market-item-shop,.hp-item-result,.journey-popup,[class*="menu-theme-"]){
+ border-image:url('/ui/kit/panel-wood-v1.webp') 104 fill / 24px / 0 stretch!important;background:none!important}
+.modal.modal.modal.modal>.close{width:40px!important;height:40px!important;padding:0!important;border:0!important;border-radius:0!important;
+ background:url('/ui/kit/icon-close-v1.webp') center/30px no-repeat,url('/ui/kit/icon-button-base-v1.webp') center/100% no-repeat!important;
+ box-shadow:none!important;color:transparent!important;font-size:0!important;filter:drop-shadow(0 2px 2px #0009)}
+.modal.modal.modal.modal>.close:active{background:url('/ui/kit/icon-close-v1.webp') center 55%/30px no-repeat,url('/ui/kit/icon-button-base-down-v1.webp') center/100% no-repeat!important}
+
+/* Small scene at the top of a window (이어하기). */
+.modal .kit-scene{display:block;width:min(260px,80%);margin:-6px auto 4px;aspect-ratio:768/432;object-fit:contain;filter:drop-shadow(0 4px 6px #0009);pointer-events:none}
+
+/* ───────── Round icon buttons ───────── */
+.kit-icon{width:26px;height:26px;object-fit:contain;flex:none}
+.top-actions .settings-trigger,.top-actions .rules-action{
+ width:38px!important;height:38px!important;min-width:38px!important;padding:0!important;border:0!important;border-radius:50%!important;
+ background:var(--kit-icon) center/62% no-repeat,url('/ui/kit/icon-button-base-v1.webp') center/100% no-repeat!important;
+ box-shadow:none!important;color:transparent!important;font-size:0!important;filter:drop-shadow(0 2px 2px #0009)}
+.top-actions .settings-trigger{--kit-icon:url('/ui/kit/icon-settings-v1.webp')}
+.top-actions .rules-action{--kit-icon:url('/ui/kit/icon-help-v1.webp')}
+.top-actions :is(.settings-trigger,.rules-action):active{background:var(--kit-icon) center 56%/62% no-repeat,url('/ui/kit/icon-button-base-down-v1.webp') center/100% no-repeat!important}
+.top-actions .settings-trigger>svg{display:none!important}
+.top-actions .home-action{display:inline-flex!important;align-items:center;gap:3px}
+.top-actions .home-action::before{content:"";width:24px;height:24px;flex:none;background:url('/ui/kit/icon-home-v1.webp') center/contain no-repeat;filter:drop-shadow(0 1px 1px #000a)}
+
+/* Main menu: 업적 · 도감 · 규칙 · 설정 on brass-rimmed wooden discs. */
+.title-tools .menu-tool-icon{border:0!important;border-radius:50%!important;box-shadow:none!important;
+ background:url('/ui/kit/icon-button-base-v1.webp') center/100% no-repeat!important;display:grid!important;place-items:center}
+.title-tools button:active .menu-tool-icon{background-image:url('/ui/kit/icon-button-base-down-v1.webp')!important}
+.title-tools .menu-tool-icon>img{width:64%;height:64%;object-fit:contain;filter:drop-shadow(0 1px 1px #000a)}
+/* The tool row sits on a small framed board so it reads apart from the tiles standing on the table behind it. */
+.title-tools{border-style:solid!important;border-color:transparent!important;border-width:16px!important;border-radius:0!important;
+ border-image:url('/ui/kit/panel-wood-v1.webp') 104 fill / 16px / 0 stretch!important;background:none!important;box-shadow:none!important;
+ padding:2px 4px!important;filter:var(--kit-shadow)}
+.title-tools .menu-tool-label{color:var(--kit-cream)!important;text-shadow:0 1px 0 #000,0 0 6px #000!important}
+.menu-profile>.kit-icon{width:24px;height:24px}
+.title-screen .menu-tutorial>.kit-icon{width:30px;height:30px}
+
+/* Main menu buttons: the plate carries the colour now, so the old per-button gradients and chevrons go. */
+.title-screen .title-play>.pixel-button{--kit-cap:40px}
+.title-screen .menu-tutorial{--kit-cap:34px}
+.title-screen .title-play>.pixel-button .menu-button-arrow,.title-screen .menu-tutorial>svg{display:none!important}
+.title-screen .title-play>.menu-single :is(strong,small){color:#2a1405!important;text-shadow:0 1px 0 #ffd99566!important}
+.title-screen .title-play>:is(.menu-continue,.menu-multi) :is(strong,small),.title-screen .menu-tutorial :is(.menu-tutorial-copy,small){color:var(--kit-cream)!important;text-shadow:0 1px 0 #000!important}
+.title-screen .title-play>.pixel-button:disabled :is(strong,small){color:#b8a88a!important}
+
+/* ───────── Title: key art + hand-lettered logo ───────── */
+.title-key-art{position:absolute;inset:-14px;z-index:0;pointer-events:none;opacity:0;
+ background:#120a05 url('/ui/kit/title-key-art-portrait-v1.webp') center 70%/cover no-repeat}
+@media (orientation:landscape){.title-key-art{background-image:url('/ui/kit/title-key-art-landscape-v1.webp');background-position:center 75%}}
+.title-screen.is-gated .title-key-art{opacity:1}
+.title-screen.is-revealed .title-key-art{animation:kit-key-art-out .9s ease-in both}
+@keyframes kit-key-art-out{from{opacity:1}to{opacity:0}}
+/* The key art already shows the four suits on the table. */
+.title-screen.is-gated :is(.title-suits,.title-crest){visibility:hidden}
+.title-screen.is-revealed .title-suits{animation:title-gate-rise .55s cubic-bezier(.2,.7,.2,1) .05s both}
+.title-content{position:relative;z-index:2}
+/* Logo: the painted part of the 1600×600 file is x237–1361, y24–575, so the box takes that ratio and the background is
+   scaled and placed to show exactly that part (no extra trimmed file needed). */
+/* The old wordmark styles paint gold gradients into the h1's spans (background-clip:text), hence !important. */
+.title-screen .kit-title-logo{display:block!important;width:min(340px,82vw)!important;height:auto!important;aspect-ratio:1124/551;margin:0 auto!important;
+ background:url('/ui/kit/title-logo-v1.webp') 49.79% 48.98%/142.35% auto no-repeat!important;
+ -webkit-background-clip:border-box!important;background-clip:border-box!important;-webkit-text-fill-color:initial!important;
+ filter:drop-shadow(0 6px 10px #000c)!important;animation:none!important}
+.kit-logo-wrap h1{margin:0!important;line-height:0!important;font-size:0!important}
+.kit-logo-wrap::before,.kit-logo-wrap::after{display:none!important}
+@media (orientation:landscape) and (max-height:560px){.kit-title-logo{width:min(250px,40vw)}}
+
+/* ───────── Duel table controls ───────── */
+.action-buttons :is(.draw-action,.play-action){display:inline-flex!important;align-items:center;justify-content:center;gap:6px;white-space:nowrap;--kit-cap:24px;min-width:0}
+.action-buttons :is(.draw-action,.play-action) :is(span,small){white-space:nowrap}
+/* The grid sized its columns from content; with the plates' end caps the play button got squeezed. Share the row. */
+.action-buttons:has(>.draw-action):has(>.play-action){grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)!important}
+.action-buttons:has(>.draw-action):has(>.play-action):has(>:nth-child(3)){grid-template-columns:none!important;grid-auto-flow:column;grid-auto-columns:auto}
+.action-buttons :is(.draw-action,.play-action)::before{content:"";width:26px;height:26px;flex:none;background:center/contain no-repeat;filter:drop-shadow(0 1px 1px #0008)}
+.action-buttons .draw-action::before{background-image:url('/ui/kit/icon-draw-v1.webp')}
+.action-buttons .play-action::before{background-image:url('/ui/kit/icon-play-v1.webp')}
+.action-buttons :is(.draw-action,.play-action):disabled::before{opacity:.55;filter:grayscale(.6)}
+:is(.auto-pick,.sort-toggle){display:inline-flex!important;align-items:center;gap:4px}
+:is(.auto-pick,.sort-toggle)::before{content:"";width:20px;height:20px;flex:none;background:center/contain no-repeat;filter:drop-shadow(0 1px 1px #0008)}
+.auto-pick::before{background-image:url('/ui/kit/icon-auto-v1.webp')}
+.sort-toggle::before{background-image:url('/ui/kit/icon-sort-v1.webp')}
+.auto-pick:disabled::before{opacity:.5}
+
+/* ───────── Guidance ───────── */
+/* The kit's hand points down, so it hangs above the target (GuidedOverlay places its tip at the target's top edge). */
+.guided-finger{font-size:0!important;width:54px;height:54px;transform:translate(-50%,-100%)!important;z-index:3}
+.guided-box{z-index:2}
+@keyframes guided-tap{0%,100%{translate:0 -10px}50%{translate:0 0}}
+.guided-finger>img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 3px 4px #000a)}
+.guided-box{border-style:solid!important;border-color:transparent!important;border-width:18px!important;border-radius:0!important;
+ border-image:url('/ui/kit/panel-wood-v1.webp') 104 fill / 18px / 0 stretch!important;background:none!important;box-shadow:none!important;filter:var(--kit-shadow);padding:4px 6px 2px!important}
+.guided-box.is-final{border-image-source:url('/ui/kit/panel-parchment-v1.webp')!important}
+.guided-box.is-final :is(p,.guided-progress){color:var(--kit-ink)!important}
+.guided-box.is-final p b{color:#7a2a10!important}
+.guided-skip{border:0!important;background:none!important;color:#d8c39b!important;text-decoration:underline;text-underline-offset:3px}
+.helper-bubble .kit-stamp{width:30px;height:30px;object-fit:contain;display:block;filter:drop-shadow(0 1px 2px #0008)}
+.helper-bubble>span:has(.kit-stamp){background:none!important;border:0!important;box-shadow:none!important;width:auto!important;height:auto!important}
+
+/* Stage 1 coach: a parchment note with its tail pointing down at the table. */
+.stage-one-coach{border-style:solid!important;border-color:transparent!important;border-width:26px 30px 44px!important;border-radius:0!important;
+ border-image:url('/ui/kit/bubble-v1.webp') 96 110 150 110 fill / 26px 30px 44px / 0 stretch!important;background:none!important;box-shadow:none!important;filter:var(--kit-shadow);padding:0 2px!important}
+.stage-one-coach :is(strong,p){color:var(--kit-ink)!important;text-shadow:none!important}
+.stage-one-coach>button{color:#6b3a12!important;background:none!important;border:0!important;text-decoration:underline}
+.stage-one-coach .coach-icon{background:none!important;border:0!important;box-shadow:none!important;color:#8a5a1c!important}
+
+/* ───────── Loading ───────── */
+.entry-loading-scene{width:min(300px,78vw);aspect-ratio:768/432;object-fit:contain;filter:drop-shadow(0 8px 14px #000c)}
+/* The tile fills ~63% × 87% of its 256px square, so the square is drawn at 64px and the box centres the tile. */
+.entry-loading-tile{width:44px!important;height:58px!important;display:grid!important;place-items:center}
+.entry-loading-tile>img{width:64px!important;height:64px!important;max-width:none;transform-origin:50% 50%;animation:entry-loading-flip 1.4s cubic-bezier(.45,0,.3,1) infinite}
+@media (prefers-reduced-motion:reduce){.entry-loading-tile>img{animation:none}}

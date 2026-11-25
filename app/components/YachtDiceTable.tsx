@@ -168,7 +168,7 @@ const leaveTable=()=>{if(practice&&started&&!exitArmed){setExitArmed(true);setTi
     <section className="felt yacht-felt-area" onPointerDown={aiTurn&&!skipAi?event=>{if(!(event.target as HTMLElement).closest?.('.seat-card,.yacht-rival-sheet')){setSkipAi(true);setAiHeld(null);setCup('idle');}}:undefined}>
      <div className="opponents"><RivalLog match={match} aiTurn={aiTurn} cup={cup} last={haroLast.current}/><div data-seat="1" className={`opponent persona-amber ${aiTurn?'is-turn':''}`}>
       <div className="seat-card" role="button" tabIndex={0} aria-expanded={sheetOpen} aria-label={tr('하로 {0}점 · 점수표 보기',{0:theirs})} onClick={()=>setSheetOpen(open=>!open)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();setSheetOpen(open=>!open);}}}><span className="stage-portrait portrait" role="img" aria-label={tr('하로 아바타')} style={{backgroundImage:`url('${HARO_PORTRAIT}')`,backgroundSize:'cover',backgroundPosition:'center'}}/>
-       <div className="op-info"><strong className="opponent-name" title={DICE_NPC}><span className="opponent-character-name">{tr('하로')}</span><small className="opponent-ai-label">AI</small></strong><span className="seat-hp-label">{theirs}{tr('점')}</span></div>
+       <div className="op-info"><strong className="opponent-name" title={DICE_NPC}><span className="opponent-character-name">{tr('하로')}</span></strong><span className="seat-hp-label">{theirs}{tr('점')}</span></div>
        <span className="rpg-seat-count yacht-open-count" aria-label={tr('하로 남은 칸 {0}개',{0:openCategories(match.sheets[1]).length})}><small aria-hidden="true">{tr('남은 칸')}</small><b>{openCategories(match.sheets[1]).length}</b></span>
       </div>
       <div className="opponent-status-row"><div className="seat-dialogue">{banter&&!sheetOpen&&<div className="seat-banter" role="status" aria-live="polite">{banter}</div>}</div></div>
@@ -208,7 +208,7 @@ const leaveTable=()=>{if(practice&&started&&!exitArmed){setExitArmed(true);setTi
    </div>
   </section>
   {ended&&<div className="modal-shade result-shade journey-match-result-shade"><section className="modal rpg-result journey-mini-result-panel yacht-result" role="dialog" aria-modal="true" aria-label={tr('주사위 승부 결과')}>
-   <span className="eyebrow">{practice?'YACHT DICE':'DICE TABLE'} ·{result==='win'?tr('승리'):result==='draw'?tr('무승부'):result==='forfeit'?tr('기권'):tr('패배')}</span>
+   <span className="eyebrow">{practice?tr('요트다이스'):tr('주사위 탁자')} · {result==='win'?tr('승리'):result==='draw'?tr('무승부'):result==='forfeit'?tr('기권'):tr('패배')}</span>
    <h2>{result==='win'?tr('하로를 이겼어요'):result==='draw'?tr('비겼어요'):tr('하로가 이겼어요')}</h2>
    <div className="journey-mini-standings"><div className="results result-standings single-rank-standings">
     <div className="result-head"><span>{tr('순위 · 이름')}</span><span>{tr('점수')}</span></div>
@@ -217,7 +217,7 @@ const leaveTable=()=>{if(practice&&started&&!exitArmed){setExitArmed(true);setTi
    </div></div>
    {(practice?[PRACTICE_LINES[result!]]:outcomeLines).map(line=><p key={line}>{line}</p>)}
    {practice?<>
-    <button type="button" className="primary full" disabled={busy} onClick={retry}>{tr('한 판 더 →')}</button>
+    <button type="button" className="primary full" disabled={busy} onClick={retry}>{tr('한 판 더')}</button>
     <button type="button" className="secondary full" disabled={busy} onClick={leave}>{tr('메뉴로 돌아가기')}</button>
    </>:<>
    {result==='win'&&<div className="yacht-relic"><img src={relicImage(DICE_RELIC.id)} alt=""/><span><b>{trv(DICE_RELIC.name)}</b><small>{DICE_RELIC.effect}</small><small>{equipped.includes(DICE_RELIC.id)?tr('획득 · 자동 장착됨'):tr('획득 · 여행 가방에서 장착하세요')}</small></span></div>}

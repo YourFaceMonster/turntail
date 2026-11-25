@@ -29,7 +29,7 @@ export default function RpgStory({kind,enter,close}:{kind:'opening'|'camp'|'boss
    <button className="rpg-story-close" onClick={close} aria-label={tr('이야기 닫기')}>×</button>
    <div className="rpg-story-scene" data-scene={kind}><img src="/turntale-stage-map-0515.webp" alt={tr('공중섬 지도')}/><div className="rpg-story-vignette"/></div>
    <div className="rpg-story-content">
-    <span className="eyebrow">{kind==='camp'?'STAGE 2 · CAMP':'STAGE 3 · FIRST BOSS'}</span>
+    <span className="eyebrow">{kind==='camp'?tr('2스테이지 · 야영지'):tr('3스테이지 · 첫 보스')}</span>
     <h2>{title}</h2>
     <div className="rpg-story-dialogue" key={index}>
      {beat.portrait!==undefined&&<StagePortrait index={beat.portrait}/>}
@@ -40,7 +40,7 @@ export default function RpgStory({kind,enter,close}:{kind:'opening'|'camp'|'boss
     <div className="rpg-story-actions">
      <button className="text-btn" onClick={enter}>{tr('건너뛰고 시작')}</button>
      <button className="secondary" disabled={index===0} onClick={()=>setIndex(index-1)}>{tr('이전')}</button>
-     <button className="primary" onClick={()=>last?enter():setIndex(index+1)}>{last?tr('승부 시작 →'):tr('다음 →')}</button>
+     <button className="primary" onClick={()=>last?enter():setIndex(index+1)}>{last?tr('승부 시작'):tr('다음')}</button>
     </div>
    </div>
   </section>

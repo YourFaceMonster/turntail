@@ -52,7 +52,7 @@ export default function JourneyInnView({run,busy,error,action}:Props){
   // 2026-11-15 feedback: a poster-like bracket instead of a text list, and the buttons always visible.
   return <section className="inn-cup-screen" aria-label={tr('여관 토너먼트')} style={{'--inn-art':`url('${art.portrait}')`} as CSSProperties}>
    <div className="inn-cup-board">
-    <header className="inn-cup-head"><small>INN CUP · {trv(def.name)}</small><h3>{tr('여관 토너먼트')}</h3><p>{tr('세 판 중')} <b>{tr('두 판을 1등')}</b>{tr('으로 마치면 우승')}</p></header>
+    <header className="inn-cup-head"><small>{trv(def.name)}</small><h3>{tr('여관 토너먼트')}</h3><p>{tr('세 판 중')} <b>{tr('두 판을 1등')}</b>{tr('으로 마치면 우승')}</p></header>
     <ol className="inn-cup-bracket">{INN_TOURNAMENTS[def.region].map((c,i)=>{const won=cup?.finished&&cup.wins.includes(i+1),goal=cup?.finished&&cup.goals.includes(i+1);return <li key={c.name} data-won={won||undefined}>
      <span className="inn-cup-round">{i+1}{tr('판')}</span><span className="inn-cup-face"><SeatPortrait avatar={c.avatar} seat={1}/></span><strong>{trv(c.name)}</strong><small>{trv(c.title)}</small>
      <p className="inn-cup-goal"><span aria-hidden="true">{goal?'★':'☆'}</span>{c.goal}</p>
@@ -103,7 +103,7 @@ function InnRoom({region,busy,error,choose,leave,champion,gameWon}:{region:InnRe
  </div>;
  return <section className="inn-room" role="group" aria-label={tr('{0} · 사람이나 사물을 눌러 보세요',{0:def.name})} style={{'--inn-room-fill':`url('${art.portrait}')`} as CSSProperties}>
   {layer('portrait')}{layer('wide')}
-  <button className="tavern-door inn-room-door" disabled={busy} onClick={leave}>{tr('문 밖으로 →')}<small>{tr('여정 지도로 돌아가기')}</small></button>
+  <button className="tavern-door inn-room-door" disabled={busy} onClick={leave}>{tr('문 밖으로')}<small>{tr('여정 지도로 돌아가기')}</small></button>
   <p className="tavern-invitation inn-room-invitation">{tr('사람이나 사물을 눌러 보세요')}</p>
   {error&&<p className="journey-error" role="alert">{error}</p>}
  </section>;

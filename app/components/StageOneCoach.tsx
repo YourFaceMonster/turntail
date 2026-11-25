@@ -24,13 +24,14 @@ export function StageOneCoach({line,stamp,off}:{line:CoachLine|null,stamp:string
 }
 
 /** Shown once, when the first stage 1 table opens: a one-minute look at the rules, or straight into the game. */
-export function FirstGuidePrompt({rules,play}:{rules:()=>void,play:()=>void}){
+export function FirstGuidePrompt({practice,rules,play}:{practice:()=>void,rules:()=>void,play:()=>void}){
  const done=(next:()=>void)=>{try{localStorage.setItem(FIRST_GUIDE_KEY,'seen');}catch{}next();};
  return <div className="modal-shade first-guide-shade"><section className="modal menu-surface first-guide" role="dialog" aria-modal="true" aria-labelledby="first-guide-title">
   <span className="first-guide-icon" aria-hidden="true"><Lightbulb/></span>
   <h2 id="first-guide-title">{tr('턴테일이 처음이세요?')}</h2>
   <p>{tr('손패를 가장 먼저 다 내면 이기는 게임이에요. 앞사람이 낸 패와 같은 장수로 더 강한 패를 내고, 낼 패가 없으면 바닥에서 한 장 가져와요.')}</p>
   <p className="first-guide-note">{tr('스테이지 1에서는 내 차례마다 짧은 안내가 나와요.')}</p>
-  <div className="first-guide-actions"><button className="secondary" onClick={()=>done(play)}>{tr('바로 시작')}</button><button className="primary" onClick={()=>done(rules)}>{tr('1분 규칙 보기')}</button></div>
+  <button className="primary first-guide-practice" onClick={()=>done(practice)}>{tr('연습 판으로 배우기')}<small>{tr('실제 화면에서 하나씩 따라 해요 · 약 2분')}</small></button>
+  <div className="first-guide-actions"><button className="secondary" onClick={()=>done(play)}>{tr('바로 시작')}</button><button className="secondary" onClick={()=>done(rules)}>{tr('규칙만 보기')}</button></div>
  </section></div>;
 }

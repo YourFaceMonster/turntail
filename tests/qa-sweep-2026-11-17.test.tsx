@@ -10,7 +10,7 @@ const read=(file:string)=>unwrapTr(readFileSync(file,'utf8'));
 test('duel: the lead lock line is said once (on the button), and my recent plays read "나"',()=>{
  const page=read('app/page.tsx');
  assert.ok(!page.includes('선 · 제출만 가능'));
- assert.ok(page.includes("'선은 제출만 가능'")||page.includes('"선은 제출만 가능"'));
+ assert.ok(page.includes("'선 차례 · 패를 내요'")||page.includes('"선은 제출만 가능"'));
  assert.ok(page.includes("names={game.players.map((p,i)=>i===game.me?'나':p.name)}"));
 });
 

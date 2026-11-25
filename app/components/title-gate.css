@@ -1,0 +1,47 @@
+/* 2026-11-25 title screen: on app open the room fades in from black, the logo rises, then "화면을 눌러 시작"
+   pulses. A tap shows the menu (buttons rise in one after another). Coming back from a table skips all of this. */
+
+/* Menu parts keep their place in the layout while hidden, so the logo never jumps when the menu appears. */
+.title-screen:is(.is-checking,.is-gated) .title-menu-part{visibility:hidden;opacity:0}
+.title-screen.is-checking .title-content{opacity:0}
+
+/* Fade in from black. */
+.title-screen.is-gated::after{content:"";position:absolute;inset:0;z-index:40;background:#000;pointer-events:none;animation:title-gate-dark 1.8s ease-out forwards}
+@keyframes title-gate-dark{from{opacity:1}to{opacity:0}}
+.title-screen.is-gated :is(.title-logo,.title-english,.wordmark-rule,.title-crest){animation:title-gate-rise 1.3s cubic-bezier(.2,.7,.2,1) .7s both}
+.title-screen.is-gated .title-tagline{animation:title-gate-rise 1.1s cubic-bezier(.2,.7,.2,1) 1.25s both}
+.title-screen.is-gated .title-suits>span{animation:title-gate-suit .7s cubic-bezier(.3,1.4,.5,1) both}
+.title-screen.is-gated .title-suits>span:nth-child(1){animation-delay:1.55s}
+.title-screen.is-gated .title-suits>span:nth-child(2){animation-delay:1.68s}
+.title-screen.is-gated .title-suits>span:nth-child(3){animation-delay:1.81s}
+.title-screen.is-gated .title-suits>span:nth-child(4){animation-delay:1.94s}
+@keyframes title-gate-rise{from{opacity:0;transform:translateY(18px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+@keyframes title-gate-suit{from{opacity:0;transform:translateY(10px) scale(.6)}to{opacity:1;transform:none}}
+
+/* The whole screen is the start button. */
+.title-gate{position:absolute;inset:0;z-index:30;display:block;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.title-gate:focus-visible{outline:none}
+/* Sits in the open middle of the room, above the four tiles standing on the table. */
+.title-gate-prompt{position:absolute;left:50%;top:84%;transform:translate(-50%,-50%);white-space:nowrap;padding:10px 26px;
+ background:radial-gradient(ellipse at center,#120a05b3 0%,#120a0566 55%,transparent 75%);
+ font-size:clamp(17px,4.6vw,22px);font-weight:800;letter-spacing:.08em;color:#ffe7b0;
+ text-shadow:0 0 14px #ffb54a99,0 2px 0 #3a1d08,0 3px 8px #000c;
+ animation:title-gate-prompt-in .8s ease-out 2.3s both,title-gate-pulse 2.2s ease-in-out 3.1s infinite}
+.title-gate:focus-visible .title-gate-prompt{text-decoration:underline;text-underline-offset:6px}
+@keyframes title-gate-prompt-in{from{opacity:0}to{opacity:1}}
+@keyframes title-gate-pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* After the tap: the menu rises in, top to bottom. */
+.title-screen.is-revealed .title-menu-part{animation:title-gate-rise .55s cubic-bezier(.2,.7,.2,1) both}
+.title-screen.is-revealed .title-play.title-menu-part{animation:none}
+.title-screen.is-revealed .title-play>button{animation:title-gate-rise .55s cubic-bezier(.2,.7,.2,1) both}
+.title-screen.is-revealed .title-play>button:nth-child(2){animation-delay:.07s}
+.title-screen.is-revealed .title-play>button:nth-child(3){animation-delay:.14s}
+.title-screen.is-revealed .menu-tutorial.title-menu-part{animation-delay:.21s}
+.title-screen.is-revealed .title-tools.title-menu-part{animation-delay:.28s}
+.title-screen.is-revealed .menu-profile.title-menu-part{animation-delay:.1s}
+
+@media (prefers-reduced-motion:reduce){
+ .title-screen.is-gated::after{animation-duration:.01s}
+ .title-screen:is(.is-gated,.is-revealed) *{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important}
+}

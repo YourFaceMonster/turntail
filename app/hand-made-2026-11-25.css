@@ -1,0 +1,16 @@
+/* 2026-11-25 "less like an AI-made web page" pass (docs/codex-art-request-2026-11-25-ui-skin-kit.md).
+   Until the painted UI kit arrives, this file only removes web-template tells that need no new art. */
+
+/* Loading: a tile back that flips over the tavern dark, instead of a spinning web ring on black. */
+.entry-preparing-note{gap:16px;background:radial-gradient(ellipse at 50% 48%,#3a220f66,transparent 62%)}
+.entry-preparing-note>strong{font-size:16px;font-weight:800;letter-spacing:.02em;color:#f3dcaa;text-shadow:0 2px 0 #1b0f06,0 0 12px #e7993f55}
+.entry-loading-tile{display:block;width:46px;height:64px;perspective:240px;filter:drop-shadow(0 6px 8px #000c)}
+.entry-loading-tile>*{width:100%!important;height:100%!important;animation:entry-loading-flip 1.4s cubic-bezier(.45,0,.3,1) infinite;transform-origin:50% 50%}
+@keyframes entry-loading-flip{0%{transform:rotateY(0)}45%,55%{transform:rotateY(180deg)}100%{transform:rotateY(360deg)}}
+@media (prefers-reduced-motion:reduce){.entry-loading-tile>*{animation:none}}
+
+/* Korean labels that used to be English capitals: no wide tracking or forced capitals. */
+.eyebrow,.yo-eyebrow{text-transform:none!important;letter-spacing:.04em!important}
+
+/* The main menu's new "규칙" tool sits with 업적 · 도감 · 설정. */
+.title-tools:has(.menu-tool-rules){grid-template-columns:repeat(4,minmax(0,1fr))}

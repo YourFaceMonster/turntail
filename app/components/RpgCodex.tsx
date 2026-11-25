@@ -24,7 +24,7 @@ export default function RpgCodex({discovered,storyCards,close}:{discovered:reado
  useEffect(()=>{const key=(e:KeyboardEvent)=>{if(e.key==='Escape')close();};document.addEventListener('keydown',key);return()=>document.removeEventListener('keydown',key);},[close]);
  const body=<div className="modal-shade codex-shade" onClick={close}><section className="modal rpg-codex" role="dialog" aria-modal="true" aria-labelledby="codex-title" onClick={e=>e.stopPropagation()}>
   <button className="close" aria-label={tr('도감 닫기')} onClick={close}>×</button>
-  <span className="eyebrow">JOURNEY CODEX</span><h2 id="codex-title">{tr('여정 도감')}</h2>
+  <h2 id="codex-title">{tr('여정 도감')}</h2>
   <div className="codex-tabs" role="tablist" aria-label={tr('도감 종류')}>
    <button role="tab" aria-selected={tab==='relics'} onClick={()=>setTab('relics')}>{tr('유물')} <b>{data.relicCount}/{data.relics.length}</b></button>
    <button role="tab" aria-selected={tab==='stories'} onClick={()=>setTab('stories')}>{tr('이야기 패')} <b>{data.storyCount}/{data.stories.length}</b></button>

@@ -7,10 +7,10 @@ export const EN_SCREENS:Record<string,string>={
  "{0}번째 도전이 아직 끝나지 않았어요. 새로 시작하면 그 판이 이 도전을 이어받아요(끝까지 마친 판만 기록).":"Try {0} isn't finished. Starting again takes over that try (only finished rounds count).",
  "도전 {0}번이 남았어요. 더 높은 점수만 순위에 남아요.":"{0} tries left. Only your higher score counts.",
  "하루 {0}번까지 도전할 수 있어요. 더 높은 점수가 순위에 남고, 동점이면 도전 횟수가 적은 쪽이 위예요.":"You get up to {0} tries a day. Your higher score counts; ties go to whoever used fewer tries.",
- "연습판으로 다시 하기 →":"Play again as practice →",
- "오늘의 판 다시 시작 ({0}/{1}) →":"Restart today's table ({0}/{1}) →",
- "다시 도전 ({0}/{1}) →":"Try again ({0}/{1}) →",
- "오늘의 판 시작 (1/{0}) →":"Start today's table (1/{0}) →",
+ "연습판으로 다시 하기":"Play again as practice",
+ "오늘의 판 다시 시작 ({0}/{1})":"Restart today's table ({0}/{1})",
+ "다시 도전 ({0}/{1})":"Try again ({0}/{1})",
+ "오늘의 판 시작 (1/{0})":"Start today's table (1/{0})",
 
  // Opening lines at the table
  "이번에는 내가 먼저 끝내겠어.":"This time I'll finish first.",
@@ -231,7 +231,7 @@ export const EN_SCREENS:Record<string,string>={
  "빨간 2":"Red 2",
  "개인 {0} {1}":"Personal {0} {1}",
  "다시 시도해 주세요.":"Please try again.",
- "연결이 지연되고 있어요. 다시 시도하거나 AI 연습을 이용해 주세요.":"The connection is slow. Try again, or play against the AI.",
+ "연결이 지연되고 있어요. 다시 시도하거나 싱글플레이로 즐겨 주세요.":"The connection is slow. Try again, or play against the AI.",
  "연결을 확인해 주세요.":"Please check your connection.",
  "기록을 가져오지 못했어요.":"Could not fetch records.",
  "기록을 불러오지 못했어요.":"Could not load records.",

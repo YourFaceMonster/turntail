@@ -1,0 +1,92 @@
+/* 2026-11-25 Codex UI skin kit, second set (public/ui/kit/, "2차" in docs/codex-art-request-2026-11-25-ui-skin-kit.md).
+   The duel table's remaining CSS boxes (name plates, hand tray, recent slots, combo chips, tile count) and the
+   menu cards, tabs, divider, progress bar and toast. Same stretching rules as ui-kit-2026-11-25.css:
+   - 3-slice plates scale their whole height; the end cap keeps its shape at cap width = height × capPx / imageHeight.
+   - 9-slice frames keep their corners and stretch the sides. */
+
+/* ───────── Name plates (opponents' seats, my status bar) ─────────
+   nameplate 1024×240, brass end caps ≈110px → cap = 0.46 × height. */
+.opponent .seat-card,.hand-heading .own-status-card{
+ border-style:solid!important;border-color:transparent!important;border-radius:0!important;
+ border-image:url('/ui/kit/nameplate-v1.webp') 0 110 fill / 0 var(--plate-cap,22px) / 0 stretch!important;
+ border-width:0 var(--plate-cap,22px)!important;background:none!important;box-shadow:none!important;filter:drop-shadow(0 3px 3px #0009)}
+.opponent .seat-card{--plate-cap:22px;padding-left:2px!important;padding-right:2px!important}
+.hand-heading .own-status-card{--plate-cap:19px;padding-left:0!important;padding-right:0!important}
+/* Whose turn it is: the plate with the candle-lit rim. */
+.opponent.active .seat-card,.hand-panel.my-active-turn .hand-heading .own-status-card{border-image-source:url('/ui/kit/nameplate-active-v1.webp')!important;filter:drop-shadow(0 0 6px #ffbf5c99) drop-shadow(0 3px 3px #0009)}
+.opponent .seat-card::before,.opponent .seat-card::after,.hand-heading .own-status-card::before,.hand-heading .own-status-card::after{display:none!important}
+
+/* Tiles left in hand: a small framed wooden square. */
+/* The table rule for this badge has six classes (globals.css), so this one carries more. */
+html body .turntale.active-table .opponent .rpg-seat-count.rpg-seat-count.rpg-seat-count.rpg-seat-count.rpg-seat-count{border:0!important;border-radius:0!important;box-shadow:none!important;
+ background:url('/ui/kit/count-badge-v1.webp') center/100% 100% no-repeat!important;
+ color:#ffe7b0!important;text-shadow:0 1px 0 #000,0 0 4px #000!important;font-weight:900!important}
+/* 3 · 2 · 1 tiles left used to turn the badge red (item-match.css). Keep the warning: the number turns red and glows. */
+html body .turntale.active-table .opponent:is([data-remaining="3"],[data-remaining="2"],[data-remaining="1"]) .rpg-seat-count.rpg-seat-count.rpg-seat-count.rpg-seat-count.rpg-seat-count{color:#ff8a70!important;filter:drop-shadow(0 0 4px #ff3b2fcc)}
+html body .turntale.active-table .opponent[data-remaining="1"] .rpg-seat-count.rpg-seat-count.rpg-seat-count.rpg-seat-count.rpg-seat-count{color:#ff5a4a!important;filter:drop-shadow(0 0 7px #ff2a1f)}
+
+/* ───────── My hand: a leather mat (hand-tray 1024×400, 96px corners) ───────── */
+html body .hand-panel.panel.hand-panel.panel.hand-panel{
+ border-style:solid!important;border-color:transparent!important;border-width:8px 10px!important;border-radius:0!important;
+ border-image:url('/ui/kit/hand-tray-v1.webp') 96 fill / 10px / 0 stretch!important;background:none!important;box-shadow:none!important;
+ padding:2px 0!important}
+html body .hand-panel.panel.hand-panel.panel.my-active-turn{filter:drop-shadow(0 0 8px #ffbf5c66)}
+/* The legal-combo row sat in its own tinted box; on the mat it needs none. */
+html body .hand-panel.hand-panel.hand-panel .legal-panel.legal-panel{background:none!important;border:0!important;box-shadow:none!important}
+
+/* ───────── Recently played: tiles rest in carved slots (recent-slot 256×360) ───────── */
+.rpg-recent-plays{background:none!important;border:0!important;box-shadow:none!important}
+.rpg-recent-plays li{border:0!important;border-radius:0!important;box-shadow:none!important;
+ background:url('/ui/kit/recent-slot-v1.webp') center/100% 100% no-repeat!important}
+.rpg-recent-plays .rpg-recent-title{color:#e9d2a2!important;text-shadow:0 1px 0 #000!important}
+
+/* ───────── Combo chips and other pick-one rows (tab 512×160, 64px caps → cap = 0.4 × height) ───────── */
+.legal-family,.segmented>button,.hand-tools>.text-btn,html body .tutorial-chapters>button{
+ border-style:solid!important;border-color:transparent!important;border-radius:0!important;
+ border-image:url('/ui/kit/tab-v1.webp') 0 64 fill / 0 var(--tab-cap,11px) / 0 stretch!important;border-width:0 var(--tab-cap,11px)!important;
+ background:none!important;box-shadow:none!important;color:var(--kit-cream)!important;text-shadow:0 1px 0 #000!important}
+.legal-family{--tab-cap:9px;padding-left:2px!important;padding-right:2px!important}
+/* The hand panel's grid gives this row 22px; the plates were 26px tall and spilled onto the hand's top edge. */
+html body .hand-panel .legal-panel .legal-family{height:22px!important;min-height:22px!important;padding-top:0!important;padding-bottom:0!important;align-items:center}
+/* The hand's tiles start 12px above their own row; lift the chips clear of them and keep them on top. */
+html body .hand-panel .legal-panel{position:relative;z-index:3;transform:translateY(-9px)}
+.segmented>button{--tab-cap:18px}
+/* Three tabs share ~300px on a phone: thin caps, no line icons, a slightly smaller label so "패와 기본 규칙" fits. */
+html body .tutorial-chapters>button{--tab-cap:9px;padding:6px 0!important;min-height:36px!important;font-size:12.5px!important;letter-spacing:-.04em;white-space:nowrap;min-width:0;overflow:visible!important}
+html body .tutorial-chapters>button>svg{display:none!important}
+html body .tutorial-chapters>button[aria-pressed="true"]{border-image-source:url('/ui/kit/tab-on-v1.webp')!important;color:#2a1405!important;-webkit-text-fill-color:#2a1405!important;text-shadow:none!important}
+.hand-tools>.text-btn{--tab-cap:13px;padding:0 2px!important}
+.hand-tools>.text-btn:active:not(:disabled){border-image-source:url('/ui/kit/tab-on-v1.webp')!important;color:#2a1405!important;text-shadow:none!important}
+/* Bottom plates: the long "선 차례 · 패를 내요" must fit beside "선택 후 내기" on a 375px phone. */
+.action-buttons :is(.draw-action,.play-action){font-size:14px!important;letter-spacing:-.03em;gap:4px!important}
+.action-buttons :is(.draw-action,.play-action)::before{width:22px!important;height:22px!important}
+.legal-family.family-active,.segmented>button.chosen{border-image-source:url('/ui/kit/tab-on-v1.webp')!important;color:#2a1405!important;-webkit-text-fill-color:#2a1405!important;text-shadow:none!important;font-weight:900!important}
+.segmented{background:none!important;border:0!important;box-shadow:none!important;gap:6px!important}
+
+/* ───────── Single-play menu cards: a framed picture (menu-card-frame 768×768, 128px corners, open middle) ───────── */
+.single-mode-cards>:is(button,a),.single-mode-menu .daily-entry,.single-mode-menu>button:not(.close){
+ /* The painted wood is only ~27px of the 128px corner slice, so the layout border is 4px and the corner pieces
+    (drawn 16px) lie over the card's own picture instead of leaving a dark ring around it. */
+ border-style:solid!important;border-color:transparent!important;border-width:4px!important;border-radius:0!important;
+ border-image:url('/ui/kit/menu-card-frame-v1.webp') 128 / 16px / 0 stretch!important;box-shadow:none!important;
+ background-clip:border-box!important;filter:drop-shadow(0 4px 6px #000a)}
+.single-mode-cards>:is(button,a) .menu-mode-scene{border-radius:2px!important}
+
+/* ───────── Divider, progress, toast ───────── */
+.title-ornament{font-size:0!important;color:transparent!important;height:14px!important;width:min(240px,64vw)!important;margin-left:auto!important;margin-right:auto!important;
+ background:url('/ui/kit/divider-v1.webp') center/100% 100% no-repeat!important}
+.title-ornament>*{display:none!important}
+
+.tutorial-progress progress{-webkit-appearance:none;appearance:none;height:14px!important;border:0!important;border-radius:0!important;
+ background:url('/ui/kit/progress-track-v1.webp') center/100% 100% no-repeat!important;box-shadow:none!important}
+.tutorial-progress progress::-webkit-progress-bar{background:transparent!important;border-radius:0!important}
+/* The fill bar's painted part is x24–999, y22–41 of 1024×64, so it is drawn inset inside the track. */
+.tutorial-progress progress::-webkit-progress-value{background:url('/ui/kit/progress-fill-v1.webp') 2.4% 50%/100% 100% no-repeat!important;border-radius:0!important}
+.tutorial-progress progress::-moz-progress-bar{background:url('/ui/kit/progress-fill-v1.webp') center/100% 100% no-repeat!important;border-radius:0!important}
+
+/* Short notices: a parchment scroll (toast 1024×160, 120px rolled ends → cap = 0.75 × height). */
+.toast{border-style:solid!important;border-color:transparent!important;border-radius:0!important;
+ border-image:url('/ui/kit/toast-v1.webp') 0 120 fill / 0 32px / 0 stretch!important;border-width:0 32px!important;
+ background:none!important;box-shadow:none!important;color:var(--kit-ink)!important;text-shadow:none!important;font-weight:800!important;
+ min-height:42px;display:flex;align-items:center;filter:drop-shadow(0 4px 6px #000a)}
+.toast:empty{border-image:none!important;filter:none}

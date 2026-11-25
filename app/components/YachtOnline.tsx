@@ -61,13 +61,13 @@ export default function YachtOnline({start,name,avatar,profileToken,exit}:{start
  const allowed=canScore&&match?allowedCategories(match.sheets[me],match.dice):[];
  const turnName=match?players[match.turn]?.name:'';
  return <div className="yacht-online">
-  <header className="yo-top"><div><span className="yo-eyebrow">YACHT DICE · {room.size}{tr('인전')}</span><strong>{tr('방 코드')} <button className="yo-code" onClick={copyCode} aria-label={tr('방 코드 {0} 복사',{0:room.code})}>{room.code}</button>{copied==='code'&&<small> {tr('복사됨')}</small>}</strong></div><button className="text-btn" onClick={leave}>{tr('나가기')}</button></header>
+  <header className="yo-top"><div><span className="yo-eyebrow">{tr('요트다이스 · {0}인전',{0:room.size})}</span><strong>{tr('방 코드')} <button className="yo-code" onClick={copyCode} aria-label={tr('방 코드 {0} 복사',{0:room.code})}>{room.code}</button>{copied==='code'&&<small> {tr('복사됨')}</small>}</strong></div><button className="text-btn" onClick={leave}>{tr('나가기')}</button></header>
   {error&&<p className="yo-error" role="alert">{error}</p>}
   {room.phase==='lobby'&&<section className="yo-panel">
    <h2>{tr('친구를 기다리는 중')}</h2><p>{tr('초대 링크나 방 코드를 친구에게 보내 주세요.')} {tr('{0}명이 모이면 방장이 시작해요.',{0:room.size})}</p>
    <button className="secondary full yo-invite" onClick={()=>void copyLink()}>{copied==='link'?tr('초대 링크를 복사했어요'):tr('초대 링크 보내기')}</button>
    <ol className="yo-lobby">{Array.from({length:room.size},(_,i)=><li key={i} className={players[i]?'':'is-empty'}>{players[i]?<>{players[i].name}{i===room.host&&<small>{tr('방장')}</small>}{i===me&&<small>{tr('나')}</small>}</>:tr('빈 자리')}</li>)}</ol>
-   {host?<button className="primary full" disabled={busy||players.length!==room.size} onClick={()=>{cue('confirm');void act('yachtStart');}}>{players.length===room.size?tr('게임 시작 →'):tr('{0}명 더 필요해요',{0:room.size-players.length})}</button>:<p className="yo-note">{tr('방장이 시작하기를 기다리고 있어요.')}</p>}
+   {host?<button className="primary full" disabled={busy||players.length!==room.size} onClick={()=>{cue('confirm');void act('yachtStart');}}>{players.length===room.size?tr('게임 시작'):tr('{0}명 더 필요해요',{0:room.size-players.length})}</button>:<p className="yo-note">{tr('방장이 시작하기를 기다리고 있어요.')}</p>}
    <p className="yo-note">{tr('차례마다 60초 · 시간을 넘기면 그 차례는 AI가 굴리고, 3번 연속이면 AI가 자리를 이어받아요.')}</p>
   </section>}
   {room.phase!=='lobby'&&match&&<>
@@ -91,7 +91,7 @@ export default function YachtOnline({start,name,avatar,profileToken,exit}:{start
    <h2>{tr('게임 끝')}</h2>
    <ol className="yo-result">{room.result.players.map((p,i)=>({...p,i})).sort((a,b)=>a.place-b.place).map(p=><li key={p.i} className={p.winner?'is-win':''}><b>{p.place}{tr('등')}</b><span>{trv(p.name)}{p.i===me&&tr(' (나)')}{p.replaced&&<em>AI</em>}</span><strong>{p.total}{tr('점')}</strong></li>)}</ol>
    {room.players[me]?.replaced&&<p className="yo-note">{tr('AI가 자리를 이어받은 판이라 내 전적에는 남지 않아요.')}</p>}
-   {host?<button className="primary full" disabled={busy} onClick={()=>{cue('confirm');void act('yachtRestart');}}>{tr('같은 멤버로 새 판 →')}</button>:<p className="yo-note">{tr('방장이 새 판을 시작하면 이어서 할 수 있어요.')}</p>}
+   {host?<button className="primary full" disabled={busy} onClick={()=>{cue('confirm');void act('yachtRestart');}}>{tr('같은 멤버로 새 판')}</button>:<p className="yo-note">{tr('방장이 새 판을 시작하면 이어서 할 수 있어요.')}</p>}
   </section>}
   {room.phase!=='lobby'&&<div className="yo-react-bar" aria-label={tr('반응 보내기')}>{YACHT_REACTIONS.map((emoji,i)=><button key={emoji} onClick={()=>void react(i)} aria-label={tr('반응 {0} 보내기',{0:emoji})}>{emoji}</button>)}</div>}
   <div className="yo-reactions" aria-live="polite">{room.reactions.map(r=><span key={r.id} className={r.seat===me?'is-me':''}><small>{trv(players[r.seat]?.name)}</small>{YACHT_REACTIONS[r.emoji]}</span>)}</div>

@@ -17,5 +17,9 @@ html body .modal-shade>.modal.first-guide{width:min(360px,calc(100vw - 28px));pa
 html body .first-guide h2{margin:4px 0 10px!important;font-size:21px!important;color:#ffe2a3}
 .first-guide p{margin:0 0 10px;font-size:13.5px;line-height:1.65;color:#eadcbc;text-align:left}
 .first-guide .first-guide-note{font-size:12px;color:#c9bb98}
-.first-guide-actions{display:grid;grid-template-columns:1fr 1.3fr;gap:9px;margin-top:14px}
+.first-guide-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}
+html body .first-guide .first-guide-practice{display:grid;gap:2px;width:100%;min-height:58px;margin-top:12px;border-radius:12px;font-size:15px;font-weight:800}
+.first-guide .first-guide-practice small{font-size:11.5px;font-weight:500;opacity:.85}
+.tutorial-modal .tutorial-guided-start{display:flex;align-items:center;justify-content:center;gap:8px;flex:none;width:100%;min-height:40px;margin:2px 0 4px;border:1px solid #d9b46a;border-radius:11px;background:linear-gradient(180deg,#3a2c12,#231a0b);color:#ffe2a3;font-size:14px;font-weight:800}
+.tutorial-modal .tutorial-guided-start small{font-size:11px;font-weight:500;color:#cdbf9f}
 .first-guide-actions button{min-height:46px;border-radius:12px;font-size:14px;font-weight:700}

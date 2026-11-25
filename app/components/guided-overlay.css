@@ -1,0 +1,22 @@
+/* 2026-11-24 guided practice duel overlay. */
+body.guided-lock main *{pointer-events:none!important}
+body.guided-lock main .guided-allow,body.guided-lock main .guided-allow *,
+.guided-box,.guided-box *{pointer-events:auto!important}
+/* 2026-11-25: the overlay renders inside <main>, so the lock rule above (0,1,2) beat .guided-box (0,1,0)
+   and the 시작/다음 buttons could not be tapped. Same !important, higher specificity wins. */
+body.guided-lock main .guided-box,body.guided-lock main .guided-box *{pointer-events:auto!important}
+.guided-layer{position:fixed;inset:0;z-index:90;pointer-events:none}
+.guided-spot{position:fixed;border-radius:14px;border:2px solid #ffd77e;box-shadow:0 0 0 9999px rgba(0,0,0,.58),0 0 18px 4px #ffd77e88;pointer-events:none;transition:left .18s,top .18s,width .18s,height .18s;animation:guided-pulse 1.6s ease-in-out infinite}
+.guided-dim{position:fixed;inset:0;background:rgba(0,0,0,.58)}
+@keyframes guided-pulse{50%{box-shadow:0 0 0 9999px rgba(0,0,0,.58),0 0 28px 8px #ffd77ecc}}
+.guided-finger{position:fixed;font-size:34px;line-height:1;transform:translate(-30%,0);filter:drop-shadow(0 3px 4px #000a);animation:guided-tap 1.1s ease-in-out infinite;pointer-events:none}
+@keyframes guided-tap{0%,100%{translate:0 10px}50%{translate:0 0}}
+.guided-box{position:fixed;padding:12px 14px 10px;border:1px solid #d9b46a;border-radius:14px;background:#0b0b0bf2;box-shadow:0 12px 30px #000c;color:#f3e4c2}
+.guided-box.is-final{border-color:#8fd19e}
+.guided-progress{display:block;font-size:11px;color:#c9bb98;letter-spacing:.02em}
+.guided-box p{margin:4px 0 0;font-size:14px;line-height:1.6;color:#f1e3c1}
+.guided-box p b{color:#ffd77e}
+.guided-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px}
+.guided-actions .primary{min-height:40px;padding:0 18px;border-radius:11px;font-weight:700}
+.guided-skip{min-height:32px;padding:0 10px;border:1px solid #5a4b2c;border-radius:999px;background:#151515;color:#bfb293;font-size:12px}
+@media(prefers-reduced-motion:reduce){.guided-spot,.guided-finger{animation:none}}
