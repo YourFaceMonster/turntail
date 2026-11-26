@@ -249,7 +249,7 @@ function readJSON<T>(key:string,fallback:T):T{try{return JSON.parse(safeGet(key)
  const sess=useRef<Session|null>(null),local=useRef<Game|null>(null),current=useRef<View|null>(null),rev=useRef(0),seen=useRef(-1),pending=useRef(false),sequence=useRef(0),profile=useRef(""),audio=useRef<AudioContext|null>(null);
  const actionController=useRef<AbortController|null>(null);
  const [audioEpoch,setAudioEpoch]=useState(0);
- const lastMusicLevel=useRef(40);
+ const lastMusicLevel=useRef(40),musicTarget=useRef(.4);
  const musicRef=useRef<HTMLAudioElement|null>(null),musicUnlocked=useRef(false),rackRef=useRef<HTMLDivElement|null>(null);
  const [collection,setCollection]=useState<Collection>(defaultCollection),[collectionReady,setCollectionReady]=useState(false),[draftSet,setDraftSet]=useState(0);
  // Online Yacht Dice (multiplayer menu): which game the friend room is for, its size, and the open room.
@@ -307,7 +307,8 @@ function readJSON<T>(key:string,fallback:T):T{try{return JSON.parse(safeGet(key)
  function toggleSound(){armAudio();const next=!preferences.current.sound;preferences.current.sound=next;if(audio.current)setEffectVolume(audio.current,preferences.current.soundVolume,next);setSound(next);safeSet("jangseong-sound",next?"on":"off");}
  function changeMusicVolume(n:number){setMusicVolume(n);preferences.current.musicVolume=n;safeSet('turntale-music-volume',String(n));}
  function changeSoundVolume(n:number){setSoundVolume(n);preferences.current.soundVolume=n;if(audio.current)setEffectVolume(audio.current,n,preferences.current.sound);safeSet('turntale-sound-volume',String(n));}
- function armAudio(){musicUnlocked.current=true;syncMusic();try{if(!audio.current){const C=window.AudioContext||(window as any).webkitAudioContext;if(C)audio.current=new C();}if(audio.current){setEffectVolume(audio.current,preferences.current.soundVolume,preferences.current.sound);void preloadSoundAssets(audio.current,['tap']);void preloadCues(audio.current,['click','confirm','back','dialogue']);}if(audio.current?.state!=='running')void audio.current?.resume().then(()=>setAudioEpoch(n=>n+1)).catch(()=>{});}catch{}}
+ function fadeMusicIn(duration=2600){const track=musicRef.current;if(!track)return;track.volume=0;const started=performance.now();const step=(now:number)=>{const t=Math.min(1,(now-started)/duration);track.volume=Math.max(0,Math.min(1,musicTarget.current*t*t));if(t<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
+ function armAudio(){const first=!musicUnlocked.current;musicUnlocked.current=true;syncMusic();if(first)fadeMusicIn();try{if(!audio.current){const C=window.AudioContext||(window as any).webkitAudioContext;if(C)audio.current=new C();}if(audio.current){setEffectVolume(audio.current,preferences.current.soundVolume,preferences.current.sound);void preloadSoundAssets(audio.current,['tap']);void preloadCues(audio.current,['click','confirm','back','dialogue']);}if(audio.current?.state!=='running')void audio.current?.resume().then(()=>setAudioEpoch(n=>n+1)).catch(()=>{});}catch{}}
  useEffect(()=>{setCuePlayer((kind,delay)=>{const ctx=audio.current;if(!ctx||!preferences.current.sound)return;playCue(ctx,kind,delay);});return()=>setCuePlayer(null);},[]);
  useEffect(()=>{setHapticPlayer(pattern=>{if(preferences.current.haptic&&typeof navigator!=='undefined'&&navigator.vibrate)navigator.vibrate(pattern);});return()=>setHapticPlayer(null);},[]);
  function feel(kind="tap",vibrate=true,detail:TileSoundDetail={}){
@@ -697,7 +698,10 @@ function readJSON<T>(key:string,fallback:T):T{try{return JSON.parse(safeGet(key)
  useEffect(()=>{const track=musicRef.current;if(!track)return;track.volume=0;track.load();syncMusic();},[musicScene]);
  useEffect(()=>{
   const track=musicRef.current;if(!track||!pageVisible)return;const target=musicVolume/100*(game?.phase==='ended'?.78:pressure===2?.58:pressure===1?.8:1);
-  if(!musicUnlocked.current){track.volume=target;return;}
+  // 2026-11-25 phone QA: the first tap started the music at full volume and startled the player.
+  // Before that tap the track stays silent; armAudio fades it up to this target.
+  musicTarget.current=target;
+  if(!musicUnlocked.current){track.volume=0;return;}
   let frame=0;const from=track.volume,started=performance.now(),duration=lastMusicLevel.current===musicVolume?850:90;lastMusicLevel.current=musicVolume;
   const fade=(now:number)=>{const t=Math.max(0,Math.min(1,(now-started)/duration));track.volume=Math.max(0,Math.min(1,from+(target-from)*t));if(t<1)frame=requestAnimationFrame(fade);};
   frame=requestAnimationFrame(fade);return()=>cancelAnimationFrame(frame);

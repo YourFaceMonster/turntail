@@ -17,7 +17,7 @@ export function readSaveSlots(storage:StoragePort){
  try{const g=readRpgTestGame(storage);if(g&&['playing','allocation','relic','ready'].includes(g.rpgRun!.status))slots.push({mode:'rpg-test',title:tr('이전 RPG 장비 테스트'),detail:tr('{0} · STAGE {1}/3 · 유물 {2}개 · 아이템 {3}개',{0:g.players[0].name,1:g.rpgRun!.stage,2:g.rpgRun!.relics.length,3:g.rpgRun!.consumables.length}),game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push(tr('RPG 테스트 저장을 읽지 못했어요. 기존 데이터는 보존했어요.'));}
  // Retired item-mode-1 archives remain untouched and never produce a resume slot.
  try{const g=(JSON.parse(storage.getItem('turntale-hp-items-2-v1')||'null') as {active?:Game}|null)?.active;if(g?.code&&g.players?.[0]&&g.rpgRun)slots.push({mode:'hp-item-2',title:tr('아이템전 · 종료된 모드'),detail:tr('{0} · 라운드 {1} · HP {2}/{3}',{0:g.players[0].name,1:g.round,2:g.rpgRun!.hp[0],3:hpLimit(g.rpgRun)}),game:g,session:{code:g.code,token:g.players[0].token,local:true}});}catch{errors.push(tr('HP 아이템전 저장을 읽지 못했어요. 기존 데이터는 보존했어요.'));}
- try{const s=json<Session>(storage,'jangseong-session');if(s&&!s.local&&s.code&&s.token)slots.push({mode:'multi',title:tr('멀티플레이'),detail:tr('방 코드 {0} · 방 상태 확인 후 이어하기',{0:s.code}),session:s});}catch{errors.push(tr('멀티플레이 연결 정보를 읽지 못했어요.'));}
+ try{const s=json<Session>(storage,'jangseong-session');if(s&&!s.local&&s.code&&s.token)slots.push({mode:'multi',title:tr('멀티플레이'),detail:tr('방 코드 {0}',{0:s.code}),session:s});}catch{errors.push(tr('멀티플레이 연결 정보를 읽지 못했어요.'));}
  return {slots,errors};
 }
 /** No silent storage failures: publish the new live state only after persistence succeeds. */
