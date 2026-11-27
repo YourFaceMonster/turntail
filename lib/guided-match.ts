@@ -50,8 +50,6 @@ export type GuidedStep={
  text:(ctx:GuidedContext)=>string,
  /** CSS selectors spotlighted (and tappable). */
  targets?:string[],
- /** Extra tappable selectors that are not spotlighted. */
- allow?:string[],
  button?:string,
  /** The step waits (hidden, nothing locked) until this holds. */
  waitFor?:(ctx:GuidedContext)=>boolean,
@@ -69,21 +67,21 @@ export function guidedSteps():GuidedStep[]{
  const T=GUIDED_TILES;
  return [
   {id:'hello',button:tr('시작'),text:c=>tr('연습 판이에요. {0} 1대1로 해 볼게요.<br><b>손패를 먼저 다 내면 이겨요.</b>',{0:josa(c.view.opponent,'과/와')})},
-  {id:'hand',targets:['.hand-panel'],button:tr('다음'),waitFor:c=>c.myTurnReady,text:()=>tr('아래가 <b>내 손패</b> 5장이에요.<br>숫자가 클수록 강하고, <b>1과 2</b>가 가장 강해요.')},
-  {id:'opponent',targets:['.opponents [data-seat="1"]'],button:tr('다음'),text:c=>tr('{0} 5장을 들고 있어요.<br>상대 손패는 보이지 않고, 남은 장수만 보여요.',{0:c.view.opponent+'도'})},
-  {id:'pick-pair',targets:[hand(T.sevenA.id),hand(T.sevenB.id)],waitFor:c=>c.myTurnReady,until:c=>has(c,T.sevenA.id,T.sevenB.id),text:()=>tr('내가 <b>선</b>이에요. 선은 원하는 조합을 낼 수 있어요.<br>같은 숫자 두 장은 <b>페어</b>. <b>7 두 장</b>을 눌러 골라 보세요.')},
-  {id:'play-pair',targets:[PLAY],allow:[hand(T.sevenA.id),hand(T.sevenB.id)],until:c=>!holds(c,T.sevenA.id),text:()=>tr('좋아요! <b>내기</b>를 눌러 바닥에 내요.')},
+  {id:'hand',targets:['.hand-panel'],button:tr('다음'),waitFor:c=>c.myTurnReady,text:()=>tr('여기 있는 다섯 장이 <b>내 손패</b>예요.<br>3부터 15까지는 숫자가 클수록 세고, 그 위가 <b>1</b>, 가장 센 패가 <b>2</b>예요.')},
+  {id:'opponent',targets:['.opponents [data-seat="1"]'],button:tr('다음'),text:c=>tr('{0}도 5장을 들고 있어요.<br>상대 손패는 보이지 않고, 남은 장수만 보여요.',{0:c.view.opponent})},
+  {id:'pick-pair',targets:[hand(T.sevenA.id),hand(T.sevenB.id)],waitFor:c=>c.myTurnReady,until:c=>has(c,T.sevenA.id,T.sevenB.id),text:()=>tr('이번엔 내가 먼저 내요. 숫자가 같은 두 장을 <b>페어</b>라고 해요.<br>손에 있는 <b>7 두 장</b>을 골라 보세요.')},
+  {id:'play-pair',targets:[PLAY],until:c=>!holds(c,T.sevenA.id),text:()=>tr('고른 7 두 장을 낼 차례예요. <b>내기</b>를 누르세요.')},
   {id:'answer',targets:['.trick-area'],button:tr('다음'),waitFor:c=>c.myTurnReady&&trickIs(c,10,10),text:c=>tr('{0} <b>페어 10·10</b>으로 받아쳤어요.<br>받아칠 때는 <b>같은 장수</b>로 <b>더 높은 패</b>를 내야 해요.',{0:josa(c.view.opponent,'이/가')})},
   {id:'pick-floor',targets:[`.wall [data-stack="${GUIDED_DRAW_STACK}"]`],until:c=>c.pick===GUIDED_DRAW_STACK||holds(c,T.thirteenB.id),text:()=>tr('내 손에는 10보다 높은 페어가 없어요.<br>이럴 땐 바닥에서 <b>1장을 가져와요</b>. <b>13</b>을 눌러 보세요.')},
-  {id:'draw',targets:[DRAW_BUTTON],allow:[`.wall [data-stack="${GUIDED_DRAW_STACK}"]`],until:c=>holds(c,T.thirteenB.id),text:()=>tr('<b>1장 가져오기</b>를 눌러요.<br>가져오면 내 차례는 끝나요.')},
-  {id:'single',targets:['.trick-area'],button:tr('다음'),waitFor:c=>c.myTurnReady&&trickIs(c,4),text:c=>tr('아무도 더 받아치지 않아서 {0} 다시 <b>선</b>을 잡고 <b>싱글 4</b>를 냈어요.<br>싱글은 <b>1장</b>으로, 4보다 높은 패를 내요.',{0:josa(c.view.opponent,'이/가')})},
+  {id:'draw',targets:[DRAW_BUTTON],until:c=>holds(c,T.thirteenB.id),text:()=>tr('<b>1장 가져오기</b>를 눌러요.<br>가져오면 내 차례는 끝나요.')},
+  {id:'single',targets:['.trick-area'],button:tr('다음'),waitFor:c=>c.myTurnReady&&trickIs(c,4),text:c=>tr('내가 한 장 가져왔으니 {0} 먼저 내요. 이렇게 먼저 내는 걸 <b>선</b>이라고 해요.<br>이번엔 <b>4 한 장</b>이네요.',{0:josa(c.view.opponent,'이/가')})},
   {id:'pick-nine',targets:[hand(T.nine.id)],until:c=>has(c,T.nine.id),text:()=>tr('<b>9</b>를 골라 보세요.<br>3은 4보다 낮아서 낼 수 없어요.')},
-  {id:'play-nine',targets:[PLAY],allow:[hand(T.nine.id)],until:c=>!holds(c,T.nine.id),text:()=>tr('<b>내기</b>!')},
+  {id:'play-nine',targets:[PLAY],until:c=>!holds(c,T.nine.id),text:()=>tr('<b>내기</b>!')},
   {id:'lead-again',targets:['.hand-panel'],button:tr('다음'),waitFor:c=>c.myTurnReady&&!c.view.trick.length,text:c=>tr('{0} 9를 넘는 패가 없어서 1장을 가져갔어요.<br>아무도 못 받아치면 마지막에 낸 내가 다시 <b>선</b>이에요!',{0:josa(c.view.opponent,'은/는')})},
   {id:'pick-thirteens',targets:[hand(T.thirteenA.id),hand(T.thirteenB.id)],until:c=>has(c,T.thirteenA.id,T.thirteenB.id),text:()=>tr('아까 가져온 13과 원래 있던 13이 <b>페어</b>가 됐어요.<br><b>13 두 장</b>을 골라요.')},
-  {id:'play-thirteens',targets:[PLAY],allow:[hand(T.thirteenA.id),hand(T.thirteenB.id)],until:c=>!holds(c,T.thirteenA.id),text:()=>tr('<b>내기</b>! 여러 장을 한 번에 내면 손패가 빨리 줄어요.')},
-  {id:'last',targets:[hand(T.three.id)],waitFor:c=>c.myTurnReady&&!c.view.trick.length&&c.view.handIds.length===1,until:c=>has(c,T.three.id),text:()=>tr('다시 내 선이에요. <b>마지막 한 장</b>! <b>3</b>을 골라요.')},
-  {id:'finish',targets:[PLAY],allow:[hand(T.three.id)],until:c=>c.view.phase==='ended',text:()=>tr('<b>내기</b>를 누르면 승리예요!')},
-  {id:'done',final:true,waitFor:c=>c.view.phase==='ended',text:()=>tr('<b>이겼어요!</b><br>· 받아칠 때는 같은 장수로 더 높은 패<br>· 낼 패가 없으면 바닥에서 1장 가져오기<br>· 손패를 먼저 다 내면 승리<br>고르기 어려우면 「자동 선택」이 대신 골라 줘요.')},
+  {id:'play-thirteens',targets:[PLAY],until:c=>!holds(c,T.thirteenA.id),text:()=>tr('<b>내기</b>를 눌러 13 두 장을 함께 내세요.')},
+  {id:'last',targets:[hand(T.three.id)],waitFor:c=>c.myTurnReady&&!c.view.trick.length&&c.view.handIds.length===1,until:c=>has(c,T.three.id),text:()=>tr('다시 내 차례예요. 손에 남은 <b>3 한 장</b>을 고르세요.')},
+  {id:'finish',targets:[PLAY],until:c=>c.view.phase==='ended',text:()=>tr('<b>내기</b>를 누르면 승리예요!')},
+  {id:'done',final:true,waitFor:c=>c.view.phase==='ended',text:()=>tr('<b>손패를 먼저 다 냈어요. 이겼어요!</b><br>실전에서 어떤 패를 낼지 막히면 <b>자동 선택</b>을 눌러 보세요.')},
  ];
 }

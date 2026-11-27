@@ -29,7 +29,7 @@
 
 /* Film subtitles sit directly on the painting. */
 .rpg-prologue .prologue-shade{background:none;box-shadow:none}
-.prologue-picture[data-location] .prologue-camera{animation:none;transform:scale(1.14)}
+.prologue-picture[data-location] .prologue-camera{animation:none}
 .prologue-location{position:absolute;z-index:4;left:20px;top:max(22px,env(safe-area-inset-top));max-width:calc(100% - 150px);color:#fff2d5;text-shadow:0 2px 5px #000,0 0 10px #000;pointer-events:none}
 .prologue-location small,.prologue-location strong{display:block;font-family:Arial,"Noto Sans KR",sans-serif}.prologue-location small{font-size:11px;margin-bottom:5px;color:#e9c98e}.prologue-location strong{font-size:16px;line-height:1.4}
 

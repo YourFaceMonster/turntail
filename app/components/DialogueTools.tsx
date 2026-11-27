@@ -19,7 +19,7 @@ export function DialogueTools({auto,setAuto,lines,onOpenChange,className=''}:{au
  const [open,setOpen]=useState(false);
  const toggle=(value:boolean)=>{setOpen(value);onOpenChange?.(value);};
  return <>
-  <div className={`dialogue-tools ${className}`} onClick={event=>event.stopPropagation()} onKeyDown={event=>event.stopPropagation()}>
+  <div className={`dialogue-tools ${className}`} onClick={event=>event.stopPropagation()}>
    <button type="button" aria-pressed={auto} onClick={()=>setAuto(!auto)} title={auto?tr('자동 넘김 끄기'):tr('자동 넘김 켜기')}><span aria-hidden="true">{auto?'❚❚':'▶'}</span>{auto?tr('자동 중'):tr('자동')}</button>
    <button type="button" onClick={()=>toggle(true)} disabled={!lines.length}><span aria-hidden="true">☰</span>{tr('지난 대사')}</button>
   </div>
@@ -33,7 +33,7 @@ function DialogueBacklog({lines,close}:{lines:readonly BacklogLine[],close:()=>v
  // Portal to <body>: the dialogue boxes clip overflow and some cutscene layers are transformed, which would trap a fixed overlay.
  if(typeof document==='undefined')return null;
  return createPortal(<div className="dialogue-backlog-overlay" onClick={event=>{event.stopPropagation();close();}} onPointerDown={event=>event.stopPropagation()}>
-  <section ref={panel} tabIndex={-1} className="dialogue-backlog" role="dialog" aria-modal="true" aria-label={tr('지난 대사')} onClick={event=>event.stopPropagation()} onKeyDown={event=>{event.stopPropagation();if(event.key==='Escape'){event.preventDefault();close();}}}>
+  <section ref={panel} tabIndex={-1} className="dialogue-backlog" role="dialog" aria-modal="true" aria-label={tr('지난 대사')} onClick={event=>event.stopPropagation()} onKeyDown={event=>{event.stopPropagation();if(event.key==='Escape'){event.preventDefault();close();}if(event.key==='Tab'){event.preventDefault();panel.current?.querySelector('button')?.focus();}}}>
    <header><strong>{tr('지난 대사')}</strong><button type="button" onClick={close} aria-label={tr('지난 대사 닫기')}>×</button></header>
    <ol ref={list}>{lines.map((line,i)=><li key={i}>{line.speaker&&<small>{trv(line.speaker)}</small>}<p><DialogueText text={line.text}/></p></li>)}</ol>
   </section>

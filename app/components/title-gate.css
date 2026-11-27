@@ -45,3 +45,8 @@
  .title-screen.is-gated::after{animation-duration:.01s}
  .title-screen:is(.is-gated,.is-revealed) *{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important}
 }
+
+@media (orientation:portrait) and (min-height:760px) and (max-aspect-ratio: 3/5) {
+ .turntale .title-screen .title-play {margin-top:12px}
+ .turntale .title-screen .title-tools {position:relative;top:13dvh}
+}

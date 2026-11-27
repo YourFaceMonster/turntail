@@ -38,3 +38,27 @@ html body .turntale .modal.menu-theme-items{padding:72px 26px 24px!important}
 html body .turntale .modal:is(.menu-theme-single,.menu-theme-classic,.menu-theme-items)>.close{top:15px;right:15px;display:grid;place-items:center;width:31px;height:31px;border:1px solid #dcc28b66;border-radius:8px;background:#12241ce0;color:#ffedc9;line-height:1;box-shadow:0 2px 5px #0004;text-shadow:none}
 @media(max-width:370px){html body .turntale .modal.menu-theme-single{padding:78px 22px 22px!important}.menu-theme-single>h2{font-size:23px!important}.menu-theme-single>p{font-size:11px}html body .turntale .modal.menu-theme-classic{padding:77px 23px 23px!important}html body .turntale .modal.menu-theme-items{padding:65px 21px 21px!important}}
 @media(orientation:landscape) and (max-height:600px){html body .turntale .modal.menu-theme-single{padding-top:69px!important}html body .turntale .modal.menu-theme-classic{padding-top:65px!important}html body .turntale .modal.menu-theme-items{padding-top:59px!important}.menu-theme-single>.single-mode-cards{margin-top:12px}.menu-mode-scene .menu-table-art{transform:scale(.85)!important}}
+
+/* Let the prologue painting carry the story entry across both menu layouts. */
+.turntale .menu-theme-single .single-mode-cards > button.mode-rpg {
+ display:flex; flex-direction:row; align-items:center; justify-content:flex-end;
+ background-image:linear-gradient(90deg,transparent 24%,#101622d9 78%),url('/prologue/snow-traveler-v1.webp');
+ background-position:center,center 54%; background-size:cover;
+}
+.turntale .menu-theme-single .single-mode-cards > .mode-rpg strong {margin:0 7% 0 0!important}
+
+@media (orientation:landscape) and (max-height:600px) {
+ html body .turntale .modal.menu-theme-single {
+  padding:14px 24px!important;
+  background-size:cover,cover!important;
+  background-position:center,center 52%!important;
+ }
+ .turntale .single-mode-menu.menu-theme-single .single-mode-cards:has(.mode-yacht) {
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+ .turntale .menu-theme-single .single-mode-cards > button.mode-rpg {
+  grid-column:auto;align-items:flex-end;justify-content:center;padding-bottom:14px!important;
+ }
+ .turntale .menu-theme-single .single-mode-cards > .mode-rpg strong {margin:0!important}
+ .turntale .menu-theme-single .single-mode-cards > button p {display:none}
+}

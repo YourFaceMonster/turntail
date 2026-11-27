@@ -72,3 +72,9 @@
 @keyframes story-lamp{0%{opacity:.75}22%{opacity:.55}24%{opacity:.85}61%{opacity:.6}63%{opacity:.9}100%{opacity:.75}}
 @keyframes story-lamp-soft{from{filter:brightness(.92)}to{filter:brightness(1.12)}}
 @media(prefers-reduced-motion:reduce){.story-fx-flash{animation:none;opacity:0}.rpg-prologue .prologue-picture::before{animation:none!important}}
+/* Keep the illustrated frame intact on phones wider or taller than the artwork. */
+@media (min-aspect-ratio: 2/1), (max-aspect-ratio: 1/2), (min-aspect-ratio: 3/4) and (max-aspect-ratio: 3/2) {
+ .prologue-cut .prologue-picture .prologue-scene-art,
+ .rpg-prologue[data-cut^="ST"] .prologue-picture .prologue-scene-art {object-fit:contain;object-position:center!important}
+ .rpg-prologue[data-cut] .prologue-picture .prologue-camera {animation:none!important;transform:none}
+}

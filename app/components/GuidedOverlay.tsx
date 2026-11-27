@@ -12,19 +12,18 @@ export default function GuidedOverlay({ctx,onExit,exitLabel}:{ctx:GuidedContext,
  const [index,setIndex]=useState(0);
  const step=steps[index];
  const waiting=!!step?.waitFor&&!step.waitFor(ctx);
- const ctxRef=useRef(ctx);ctxRef.current=ctx;
  // A step whose goal is already met moves on by itself (also covers a double-tap that picks and draws at once).
- useEffect(()=>{if(step&&!waiting&&step.until?.(ctx))setIndex(i=>i+1);});
+ useEffect(()=>{if(step&&!waiting&&step.until?.(ctx))setIndex(index+1);},[ctx,index,step,waiting]);
  const shown=!!step&&!waiting;
  const spot=useRef<HTMLDivElement>(null),box=useRef<HTMLDivElement>(null),finger=useRef<HTMLDivElement>(null);
- useEffect(()=>{document.body.classList.toggle('guided-lock',shown&&!step?.final);return()=>document.body.classList.remove('guided-lock');},[shown,step]);
+ useEffect(()=>{document.body.classList.toggle('guided-lock',!!step);return()=>document.body.classList.remove('guided-lock');},[step]);
  // Follow the targets every frame: the table animates and the hand re-flows as tiles leave.
  useLayoutEffect(()=>{
   if(!shown||!step)return;let frame=0;
   const place=()=>{
    frame=requestAnimationFrame(place);
    const targets=(step.targets||[]).flatMap(sel=>[...document.querySelectorAll<HTMLElement>(sel)]);
-   const allow=[...targets,...(step.allow||[]).flatMap(sel=>[...document.querySelectorAll<HTMLElement>(sel)])];
+   const allow=step.button?[]:targets;
    for(const el of document.querySelectorAll('.guided-allow'))if(!allow.includes(el as HTMLElement))el.classList.remove('guided-allow');
    for(const el of allow)el.classList.add('guided-allow');
    const s=spot.current,b=box.current,f=finger.current;if(!s||!b||!f)return;
@@ -53,7 +52,7 @@ export default function GuidedOverlay({ctx,onExit,exitLabel}:{ctx:GuidedContext,
    <p dangerouslySetInnerHTML={{__html:step.text(ctx)}}/>
    <div className="guided-actions">
     {step.final?<button type="button" className="primary" onClick={()=>onExit(true)}>{exitLabel}</button>
-     :<>{step.button&&<button type="button" className="primary" onClick={()=>setIndex(i=>i+1)}>{step.button}</button>}<button type="button" className="guided-skip" onClick={()=>onExit(false)}>{tr('연습 그만하기')}</button></>}
+     :<>{step.button&&<button type="button" className="primary" onClick={()=>setIndex(index+1)}>{step.button}</button>}<button type="button" className="guided-skip" onClick={()=>onExit(false)}>{tr('연습 그만하기')}</button></>}
    </div>
   </div>
  </div>;

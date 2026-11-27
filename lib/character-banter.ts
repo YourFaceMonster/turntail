@@ -65,7 +65,7 @@ export function characterLine(player:{name:string,avatar?:string},kind:BanterKin
  if(avatar.startsWith('korean-monster:')){
   const lines:Lines[]=[
    {confident:tr('허허, 이 판은 내 방망이 장단이로군!'),beaten:tr('어이쿠! 내 방망이보다 한 수 빠르네.'),power:tr('금 나와라 뚝딱! 승부수 나간다!'),draw:tr('허허, 복 주머니에 한 장 더 넣어볼까.'),idle:tr('방망이 닳도록 기다리겠네. 한 수 두게~'),finish:tr('허허! 오늘 복은 내 쪽으로 왔구먼!')},
-   {confident:tr('좋아! 이번엔 내 불씨가 먼저야!'),beaten:tr('앗 뜨거! 내 불씨를 덮었잖아!'),power:tr('아껴 둔 불꽃 한 수! 받아봐!'),draw:tr('잠깐 쉼표 하나 찍고 갈게!'),idle:tr('불씨 다 꺼지겠다! 얼른 한 수 줘~'),finish:tr('얼쑤! 마지막까지 화끈했지?')},
+   {confident:tr('내가 먼저 낼게.'),beaten:tr('앗, 그걸 갖고 있었어?'),power:tr('자, 이건 좀 뜨거울걸.'),draw:tr('한 장만 가져갈게.'),idle:tr('천천히 골라. 불은 내가 볼게.'),finish:tr('이게 내 마지막 패야.')},
    {confident:tr('이 흐름은 내가 지켜보겠다.'),beaten:tr('묵직한 수로구나. 인정하겠다.'),power:tr('수호자의 한 수, 받아 보아라.'),draw:tr('한 걸음 물러나 더 깊이 보겠다.'),idle:tr('돌이 될 때까지 기다릴 셈인가? 허허.'),finish:tr('좋은 승부였다. 다음에도 지켜보겠다.')}
   ];return lines[Number(avatar.split(':')[1])]?.[kind]||lines[0][kind];
  }

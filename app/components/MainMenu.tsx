@@ -3,7 +3,6 @@ import {useEffect,useState} from 'react';
 import {APP_VERSION} from '../../lib/version';
 import RoomAmbience from './RoomAmbience';
 import TurntaleWordmark from './TurntaleWordmark';
-import {SuitEmblem} from './TileFace';
 import {tr} from '../../lib/i18n/index.ts';
 import {BookOpen,BookMarked,Settings,Award,UserRound,ChevronRight,ScrollText} from 'lucide-react';
 import './title-gate.css';
@@ -35,8 +34,6 @@ export default function MainMenu(p:Props){
  <div className="title-content">
   <div className="title-crest" aria-hidden="true"><span/><b>✦</b><span/></div>
   <div className="title-logo title-logo-premium title-logo-approved"><h1 aria-label={tr('턴테일')}><TurntaleWordmark className="title-wordmark-crop"/></h1></div><p className="title-english">TURNTALE</p>
-  <p className="title-tagline">{tr('한 장의 선택, 새로운 이야기')}</p>
-  <div className="title-suits" aria-label={tr('왕관 · 열쇠 · 성화 · 철문')}>{[3,1,2,0].map(s=><span key={s} className={`title-suit-${s}`}><SuitEmblem s={s}/></span>)}</div>
   <div className="title-play title-menu-part">
    <button className="pixel-button menu-single" onClick={p.single}><span className="menu-button-copy"><strong>{p.bomb?tr('폭탄시장전 시작'):tr('싱글플레이')}</strong><small>{p.bomb?tr('3인 · 공개 시장 · 총 5판'):tr('일반 대전 · 요트다이스 · 스토리모드')}</small></span></button>
    <button className="pixel-button menu-continue" disabled={!p.canResume} onClick={p.resume} title={p.canResume?tr('저장된 게임을 이어서 플레이합니다'):tr('저장된 게임이 없어요')}><span className="menu-button-copy"><strong>{tr('이어서 하기')}</strong><small>{p.canResume?tr('멈춰 둔 테이블로 돌아가기'):tr('저장된 게임이 없어요')}</small></span></button>
