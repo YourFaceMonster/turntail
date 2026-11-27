@@ -30,6 +30,18 @@
 .codex-card img{width:72px;height:108px;object-fit:cover;border-radius:8px;box-shadow:0 4px 10px #0008}
 .codex-card-unknown{width:72px;height:108px;border-radius:8px}
 .codex-note{margin:14px 0 0;font-size:12px;color:#c9b993;text-align:center}
+/* 2026-11-27 QA: unfound relic = its own shape in shadow; inactive tab stays in the brown window palette (was navy). */
+.codex-relics img.codex-silhouette{filter:brightness(0) drop-shadow(0 0 1px #c9a46c66);opacity:.55}
+.codex-grid li.is-hidden{opacity:1;justify-content:center}
+.codex-grid li.is-hidden strong{color:#a8936f;letter-spacing:.1em}
+.codex-tabs button:not([aria-selected="true"]){background:#2a2017;color:#e8d5b0}
+.codex-unknown.codex-card-unknown{border:1px solid #c9a46c44;background:linear-gradient(160deg,#1a140f,#0e0b08);box-shadow:inset 0 0 0 4px #00000055,0 4px 10px #0008;color:#6f5c40}
+/* 2026-11-27 QA: the achievement count sat on the divider once the subtitle and "달성" line were removed. */
+.modal-shade>.modal.achievements-modal .achievement-header{padding-bottom:12px!important}
+/* Cards without a progress bar (one-time goals) no longer keep an empty bottom row. */
+.achievements-modal .achievement-card{height:auto!important;min-height:96px!important;align-items:center}
+/* Codex: the scroll bar stays thin and in the window's colours instead of a bright bar outside the corner. */
+.rpg-codex{scrollbar-width:thin;scrollbar-color:#8a6a3f transparent}
 
 /* Pacing setting row reuses the haptic row layout. */
 .pace-setting small{display:block}

@@ -284,7 +284,11 @@ function readJSON<T>(key:string,fallback:T):T{try{return JSON.parse(safeGet(key)
  const victoryBeat=!!currentBattle&&currentBattle.round===game?.round&&clock>=currentBattle.at&&clock<currentBattle.at+HP_BATTLE_REVIEW_MS;
  const reviewing=coinPending||battlePending||!!game&&clock<(game.turnReadyAt||0),watchingPlay=reviewing&&!itemReview&&game?.lastEvent?.type==="play"&&game.lastEvent.showNotice!==false;
  const leadReview=!!game&&game.phase==="playing"&&!game.trick.length&&game.lastEvent?.type!=="deal"&&reviewing&&!itemReview&&!battleReview;
- useEffect(()=>{if(entrance!=="idle"||!pageVisible)return;setClock(Date.now());if(!game||Date.now()>=Math.max(game.turnReadyAt||0,game.turnDeadline||0))return;const timer=setInterval(()=>setClock(Date.now()),80);return()=>clearInterval(timer);},[game?.turnReadyAt,game?.turnDeadline,entrance,pageVisible]);
+ // Reviews (turnReadyAt also covers battle/skill presentations) and the bomb market need an 80ms clock. Once only the
+ // turn timer is left, wake when its shown second changes: re-rendering the whole table 12×/s made phones stutter and heat.
+ useEffect(()=>{if(entrance!=="idle"||!pageVisible)return;const start=Date.now();setClock(start);if(!game)return;const ready=game.turnReadyAt||0,deadline=game.turnDeadline||0,fine=!!game.bombMarket;let timer:ReturnType<typeof setTimeout>|undefined;
+  const schedule=(now:number)=>{if(now>=Math.max(ready,deadline))return;const wait=fine||now<ready?80:(((deadline-now)%1000)||1000)+5;timer=setTimeout(()=>{const at=Date.now();setClock(at);schedule(at);},wait);};
+  schedule(start);return()=>clearTimeout(timer);},[game?.turnReadyAt,game?.turnDeadline,!!game?.bombMarket,entrance,pageVisible]);
  useEffect(()=>{if(!flair)return;const timer=setTimeout(()=>setFlair(null),comboCaptionDuration(flair.label));return()=>clearTimeout(timer);},[flair?.id]);
  const [worldDiameter,setWorldDiameter]=useState(0);
  const [previousPlay,setPreviousPlay]=useState<Tile[]>([]),[slam,setSlam]=useState<{id:string,tier:ImpactTier}|null>(null);

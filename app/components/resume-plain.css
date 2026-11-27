@@ -1,24 +1,54 @@
-/* 2026-11-25 user request: the 이어서 하기 window looked "too AI". Plain brown window like records/profile,
-   one row per save, no filler text, deleting as a small text button at the bottom. */
+/* 2026-11-25 user request: the 이어서 하기 window looked "too AI". Plain brown window like records/profile.
+   2026-11-27 follow-up ("성의가 없다"): each save is a painted plaque — the place you stopped behind it, your portrait,
+   where you are and HP/운명력. The title is a quiet label, not gold lettering. No ▶ arrows. */
+/* 2026-11-27 (2): no gold outline. The window is the same dark plank as the settings window, with a worn wooden edge;
+   the title is engraved cream text over the painted divider line. */
 .modal-shade>.modal.resume-picker.resume-plain{
- max-width:420px!important;padding:18px 18px 14px!important;
- background:radial-gradient(120% 50% at 50% 0%,#3a2a1a 0%,#0000 70%),linear-gradient(180deg,#221a13,#14100c)!important;
- border:1px solid #d6b06e!important;border-radius:18px!important;
- box-shadow:0 0 0 3px #17130f,0 0 0 4px #d6b06e55,0 22px 60px #000b!important;color:#f3e6c9}
-.modal-shade>.modal.resume-plain h2{margin:2px 0 12px!important}
-.resume-plain .resume-note{margin:-4px 0 10px;text-align:center;font-size:12.5px;line-height:1.5;color:#c8b48f}
-.resume-plain .resume-rows{list-style:none;margin:0;padding:0;border-top:1px solid #d6b06e33}
-.resume-plain .resume-rows>li{border-bottom:1px solid #d6b06e33}
-.resume-plain .resume-row{display:flex;align-items:center;gap:12px;width:100%;min-height:62px;padding:10px 6px;margin:0;border:0;border-radius:0;background:none;box-shadow:none;color:inherit;text-align:left;cursor:pointer}
-.resume-plain .resume-row>span{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
-.resume-plain .resume-row strong{font-size:16px;color:#ffe3a7}
-.resume-plain .resume-row small{font-size:12.5px;color:#cdbb98;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.resume-plain .resume-row>b{font-size:13px;color:#d6b06e}
-.resume-plain button.resume-row:hover,.resume-plain button.resume-row:focus-visible{background:#ffffff0a}
-.resume-plain button.resume-row:active{background:#ffffff14}
-.resume-plain .resume-row input{width:20px;height:20px;accent-color:#d6b06e;flex:none}
+ max-width:400px!important;padding:14px 14px 12px!important;
+ background:linear-gradient(180deg,#1b140ee0,#120e0bf2),url('/ui/settings-panel-texture-v1.webp') center/256px repeat!important;
+ border:1px solid #000!important;border-radius:14px!important;
+ box-shadow:inset 0 1px 0 #ffffff14,inset 0 0 0 3px #2a1f15,inset 0 0 0 4px #00000080,inset 0 0 30px #0009,0 22px 60px #000c!important;color:#f3e6c9}
+.modal-shade>.modal.resume-plain h2{margin:4px 40px 0!important;padding:0 0 18px!important;text-align:center!important;font-size:17px!important;letter-spacing:.04em!important;
+ background:url('/ui/kit/divider-v1.webp') center bottom/100% 12px no-repeat!important;-webkit-text-fill-color:#ead6aa!important;color:#ead6aa!important;
+ text-shadow:0 -1px 0 #000,0 1px 0 #ffffff1a!important;font-weight:800!important}
+.modal-shade>.modal.resume-plain>.close{top:9px!important;right:9px!important;width:34px!important;height:34px!important;background:#120d0acc!important;border:1px solid #6b5334!important;box-shadow:none!important;color:#e7cf9c!important}
+.resume-plain .resume-rows{margin-top:14px!important}
+.resume-plain .resume-note{margin:10px 4px 0;text-align:center;font-size:12.5px;line-height:1.5;color:#c8b48f}
+.resume-plain .resume-rows{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.resume-plain .resume-rows>li{margin:0}
+
+/* The plaque */
+.resume-plain .resume-row{position:relative;display:flex;align-items:stretch;gap:10px;width:100%;padding:0;margin:0;border:0;border-radius:12px;background:none;box-shadow:none;color:inherit;text-align:left;cursor:pointer;overflow:hidden}
+.resume-plain .resume-face{position:relative;display:flex;align-items:center;gap:12px;flex:1;min-width:0;min-height:92px;padding:12px 14px;border-radius:12px;
+ border:1px solid #000;box-shadow:inset 0 0 0 1px #6b533466,inset 0 1px 0 #ffe2a622,0 3px 10px #000a;
+ background:linear-gradient(90deg,#140f0bf2 0%,#140f0be0 45%,#140f0b80 72%,#140f0b33 100%),var(--resume-art,none) right center/cover no-repeat,#1c150f;isolation:isolate}
+.resume-plain .resume-face.is-plain{min-height:62px;background:#ffffff08;border-color:#d6b06e44;box-shadow:none}
+.resume-plain .resume-face>.portrait{flex:none;width:54px!important;height:54px!important;border-radius:50%;overflow:hidden;border:2px solid #d6b06e;box-shadow:0 0 0 2px #120d09,0 3px 8px #000a;background:#2a2017}
+.resume-plain .resume-face>.portrait img{width:100%;height:100%;object-fit:cover}
+.resume-plain .resume-text{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0;text-shadow:0 1px 2px #000}
+.resume-plain .resume-text strong{font-size:16px;line-height:1.2;color:#ffe3a7}
+.resume-plain .resume-text small{font-size:12px;line-height:1.35;color:#e2d1ad;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.resume-plain .resume-stats{display:flex;align-items:center;gap:12px;margin-top:4px;font-size:11.5px;color:#d9c49a}
+.resume-plain .resume-stats b{font-size:15px;color:#fff0cf;font-variant-numeric:tabular-nums;margin-left:3px}
+.resume-plain .resume-stats i{font-style:normal;color:#b9a27a;margin-left:1px}
+.resume-plain .resume-fate{display:inline-flex;gap:2px;align-items:center}
+.resume-plain .resume-fate>img{width:20px;height:20px;margin:0;filter:drop-shadow(0 1px 1px #000)}
+
+.resume-plain button.resume-row:hover .resume-face,.resume-plain button.resume-row:focus-visible .resume-face{box-shadow:inset 0 0 0 1px #d6b06e88,inset 0 1px 0 #ffe2a633,0 4px 14px #000a}
+.resume-plain button.resume-row:active .resume-face{transform:translateY(1px);filter:brightness(.95)}
+.resume-plain button.resume-row:focus-visible{outline:none}
+
+/* Choosing saves to delete */
+.resume-plain label.resume-row{align-items:center;padding-left:4px}
+.resume-plain .resume-row input{appearance:none;-webkit-appearance:none;width:22px;height:22px;margin:0;flex:none;align-self:center;border-radius:5px;
+ border:1px solid #6b5334;background:#0d0a07;box-shadow:inset 0 1px 3px #000;display:grid;place-items:center;cursor:pointer}
+.resume-plain .resume-row input:checked{border-color:#c0634f;background:#3a1712}
+.resume-plain .resume-row input:checked::after{content:"";width:6px;height:11px;margin-top:-3px;border:solid #ffd2c6;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+.resume-plain .resume-row input:focus-visible{outline:2px solid #d6b06e;outline-offset:2px}
+.resume-plain .resume-row.is-checked .resume-face{border-color:#c0634f;box-shadow:inset 0 0 0 1px #00000080,0 0 0 2px #c0634f55}
 .resume-plain .resume-row.is-checked strong{color:#ffb4a0}
+
 .resume-plain .resume-foot{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px}
-.resume-plain .resume-text-button{min-height:34px;padding:0 8px;border:0;background:none;box-shadow:none;color:#a99677;font-size:12.5px;text-decoration:underline;text-underline-offset:3px}
+.resume-plain .resume-text-button{min-height:34px;padding:0 6px;border:0;background:none;box-shadow:none;color:#a99677;font-size:12.5px;text-decoration:underline;text-underline-offset:3px}
 .resume-plain .resume-delete{min-height:36px;padding:0 14px;border:1px solid #c0634f;border-radius:10px;background:#3a1712;color:#ffd2c6;font-size:13px;font-weight:700}
 .resume-plain .resume-delete:disabled{opacity:.45}

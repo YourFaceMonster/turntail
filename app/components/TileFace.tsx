@@ -1,6 +1,6 @@
 "use client";
 import Motif from './SuitMotif';
-import {useId} from 'react';
+import {memo,useId} from 'react';
 import ClassicTileOrnament from './ClassicTileOrnament';
 import TileWear from './TileWear';
 import StageTileEngraving from './StageTileEngraving';
@@ -18,7 +18,7 @@ function SpecialMotif({s}:{s:number,n:number}){return <><Motif s={s}/><path d="M
 /** Paint dimming inside the SVG, without filtering/compositing the hand face. */
 function MutedTileShade(){return <path data-tile-muted-shade="true" d={CARTOON_TILE_PATH} fill="#cfcfc8" opacity=".38"/>;}
 /** The exact same art and body render in hand, flight and table. */
-export default function TileFace({tile:t,small=false,muted=false}:{tile:Tile,small?:boolean,muted?:boolean}){
+function TileFaceArt({tile:t,small=false,muted=false}:{tile:Tile,small?:boolean,muted?:boolean}){
  const special=t.n===2,ink=muted?'#737770':colors[t.s],suitInk=colors[t.s],stage=useStageVisual(),artId=useId().replace(/[^a-zA-Z0-9_-]/g,'');
  if(stage){
   const dark=[2,5,6,9,10].includes(stage),numberProps=tileNumberGeometry(t.n);
@@ -38,3 +38,7 @@ export default function TileFace({tile:t,small=false,muted=false}:{tile:Tile,sma
  <g className="engraved-suit-mark tile-suit-identity" fill={suitInk} color={suitInk} stroke={t.s===2?'#8c3e08':undefined} strokeWidth={t.s===2?.65:undefined} paintOrder="stroke fill" data-motif={`${t.s}:${t.n}`} transform={`translate(${special?70:74} 111) scale(${(special?.44:.5)})`}>{special?<SpecialMotif s={t.s} n={t.n}/>:<Motif s={t.s}/>}</g>
  <TileCartoon seed={t.id}/></g></svg></span>;
 }
+
+/** Each face is a large SVG; the table re-renders on every clock tick, so redraw a face only when what it shows changes. */
+const TileFace=memo(TileFaceArt,(a,b)=>a.tile.id===b.tile.id&&a.tile.n===b.tile.n&&a.tile.s===b.tile.s&&!!a.small===!!b.small&&!!a.muted===!!b.muted);
+export default TileFace;

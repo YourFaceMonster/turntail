@@ -30,14 +30,14 @@ export default function RpgCodex({discovered,storyCards,close}:{discovered:reado
    <button role="tab" aria-selected={tab==='stories'} onClick={()=>setTab('stories')}>{tr('이야기 패')} <b>{data.storyCount}/{data.stories.length}</b></button>
   </div>
   {tab==='relics'?<ul className="codex-grid codex-relics">{data.relics.map(relic=><li key={relic.id} className={relic.found?'is-found':'is-hidden'}>
-   {relic.found?<img src={relicImage(relic.id)} alt=""/>:<span className="codex-unknown" aria-hidden="true">?</span>}
-   <strong>{relic.found?relic.name:'???'}</strong><small>{relic.found?relic.effect:tr('여정에서 발견하면 기록돼요')}</small>{relic.found&&relic.passive&&<em className="rpg-offer-passive">{tr('갖고만 있어도 적용')}</em>}{relic.found&&<span className="codex-fired">{tr('발동')} {fired[relic.id]||0}{tr('회')}</span>}
+   {/* 2026-11-27 QA: unfound relics show their own shape in shadow, not a dashed "?" circle and a repeated line. */}
+   <img className={relic.found?undefined:'codex-silhouette'} src={relicImage(relic.id)} alt=""/>
+   <strong>{relic.found?relic.name:'???'}</strong>{relic.found&&<small>{relic.effect}</small>}{relic.found&&relic.passive&&<em className="rpg-offer-passive">{tr('갖고만 있어도 적용')}</em>}{relic.found&&(fired[relic.id]||0)>0&&<span className="codex-fired">{tr('발동')} {fired[relic.id]}{tr('회')}</span>}
   </li>)}</ul>
   :<ul className="codex-grid codex-stories">{data.stories.map(card=><li key={card.id} className={card.found?'is-found':'is-hidden'}>
    {card.found?<button className="codex-card" aria-label={`${card.name} ${flipped===card.id?tr('앞면 보기'):tr('뒷면 보기')}`} onClick={()=>setFlipped(flipped===card.id?null:card.id)}><img src={flipped===card.id?STORY_CARD_ART[card.id].back:STORY_CARD_ART[card.id].front} alt=""/></button>:<span className="codex-unknown codex-card-unknown" aria-hidden="true">?</span>}
-   <strong>{card.found?card.name:'???'}</strong><small>{card.found?(flipped===card.id?tr('뒷면 · {0}',{0:card.back}):tr('{0}에서 얻음 · 눌러서 뒤집기',{0:card.source})):tr('아직 얻지 못했어요')}</small>
+   <strong>{card.found?card.name:'???'}</strong>{card.found&&<small>{flipped===card.id?tr('뒷면 · {0}',{0:card.back}):tr('{0}에서 얻음 · 눌러서 뒤집기',{0:card.source})}</small>}
   </li>)}</ul>}
-  <p className="codex-note">{tr('도감은 기록만 보여 줘요. 보상이나 능력치는 바뀌지 않아요.')}</p>
  </section></div>;
  return typeof document==='undefined'?body:createPortal(body,document.body);
 }

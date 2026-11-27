@@ -39,5 +39,5 @@ test('codex lists all sixteen journey relics (four forged) and four story cards,
 
 test('tutorial second chapter teaches the RPG journey, not the hidden item battle',()=>{
  const html=renderToStaticMarkup(<TutorialGuide close={noop}/>);
- assert.match(html,/스토리모드 규칙/);assert.doesNotMatch(html,/아이템전/);
+ assert.match(html,/>스토리모드<\/button>/);assert.doesNotMatch(html,/아이템전/);
 });

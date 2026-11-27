@@ -128,6 +128,12 @@ html body .tutorial-modal .helper-bubble .tutorial-tip-line:first-child{margin-t
  html body .tutorial-modal .tutorial-chapters button{padding:5px 4px;font-size:11px}
 }
 
+/* 2026-11-27 QA: the title sat half on the painted parchment in the top-left corner; it now sits centred under the sun
+   ornament, clear of the parchment and the lantern. */
+html body .tutorial-modal .tutorial-heading{justify-content:center;text-align:center;padding:0 40px!important}
+html body .tutorial-modal .tutorial-heading>div{text-align:center}
+html body .modal-shade>.modal.tutorial-modal .tutorial-heading h2{text-align:center!important}
+
 /* Draw lesson on short screens: the face-down floor tile sits beside the opponent's tile, not under it. */
 @media (max-height:700px),(orientation:landscape) and (max-height:600px){
  html body .turntale .tutorial-modal .tutorial-table,html body .tutorial-modal .tutorial-table{position:relative}

@@ -17,7 +17,6 @@ function DiceSkinPicker({state}:{state:AchievementState}){
   </button></li>;})}</ul>
  </details>;
 }
-import {Check} from 'lucide-react';
 import {ACHIEVEMENTS,achievementValue,orderedAchievements,type Achievement,type AchievementState} from '../../lib/achievements';
 import AchievementMedal from './AchievementMedal';
 import {tr,trv} from '../../lib/i18n/index.ts';
@@ -31,9 +30,8 @@ export default function Achievements({state,close}:{state:AchievementState,close
  useEffect(()=>{if(listRef.current)listRef.current.scrollTop=0;},[count]);
  return <div className="modal-shade achievements-shade" onClick={close}><section ref={panel} className="modal achievements-modal" role="dialog" aria-modal="true" aria-label={tr('업적')} onClick={e=>e.stopPropagation()} onKeyDown={e=>{if(e.key==='Escape')close();if(e.key==='Tab'){const nodes=panel.current?.querySelectorAll<HTMLElement>('button,[tabindex="0"]');if(!nodes?.length)return;const first=nodes[0],last=nodes[nodes.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}}}>
   <button className="close" onClick={close} aria-label={tr('업적 닫기')}>×</button>
-  <header className="achievement-header"><AchievementMedal id="all-achievements" earned={!!state.unlocked['all-achievements']}/><div><h2 className="turntale-menu-lettering">{tr('업적')}</h2><p>{tr('한 장의 선택이 남기는 작은 전설')}</p></div><div className="achievement-total"><strong>{count}<small> / {ACHIEVEMENTS.length}</small></strong><span>{tr('달성')}</span></div></header>
-  <div ref={listRef} className="achievement-list" tabIndex={0} role="region" aria-label={tr('업적 목록 · 달성한 업적부터 표시')}>{list.map(a=>{const at=state.unlocked[a.id],secret=a.hidden&&!at,value=Math.min(a.goal,achievementValue(a,state));return <article key={a.id} data-achievement={a.id} className={`achievement-card ${at?'unlocked':''} ${secret?'secret':''} ${a.completion?'completion-achievement':''}`}><AchievementMedal id={a.id} earned={!!at} secret={!!secret}/><div><div className="achievement-name"><h3>{secret?tr('??? · 숨겨진 업적'):a.title}</h3>{at?<Check aria-label={tr('달성')}/>:null}</div><p>{secret?tr('아직 알려지지 않은 이야기입니다. 플레이하며 발견해 보세요.'):a.description}</p>{at?<time dateTime={new Date(at).toISOString()}>{new Date(at).toLocaleDateString('ko-KR')} {tr('달성')}</time>:!secret&&<div className="achievement-progress"><progress value={value} max={a.goal} aria-label={tr('{0} 진행률',{0:a.title})}/><small>{value} / {a.goal}</small></div>}</div></article>;})}</div>
+  <header className="achievement-header"><AchievementMedal id="all-achievements" earned={!!state.unlocked['all-achievements']}/><div><h2 className="turntale-menu-lettering">{tr('업적')}</h2></div><div className="achievement-total"><strong>{count}<small> / {ACHIEVEMENTS.length}</small></strong></div></header>
+  <div ref={listRef} className="achievement-list" tabIndex={0} role="region" aria-label={tr('업적 목록 · 달성한 업적부터 표시')}>{list.map(a=>{const at=state.unlocked[a.id],secret=a.hidden&&!at,value=Math.min(a.goal,achievementValue(a,state));return <article key={a.id} data-achievement={a.id} className={`achievement-card ${at?'unlocked':''} ${secret?'secret':''} ${a.completion?'completion-achievement':''}`}><AchievementMedal id={a.id} earned={!!at} secret={!!secret}/><div><div className="achievement-name"><h3>{secret?tr('??? · 숨겨진 업적'):a.title}</h3></div><p>{secret?tr('아직 알려지지 않은 이야기입니다. 플레이하며 발견해 보세요.'):a.description}</p>{at?<time dateTime={new Date(at).toISOString()}>{new Date(at).toLocaleDateString('ko-KR')} {tr('달성')}</time>:!secret&&a.goal>1&&<div className="achievement-progress"><progress value={value} max={a.goal} aria-label={tr('{0} 진행률',{0:a.title})}/><small>{value} / {a.goal}</small></div>}</div></article>;})}</div>
   <DiceSkinPicker state={state}/>
-  <footer>{tr('달성한 업적이 위에 표시됩니다 · 이 기기·브라우저에 저장')}<br/>{tr('유효 라운드 기준 · 시간 초과로 대체된 판은 제외')}</footer>
  </section></div>;
 }
